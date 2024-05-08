@@ -8,7 +8,6 @@ import com.scp.service.bpm.*;
 import com.scp.service.bus.*;
 import com.scp.service.carmgr.*;
 import com.scp.service.common.AttachmentService;
-import com.scp.service.cs.CsBookingMgrService;
 import com.scp.service.customer.*;
 import com.scp.service.data.*;
 import com.scp.service.del.DelLoadMgrService;
@@ -512,10 +511,6 @@ public class ServiceContext {
 
     @Resource
     public FinaPrepaidMgrService finaPrepaidMgrService;
-
-    @Resource
-    public CsBookingMgrService csBookingMgrService;
-
 
     // OA------start-------------------
 //	@Resource

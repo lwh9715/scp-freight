@@ -242,8 +242,6 @@
 	<mapping class="com.scp.model.oa.OaSalaryDouble" />
 	<mapping class="com.scp.model.oa.OaSalaryWelfare" />
 	
-	<mapping class="com.scp.view.module.cs.CsBooking" />
-	
 	<mapping class="com.scp.model.del.DelLoad" />
   	<mapping class="com.scp.model.del.DelLoadtl" />
   	<mapping class="com.scp.model.del.DelDelivery" />

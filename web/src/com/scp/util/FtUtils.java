@@ -2,9 +2,7 @@ package com.scp.util;
 
 import com.scp.exception.NoRowException;
 import com.scp.service.ServiceContext;
-import com.scp.view.module.api.freightower.ApiFreighTowerTools;
 import com.ufms.base.db.DaoUtil;
-import com.ufms.base.utils.HttpUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 

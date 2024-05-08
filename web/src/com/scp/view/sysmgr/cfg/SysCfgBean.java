@@ -47,16 +47,15 @@ import com.scp.util.EMailSendUtil;
 import com.scp.util.MessageUtils;
 import com.scp.util.StrUtils;
 import com.scp.util.ConfigUtils.UsrCfgKey;
-import com.scp.view.module.insurance.InsuranceUtils;
 
 @ManagedBean(name = "pages.sysmgr.cfg.syscfgBean", scope = ManagedBeanScope.REQUEST)
 public class SysCfgBean extends BaseCfgBean {
-	
+
 	@Autowired
 	public ApplicationConf applicationConf;
-	
-	
-	
+
+
+
 	@BeforeRender
 	protected void beforeRender(boolean isPostback) {
 		if (!isPostback) {
@@ -70,8 +69,8 @@ public class SysCfgBean extends BaseCfgBean {
 			}
 		}
 	}
-	
-	
+
+
 	@Action
 	private void saveDate() {
 		save();
@@ -90,8 +89,8 @@ public class SysCfgBean extends BaseCfgBean {
 				}
 				ConfigUtils.refreshSysCfg(key, val, AppUtils.getUserSession().getUserid());
 			}
-			
-			
+
+
 			applicationConf.setSaas(false);
 			if("Y".equalsIgnoreCase(ConfigUtils.findSysCfgVal("sys_cfg_saas"))){
 				applicationConf.setSaas(true);
@@ -101,12 +100,12 @@ public class SysCfgBean extends BaseCfgBean {
 			MessageUtils.showException(e);
 		}
 	}
-	
+
 	@Action
 	private void lsCfgBut() {
 		AppUtils.openWindow("_lsMgr", "lsmgr.xhtml");
 	}
-	
+
     @Action
     public void rptMgr(){
     	AppUtils.openWindow("_rpt_Mgr", "../rpt/rptMgr.xhtml");
@@ -293,19 +292,19 @@ public class SysCfgBean extends BaseCfgBean {
 		vector.add("sys_forbidden_find_and_view_receipt");
 		vector.add("fee_customer_filterby_araptype");
 		vector.add("sys_cosco_server_url");
-		
+
 		return vector;
 	}
 
 	@Override
 	protected String getQuerySql() {
-		return 
+		return
 		"\nSELECT * " +
 		"\nFROM sys_config " +
 		"\nWHERE 1=1 ";
 	}
-	
-	
+
+
 	@Bind
 	public String getLogo(){
 		String logoname = ConfigUtils.findSysCfgVal(ConfigUtils.SysCfgKey.login_logo.name());
@@ -318,7 +317,7 @@ public class SysCfgBean extends BaseCfgBean {
 		}
 		return result;
 	}
-	
+
 	@Bind
 	public String getWeixinimg(){
 		String logoname = ConfigUtils.findSysCfgVal("weixinImg");
@@ -331,7 +330,7 @@ public class SysCfgBean extends BaseCfgBean {
 		}
 		return result;
 	}
-	
+
 	@Bind
 	public String getWeixinXCXImg(){
 		String logoname = ConfigUtils.findSysCfgVal("weixinXCXImg");
@@ -344,13 +343,13 @@ public class SysCfgBean extends BaseCfgBean {
 		}
 		return result;
 	}
-	
-	
+
+
 	@Action
 	private void refreshLogo() {
 		this.update.markUpdate("logoImg");
 	}
-	
+
 	@Action
 	private void clearLogo() {
 		try {
@@ -363,12 +362,12 @@ public class SysCfgBean extends BaseCfgBean {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Action
 	private void refreshWeixinImg() {
 		this.update.markUpdate("weixinImg");
 	}
-	
+
 	@Action
 	private void clearWeixinImg() {
 		try {
@@ -382,13 +381,13 @@ public class SysCfgBean extends BaseCfgBean {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	@Action
 	private void refreshWeixinXCXImg() {
 		this.update.markUpdate("weixinXCXImg");
 	}
-	
+
 	@Action
 	private void clearWeixinXCXImg() {
 		try {
@@ -402,10 +401,10 @@ public class SysCfgBean extends BaseCfgBean {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Bind
 	public UIFileUpload fileUpload1;
-	
+
     public void processUpload1(FileUploadItem fileUploadItem) {
     	 InputStream input = null;
          FileOutputStream output = null;
@@ -416,10 +415,10 @@ public class SysCfgBean extends BaseCfgBean {
              input = fileUploadItem.openStream();
              String filepath = AppUtils.getAttachFilePath() + fileName;
              File f = new File(filepath);
-             
+
              //AppUtils.debug(f.getAbsolutePath());
              output = new FileOutputStream(f);
-             
+
             //将文件放到报表images下面logo.png
              String logopath = AppUtils.getReportFilePath() + File.separator + "image" + File.separator + "logo.png";
              //System.out.println(logopath);
@@ -435,7 +434,7 @@ public class SysCfgBean extends BaseCfgBean {
              }
              output.flush();
              outputreport.flush();
-             
+
              long fileSize = new File(filepath).length();
              ConfigUtils.refreshSysCfg(ConfigUtils.SysCfgKey.login_logo.name(), fileName , AppUtils.getUserSession().getUserid());
          } catch (Exception e) {
@@ -464,7 +463,7 @@ public class SysCfgBean extends BaseCfgBean {
              }
          }
     }
-    
+
     public void weixinImgUpload1(FileUploadItem fileUploadItem) {
    	 InputStream input = null;
         FileOutputStream output = null;
@@ -502,7 +501,7 @@ public class SysCfgBean extends BaseCfgBean {
             }
         }
    }
-    
+
     public void weixinXCXImgUpload1(FileUploadItem fileUploadItem) {
       InputStream input = null;
        FileOutputStream output = null;
@@ -540,14 +539,14 @@ public class SysCfgBean extends BaseCfgBean {
            }
        }
 	}
-    
+
     @Bind
 	public UIFileUpload fileUpload2;
-    
+
     @Bind
     @SaveState
     public String errMsg;
-    
+
     public void processUpload2(FileUploadItem fileUploadItem) {
     	InputStream input = null;
         FileOutputStream output = null;
@@ -557,7 +556,7 @@ public class SysCfgBean extends BaseCfgBean {
             input = fileUploadItem.openStream();
             String filepath = "./"+fileName;
             File f = new File(filepath);
-            
+
             //AppUtils.debug(f.getAbsolutePath());
             output = new FileOutputStream(f);
             byte[] buf = new byte[4096];
@@ -580,7 +579,7 @@ public class SysCfgBean extends BaseCfgBean {
                 }
         }
     }
-    
+
     public void progressAction(ProgressStatus status) {
     	 // progress启动
         if (status.getAction().ordinal() == ProgressAction._START) {
@@ -598,7 +597,7 @@ public class SysCfgBean extends BaseCfgBean {
                 setWaittingStatus(status);
                 return;
             }
-                
+
             // uploading已经结束，设置progress显示上传结束，并通知progress组件监控结束
             if (isCompletedStatus()) {
                 setCompletedStatus(status);
@@ -612,7 +611,7 @@ public class SysCfgBean extends BaseCfgBean {
             setStoppedStatus(status);
         }
     }
-	
+
  // 通知progress组件监控结束
     private void setStoppedStatus(ProgressStatus status) {
         status.setState(ProgressState.STOPPED);
@@ -639,7 +638,7 @@ public class SysCfgBean extends BaseCfgBean {
         return fileUpload1.getUploadingStatus().getContentLength() == null
                 || fileUpload1.getUploadingStatus().getContentLength() == 0;
     }
-    
+
     // 设置上传状态提示，并通知progress继续监控
     private void setRunningStatus(ProgressStatus status) {
         status.setPercentage(getPercentage());
@@ -673,7 +672,7 @@ public class SysCfgBean extends BaseCfgBean {
         status.setPercentage(0);
         status.setState(ProgressState.RUNNING);
     }
-    
+
  // 获取文件数据已上传部分的尺寸（k）
     private long getKilosRead() {
         return bytesToKilo(fileUpload1.getUploadingStatus().getBytesRead());
@@ -689,23 +688,23 @@ public class SysCfgBean extends BaseCfgBean {
         return (int)(100 * fileUpload1.getUploadingStatus().getBytesRead() /
                 fileUpload1.getUploadingStatus().getContentLength());
     }
-    
+
     // 转换数据尺寸为k
     public long bytesToKilo(long bytes) {
         return bytes / 1024 + ((bytes % 1024 > 0) ? 1 : 0);
     }
-    
+
     @Autowired(required=false)
     private StringRedisTemplate stringRedisTemplate;
-    
+
     @Resource
 	public CommonDBCache commonDBCache;
-    
+
 
 	@Bind
 	@SaveState
 	public String cacheLogs;
-    
+
     //清除缓存
     @Action
     public void clearCache(){
@@ -715,16 +714,16 @@ public class SysCfgBean extends BaseCfgBean {
 				stringRedisTemplate.getConnectionFactory().getConnection().flushDb();
 			}
 			//commonDBCache.clearCacheComboxItems();
-			
+
 			EhCacheUtil.clear();
-			
+
 			Browser.alert("OK");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
     }
-    
-    
+
+
     @Action
     public void showCache(){
     	try {
@@ -734,16 +733,16 @@ public class SysCfgBean extends BaseCfgBean {
 			e.printStackTrace();
 		}
     }
-    
+
     @Inject
 	protected PartialUpdateManager update;
-    
+
     @Action
     public void licensesSave(){
     	save();
     	update.markUpdate(UpdateLevel.Data,"Licenses");
     }
-    
+
     @Action
     public void refreshLicenses(){
     	update.markUpdate(UpdateLevel.Data,"Licenses");
@@ -758,19 +757,19 @@ public class SysCfgBean extends BaseCfgBean {
 			e.printStackTrace();
 		}
     }
-    
-    
 
-    
+
+
+
     @Bind
     public String getLicenses(){
     	return AppUtils.getLicences();
     }
-    
+
     @Bind
     @SaveState
     public String upglogs;
-    
+
     @Action
     public void upg(){
     	try {
@@ -778,8 +777,8 @@ public class SysCfgBean extends BaseCfgBean {
 			String csno = CfgUtil.findSysCfgVal("CSNO");
 			String fixVerNoStr = CfgUtil.findSysCfgVal("DB_Version");
 			Integer fixVerNo = Integer.parseInt(fixVerNoStr);
-			
-			
+
+
 			try {
 				String sql = hlpTransMonitorService.checkUserAndModule(csno);
 				DaoIbatisTemplate daoIbatisTemplate = (DaoIbatisTemplate)ApplicationUtilBase.getBeanFromSpringIoc("daoIbatisTemplate");
@@ -791,14 +790,14 @@ public class SysCfgBean extends BaseCfgBean {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-			
+
+
 			boolean check = hlpTransMonitorService.checkPause(csno, fixVerNo);
 			if(check)return;
 			List<Map<String, String>> lists = hlpTransMonitorService.getUpgSql(csno, fixVerNo);
-			
+
 			DaoIbatisTemplate daoIbatisTemplate = (DaoIbatisTemplate)ApplicationUtilBase.getBeanFromSpringIoc("daoIbatisTemplate");
-			
+
 			if(lists != null){
 				if(lists.size() == 0){
 					upglogs += csno + ":无升级语句!";
@@ -809,11 +808,11 @@ public class SysCfgBean extends BaseCfgBean {
 						String sql = StrUtils.getMapVal(map, "upgsql");
 						String pkId = StrUtils.getMapVal(map, "pkid");
 						String indexno = StrUtils.getMapVal(map, "indexno");
-						
+
 						String response = "OK";
 						//System.out.println(map);
 						try {
-							
+
 							daoIbatisTemplate.updateWithUserDefineSql(sql);
 							stringBuilder.append(sql);
 							upglogs += indexno + "~~~~~~~~~~~~~~~~~~~~~" + response + "\n";
@@ -845,7 +844,7 @@ public class SysCfgBean extends BaseCfgBean {
 					hlpTransMonitorService.responseExecShell(pkId, "OK,Start at:"+Calendar.getInstance().getTime().toGMTString());
 					AppUtilBase.process(shellCmd);
 					upglogs = "3.~~~~~~~~~~~~~shell:" +  shells;
-					
+
 					//更新当前客户端显示的版本号
 					try {
 						String sqlVersion= "UPDATE sys_config set val = to_char(NOW(),'YYYYMM') where key = 'Version';";
@@ -860,13 +859,13 @@ public class SysCfgBean extends BaseCfgBean {
 				upglogs += "\n3.~~~~~~~~~~~~~shell:"+e.getLocalizedMessage();
 				update.markUpdate(UpdateLevel.Data,"upglogs");
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			upglogs += "\nERROR:"+e.getLocalizedMessage();
 			update.markUpdate(UpdateLevel.Data,"upglogs");
 		}
-		
+
 		try {
 			AppUtils.checkSysModule();
 			upglogs += "\n4.refesh~~~~~~~~~~~~~";
@@ -876,76 +875,73 @@ public class SysCfgBean extends BaseCfgBean {
 			e.printStackTrace();
 		}
     }
-    
+
     @Action
     public void saveDateshipping(){
     	save();
     }
-    
+
     @Action
     public void saveDateair(){
     	save();
     }
-    
+
     @Action
     public void save1(){
     	save();
     }
-    
+
     @Action
     public void save2(){
     	save();
     }
-    
+
     @Action
     public void save3(){
     	save();
     }
-    
+
     @Action
     public void save4(){
     	save();
     }
-    
+
     @Action
     public void saveInsurance(){
     	save();
     }
-    
+
     @Action
     public void saveUI(){
     	save();
     }
-    
+
     @Action
     public void saveApi(){
     	save();
     }
-    
-    
+
+
     @Action
     public void getInsuranceLogin(){
     	try {
-			String userId = InsuranceUtils.getUserId(ConfigUtils.findSysCfgVal("sys_taxtno"),ConfigUtils.findSysCfgVal("sys_insurance_company"),ConfigUtils.findSysCfgVal("sys_insurance_email"),ConfigUtils.findSysCfgVal("sys_insurance_phone"));
-			ConfigUtils.refreshSysCfg("sys_insurance_userId", userId , AppUtils.getUserSession().getUserid());
-			Browser.execClientScript("insuranceUserIdJsVar.setValue('"+userId+"')");
 			MessageUtils.alert("获取授权成功!");
 		} catch (Exception e) {
 			e.printStackTrace();
 			MessageUtils.showException(e);
 		}
     }
-    
-    
-    
+
+
+
     @Bind
     public UIWindow showEmailSignWindow;
-    
+
     @Action
 	public void emailSign() {
 		showEmailSignWindow.show();
 	}
-    
+
     @Action
 	protected void saveAction() {
 		String content = AppUtils.getReqParam("editor1");
@@ -958,12 +954,12 @@ public class SysCfgBean extends BaseCfgBean {
 			e.printStackTrace();
 		}
 	}
-    
+
     @Action
 	public void emailTest() {
     	Set<String> set = this.getCfgDataMap().keySet();
 		try {
-			if(StrUtils.isNull(ConfigUtils.findSysCfgVal(UsrCfgKey.email_srv_smtp.name())) 
+			if(StrUtils.isNull(ConfigUtils.findSysCfgVal(UsrCfgKey.email_srv_smtp.name()))
 					|| StrUtils.isNull(ConfigUtils.findSysCfgVal(UsrCfgKey.email_srv_port.name()))
 					|| StrUtils.isNull(ConfigUtils.findSysCfgVal(UsrCfgKey.email_pop3_account.name()))
 					|| StrUtils.isNull(ConfigUtils.findSysCfgVal(UsrCfgKey.email_pop3_pwd.name()))
@@ -977,5 +973,5 @@ public class SysCfgBean extends BaseCfgBean {
 			MessageUtils.showException(e);
 		}
 	}
-    
+
 }
