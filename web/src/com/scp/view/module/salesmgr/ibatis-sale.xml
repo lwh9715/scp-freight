@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.module.salesmgr.potcustomerBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			  id
+			,iswarehouse
+			,isfcl
+			,isddp
+			,islcl
+			,isair
+			,code
+			,abbr
+			,namec
+			,namee
+			,level
+			,(SELECT x.namec FROM sys_user x WHERE x.id = a.salesid) AS  salesnamec
+			,portdesc
+			,isofficial
+			,iswarehouse
+			,inputer
+			,inputtime
+			,updater
+			,updatetime
+			,daysar
+			,amtowe
+			,currency
+			,tradeway
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = a.inputer and x.isdelete = false limit 1),a.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = a.updater and x.isdelete = false limit 1),a.updater) AS updatername
+		 	,addressc
+		 	,addresse
+		 	,tel1
+		 	,contact
+		 	,customertype
+		FROM sys_corporation a
+		WHERE $qry$
+			$filter$
+			AND iscustomer = TRUE
+			AND isofficial = FALSE
+			AND isdelete = false
+		ORDER BY abbr
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.salesmgr.potcustomerBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM sys_corporation a
+		WHERE $qry$
+			$filter$
+			AND iscustomer = TRUE
+			AND isofficial = FALSE
+			AND isdelete = false
+	</select>
+	
+		<select id="pages.module.salesmgr.mycustomerBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+		     id
+			,iswarehouse
+			,isfcl
+			,isddp
+			,islcl
+			,isair
+			,code
+			,abbr
+			,namec
+			,namee
+			,level
+			,(SELECT x.namec FROM sys_user x WHERE x.id = a.salesid) AS  salesnamec
+			,portdesc
+			,isofficial
+			,iswarehouse
+			,inputer
+			,inputtime
+			,updater
+			,updatetime
+			,EXISTS(SELECT 1 FROM sys_corporation_join x WHERE x.idfm = a.id AND x.jointype = 'J') AS isjoin
+			,(SELECT x.idto FROM sys_corporation_join x WHERE x.idfm = a.id) AS joinid
+			,(SELECT x.jointype FROM sys_corporation_join x WHERE x.idfm = a.id) AS jointype
+			,daysar
+			,amtowe
+			,currency
+			,tradeway
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = a.inputer and x.isdelete = false limit 1),a.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = a.updater and x.isdelete = false limit 1),a.updater) AS updatername
+		 	,addressc
+		 	,addresse
+		 	,tel1
+		 	,contact
+		 	,customertype
+		 	,checkter
+		 	,checktime
+		 	,(SELECT x.isstart FROM sys_corporation_black x WHERE x.linkid = a.id AND x.isdelete = FALSE AND x.isstart = TRUE) AS isblacklist
+		FROM sys_corporation a
+		WHERE $qry$
+			$filter$
+			AND iscustomer = TRUE
+			AND isofficial = TRUE
+			AND a.isdelete = false
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.salesmgr.mycustomerBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM sys_corporation a
+		WHERE $qry$
+			$filter$
+			AND iscustomer = TRUE
+			AND isofficial = TRUE
+			AND a.isdelete = false
+	</select>
+	
+	<select id="pages.module.salesmgr.pubcustomerBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+		     id
+			,iswarehouse
+			,isfcl
+			,isddp
+			,islcl
+			,isair
+			,code
+			,abbr
+			,namec
+			,namee
+			,level
+			,salesnamec
+			,portdesc
+			,isofficial
+			,iswarehouse
+			,inputer
+			,inputtime
+			,updater
+			,updatetime
+			,isjoin
+			,joinid
+			,jointype
+			,daysar
+			,amtowe
+			,currency
+			,tradeway
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = a.inputer and x.isdelete = false limit 1),a.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = a.updater and x.isdelete = false limit 1),a.updater) AS updatername
+		FROM _sys_corporation a
+		WHERE $qry$
+			$filter$
+			AND iscustomer = TRUE
+			AND isofficial = TRUE
+			AND a.isdelete = false
+	</select>
+	<select id="pages.module.salesmgr.pubcustomerBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM _sys_corporation a
+		WHERE $qry$
+			$filter$
+			AND iscustomer = TRUE
+			AND isofficial = TRUE
+			AND a.isdelete = false
+	</select>
+	
+	<select id="pages.module.salesmgr.accesscustomerBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+		     a.*
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = a.inputer and x.isdelete = false limit 1),a.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = a.updater and x.isdelete = false limit 1),a.updater) AS updatername
+		FROM sys_corpvisit a
+		WHERE $qry$	
+			AND isdelete = FALSE	
+		ORDER BY visttime DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.salesmgr.accesscustomerBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM sys_corpvisit a
+		WHERE $qry$			
+			AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.salesmgr.analyzeoutBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+		     id
+			,code
+			,namec
+			,namee
+			,abbr
+		FROM sys_corporation a
+		WHERE $qry$	
+			$filter$
+			AND isdelete = FALSE
+			
+		ORDER BY code DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.salesmgr.analyzeoutBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(id) AS counts
+		FROM sys_corporation a
+		WHERE $qry$
+			$filter$
+			AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.salesmgr.workreportBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+		     id
+			,code
+			,namec
+			,namee
+			,abbr
+			,(SELECT namec FROM sys_user WHERE isdelete = FALSE AND id = a.salesid) AS salesnamec
+		FROM sys_corporation a
+		WHERE $qry$	
+			$filter$
+			AND isdelete = FALSE
+			
+		ORDER BY salesnamec, code DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.salesmgr.workreportBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(id) AS counts
+		FROM sys_corporation a
+		WHERE $qry$
+			$filter$
+			AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.salesmgr.analyzelineBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+		     id
+			,code
+			,namec
+			,namee
+			,abbr
+		FROM sys_corporation a
+		WHERE $qry$	
+			$filter$
+			AND isdelete = FALSE
+			
+		ORDER BY code DESC
+	</select>
+	<select id="pages.module.salesmgr.analyzelineBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(id) AS counts
+		FROM sys_corporation a
+		WHERE $qry$
+			$filter$
+			AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.salesmgr.potcustomereditBean.gridUser.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_user t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+			AND isinvalid = TRUE 
+			AND iscsuser = FALSE
+		ORDER BY code
+	</select>
+	<select id="pages.module.salesmgr.potcustomereditBean.gridUser.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_user t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+			AND isinvalid = TRUE 
+			AND iscsuser = FALSE
+	</select>
+	
+	
+	
+	<select id="pages.module.salesmgr.clientBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 *
+		 ,substring((select string_agg(nos||'['||sales||']'||':'||jobdate,f_newline() order by jobdate desc) from fina_jobs b where a.id = b.customerid AND b.isdelete = false AND jobdate > now()- INTERVAL '6 month') from 1 for 999) AS salesnos
+		 ,(select MAX(b.jobdate) from fina_jobs b where a.id = b.customerid AND b.isdelete = false) AS jobdate
+		 ,(select now()::date - MAX(b.jobdate)::date from fina_jobs b where a.id = b.customerid AND b.isdelete = false) AS nojobsdate
+		 ,(SELECT string_agg(x.namec||'/'||x.namee||'/'||COALESCE((SELECT name FROM sys_department WHERE id = x.deptid),''),f_newline()) FROM sys_user x WHERE x.isdelete = FALSE AND EXISTS(SELECT 1 FROM sys_user_assign y WHERE y.isdelete = FALSE AND y.linkid=a.id AND linktype='C' AND roletype='S' AND y.userid=x.id)) AS assignsalesnamec
+		 ,(select string_agg(namec||':'||y.remarks,f_newline()) from sys_user x , sys_user_assign y where x.id = y.userid AND x.isdelete = false AND y.isdelete = false AND y.linkid = a.id AND y.linktype='C' AND y.roletype='S') assignsalesremarks
+		FROM _sys_corporation a  
+		WHERE $qry$ 
+			$filter$
+			$filter2$
+			$filter3$
+			AND isdelete = false
+			AND iscarrier = false
+			AND isairline = false
+			AND iscustomer = true
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.salesmgr.clientBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_corporation a 
+		WHERE $qry$ 
+			$filter$
+			$filter2$
+			$filter3$
+			AND isdelete = false
+			AND iscarrier = false
+			AND isairline = false
+			AND iscustomer = true
+	</select>
+	
+	
+	<select id="pages.module.salesmgr.priceBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 *
+		 ,(select abbr from sys_corporation where isdelete = false and id = t.customerid) AS customerabbr
+		 ,(CASE WHEN EXISTS(SELECT 1 FROM sys_email WHERE isdelete = false and linkid = t.id) THEN 1 ELSE 0 END )AS isemail
+		 ,(CASE WHEN EXISTS(SELECT 1 FROM sys_email WHERE isdelete = false and isautosend = true and linkid = t.id) THEN true ELSE false END )AS issentauto
+		 ,(CASE WHEN EXISTS(SELECT 1 FROM sys_email WHERE isdelete = false and issent = true and linkid = t.id) THEN true ELSE false END )AS sentstate
+		FROM bus_price t
+		WHERE $qry$ 
+		$filter$ 
+		AND isdelete = false
+		AND t.inputtime + '30 day' >= now()
+		ORDER BY nos desc, inputtime desc, inputer
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.salesmgr.priceBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM bus_price t
+		WHERE $qry$ 
+		$filter$ 
+		AND isdelete = false
+		AND t.inputtime + '30 day' >= now()
+	</select>
+	
+	<select id="pages.module.salesmgr.pricehisBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 *
+		 ,(select abbr from sys_corporation where isdelete = false and id = t.customerid) AS customerabbr
+		FROM bus_price t
+		WHERE $qry$ 
+		$filter$ 
+		AND isdelete = false
+		ORDER BY nos desc, inputtime desc, inputer
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.salesmgr.pricehisBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM bus_price t
+		WHERE $qry$ 
+		$filter$ 
+		AND isdelete = false
+	</select>
+	<select id="pages.module.salesmgr.pricefcluseruleBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 *
+		 ,(SELECT String_agg(namec,',') FROM dat_line WHERE code = ANY(regexp_split_to_array(lines,','))) AS linenamec
+		 ,(SELECT count(*) FROM price_fcl_userule_ref WHERE useruleid = b.id)||'/'||(SELECT count(*) FROM sys_corporation WHERE isdelete = false) AS customcount
+		,(SELECT namee FROM sys_user WHERE code = b.inputer) ||'/'|| (SELECT name FROM sys_department WHERE id = (SELECT deptid FROM sys_user WHERE code = b.inputer)) as inputernamec
+		 ,(SELECT namee FROM sys_user WHERE code = b.updater) ||'/'|| (SELECT name FROM sys_department WHERE id = (SELECT deptid FROM sys_user WHERE code = b.updater)) as updaternamec
+		FROM price_fcl_userule b
+		WHERE $qry$ 
+			  $filter$
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.salesmgr.pricefcluseruleBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM price_fcl_userule b
+		WHERE $qry$ 
+			$filter$
+	</select>
+	
+	<select id="pages.module.salesmgr.pricefcluseruleBean.customGrid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		   id
+		 ,isjoin
+		 ,joiniddesc
+		 ,joinid
+		 ,jointype
+		 ,iscarrier
+		 ,istruck
+		 ,iscustom
+		 ,issupplier
+		 ,ishipper
+		 ,isconsignee
+		 ,iswarehouse
+		 ,isagent
+		 ,isfcl
+		 ,isddp
+		 ,islcl
+		 ,isair
+		 ,code
+		 ,abbr
+		 ,namec
+		 ,namee
+		 ,level
+		 ,salesnamec
+		 ,portdesc
+		 ,isofficial
+		 ,iscustomer
+		 ,isairline
+		 ,iscooperative
+		 ,iscarrier
+		 ,isconsignee
+		 ,isar
+		 ,isap
+		 ,isfactory
+		 ,inputer
+		 ,inputtime
+		 ,updater
+		 ,updatetime
+		 ,corper
+		 ,depter
+		 ,(SELECT string_agg(x.namec||'/'||x.namee||'/'||COALESCE((SELECT name FROM sys_department WHERE id = x.deptid),''),f_newline()) FROM sys_user x WHERE x.isdelete = FALSE AND EXISTS(SELECT 1 FROM sys_user_assign y WHERE y.isdelete = FALSE AND y.linkid=a.id AND linktype='C' AND roletype='S' AND y.userid=x.id)) assignsalesnamec
+		 ,(SELECT string_agg(x.namec,',') FROM sys_user x , sys_user_assign y WHERE x.isdelete = FALSE AND y.isdelete = FALSE AND y.linkid=a.id AND linktype='C' AND roletype='O' AND y.userid=x.id) operationnamec
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = a.inputer and x.isdelete = false limit 1),a.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = a.updater and x.isdelete = false limit 1),a.updater) AS updatername
+		 ,daysar
+		 ,addressc
+		 ,addresse
+		 ,contact
+		 ,tel1
+		 ,(select namec from dat_filedata d WHERE d.isleaf = TRUE AND d.isdelete = false AND d.fkcode = 90 AND d.code = a.srctype LIMIT 1) AS srctype
+		 ,customertype
+		 ,(SELECT count(*) FROM sys_attachment x WHERE isdelete = FALSE AND linkid = a.id ) AS attachmentcount
+		 ,(select string_agg(namec||':'||y.remarks,f_newline()) from sys_user x , sys_user_assign y where x.id = y.userid AND x.isdelete = false AND y.isdelete = false AND y.linkid = a.id AND y.linktype='C' AND y.roletype='S') assignsalesremarks
+		 ,checkter
+		 ,checktime
+		,(SELECT String_agg(namec,',') FROM dat_line WHERE code = any(regexp_split_to_array((SELECT String_agg(y.lines,',') FROM price_fcl_userule_ref x,price_fcl_userule y WHERE y.id = x.useruleid AND x.customerid = a.id),','))) AS line
+		FROM _sys_corporation a  
+		WHERE $qry$ 
+			  $filter$
+			--AND NOT EXISTS(SELECT 1 FROM price_fcl_userule_ref x,price_fcl_userule y WHERE y.id = x.useruleid AND x.customerid = a.id)
+			AND iscustomer = TRUE
+			AND isofficial = TRUE
+			AND a.isdelete = false
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.salesmgr.pricefcluseruleBean.customGrid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_corporation a 
+		WHERE $qry$ 
+			  $filter$
+			  --AND NOT EXISTS(SELECT 1 FROM price_fcl_userule_ref x,price_fcl_userule y WHERE y.id = x.useruleid AND x.customerid = a.id)
+			  AND iscustomer = TRUE
+			AND isofficial = TRUE
+			AND isdelete = false
+	</select>
+	
+	<select id="pages.module.salesmgr.pricecustomBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		 * 
+		FROM sys_corporation t 
+		WHERE $qry$ 
+			AND isdelete = FALSE 
+			AND EXISTS(SELECT 1 FROM price_fcl_userule_ref x WHERE x.useruleid = $libid$ AND x.customerid = t.id)
+		ORDER BY code
+	</select>
+	<select id="pages.module.salesmgr.pricecustomBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_corporation t 
+		WHERE $qry$ 
+			AND isdelete = FALSE 
+			AND EXISTS(SELECT 1 FROM price_fcl_userule_ref x WHERE x.useruleid = $libid$ AND x.customerid = t.id)
+	</select>
+	
+	<select id="pages.module.salesmgr.pricecustomBean.from.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		 * 
+		FROM sys_corporation a 
+		WHERE $qry$ 
+			$filter$
+			AND iscustomer = TRUE
+			AND isofficial = TRUE
+			AND a.isdelete = false
+			AND NOT EXISTS(SELECT 1 FROM price_fcl_userule_ref x,price_fcl_userule y WHERE x.useruleid = y.id AND x.customerid = a.id)
+		ORDER BY code
+	</select>
+	<select id="pages.module.salesmgr.pricecustomBean.from.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_corporation a 
+		WHERE $qry$ 
+			$filter$
+			AND iscustomer = TRUE
+			AND isofficial = TRUE
+			AND a.isdelete = false
+			AND NOT EXISTS(SELECT 1 FROM price_fcl_userule_ref x,price_fcl_userule y WHERE x.useruleid = y.id AND x.customerid = a.id)
+	</select>
+	
+	<select id="pages.module.salesmgr.blacklistBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = a.inputer and x.isdelete = false limit 1),a.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = a.updater and x.isdelete = false limit 1),a.updater) AS updatername
+		FROM sys_corporation_black a 
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = FALSE
+		ORDER BY code
+	</select>
+	<select id="pages.module.salesmgr.blacklistBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_corporation_black a 
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.salesmgr.blacklisteditBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = a.inputer and x.isdelete = false limit 1),a.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = a.updater and x.isdelete = false limit 1),a.updater) AS updatername
+		FROM sys_corporation_black a 
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = FALSE
+		ORDER BY code
+	</select>
+	<select id="pages.module.salesmgr.blacklisteditBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_corporation_black a 
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = FALSE
+	</select>
+	
+	
+</sqlMap>

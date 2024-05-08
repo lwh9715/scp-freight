@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.module.air.jobsBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[
+		SELECT row_number() OVER() AS row
+			,*
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+			,(select SUM(c.piece) from bus_goods c, bus_air b where c.linkid=b.id AND b.jobid = t.id AND c.isdelete = FALSE AND b.isdelete = FALSE) AS piece
+			,(select SUM(c.grswgt) from bus_goods c, bus_air b where c.linkid=b.id AND b.jobid = t.id AND c.isdelete = FALSE AND b.isdelete = FALSE) AS weight
+			,(select SUM(c.cbm) from bus_goods c, bus_air b where c.linkid=b.id AND b.jobid = t.id AND c.isdelete = FALSE AND b.isdelete = FALSE) AS cbm
+			,(select SUM(c.chargeweight) from bus_goods c, bus_air b where c.linkid=b.id AND b.jobid = t.id AND c.isdelete = FALSE AND b.isdelete = FALSE) AS chargeweight
+			,(select SUM(c.volumeweight) from bus_goods c, bus_air b where c.linkid=b.id AND b.jobid = t.id AND c.isdelete = FALSE AND b.isdelete = FALSE) AS volumeweight
+			,(select c.code from sys_corporation c, bus_air b where c.id=b.carrierid AND b.jobid = t.id AND c.isairline  = TRUE) AS carrierid
+			,(select c.abbr from sys_corporation c, bus_air b where c.id=b.agentid AND b.jobid = t.id AND c.isagent  = TRUE) AS agentid
+			,(SELECT goodsname FROM bus_air WHERE isdelete = FALSE AND jobid = t.id) AS goodsname
+			,(CASE WHEN t.statetrace IS NULL THEN NULL ELSE f_sys_getls('userid=$userid$;lskey='||t.statetrace)||'-->'||f_sys_getls('userid=$userid$;lskey=下一步')||':'||COALESCE((SELECT f_sys_getls('userid=$userid$;lskey='||COALESCE(statusc,'')) FROM bus_goodstrack WHERE fkid = t.id AND isfinish = FALSE AND orderno > (SELECT orderno FROM bus_goodstrack WHERE isfinish = TRUE AND fkid = t.id ORDER BY orderno DESC LIMIT 1) ORDER BY orderno, dealdate LIMIT 1),'None') END) statetracenext
+			,(SELECT putstatus FROM bus_air WHERE isdelete = FALSE AND jobid = t.id) AS putstatus
+			,(SELECT flightno1 FROM bus_air WHERE isdelete = FALSE AND jobid = t.id) AS flightno1
+			,(SELECT namec FROM dat_filedata x , bus_air y WHERE x.isdelete = false AND x.fkcode = 320 AND x.isleaf = TRUE AND x.code = y.busstatus AND y.jobid = t.id LIMIT 1) AS busstatusdesc
+			,(SELECT arrwmstime::DATE FROM bus_air WHERE isdelete = FALSE AND jobid = t.id) AS arrwmstime2
+			,(SELECT namec||'/'||namee||'/'||COALESCE((SELECT name FROM sys_department WHERE id = x.deptid),'') FROM sys_user x WHERE id = t.saleid) saleuser
+			,(SELECT abbr FROM sys_corporation WHERE id = t.corpidop AND isdelete = FALSE) AS opcompany
+			,(SELECT abbr FROM sys_corporation WHERE id = t.corpid AND isdelete = FALSE) AS company
+			,(SELECT substring(b.cnortitle FROM 1 FOR (CASE WHEN position(CHR(10) in b.cnortitle)< 1  THEN length(b.cnortitle) ELSE (position(CHR(10) in b.cnortitle)-1) END)) FROM bus_air b WHERE b.isdelete = FALSE AND b.jobid = t.id) AS cnortitle
+			,(SELECT substring(b.cneetitle FROM 1 FOR (CASE WHEN position(CHR(10) in b.cneetitle)< 1  THEN length(b.cneetitle) ELSE (position(CHR(10) in b.cneetitle)-1) END)) FROM bus_air b WHERE b.isdelete = FALSE AND b.jobid = t.id) AS cneetitle
+			,(SELECT (regexp_split_to_array(notifytitle,chr(10)))[1] FROM bus_air WHERE isdelete = FALSE AND jobid = t.id) AS notifytitle
+			,(SELECT (regexp_split_to_array(agentdesabbr,chr(10)))[1] FROM bus_air WHERE isdelete = FALSE AND jobid = t.id) AS agentdesabbr
+			,(SELECT x.polcode FROM bus_air x where x.jobid = t.id and x.isdelete = false limit 1) as polcode
+			,(SELECT x.podcode FROM bus_air x where x.jobid = t.id and x.isdelete = false limit 1) as podcode
+			,(SELECT x.ata FROM bus_air x where x.jobid = t.id and x.isdelete = false limit 1) as ata
+		FROM(
+			select 
+			   *
+			  ,(SELECT flightdate1::DATE FROM bus_air WHERE isdelete = FALSE AND jobid = t.id) AS flightdate12
+			FROM _fina_jobs_air t
+			WHERE $qry$
+				$corpfilter$
+				$filter$
+				$setDays$
+				$dynamicClauseWhere$
+				AND t.jobtype = 'A'
+				AND $icare$
+				AND t.isdelete = FALSE
+			$ordersql$
+			LIMIT $limit$ OFFSET $start$
+		) AS T
+	]]>
+	</select>
+	<select id="pages.module.air.jobsBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _fina_jobs_air t
+		WHERE $qry$
+			$corpfilter$
+			$filter$
+			$setDays$
+			$dynamicClauseWhere$
+		AND $icare$
+		AND jobtype = 'A'
+	</select>
+	
+	
+	<select id="pages.module.air.jobseditBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT DISTINCT	t.id,prefix,code ,r.datefm , t.namec
+			FROM sys_busnodesc t ,sys_busnorule r 
+			WHERE $qry$
+			AND t.id = r.busnotypeid 
+			AND code like 'fina_jobs_air%'
+			AND t.isdelete = FALSE AND r.isdelete = FALSE
+		order by t.namec,r.datefm, prefix
+	]]>
+	</select>
+	<select id="pages.module.air.jobseditBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 10000 AS counts 
+	</select>
+	
+	
+	<select id="pages.module.air.busshippingBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM  _bus_ship_container t 
+		WHERE $qry$
+		AND isdelete = false
+	</select>
+	<select id="pages.module.air.busshippingBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  _bus_ship_container t 
+		WHERE $qry$ 
+	</select>
+	
+	<select id="pages.module.air.jobslclBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		 * 
+		FROM _fina_jobs t 
+		WHERE $qry$
+			$filter$
+			AND jobtype = 'D' 
+			AND isdelete = FALSE 
+		ORDER BY inputtime DESC
+	</select>
+	<select id="pages.module.air.jobslclBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		 count(*) AS counts 
+		FROM _fina_jobs t 
+		WHERE $qry$
+			$filter$
+			AND jobtype = 'D' 
+			AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.air.jobslclcheckBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _fina_jobs t 
+		WHERE $qry$
+		AND jobtype = 'D' 
+		$filter$
+		AND isdelete = FALSE
+		AND isubmit = TRUE 
+		ORDER BY checktime DESC
+	</select>
+	<select id="pages.module.air.jobslclcheckBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _fina_jobs t 
+		WHERE $qry$
+		$filter$
+		AND isdelete = FALSE
+		AND jobtype = 'D' 
+		AND isubmit = TRUE 
+	</select>
+
+	<select id="pages.module.air.busshippinglclBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM  _bus_ship_container t 
+		WHERE $qry$
+		AND isdelete = false
+	</select>
+	<select id="pages.module.air.busshippinglclBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  _bus_ship_container t 
+		WHERE $qry$ 
+	</select>
+	
+	<select id="pages.module.air.busshippinglclcheckBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM  _bus_ship_container t 
+		WHERE $qry$
+		AND isdelete = false
+	</select>
+	<select id="pages.module.air.busshippinglclcheckBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  _bus_ship_container t 
+		WHERE $qry$ 
+	</select>
+	
+	
+	<select id="pages.module.air.jobschildBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT DISTINCT t.*, (SELECT mawbno FROM bus_air WHERE jobid = t.id AND isdelete = false) AS mblno,
+						(SELECT s.name FROM sys_department s WHERE s.id = t.deptid) AS name FROM(
+									<!-- down  -->
+									(WITH RECURSIVE  cte  AS  (
+																SELECT a.*
+																      	,(SELECT SUM(g.chargeweight) FROM bus_goods g,bus_air b WHERE g.linkid = b.id AND b.jobid = a.id AND g.isdelete = FALSE) AS chargeweights
+																		,(SELECT SUM(g.grswgt) FROM bus_goods g,bus_air b WHERE g.linkid = b.id AND b.jobid = a.id AND g.isdelete = FALSE) AS weights
+																		,(SELECT SUM(g.piece) FROM bus_goods g,bus_air b WHERE g.linkid = b.id AND b.jobid = a.id AND g.isdelete = FALSE) AS pieces 
+																       FROM fina_jobs a WHERE $child$
+															    UNION ALL 
+																SELECT k.*
+																		,(SELECT SUM(g.chargeweight) FROM bus_goods g,bus_air b WHERE g.linkid = b.id AND b.jobid = k.id AND g.isdelete = FALSE) AS weights
+																		,(SELECT SUM(g.grswgt) FROM bus_goods g,bus_air b WHERE g.linkid = b.id AND b.jobid = k.id AND g.isdelete = FALSE) AS weights
+																		,(SELECT SUM(g.piece) FROM bus_goods g,bus_air b WHERE g.linkid = b.id AND b.jobid = k.id AND g.isdelete = FALSE) AS pieces 
+																 from fina_jobs k INNER JOIN cte c on c.id = k.parentid
+															)SELECT * FROM cte
+									)
+									
+									UNION ALL
+									<!-- up  -->
+									(WITH RECURSIVE cte  AS (
+																SELECT a.*
+																		,(SELECT SUM(g.chargeweight) FROM bus_goods g,bus_air b WHERE g.linkid = b.id AND b.jobid = a.id AND g.isdelete = FALSE) AS chargeweights
+																		,(SELECT SUM(g.grswgt) FROM bus_goods g,bus_air b WHERE g.linkid = b.id AND b.jobid = a.id AND g.isdelete = FALSE) AS weights
+																		,(SELECT SUM(g.piece) FROM bus_goods g,bus_air b WHERE g.linkid = b.id AND b.jobid = a.id AND g.isdelete = FALSE) AS pieces 
+																FROM fina_jobs a WHERE $child$
+															UNION ALL 
+																SELECT k.* 
+																		,(SELECT SUM(g.chargeweight) FROM bus_goods g,bus_air b WHERE g.linkid = b.id AND b.jobid = k.id AND g.isdelete = FALSE) AS weights
+																		,(SELECT SUM(g.grswgt) FROM bus_goods g,bus_air b WHERE g.linkid = b.id AND b.jobid = k.id AND g.isdelete = FALSE) AS weights
+																		,(SELECT SUM(g.piece) FROM bus_goods g,bus_air b WHERE g.linkid = b.id AND b.jobid = k.id AND g.isdelete = FALSE) AS pieces 
+																from fina_jobs k INNER JOIN cte c on k.id = c.parentid
+															)SELECT * from cte
+									)UNION ALL
+									<!-- 电商查找-->
+									SELECT k.*
+									,(SELECT SUM(c.cbmwidth) FROM bus_packlist c WHERE c.linkid = k.id and c.isdelete = FALSE) AS weights
+									,(SELECT SUM(c.grswgt) FROM bus_packlist c WHERE c.linkid = k.id and c.isdelete = FALSE) AS weights
+									,(SELECT SUM(c.piece) FROM bus_packlist c WHERE c.linkid = k.id and c.isdelete = FALSE) AS pieces
+									FROM fina_jobs k WHERE parentid = $parentid$ AND isdelete = FALSE
+									UNION ALL
+									<!-- 平级查找-->
+									SELECT k.*
+											,(SELECT SUM(g.chargeweight) FROM bus_goods g,bus_air b WHERE g.linkid = b.id AND b.jobid = k.id AND g.isdelete = FALSE) AS weights
+											,(SELECT SUM(g.grswgt) FROM bus_goods g,bus_air b WHERE g.linkid = b.id AND b.jobid = k.id AND g.isdelete = FALSE) AS weights
+											,(SELECT SUM(g.piece) FROM bus_goods g,bus_air b WHERE g.linkid = b.id AND b.jobid = k.id AND g.isdelete = FALSE) AS pieces 
+									 FROM fina_jobs k WHERE parentid = $parentid$ AND $child2$ AND isdelete = FALSE
+									
+						    )AS t
+		WHERE $qry$
+		$sql3$
+		ORDER BY nos
+	</select>
+	<select id="pages.module.air.jobschildBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select 
+		 CAST(10 AS BIGINT) AS counts 
+		FROM  _fina_jobschild t 
+	</select>
+	
+	
+	
+	<select id="pages.module.air.airBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 row_number() OVER() AS row
+		 ,COALESCE(piece,0) AS piece3
+		 ,COALESCE(grswgt,0) AS grswgt2
+		 ,COALESCE(cbm,0) AS cbm2
+		 ,COALESCE(volumeweight,0) AS volumeweight2
+		 ,COALESCE(chargeweight,0) AS chargeweight2
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		 ,*
+		FROM  bus_goods t 
+		WHERE $qry$
+		AND isdelete = false
+	</select>
+	<select id="pages.module.air.airBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  bus_goods t 
+		WHERE $qry$ 
+		AND isdelete = false
+	</select>
+	
+	
+	<select id="pages.module.air.airjobschooseBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _fina_jobs t 
+		WHERE $qry$
+			$corpfilter$
+			$filter$
+		AND t.jobtype = 'A'
+		AND t.isdelete = FALSE
+		$ordersql$
+	</select>
+	<select id="pages.module.air.airjobschooseBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _fina_jobs t 
+		WHERE $qry$
+			$corpfilter$
+			$filter$
+		AND t.jobtype = 'A'
+		AND t.isdelete = FALSE
+		$ordersql$
+	</select>
+	
+	<select id="pages.module.air.airflightBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM bus_airflight t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+		ORDER BY carrier ,line,code 
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.air.airflightBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM bus_airflight t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.air.busairbillBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		 ,(SELECT d.code FROM dat_package d WHERE t.packid = d.id AND d.isdelete = FALSE ) AS packdesc
+		 ,(CASE bltype WHEN 'H' THEN 'HBL' WHEN 'M' THEN 'MBL' END) AS billtype
+		FROM  bus_air_bill t 
+		WHERE $qry$
+		AND isdelete = FALSE
+		ORDER BY hawbno
+	</select>
+	<select id="pages.module.air.busairbillBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  bus_air_bill t 
+		WHERE $qry$ 
+		AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.air.busairbilleditBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE(piece,0) AS piece3
+		 ,COALESCE(grswgt,0) AS grswgt2
+		 ,COALESCE(cbm,0) AS cbm2
+		 ,COALESCE(volumeweight,0) AS volumeweight2
+		 ,COALESCE(chargeweight,0) AS chargeweight2
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM  bus_goods t 
+		WHERE $qry$
+		AND isdelete = false
+	</select>
+	
+	<select id="pages.module.air.busairbilleditBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  bus_goods t 
+		WHERE $qry$ 
+		AND isdelete = false
+	</select>
+	
+	<select id="pages.module.air.airplanetypeBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM  dat_airplanetype t 
+		WHERE $qry$
+		AND isdelete = false
+	</select>
+	
+	<select id="pages.module.air.airplanetypeBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  dat_airplanetype t 
+		WHERE $qry$ 
+		AND isdelete = false
+	</select>
+	
+	<select id="pages.module.air.airplanetype_linkBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT * 
+			,EXISTS (SELECT 1 FROM dat_airplanetype_link x WHERE  x.airplanetypeid=t.id AND x.corporationid = $corid$) AS islink
+			,((SELECT COUNT(1) FROM sys_corporation u WHERE isdelete = false AND u.isairline = TRUE  AND EXISTS (SELECT 1 FROM dat_airplanetype_link x WHERE x.airplanetypeid=t.id AND x.corporationid = u.id)) || '/' ||(SELECT COUNT(1) FROM sys_corporation u WHERE isdelete = false AND u.isairline = TRUE)) AS cortitle
+			,((SELECT COUNT(1) FROM dat_airplanetype_link x WHERE x.airplanetypeid = t.id) ||'/' || (SELECT COUNT(1) FROM dat_airplanetype WHERE isdelete = false)) AS airtitle
+		FROM dat_airplanetype t
+		WHERE $qry$ 
+		AND isdelete = FALSE
+		ORDER BY islink DESC
+	</select>
+	
+	<select id="pages.module.air.airplanetype_linkBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  dat_airplanetype t 
+		WHERE $qry$
+		AND isdelete = false
+	</select>
+	
+	<select id="pages.module.air.remindMsgBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT * FROM 
+			(select 
+				 * 
+				 ,(f_common_get_table_value('colum=namec;tabname='||COALESCE(t.linktbl,'')||';id='||t.linkid)) AS linknamec
+				 ,(CASE libtype  WHEN 'F' THEN '航空公司' END) AS linktblc
+				 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+				 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+				FROM sys_knowledgelib t
+			) AS T
+			WHERE $qry$
+					AND isdelete = FALSE
+					AND libtype = 'F'
+		ORDER BY libtype , linknamec
+		LIMIT $limit$ OFFSET $start$;
+	</select>
+	<select id="pages.module.air.remindMsgBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT count(1) AS counts  FROM 
+			(select 
+			 	* 
+				,(f_common_get_table_value('colum=namec;tabname='||COALESCE(t.linktbl,'')||';id='||t.linkid)) AS linknamec
+			FROM sys_knowledgelib t 
+			) AS T
+			WHERE $qry$
+				AND isdelete = FALSE
+				AND libtype = 'F'
+	</select>
+	
+	<select id="pages.module.air.airextfeeBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT  
+			 (SELECT x.code FROM sys_corporation x WHERE x.id = t.carrierid AND x.isdelete = FALSE)||(SELECT x.abbr FROM sys_corporation x WHERE x.id = t.carrierid AND x.isdelete = FALSE) AS carrier
+			 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+			 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+			 ,(SELECT f_bus_air_extfee_iteem('extfeeid='||t.id||''))::TEXT AS feeiteem
+			 ,*
+		FROM bus_air_extfee t
+		WHERE $qry$
+			$filter$
+			AND isdelete = FALSE
+		ORDER BY id,inputtime
+		LIMIT $limit$ OFFSET $start$;
+	</select>
+	<select id="pages.module.air.airextfeeBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			count(1) AS counts  
+		FROM bus_air_extfee t 
+		WHERE $qry$
+			$filter$
+			AND isdelete = FALSE
+	</select>
+	
+</sqlMap>

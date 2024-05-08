@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ajax="http://www.apusic.com/jsf/ajax" xmlns:om="http://www.apusic.com/jsf/misc"
+	renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<script src="http://apps.bdimg.com/libs/jquery/1.11.3/jquery.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="/scp/main/res/bootstrap.min.css" />
+		<!-- 多文件下载 -->
+		<link rel="stylesheet" type="text/css" href="/scp/common/css/webuploader.css"></link>
+		<link rel="stylesheet" type="text/css" href="/scp/common/css/diyUpload.css"></link>
+		<link rel="stylesheet" type="text/css" href="style.css"></link>
+		<script type="text/javascript" src="/scp/common/js/webuploader.html5only.min.js"></script>
+		<script type="text/javascript" src="/scp/common/js/webuploader.js"></script>
+		<script type="text/javascript" src="/scp/common/js/diyUpload.js"></script>
+		<script type="text/javascript" src="md5.js"></script>
+		<script type="text/javascript" src="upload.js"></script>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+		
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+		<layout:panel id="mEditPanel" fit="true" style="font-size: 12px;">
+			<w:form>
+				<div style="height: 0px; display: none;">
+					<w:textField selectOnFocus="true" id="linkid" hidden="true" jsvar="linkidJsvar"/>
+					<w:textField selectOnFocus="true" id="userId" hidden="true" jsvar="userIdJsvar"/>
+					<w:textField id="code" hidden="true" jsvar="codeJsvar"/>  
+					<w:textField id="src" hidden="true" jsvar="srcJsvar"/>
+					<w:textField selectOnFocus="true" id="fileName" hidden="true" />
+					<w:textField selectOnFocus="true" id="contentType" hidden="true" />
+					<w:textField selectOnFocus="true" id="attachPath" hidden="false" jsvar="attachPathJsvar"/>
+					<w:textField id="roleId_value" hidden="true" jsvar="roleIdJsVar" />  
+					<w:textField id="attachmentsize" hidden="true" jsvar="attachmentsizeJsvar"/>
+				</div>
+				<layout:panelGrid columns="10">
+					<div id="updownsfile">
+				        <div id="container">
+				            <!--头部，相册选择和格式选择-->
+				            <div id="uploader">
+				                <div class="queueList">
+				                    <div id="dndArea" class="placeholder">
+				                        <div id="filePicker">点击选择文件</div>
+				                        <p>点击选择文件、或者直接拖拽文件、或者QQ(微信)截图粘贴到框内，单次最多可选300个文件</p>
+				                    </div>
+				                </div>
+				                <div class="statusBar" style="display:none;">
+				                    <div class="progress">
+				                        <span class="text">0%</span>
+				                        <span class="percentage"></span>
+				                    </div><div class="info"></div>
+				                    <div class="btns">
+				                        <div id="filePicker2">继续添加</div><div class="uploadBtn">开始上传</div>
+				                    </div>
+				                </div>
+				            </div>
+				        </div>
+				   </div>
+				</layout:panelGrid>
+			</w:form>
+		</layout:panel>
+	</w:page>
+
+	<script>
+	 //<![CDATA[
+	var BASE_URL = ''; 
+	Ext.onReady(function(){
+		createuploader();
+		Ext.EventManager.onWindowResize(function(){
+		});
+		/**
+		   * 页面禁用拖拽上传时 浏览器默认打开图片
+		   */
+		  document.addEventListener('drop', function (e) {
+		    e.preventDefault()
+		  }, false)
+		  document.addEventListener('dragover', function (e) {
+		    e.preventDefault()
+		  }, false)
+		 });
+	 //]]>	
+	</script>
+</f:view>

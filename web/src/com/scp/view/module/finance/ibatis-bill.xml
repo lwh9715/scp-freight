@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	
+	
+	<select id="pages.module.finance.apbillcheckBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[
+	  SELECT row_number() OVER() AS row,* FROM(
+		SELECT 
+			 p.nos AS jobno
+			,p.jobdate
+			,p.arstatus
+			,p.apstatus
+			,(SELECT i.code FROM sys_corporation i WHERE p.customerid = i.id )AS customercode
+			,(SELECT s.code||'/'||COALESCE(namec,'') FROM sys_user s WHERE p.saleid  = s.id )AS saledesc
+		
+			,s.sono AS sonos
+			,s.bltype
+			,s.pol AS pol
+			,s.pod AS pod
+			,s.vessel AS vessel
+			,s.voyage AS voyage
+			,s.cls AS cls 
+			,s.etd AS etd 
+			,s.eta AS eta
+	
+			,(SELECT code FROM sys_corporation WHERE id = s.carrierid AND isdelete = FALSE) AS carrier
+			,COALESCE(pj.ispayagree,FALSE) AS ispayagree
+			,COALESCE(pj.ispaycheck,FALSE) AS ispaycheck
+			,x.contenttype AS contenttype
+			,x.id AS attachmentfileid
+			
+			,(SELECT string_agg(distinct x.customeabbr,',') from _fina_arap x WHERE x.jobid = p.id AND x.isdelete = FALSE AND x.araptype = 'AP' AND x.isconfirm = TRUE) AS customercodeap
+			,(select string_agg(u.namec,',') from sys_attachment a, sys_user u where a.inputer = u.code and u.isdelete = false and a.id = x.id and y.name = '船公司账单' ) AS uploadnamec
+			,(SELECT confirmtime from fina_arap x WHERE x.jobid = p.id AND x.isdelete = FALSE AND x.araptype = 'AP' AND x.isconfirm = TRUE limit 1) AS confirmtime
+			,(SELECT string_agg(distinct u.namec,',') from fina_arap x,sys_user u WHERE x.confirmer = u.code and u.isdelete = false and x.jobid = p.id AND x.isdelete = FALSE AND x.araptype = 'AP' AND x.isconfirm = TRUE) AS confirmer
+			,p.id AS jobid
+			,s.mblno
+			,(SELECT string_agg(c.cntno,',') FROM bus_ship_container c WHERE c.jobid = p.id AND c.isdelete = FALSE AND c.cntno IS NOT NULL AND c.cntno <> '' AND c.parentid is null) AS cntnos
+			,x.filename
+			,x.isprint
+			,x.printer
+			,x.printime
+			,x.remarks AS attachmentremark
+		FROM  sys_attachment x , sys_role y  , bus_shipping s ,fina_jobs p LEFT JOIN _fina_jobs_paycheck pj ON (pj.jobsid = p.id)
+		where p.isdelete = FALSE
+			AND p.id = s.jobid 
+			AND EXISTS(SELECT 1 FROM fina_arap x WHERE x.jobid = p.id AND x.isdelete = FALSE AND x.araptype = 'AP' AND x.isconfirm = TRUE)
+			AND s.isdelete = false
+			AND p.apstatus != '已付款'
+			AND x.roleid = y.id AND y.isdelete = false AND x.isdelete = false AND y.roletype = 'F' AND x.linkid = p.id AND y.name = '船公司账单') AS T 
+		WHERE $qry$
+			$filter$
+			$corpfilter$
+		LIMIT $limit$ OFFSET $start$
+	]]>
+	</select>
+	<select id="pages.module.finance.apbillcheckBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[
+		select 
+		 	count(*) AS counts 
+		FROM   
+		(SELECT p.nos AS jobno
+			,p.jobdate
+			,p.arstatus
+			,p.apstatus
+			,(SELECT i.code FROM sys_corporation i WHERE p.customerid = i.id )AS customercode
+			,(SELECT s.code||'/'||COALESCE(namec,'') FROM sys_user s WHERE p.saleid  = s.id )AS saledesc
+		
+			,s.sono AS sonos
+			,s.pol AS pol
+			,s.pod AS pod
+			,s.vessel AS vessel
+			,s.voyage AS voyage
+			,s.cls AS cls 
+			,s.etd AS etd 
+			,s.eta AS eta
+	
+			,(SELECT code FROM sys_corporation WHERE id = s.carrierid AND isdelete = FALSE) AS carrier
+			,COALESCE(pj.ispayagree,FALSE) AS ispayagree
+			,COALESCE(pj.ispaycheck,FALSE) AS ispaycheck
+			,x.contenttype AS contenttype
+			,x.id AS attachmentfileid
+			
+			,(SELECT string_agg(distinct x.customeabbr,',') from _fina_arap x WHERE x.jobid = p.id AND x.isdelete = FALSE AND x.araptype = 'AP' AND x.isconfirm = TRUE) AS customercodeap
+			,(select string_agg(u.namec,',') from sys_attachment a, sys_user u where a.inputer = u.code and u.isdelete = false and a.id = x.id and y.name = '船公司账单' ) AS uploadnamec
+			,(SELECT confirmtime from fina_arap x WHERE x.jobid = p.id AND x.isdelete = FALSE AND x.araptype = 'AP' AND x.isconfirm = TRUE limit 1) AS confirmtime
+			,(SELECT string_agg(u.namec,',') from fina_arap x,sys_user u WHERE x.confirmer = u.code and u.isdelete = false and x.jobid = p.id AND x.isdelete = FALSE AND x.araptype = 'AP' AND x.isconfirm = TRUE) AS confirmer
+			,p.id AS jobid
+			,s.mblno
+			,(SELECT string_agg(c.cntno,',') FROM bus_ship_container c WHERE c.jobid = p.id AND c.isdelete = FALSE AND c.cntno IS NOT NULL AND c.cntno <> '' AND c.parentid is null) AS cntnos
+			,x.filename
+			,x.isprint
+			,x.printer
+			,x.printime
+		FROM  sys_attachment x , sys_role y  , bus_shipping s ,fina_jobs p LEFT JOIN _fina_jobs_paycheck pj ON (pj.jobsid = p.id)
+		where p.isdelete = FALSE
+			AND p.id = s.jobid 
+			AND EXISTS(SELECT 1 FROM fina_arap x WHERE x.jobid = p.id AND x.isdelete = FALSE AND x.araptype = 'AP' AND x.isconfirm = TRUE)
+			AND s.isdelete = false
+			AND p.apstatus != '已付款'
+			AND x.roleid = y.id AND y.isdelete = false AND x.isdelete = false AND y.roletype = 'F' AND x.linkid = p.id AND y.name = '船公司账单') AS T 
+		WHERE $qry$
+			$filter$
+			$corpfilter$
+	]]>
+	</select>
+</sqlMap>

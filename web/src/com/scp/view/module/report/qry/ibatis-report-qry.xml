@@ -1,0 +1,618 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.module.report.qry.dtlIFrameSaleBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			 *
+		FROM _sys_user u
+		WHERE $qry$
+			$corpfilter$
+			$filter$
+			$filter2$
+			AND u.isdelete = FALSE
+		ORDER BY company,depter2,namec
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameSaleBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(id) AS counts
+		FROM _sys_user u
+		WHERE $qry$
+			$corpfilter$
+			$filter$
+			$filter2$
+			AND u.isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameCustserviceBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			 *
+		FROM _sys_user u
+		WHERE $qry$
+			$corpfilter$
+			$filter$
+			$filter2$
+			AND u.isdelete = FALSE
+		ORDER BY company,depter2,namec
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameCustserviceBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(id) AS counts
+		FROM _sys_user u
+		WHERE $qry$
+			$corpfilter$
+			$filter$
+			$filter2$
+			AND u.isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameClienteleBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+				 EXISTS (SELECT 1 FROM fina_arap x, sys_user_corplink y WHERE x.isdelete = FALSE AND x.customerid = a.id AND y.userid = $userid$ AND y.ischoose = true AND (x.corpid = y.corpid)) As isarapcus
+				,EXISTS (SELECT 1 FROM fina_jobs x , sys_user_corplink y WHERE x.isdelete = FALSE AND x.customerid = a.id AND y.userid = $userid$ AND y.ischoose = true AND y.corpid IN (x.corpid,x.corpidop)) As isjobcus
+				,id,code,namec,namee,abbr,isfcl,isair
+			FROM sys_corporation a
+			WHERE 1=1 
+				$filterBySales$
+				$filter$
+				$filter2$
+				$corpfilter$
+				$sales$
+				$daysar$
+				AND a.isdelete = FALSE 
+				$typefilter$
+		--ORDER BY code
+		LIMIT $limit$ OFFSET $start$
+		
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameClienteleBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+				COUNT(*) AS counts 
+			FROM sys_corporation a
+			WHERE 1=1 
+				$filterBySales$
+				$filter$
+				$filter2$
+				$corpfilter$
+				$sales$
+				$daysar$
+				AND a.isdelete = FALSE 
+				$typefilter$
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameCustomerBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+		FROM sys_corporation a
+		WHERE $qry$ 
+			$filter$
+			$corpfilter$
+			AND a.isdelete = FALSE
+		ORDER BY a.code
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameCustomerBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(id) AS counts
+		FROM sys_corporation a
+		WHERE $qry$
+			$filter$
+			$corpfilter$
+			AND a.isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameCarrierBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		   *
+		FROM _sys_corporation a  
+		WHERE $qry$ 
+			$filter$
+			$corpfilter$
+			AND isdelete = false
+			AND iscarrier = true
+			order by code
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameCarrierBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_corporation a 
+		WHERE $qry$ 
+			$filter$
+			$corpfilter$
+			AND isdelete = false
+			AND iscarrier = true
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameFeeitemBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			 *
+		FROM dat_feeitem AS a
+		WHERE $qry$
+		AND a.isdelete = FALSE
+		AND EXISTS (SELECT * from fina_arap x WHERE x.isdelete = FALSE AND x.feeitemid = a.id)
+		ORDER BY code
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameFeeitemBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			COUNT(id) AS counts
+		FROM dat_feeitem AS a
+		WHERE $qry$
+		AND a.isdelete = FALSE
+		AND EXISTS (SELECT * from fina_arap x WHERE x.isdelete = FALSE AND x.feeitemid = a.id)
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameDepartmentBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			 *
+		FROM _sys_department d
+		WHERE $qry$
+			AND d.isdelete = FALSE
+		ORDER BY companycode,name
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameDepartmentBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT DISTINCT
+			count(*) AS counts
+		FROM _sys_department d
+		WHERE $qry$
+			AND d.isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameEmployeeBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			 *
+		FROM _sys_user u
+		WHERE $qry$
+			$corpfilter$
+			$filter2$
+			AND u.isdelete = FALSE
+		ORDER BY company,depter2,namec
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameEmployeeBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(id) AS counts
+		FROM _sys_user u
+		WHERE $qry$
+			$corpfilter$
+			$filter2$
+			AND u.isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameAccountsBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			a.*
+		FROM sys_corporation a 
+		WHERE $qry$
+			AND a.id = ANY(
+							SELECT
+								DISTINCT arap.customerid 
+							FROM fina_jobs t , fina_arap arap
+							WHERE 
+								$filter$
+								AND arap.jobid = t.id 
+								AND t.isdelete = FALSE
+								AND arap.isdelete = FALSE
+						 )
+			AND a.isdelete = FALSE
+			LIMIT $limit$ OFFSET $start$
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameAccountsBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(a.id) AS counts
+		FROM sys_corporation a 
+		WHERE $qry$
+			AND a.id = ANY(
+							SELECT
+								DISTINCT arap.customerid 
+							FROM fina_jobs t , fina_arap arap
+							WHERE 
+								$filter$
+								AND arap.jobid = t.id 
+								AND t.isdelete = FALSE
+								AND arap.isdelete = FALSE
+						 )
+			AND a.isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFramePolBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,(SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1) AS inputername
+		 ,(SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1) AS updatername
+		FROM dat_port t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+			AND ispol = TRUE
+			ORDER BY COALESCE(orderno,10000)
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFramePolBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_port t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+			AND ispol = TRUE;
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFramePodBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,(SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1) AS inputername
+		 ,(SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1) AS updatername
+		FROM dat_port t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+			AND ispod = TRUE
+			ORDER BY COALESCE(orderno,10000)
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFramePodBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_port t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+			AND ispod = TRUE;
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameLineBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,(SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1) AS inputername
+		 ,(SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1) AS updatername
+		FROM dat_line t 
+		WHERE $qry$ 
+			$qrysql$
+			AND isdelete = FALSE
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameLineBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_line t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameAgentBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_corporation t 
+		WHERE $qry$ 
+			AND isagent = TRUE AND isdelete = false AND NOT EXISTS(SELECT 1 FROM sys_corporation_join x where x.idfm = t.id AND x.jointype = 'J')
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameAgentBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_corporation t 
+		WHERE $qry$ 
+			AND isagent = TRUE AND isdelete = false AND NOT EXISTS(SELECT 1 FROM sys_corporation_join x where x.idfm = t.id AND x.jointype = 'J')
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameTruckBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_corporation t 
+		WHERE $qry$ 
+			AND istruck=true
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameTruckBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_corporation t 
+		WHERE $qry$ 
+			AND istruck=true
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameCustomBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_corporation t 
+		WHERE $qry$ 
+			AND iscustom=true
+			LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameCustomBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_corporation t 
+		WHERE $qry$ 
+			AND iscustom=true
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameAirlineBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_corporation t 
+		WHERE $qry$ 
+			AND isairline = TRUE AND isdelete = false AND NOT EXISTS(SELECT 1 FROM sys_corporation_join x where x.idfm = t.id AND x.jointype = 'J')
+			LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameAirlineBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_corporation t 
+		WHERE $qry$ 
+			AND isairline = TRUE AND isdelete = false AND NOT EXISTS(SELECT 1 FROM sys_corporation_join x where x.idfm = t.id AND x.jointype = 'J')
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameImpexpBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM dat_filedata t 
+		WHERE $qry$ 
+			and t.isleaf = TRUE AND t.isdelete = false AND t.fkcode = 170
+			LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameImpexpBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_filedata t 
+		WHERE $qry$ 
+			and t.isleaf = TRUE AND t.isdelete = false AND t.fkcode = 170
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameBankBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _dat_bank t 
+		WHERE $qry$ 
+		ORDER BY t.corpid,t.id
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameBankBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _dat_bank t 
+		WHERE $qry$ 
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameCountryBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _dat_country t 
+		WHERE $qry$ 
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameCountryBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _dat_country t 
+		WHERE $qry$ 
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameCorpidBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		   *
+		FROM _sys_corporation a  
+		WHERE $qry$ 
+			$filter$
+			AND iscustomer=false
+			LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameCorpidBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_corporation a 
+		WHERE $qry$ 
+			$filter$
+			AND iscustomer=false
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameAccountBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _dat_account t 
+		WHERE $qry$ 
+		ORDER BY t.corpabbr,t.bankid
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameAccountBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _dat_account t 
+		WHERE $qry$ 
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameShipscheduleBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM bus_shipschedule t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+			AND schtype = 'S'
+		ORDER BY yearno DESC ,cls,etd,eta, carrier , pol , pod DESC 
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameShipscheduleBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM bus_shipschedule t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+			AND schtype = 'S'
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameLinecodeBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		   *
+		FROM dat_linecode a  
+		WHERE $qry$ 
+		order by code
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameLinecodeBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_linecode a 
+		WHERE $qry$ 
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameAgentedBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		   *
+		FROM _sys_corporation a  
+		WHERE $qry$ 
+			AND isagentdes  = TRUE AND isdelete = false
+			LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameAgentedBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_corporation a 
+		WHERE $qry$ 
+			AND isagentdes  = TRUE AND isdelete = false
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameAgenterBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		   *
+		FROM _sys_corporation a  
+		WHERE $qry$ 
+			AND isagent  = TRUE AND isdelete = false
+			LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameAgenterBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_corporation a 
+		WHERE $qry$ 
+			AND isagent  = TRUE AND isdelete = false
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFramePoaBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,(SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1) AS inputername
+		 ,(SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1) AS updatername
+		FROM dat_port t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+			AND isbarge = TRUE
+			ORDER BY COALESCE(orderno,10000);
+			LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFramePoaBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_port t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+			AND isbarge = TRUE
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameJobtypeBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM dat_filedata t 
+		WHERE $qry$ 
+			and t.isleaf = TRUE AND t.isdelete = false AND t.fkcode = 250
+			LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameJobtypeBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_filedata t 
+		WHERE $qry$ 
+			and t.isleaf = TRUE AND t.isdelete = false AND t.fkcode = 250
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameGoodsBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM dat_goods t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+			LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameGoodsBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_goods t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameCustomerTypeBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _dat_filedata t 
+		WHERE $qry$
+			$filter$
+			AND isleaf = TRUE
+			AND isdelete = FALSE
+			AND fkcode = 95
+		ORDER BY orderno , code
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameCustomerTypeBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _dat_filedata t 
+		WHERE $qry$
+			$filter$
+			AND isleaf = TRUE
+			AND isdelete = FALSE 
+			AND fkcode = 95
+	</select>
+	
+	<select id="pages.module.report.qry.dtlIFrameLdtypeBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM dat_filedata t 
+		WHERE $qry$
+			$filter$
+			AND isleaf = TRUE
+			AND isdelete = FALSE
+			AND fkcode = 260
+		ORDER BY orderno , code
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.qry.dtlIFrameLdtypeBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_filedata t 
+		WHERE $qry$
+			$filter$
+			AND isleaf = TRUE
+			AND isdelete = FALSE 
+			AND fkcode = 260
+	</select>
+	
+</sqlMap>

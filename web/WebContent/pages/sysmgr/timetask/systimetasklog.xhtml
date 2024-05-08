@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+		<w:script src="/common/js/common.js?t=4"></w:script>
+		<script type="text/javascript" src="/scp/common/js/jquery-2.0.0.min.js"></script>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+			<layout:panel id="gridPanel" jsvar="gridPanelJsvar" hideBorders="true">
+				<w:form>
+					<div style="height: 0px;">
+						<w:textField selectOnFocus="true" id = "timetaskid" width="150" hidden="true"/>
+					</div>
+					<div style="height: 0px;"><ui:include src="/common/gridpage.xhtml" /></div>
+					<w:toolBar>
+						<w:button id="refresh" label="#{l.m['刷新']}" jsvar="refreshJsVar"
+							image="#{constantBean.contextPath}/images/refresh.png" />
+						<w:button id="del" jsvar="del" title="删除" label="#{l.m['删除']}"
+							onclick="return confirm('#{l.m['确定要删除吗?']}');"
+							image="#{constantBean.contextPath}/images/delete.png" />
+						<w:button id="delAll" title="全部清除" label="#{l.m['全部清除']}"
+							onclick="return confirm('#{l.m['确定要全部清除吗?']}');"
+							image="#{constantBean.contextPath}/images/delete.png" />
+							
+						<w:button label="#{l.m['自动刷新']}" onclick="setInterval('running()',1000*5);"
+							image="#{constantBean.contextPath}/images/refresh.png" />	
+					</w:toolBar>
+
+					<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+						<layout:cell style="width: 25px;">
+							<w:button id="clearQryKey" label="" width="25"
+								image="#{constantBean.contextPath}/images/clear.png" />
+						</layout:cell>
+						<w:textField selectOnFocus="true" width="80" blankText="#{l.m['任务名称']}"
+							value="#{pages.sysmgr.user.securitylevelBean.qryMap['jobname']}" />
+					</layout:panelGrid>
+
+					<w:dataGrid height="700" paged="true" rows="100" id="grid" jsvar="gridJsvar" loadMask="true"
+						toolBarPosition="bottom" idColumn="id" selectable="true" selectionModel="#{constantBean.checkBox}">
+						<w:outputColumn id="id" header="ID" hidden="true" />
+						<w:outputColumn header="#{l.m['执行时间']}" id="logtime" width="130" sortable="true">
+							<f:convertDateTime pattern="yy/MM/dd HH:mm:ss" timeZone="GMT+8" />
+						</w:outputColumn>
+						<w:outputColumn header="#{l.m['状态']}" id="logstatus" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['任务名称']}" id="jobname" width="120" sortable="true" />
+						<w:outputColumn header="#{l.m['类别']}" id="jobtype" width="60" sortable="true" />
+						<w:outputColumn header="#{l.m['指令']}" id="commond" width="320" sortable="true" />
+						<w:outputColumn header="#{l.m['信息']}" id="loginfo" sortable="true" width="900" />
+					</w:dataGrid>
+				</w:form>
+			</layout:panel>
+	</w:page>
+	
+	<layout:window maximizable="true" width="800" height="330" id="editWindow">
+			<layout:panel id="editPanel"  hideBorders="true" style="font-size:12px">
+				<w:form>
+					<layout:panelGrid columns="2" cellspacing="2" >
+						<w:textArea selectOnFocus="true" value="#{pages.sysmgr.timetask.systimetasklogBean.data.loginfo}" width="790" height="300"
+							/>
+					</layout:panelGrid>
+					
+					<div style="height: 0px; display: none">
+						<w:textField selectOnFocus="true" id="pkVal" hidden="true" />
+					</div>
+				</w:form>
+			</layout:panel>
+	</layout:window>
+	
+
+	<script>
+	//<![CDATA[
+	function running() {
+		refreshJsVar.fireEvent("click");
+	}
+	     
+	Ext.onReady(function(){
+		var newHeight = (gridPanelJsvar.getSize().height) - 55;
+		var newWidth = (gridPanelJsvar.getSize().width);
+        //alert(newHeight);
+        //alert(newWidth);
+        gridJsvar.setHeight(newHeight);
+        gridJsvar.setWidth(newWidth);
+     });
+     //]]>
+</script>
+</f:view>

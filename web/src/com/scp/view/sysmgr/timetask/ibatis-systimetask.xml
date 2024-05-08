@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.sysmgr.timetask.systimetaskBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 *
+		 ,(SELECT count(1) FROM sys_timetask_log x WHERE x.timetaskid = t.id) AS runcount
+		 ,(SELECT logtime FROM sys_timetask_log x WHERE x.timetaskid = t.id ORDER BY logtime DESC LIMIT 1) AS lastruntime
+		 ,(SELECT logstatus FROM sys_timetask_log x WHERE x.timetaskid = t.id ORDER BY logtime DESC LIMIT 1) AS lastrunstatus
+		 ,(SELECT loginfo FROM sys_timetask_log x WHERE x.timetaskid = t.id ORDER BY logtime DESC LIMIT 1) AS lastrunlogs
+		FROM sys_timetask t 
+		WHERE $qry$ 
+			AND isdelete = false
+		ORDER BY groupname DESC , jobname DESC 
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.timetask.systimetaskBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_timetask t 
+		WHERE $qry$ 
+			AND isdelete = false
+	</select>
+	
+	
+	<select id="pages.sysmgr.timetask.systimetasklogBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _sys_timetask_log t 
+		WHERE $qry$ 
+			$filter$
+		ORDER BY logtime DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.timetask.systimetasklogBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_timetask_log t 
+		WHERE $qry$ 
+			 $filter$
+	</select>
+</sqlMap>

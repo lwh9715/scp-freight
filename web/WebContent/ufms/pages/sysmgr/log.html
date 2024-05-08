@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layui</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <link rel="stylesheet" href="/scp/layui/css/layui.css">
+  <link rel="stylesheet" href="/scp/ufms/static/css/ufms.css">
+  
+  
+  <script src="/scp/layui/layui.js"></script>
+  <script src="/scp/common/js/jquery-2.0.0.min.js" charset="utf-8"></script>  
+  
+  <script src="/scp/ufms/static/js/ufms.common.js?t=3" ></script>
+  <script src="/scp/ufms/static/js/ufms.gridform.js?t=13" ></script>
+  <script src="/scp/ufms/static/js/jquery.formHelp.js?t=11" ></script>
+	    
+
+</head>
+<body>
+  
+<div >
+	<div class="layui-row">
+		<form class="layui-form layui-col-md12" id="gridQry">
+			<div class="layui-inline">
+				<input class="layui-input" placeholder="日志"  name="logdesc"/>
+			</div>
+			<div class="layui-inline">
+				<input class="layui-input" placeholder="记录人" name="inputer" />
+			</div>
+			<button class="layui-btn layui-btn-normal" onclick="search();return false;">搜索</button>
+		</form>
+	</div>
+	
+	<div> 
+		<table class="layui-hide" id="grid" lay-filter="grid"></table>
+	</div>     
+
+
+	<div id="editWindow" >
+		<form id="editForm" class="layui-form" lay-filter="editForm">
+			<div class="layui-form-item">
+				<label for="L_username" class="layui-form-label">
+	                <span class="we-red"></span>时间
+	            </label>
+				<div class="layui-input-inline">
+					<input type="text" name="logtime" class="layui-input">
+				</div>
+			</div>
+			
+			<div class="layui-form-item">
+				<label for="L_email" class="layui-form-label">
+	                <span class="we-red"></span>记录人
+	            </label>
+				<div class="layui-input-inline">
+					<input type="text" name="inputer" class="layui-input">
+				</div>
+			</div>
+			
+			<div class="layui-form-item layui-form-text">
+			    <label class="layui-form-label">日志</label>
+			    <div class="layui-input-block">
+			      <textarea name="logdesc" class="layui-textarea" style="height: 300px;"></textarea>
+			    </div>
+			</div>
+		</form>
+	</div>
+</div>  
+
+ <script type="text/html" id="toolbarGrid">
+  <div class="layui-btn-container">
+    <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="refresh" onclick="tableIns.reload();">刷新</button>
+  </div>
+</script>
+ 
+<script>
+<!--
+var window_height = '500px';
+var window_width = '780px';
+
+var action = '/sysmgr/log';
+
+var gridDefine =
+		[[
+			{type: 'numbers', title: '序号', fixed: 'left'}
+           ,{field:'id', width:80, title: 'ID' , hide:true}
+           ,{field:'logdesc', width:420, title: '日志', sort: true }
+           ,{field:'logtime', width:170, title: '时间', sort: true , templet:'<div>{{ layui.util.toDateString(d.logtime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+           ,{field:'inputer', width:120, title: '记录人', sort: true}
+           
+         ]];
+
+var index;
+var tableIns;
+
+
+layui.use(['form', 'jquery','layer'], function() {
+	var form = layui.form,
+	$ = layui.jquery,
+	layer = layui.layer;
+
+	gridInit();
+
+	//自定义验证规则
+	form.verify({
+		nikename: function(value) {
+			if(value.length < 5) {
+				//return '昵称至少得5个字符啊';
+			}
+		}
+	});
+});
+-->
+</script>
+
+
+<script>
+$(function () {
+	
+});
+</script>
+</body>
+</html>

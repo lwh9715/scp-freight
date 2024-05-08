@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta name="renderer" content="webkit" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+		<w:script src="/common/js/common.js?t=4"></w:script>
+		<script type="text/javascript" src="/scp/common/js/savemodel2.js?t=5"></script>
+		<script type="text/javascript" src="/scp/common/js/jquery-2.0.0.min.js"></script>
+		<!-- neo 20160628 第三方分页下拉框 -->
+		<link rel="stylesheet" type="text/css" href="/scp/common/css/jquery.flexbox.css" />
+		<script type="text/javascript" src="/scp/common/js/jquery.flexbox.js"></script>
+		<!-- 自定义列表排序 -->
+		<w:stylesheet src="/common/css/list-style.css"></w:stylesheet>
+		<script type="text/javascript" src="/scp/common/js/jquery-ui.js"></script>
+		<script type="text/javascript" src="/scp/common/js/savemodel-list.js"></script>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+		
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+			<layout:panel id="gridPanel" height="100%" split="true" jsvar="gridPanelJsvar" hideBorders="true"
+				fit="true">
+				<div style="height: 0px;"><ui:include src="/common/gridpage.xhtml" /></div>
+				<w:form>
+					<div style="height: 0px;">
+					</div>
+					<w:toolBar>
+						<w:button id="qryRefresh" label="#{l.m['刷新']}"
+							image="#{constantBean.contextPath}/images/refresh.png" />
+					</w:toolBar>
+					<w:dataGrid height="400" paged="true" rows="100" id="grid" jsvar="gridJsvar"
+						onrowselect="return false" onrowdeselect="return false" toolBarPosition="bottom" idColumn="id" selectable="true">
+						<w:outputColumn id="id" header="ID" hidden="true" sortable="true" />
+						<w:outputColumn header="#{l.m['工作单号']}" id="nos" width="150" sortable="true" clientFormatter="formatnos" />
+					</w:dataGrid>
+				</w:form>
+			</layout:panel>
+	</w:page>
+	<script>
+	//<![CDATA[
+	
+	function formatnos(v,m,r) {
+		 	var nos = r.get('nos');
+		 	var id = r.get('id');
+		  	var udid = uuid();
+		  	var ufid = uuid();	
+		  	var temp = '<a target="_blank" href="/scp/pages/module/ship/jobsedit.xhtml?udid='+udid+'&ufid='+ufid+'&id='+id+'"><font color="blue">' + nos + '</font></a>';
+            return temp;
+        }
+	
+	Ext.onReady(function(){
+		var newHeight = (gridPanelJsvar.getSize().height)-30;
+		var newWidth = (gridPanelJsvar.getSize().width);
+        gridJsvar.setHeight(newHeight);
+        gridJsvar.setWidth(newWidth);
+     });
+     //]]>
+</script>
+</f:view>

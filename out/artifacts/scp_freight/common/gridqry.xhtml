@@ -1,0 +1,24 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:w="http://www.apusic.com/jsf/widget"
+	xmlns:ajax="http://www.apusic.com/jsf/ajax" renderKitId="AJAX">
+
+	<layout:panelGrid columns="8" style="font-size:12px">
+		<w:combo id="qryColComboBox" emptyText="" typeAhead="true" editable="false" width="100"  cls="under_line" focusClass="surround"  >
+			<f:selectItems id="qryColComboItems" />
+		</w:combo>
+
+		<w:textField selectOnFocus="true" id="qryKey" emptyText=""  cls="under_line" focusClass="surround" />
+		<w:button id="query" allowReEnter="false"
+			image="#{constantBean.contextPath}/images/query-small.png" />
+		<ajax:status startStyle="color: red"
+			onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+			onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+			<f:facet name="start">
+				<f:verbatim>
+					<img src="#{constantBean.contextPath}/images/waiting.gif" /></f:verbatim>
+			</f:facet>
+		</ajax:status>
+
+	</layout:panelGrid>
+</f:view>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+		<w:script src="/common/js/common.js?t=4"></w:script>
+		<script type="text/javascript" src="/scp/common/js/jquery-2.0.0.min.js"></script>
+		<!-- 表单设置 -->
+		<script type="text/javascript" src="/scp/common/js/formcfg.js?t=1"></script>
+		<script type="text/javascript" src="/scp/common/js/savemodel.js"></script>
+		
+		<!--<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+		-->
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="#{constantBean.headTitle}--#{l.m['自定义表单']}">
+		<ajax:conversationActivator/>
+			<layout:borderLayout fit="true" fitToBody="true">
+			
+			
+			<layout:panel id="editPanel" height="600" region="center" fit="true" split="true">
+				<w:form id="form">
+					<layout:panelGrid columns="4" cellspacing="0" cellpadding="0">
+						<w:toolBar>
+							<w:button id="refresh" value="#{l.m['刷新']}" allowReEnter="false"
+								image="#{constantBean.contextPath}/images/refresh.png" />
+							<!--<w:button id="saveData" value="#{l.m['保存']}" allowReEnter="false" onclick="return ifisrequired('#{commonBean.lang}');"
+								image="#{constantBean.contextPath}/images/save.png" />  -->
+							<w:button value="界面设计" onclick="designfun();" alwaysSubmit="false"
+								image="#{constantBean.contextPath}/images/refresh.png" />
+							<w:button jsvar="defineOrder" value="保存界面" alwaysSubmit="false" onclick="defineOrderfun();"
+								image="#{constantBean.contextPath}/images/refresh.png" />
+							<w:button value="恢复" onclick="doFormComeBack.submit();"
+								image="#{constantBean.contextPath}/images/refresh.png" />
+						</w:toolBar>
+						<layout:cell>
+							<ajax:status startStyle="color: red"
+								onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+								onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+								<f:facet name="start">
+									<f:verbatim>
+										<img src="#{constantBean.contextPath}/images/waiting.gif" height="16"/> Loading...
+								</f:verbatim>
+								</f:facet>
+							</ajax:status>
+						</layout:cell>
+					</layout:panelGrid>
+
+					<layout:panelGrid id="rootPanelGrid" style="font-size:12px" cellspacing="0" cellpadding="0">
+						
+					</layout:panelGrid>
+					<div style="height: 0px;">
+						<w:textField selectOnFocus="true" id="pkVal" jsvar="pkValJsvar" hidden="true" /> 
+						<w:textField selectOnFocus="true" id="mBeanName" jsvar="mBeanNameJsvar" hidden="true" /> 
+						<w:textField selectOnFocus="true" id="tblname" jsvar="tblnameJsvar" hidden="true" /> 
+						
+						<!-- 界面自定义的submitAction -->
+						<ajax:submitAction id="doDefineOrder" jsvar="doDefineOrder" />
+						<ajax:submitAction id="doFormComeBack" jsvar="doFormComeBack" />
+						<ajax:submitAction id="setFormProperty" jsvar="setFormProperty" />
+					</div>
+				</w:form>
+			</layout:panel>
+			
+			</layout:borderLayout>
+	</w:page>
+	
+
+	<script>
+	//<![CDATA[
+	
+	function remove(){
+		$("#x-errzone").remove();
+	}
+	
+	function refresh(){
+		console.log(jsEJsvar.getValue());
+	}
+	
+	function resize(){
+		//var newHeight = (gridPanelJsvar.getSize().height)-30;
+		//var newWidth = (gridPanelJsvar.getSize().width);
+        //gridJsvar.setHeight(newHeight);
+        //gridJsvar.setWidth(newWidth);
+		//gridJsvar.render();
+	}
+
+	Ext.onReady(function(){
+		//resize();
+		Ext.EventManager.onWindowResize(function(){
+			//resize();
+		});
+	});
+		 //]]>	
+	</script>
+</f:view>

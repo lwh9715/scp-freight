@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> <link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" /><link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<script>
+        //<![CDATA[
+            function closeWin(){
+				var r = window.close();
+            }
+        //]]>
+        </script>
+	</w:head>
+	<w:page title="#{messageBean.titleMsg}">
+		<w:form>
+			<w:toolBar>
+				<w:button id="closeWin" value="#{l.m['关闭']}" onclick="closeWin();"
+					image="#{constantBean.contextPath}/pages/module/common/resources/images/close.png" />
+			</w:toolBar>
+			<layout:borderLayout fit="true" fitToBody="true" animCollapse="true" width="800" height="560">
+				<layout:panel region="center" width="800" fit="true" height="250" title="" border="0">
+					<w:textArea selectOnFocus="true" id="message" width="800" height="200" readOnly="true" ></w:textArea>
+				</layout:panel>
+
+				<layout:panel region="south" title="#{l.m['详细信息']}" width="800" fit="true" autoHeight="true" minSize="165"
+					split="true" collapsible="true" collapsed="true">
+					<w:textArea selectOnFocus="true" id="messageDetail" width="800" height="400" readOnly="true" ></w:textArea>
+				</layout:panel>
+			</layout:borderLayout>
+		</w:form>
+	</w:page>
+</f:view>

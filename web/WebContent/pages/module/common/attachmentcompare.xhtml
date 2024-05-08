@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+			<meta name="renderer" content="webkit" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+		<w:script src="/common/js/common.js?t=4"></w:script>
+		<script type="text/javascript" src="/scp/common/js/jquery-2.0.0.min.js"></script>
+		<script type="text/javascript" src="/scp/common/js/jquery.cookie.js"></script>
+		<link rel="stylesheet" type="text/css" href="/scp/common/css/jquery.flexbox.css" />
+		<script type="text/javascript" src="/scp/common/js/jquery.flexbox.js"></script>
+		
+		<!--PDF预览 -->
+		<script type="text/javascript" src="/scp/common/js/pdfobject.js"></script>
+		
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+		<layout:borderLayout fit="true" fitToBody="true" jsvar="mainLayout">
+			<layout:panel id="leftPanel" jsvar="leftPanelJsvar" region="west" split="true" width="500"
+				hideBorders="true" fit="true">
+				<layout:panelGrid columns="4">
+					<h:outputLabel value="#{l.m['附件']}"></h:outputLabel>
+					<w:combo typeAhead="true" readOnly="false" forceSelection="true" width="200" listWidth="350" id="fileId1" jsvar="fileId1JsVar">
+						<f:selectItems value="#{pages.module.common.attachmentcompareBean.leftFile}" />
+					</w:combo>
+					<w:button id="showLeft" value="" jsvar="showLeftJsVar" onclick="showFile('frameLeft')" image="#{constantBean.contextPath}/images/query-small.png" />
+				</layout:panelGrid>
+				<w:iframe style="border: thin;width: 100%;height: 100%" frameborder="no" id="frameLeft">
+				</w:iframe>
+			</layout:panel>
+			
+			<layout:panel id="rightPanel" jsvar="rightPanelJsvar" region="center" split="true" hideBorders="true" fit="true">
+				<layout:panelGrid columns="4">
+					<h:outputLabel value="#{l.m['附件']}"></h:outputLabel>
+					<w:combo typeAhead="true" readOnly="false" forceSelection="true" width="200" listWidth="350"  id="fileId2" jsvar="fileId2JsVar">
+						<f:selectItems value="#{pages.module.common.attachmentcompareBean.rightFile}" />
+					</w:combo>
+					<w:button id="showRight" value="" jsvar="showRightJsVar" onclick="showFile('frameRight')" image="#{constantBean.contextPath}/images/query-small.png" />
+				</layout:panelGrid>
+				<w:iframe style="border: thin;width: 100%;height: 100%" frameborder="no" id="frameRight">
+				</w:iframe>
+			</layout:panel>
+		</layout:borderLayout>
+		
+		<div style="height: 0px;">
+			 <w:textField selectOnFocus="true" id="jobid" hidden="true"/>
+		</div>
+	</w:page>
+	
+	<script><!--
+	//<![CDATA[
+	function showFile(frame){
+		var fileid;
+		if('frameLeft' == frame){
+			fileid = fileId1JsVar.getValue();
+		}else{
+			fileid = fileId2JsVar.getValue();
+		}
+		console.log(fileid);
+		if(fileid == null || fileid == '')return;
+		getPDF(fileid,'/scp/attachment/' , frame);
+	}
+
+	function getPDF(id, httpPrefix , frame){
+	 	$('#'+frame).attr('src',null)
+	 	$.ajax({
+				type:'POST',
+				dataType: 'text',
+				url:'/scp/service?src=webServer&action=getFilePDF&id='+id,
+				success:function(date){
+					console.log(httpPrefix+date.replace(/[\r\n]/g, ""));
+					if(date.toString().indexOf("ERROR") == 0){
+						return;
+					}
+					var url = httpPrefix+date.replace(/[\r\n]/g, "");
+					$('#'+frame).attr('src',url)
+					//date = date.replace("%20", " "); //内部会替换为%2520
+		            //var myPDF = new PDFObject({ url:httpPrefix+date.replace(/[\r\n]/g, "")}).embed(divName);
+					//showimgWindow.show();
+				}
+        });
+	 }
+	 
+	function ImageSuofang(args) { 
+         var oImg = $(myImg).children().first();
+         if (args) { 
+         	oImg.width(oImg.width() * 1.1); 
+            oImg.height(oImg.height() * 1.1); 
+         } 
+         else { 
+            oImg.width(oImg.width()/1.1); 
+            oImg.height(oImg.height()/1.1); 
+         } 
+     }     
+	
+	
+	function refresh(){
+		refreshJs.submit();
+	}
+	
+    
+    function resizeBDLayout(){
+    	var width = $.cookie('comparebill.bdlayout.west');
+    	if(width != undefined && width != ''){
+    		if(width == '0')width='220';
+    		leftPanelJsvar.setWidth(parseInt(width));
+    		mainLayout.fireResize();
+    	}
+    }
+    
+	Ext.onReady(function(){
+	    resizeBDLayout();
+		Ext.EventManager.onWindowResize(function(){
+			resizeBDLayout();
+		});
+		
+		leftPanelJsvar.on('resize',function(){
+			$.cookie('comparebill.bdlayout.west', leftPanelJsvar.getWidth());
+		});
+	});
+	//]]>	
+	--></script>
+</f:view>

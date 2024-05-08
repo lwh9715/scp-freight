@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:om="http://www.apusic.com/jsf/misc" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+
+		<!--<script type="text/javascript" src="/scp/common/js/check.js?t=1"></script>
+
+		-->
+		<link href="css/style.css?t=1" rel="stylesheet" rev="stylesheet" type="text/css" media="all" />
+		<link href="css/login.css?t=2" rel="stylesheet" rev="stylesheet" type="text/css" media="all" />
+		<w:stylesheet src="/common/css/button.css" />
+		<w:script src="/common/js/common.js?t=4"></w:script>
+		<script type="text/javascript" src="/scp/common/js/jquery.min.js"></script>
+		<script type="text/javascript" src="css/jquery.SuperSlide.js"></script>
+		<script type="text/javascript" src="css/myslideup.js?t=1"></script>
+		<script type="text/javascript" src="css/login_lang.js?t=4"></script>
+		<link rel="stylesheet" href="layui/css/layui.css" />
+		<script type="text/javascript" src="layui/layui.js"></script>
+		<!--二维码 -->
+		<script src="/scp/common/js/qrcode.js"></script>
+		<script type="text/javascript" src="login.js"></script>
+		<script type="text/javascript" src="css/ddLogin.js"></script>
+		<script type="text/javascript" src="css/dingtalk.js"></script>
+
+		<style>
+			label{font-family: "Microsoft YaHei"}
+		</style>
+
+	</w:head>
+
+	<w:page style="width: 100%; height: 100%;" title="#{constantBean.headTitle}">
+		<div id="container">
+			<div id="output">
+				<div class="containerT">
+					<w:form style="width: 100%; height: 100%;" id="loginForm" groupId="login">
+						<ajax:submitAction id="changeLanguage" jsvar="changeLanguage"></ajax:submitAction>
+						<ajax:submitAction id="timerAction" jsvar="timerActionJsVar" />
+						<ajax:submitAction id="wxLoginAction" jsvar="wxLoginAction" />
+						<ajax:submitAction id="ddLoginAction" jsvar="ddLoginAction" />
+						<ajax:submitAction id="dingTalkAction" jsvar="dingTalkAction" />
+						<ajax:submitAction id="wxbindtimeraction" jsvar="wxbindtimeraction" />
+
+						<div style="width: 100%; height: 100%;" class="banner">
+						<div class="login-aside" style="left: 26%; width:750px; height:300px; margin-top: 150px;">
+							<table>
+							  <tr>
+							    <td width="1" valign="top"><div id="ad" style="position:absolute; width:750px; height:100px;font-size: 18px;color:black;font-weight: bolder;filter: Glow(Color=#6b8ec6, Strength=6) Shadow(Color=#6633ff, Direction=90) Blur(Add=#00CCFF Direction=270, Strength=10);">
+									<ul class="line" style="width: 100%;">
+									    <li style="margin-top: 0px; "><label id="table1">为货运代理公司量身定制，专业、易用、简单、高效</label></li>
+									    <li style="margin-top: 0px; "><label id="table2">功能模块:海运空运，结算管理，财务管理，统计分析等</label></li>
+									    <li style="margin-top: 0px; "><label id="table3">三位一体:网站，微信，内部管理</label></li>
+									    <li style="margin-top: 0px; "><label id="table4">服务平台:运价查询，在线订舱，补料，对账单，跟踪</label></li>
+									</ul>
+							    </div></td>
+							    </tr>
+							</table>
+						</div>
+
+                            <div class="login-aside"
+                                 style="left: 70%;width: 360px;height: 450px">
+                                <div id="o-box-up" style="width: 360px;height: 450px"></div>
+                                <div id="o-box-down" style="table-layout: fixed;padding: 30px 20px;">
+                                    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                                        <ul class="layui-tab-title" style="display: flex;align-items:center;justify-content: space-around;">
+                                            <li style="color: #f2f2f2;padding: 0 48px;">账户登录</li>
+                                            <li style="color: #f2f2f2;padding: 0 48px;">扫码登录</li>
+                                        </ul>
+                                        <div class="layui-tab-content">
+                                            <div class="layui-tab-item">
+                                                <div style="height: 335px">
+                                                    <div class="fm-item">
+                                                        <label id="usernameLable" for="username"
+                                                               style="color: #FFF;font-size: 18px;">用户名</label>
+                                                        <w:textField
+                                                                id="username"></w:textField>
+                                                        <div class="ui-form-explain"></div>
+                                                    </div>
+                                                    <div class="fm-item">
+                                                        <label id="passwordLable" for="password"
+                                                               style="color: #FFF;font-size: 18px;">密码</label>
+                                                        <w:textField id="password" inputType="password"></w:textField>
+                                                        <div class="ui-form-explain"></div>
+                                                    </div>
+                                                    <label id="languageLabel" for="multiLanguageCom"
+                                                           style="color: #FFF;;font-size: 18px;">语言</label>
+                                                    <w:combo id="multiLanguageCom" typeAhead="true"
+                                                             jsvar="multiLanguageCom"
+                                                             editable="false" forceSelection="true" width="200"
+                                                             value="#{login_new.loginBean.multilanguage}"
+                                                             style="z-index: 2147483647"
+                                                             onselect="changeLang();">
+                                                        <f:selectItem itemLabel="中文" itemValue="ch"/>
+                                                        <f:selectItem itemLabel="English" itemValue="en"/>
+                                                    </w:combo>
+                                                    <div class="pos-r">
+                                                        <label id="codeLabel" for="validateCode"
+                                                               style="color: #FFF;;font-size: 18px;">验证码</label>
+                                                        <layout:panelGrid columns="4">
+                                                            <w:textField id="validateCode" styleClass="validateInput"
+                                                                         width="80"></w:textField>
+                                                            <w:drawImage id="validateCodeImg" width="60" height="20"
+                                                                         draw="#{login_new.loginBean.draw}"
+                                                                         style="margin-left: 15px;"></w:drawImage>
+                                                            <h:commandLink id="refreshValidateCode"
+                                                                           value="#{l.m['刷新验证码']}"
+                                                                           style="cursor: pointer; text-decoration: underline; color: blue; width: 80px; margin-left: 10px; color: #FFF;"></h:commandLink>
+                                                        </layout:panelGrid>
+                                                        <div class="ui-form-explain">
+                                                        </div>
+                                                    </div>
+                                                    <div class="fm-item"><label for="logonId"
+                                                                                class="form-label"></label>
+                                                        <layout:panelGrid columns="4">
+                                                            <w:button id="loginBtn" label="#{l.m['登录']}"
+                                                                      jsvar="loginBtn" onclick="setWindowIndex()"
+                                                                      allowReEnter="false" width="100"/>
+                                                            <layout:cell colspan="1">
+                                                                <ajax:status startStyle="color: red"
+                                                                             onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+                                                                             onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+                                                                    <f:facet name="start">
+                                                                        <f:verbatim>
+                                                                            <img src="#{constantBean.contextPath}/images/waiting.gif"
+                                                                                 height="18"></img>
+                                                                        </f:verbatim>
+                                                                    </f:facet>
+                                                                </ajax:status>
+                                                            </layout:cell>
+                                                        </layout:panelGrid>
+                                                        <br/>
+                                                        <div style="float: left;">
+                                                            <w:checkBox id="isReme" width="15"/>
+                                                        </div>
+                                                        <div style="float: left;"><label id="remeLabel"
+                                                                                         style="color: #FFF;">记住我</label>
+                                                        </div>
+                                                        <div style="float: left;padding-left: 20px">
+                                                            <a href="javascript:void(0)"
+                                                               onclick="resetPwdWindowJsVar.show();"
+                                                               style="cursor: pointer; text-decoration: underline; color: blue; width: 80px; margin-left: 10px; color: #FFF;">
+                                                                <label id="pwsLabel">忘记密码</label>
+                                                            </a>
+                                                            <a href="javascript:void(0)" onclick="wxLogin();"
+                                                               style="cursor: pointer; text-decoration: underline; color: blue; width: 80px; margin-left: 10px; color: #FFF;">
+                                                                <label id="pwsLabel">微信</label>
+                                                            </a>
+                                                        </div>
+                                                        <div style="float: left;" class="copyright">航迅科技©2021</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="layui-tab-item layui-show">
+                                                <div style="background-color: #f9f9f9;height: 320px;margin-top: 10px;border-radius: 5px;">
+													<div id="login_container"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span style="display: block; margin-top: 54px; margin-left: -800px;">
+                                                <ul style="display: block; margin-top: 4px;">
+                                                    <b> <label id="versionLabel">版本号：</label> </b>
+                                                    <a href="javascript:void(0)"
+                                                       onclick="upglogsJsVar.setValue('');upgWindowJsVar.show();">#{login_new.loginBean.cfgDataMap['Cli_Version']}</a>
+                                                </ul>
+                                                <ul style="display: block; margin-top: 4px;">
+                                                    <b> <label id="serviceLabel">服务号：</label> </b>
+                                                    <a href="javascript:void(0)"
+                                                       onclick="upglogsJsVar.setValue('');upgWindowJsVar.show();">#{login_new.loginBean.cfgDataMap['CSNO']}</a>
+                                                </ul>
+                                                <ul style="display: block; margin-top: 4px;">
+                                                    <b> <label id="dateLabel">更新日期：</label> </b>
+                                                    <a href="javascript:void(0)"
+                                                       onclick="useronlineWindow.show();$('#useronlineFrame').attr('src','/scp/login_new/useronline.xhtml');">#{login_new.loginBean.cfgDataMap['Version']}</a>
+                                                </ul>
+                                                <ul style="display: block; margin-top: 4px;">
+                                                    <b> <label id="remoteLabel">远程协助：</label> </b>
+                                                    <a href="http://ufms.cn/AnyDesk.exe">AnyDesk</a>
+                                                </ul>
+						                    </span>
+                                </div>
+                                <div style="height: 95px; display: block; margin-left: -800px;">
+                                    <img alt="logo" id="logo" src="#{login_new.loginBean.logo}"
+                                         style="vertical-align:middle;"
+                                         height="200px"/>
+                                    <span id="companyName" style="">#{constantBean.headTitle}</span>
+                                </div>
+                            </div>
+
+						<div class="bd" id="bd" style="width: 100%; height: 100%;">
+							<ul style="position: relative; width: 100%; height: 100%;">
+								<li id="bdli1" style="position: absolute; width: 100%; height: 100%; left: 0px; top: 0px; display: none;">
+								</li>
+								<li id="bdli2" style="position: absolute; width: 100%; height: 100%; left: 0px; top: 0px; display: none;">
+								</li>
+							</ul>
+						</div>
+						<w:textField id="isLoginByOpenidOnly" jsvar="isLoginByOpenidOnlyJsVar" hidden="true"></w:textField>
+						<w:textField id="isOpenLoginBg" jsvar="isOpenLoginBgJsVar" hidden="true"></w:textField>
+						<w:textField id="ddCodeUrl" jsvar="ddCodeUrlJsVar" hidden="true"></w:textField>
+						<w:textField id="loginTmpCodeUrl" jsvar="loginTmpCodeUrlJsVar" hidden="true"></w:textField>
+					</div>
+					</w:form>
+				</div>
+			</div>
+		</div>
+
+		<layout:window title="On line user" width="980" id="useronlineWindow" onbeforeexpand="setWindowIndex()" onactivate="setWindowIndex()" jsvar="useronlineWindow" height="600" header="false" resizable="true" constrainHeader="true" collapsible="true">
+			<w:iframe id="useronlineFrame" name="useronlineIFrame" style="width: 100%;height: 100%;border: 0px;" border="0"></w:iframe>
+		</layout:window>
+
+		<layout:window title="UPG" width="500" id="upgWindow" jsvar="upgWindowJsVar" onbeforeexpand="setWindowIndex()" onactivate="setWindowIndex()" height="400" header="false" resizable="true" constrainHeader="true" collapsible="true">
+			<w:form>
+				<layout:panelGrid columns="2">
+						<h:outputLabel id="version" value="#{l.m['客户端版本号']}:" />
+						<w:textField selectOnFocus="true"  width="100"
+							value="#{login_new.loginBean.cfgDataMap['Version']}"></w:textField>
+						<h:outputLabel id="Cli_version" value="#{l.m['版本号']}:" />
+						<w:textField selectOnFocus="true" width="100"
+							value="#{login_new.loginBean.cfgDataMap['Cli_Version']}"></w:textField>
+						<h:outputLabel id="DB_version" value="#{l.m['数据库版本号']}:" />
+						<w:textField selectOnFocus="true" width="100"
+							value="#{login_new.loginBean.cfgDataMap['DB_Version']}"></w:textField>
+						<h:outputLabel id="csno" value="#{l.m['服务号']}:" />
+						<w:textField selectOnFocus="true" width="100"
+							value="#{login_new.loginBean.cfgDataMap['CSNO']}"></w:textField>
+					</layout:panelGrid>
+
+<!--				<layout:panelGrid columns="4">-->
+<!--					<w:button id="upg" value="#{l.m['升级']}" />-->
+<!--					<layout:cell colspan="1"></layout:cell>-->
+<!--					<w:button id="getLic" value="Lic"  />-->
+<!--					<ajax:status startStyle="color: red"-->
+<!--							onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"-->
+<!--							onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">-->
+<!--							<f:facet name="start">-->
+<!--								<f:verbatim>-->
+<!--									<img src="#{constantBean.contextPath}/images/waiting.gif" />-->
+<!--								</f:verbatim>-->
+<!--							</f:facet>-->
+<!--						</ajax:status>-->
+<!--				</layout:panelGrid>-->
+
+				<w:textArea selectOnFocus="true" id="upglogs" jsvar="upglogsJsVar" width="570" height="450"></w:textArea>
+			</w:form>
+		</layout:window>
+
+		<layout:window title="" width="400" id="resetPwdWindow" jsvar="resetPwdWindowJsVar" onbeforeexpand="setWindowIndex()" onactivate="setWindowIndex()" height="150" header="false" resizable="true" constrainHeader="true" collapsible="false">
+			<w:form>
+				<layout:panelGrid columns="2" cellpadding="5" cellspacing="5">
+						<layout:cell></layout:cell>
+						<layout:cell><label style="color:red" id="usernameEmptyText"></label></layout:cell>
+						<h:outputLabel id="resuser" value="#{l.m['代码/中文名']}" />
+						<w:textField selectOnFocus="true" width="200"
+							id="usernameReSet"></w:textField>
+						<h:outputLabel id="resemail" value="#{l.m['邮箱']}" />
+						<w:textField selectOnFocus="true" width="200"
+							id="emailReSet"></w:textField>
+					</layout:panelGrid>
+
+				<layout:panelGrid columns="2">
+					<w:button id="resetPwd" label="#{l.m['重设密码']}"/>
+					<ajax:status startStyle="color: red"
+						onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+						onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+						<f:facet name="start">
+							<f:verbatim>
+								<img src="#{constantBean.contextPath}/images/waiting.gif" />
+							</f:verbatim>
+						</f:facet>
+					</ajax:status>
+				</layout:panelGrid>
+			</w:form>
+		</layout:window>
+
+		<layout:window title="Tips" width="300" id="tipsWindow" jsvar="tipsWindowJsVar" height="240"
+				resizable="false" constrainHeader="true" collapsible="false" modal="false">
+			<w:form>
+				<layout:panelGrid columns="1" cellpadding="5" cellspacing="5">
+					<w:textArea selectOnFocus="true" width="260" readOnly="true" height="170"
+						id="tipsValue" jsvar="tipsValueJs" style="color: red; margin-left:5px;font-size: 16px"></w:textArea>
+				</layout:panelGrid>
+			</w:form>
+		</layout:window>
+
+		<layout:window title="#{l.m['微信登录']}" width="330" id="wxloginWindow" jsvar="wxloginWindowJsvar" height="360"
+				resizable="false" constrainHeader="true" collapsible="false" modal="false">
+			<w:form>
+				<layout:panelGrid columns="1" cellpadding="5" cellspacing="5">
+					<layout:cell colspan="1">
+						<div style="margin: 30px">
+							<h4 style="font-size: 16px;color: red;padding-left: 0px;">#{l.m['请使用微信扫描下方二维码登录']}</h4>
+							<hr/>
+							<div id="qrcode">
+							</div>
+						</div>
+					</layout:cell>
+					<w:textArea id="codeUrl" jsvar="codeUrlJsVar" width="370" height="90" hidden="true" readOnly="true"/>
+				</layout:panelGrid>
+			</w:form>
+		</layout:window>
+
+		<layout:window title="#{l.m['微信绑定']}" width="750" id="wxbindWindow" jsvar="wxbindWindowJsvar" height="360"
+				resizable="true" constrainHeader="true" collapsible="false" modal="false">
+			<w:form>
+				<layout:panelGrid columns="2" cellpadding="5" cellspacing="5">
+					<layout:cell colspan="1">
+						<div style="margin: 30px">
+							<h4 style="font-size: 16px;color: red;padding-left: 0px;">#{l.m['请使用微信扫描下方二维码，绑定账号']}</h4>
+							<div id="wxbindcode">
+							</div>
+						</div>
+					</layout:cell>
+					<layout:cell colspan="1">
+						<div style="margin: 30px">
+							<h4 style="font-size: 16px;color: red;padding-left: 0px;">#{l.m['请使用微信扫描下方二维码，关注微信公众号']}</h4>
+							<layout:panelGrid columns="1" cellspacing="5px" width="400" style="font-size:12px">
+								<h:graphicImage id="weixinImg" value="#{pages.sysmgr.cfg.usrcfgBean.weixinimg}" height="250" alt="undefined"></h:graphicImage>
+							</layout:panelGrid>
+						</div>
+					</layout:cell>
+					<layout:cell colspan="1">
+						<w:textArea id="wxbindcodeUrl" jsvar="wxbindcodeUrlJsVar" width="370" height="90" hidden="false" readOnly="true"/>
+					</layout:cell>
+				</layout:panelGrid>
+			</w:form>
+		</layout:window>
+
+	</w:page>
+
+
+	<script type="text/javascript">
+
+        //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
+        layui.use('element', function(){
+            var element = layui.element;
+        });
+
+		Ext.onReady(function(){
+			init();
+			startBg();
+			ddLogin();
+			if(isLoginByOpenidOnlyJsVar.getValue() == 'Y'){
+				wxLogin();
+			}
+			refreshWxbindcode();
+		});
+		
+		var cdn = 'http://res.ufms.cn:8989/scp/';
+
+		function startBg(){
+			var isOpenLoginBg = isOpenLoginBgJsVar.getValue();
+			if("Y" == isOpenLoginBg){
+				var bgImg1 = "#{login_new.loginBean.cfgDataMap['bgImg1']}";
+				var bgImg2 = "#{login_new.loginBean.cfgDataMap['bgImg2']}";
+				console.log('bgImg1:'+bgImg1);
+				console.log('bgImg2:'+bgImg2);
+				if(bgImg1 == null || bgImg1 == '')bgImg1='bg8.jpg';
+				if(bgImg2 == null || bgImg2 == '')bgImg2='bg13.jpg';
+				$('#bdli1').css('background','url('+cdn+'images/bg/'+bgImg1+') center 0px no-repeat rgb(188, 224, 255)');
+				$('#bdli2').css('background','url('+cdn+'images/bg/'+bgImg2+') center 0px no-repeat rgb(188, 224, 255)');
+
+				$('#bdli1').css('background-size','cover');
+				$('#bdli2').css('background-size','cover');
+
+				jQuery(".banner").slide({
+					titCell:".hd ul",
+					mainCell:".bd ul",
+					effect:"fold",
+					autoPlay:true,
+					autoPage:true, trigger:"click"
+				});
+			}else{
+				Victor("container", "output");
+			}
+		}
+
+		var qrcode = new QRCode(document.getElementById("qrcode"), {
+		   	width : 250,//设置宽高
+		   	height : 250
+		});
+
+		var wxbindcode = new QRCode(document.getElementById("wxbindcode"), {
+	       	width : 250,//设置宽高
+	       	height : 250
+	    });
+
+        function ddLogin() {
+			var gotoUrl = encodeURIComponent(ddCodeUrlJsVar.getValue());
+			var obj = DDLogin({
+				id: "login_container",// 这里就是刚刚定义的HTML标签的id
+				goto: gotoUrl,
+				style: "border:none;",
+				width: "300",
+				height: "320"
+			});
+            if (dd.env.platform != "notInDingTalk") {
+                dd.ready(function () {
+                	//钉钉打开默认自动登录系统
+                    dd.runtime.permission.requestAuthCode({
+                        corpId: "ding2bb9458351f19b9b35c2f4657eb6378f",
+                        onSuccess: function (result) {
+							dingTalkAction.addParam("dingTalkCode", result.code);
+							dingTalkAction.submit();
+                        },
+                        onFail: function (err) {
+                        	return;
+                        },
+                    });
+                });
+            } else {
+                var handleMessage = function (event) {
+                    var origin = event.origin;
+                    if (origin == "https://login.dingtalk.com") { // 判断是否来自ddLogin扫码事件。
+                        var loginTmpCode = event.data;
+                        var loginTmpUrl = loginTmpCodeUrlJsVar.getValue();
+                        var url = loginTmpUrl + loginTmpCode;
+                        //window.location.href = url
+                        ddLoginAction.addParam("urlcode", url);
+                        ddLoginAction.submit();
+                    }
+                };
+                if (typeof window.addEventListener != 'undefined') {
+                    window.addEventListener('message', handleMessage, false);
+                } else if (typeof window.attachEvent != 'undefined') {
+                    window.attachEvent('onmessage', handleMessage);
+                }
+            }
+        }
+
+		function wxLogin(){
+			var udid = uuid();
+			wxLoginAction.addParam("uuid",udid);
+			wxLoginAction.submit();
+		}
+
+		function refreshQrCode(url){
+			qrcode.makeCode(url);
+			setInterval('timerActionJsVar.submit();',4000);//监控二维码是否被扫描
+		}
+
+		function refreshWxbindcode(){
+			var url = wxbindcodeUrlJsVar.getValue();
+			wxbindcode.makeCode(url);
+		}
+
+		function refreshWxbind(){
+			wxbindWindowJsvar.show();
+			refreshWxbindcode();
+			setInterval('wxbindtimeraction.submit();refreshWxbindcode();',2000);//监控opneid是否被赋值
+		}
+
+	</script>
+
+</f:view>

@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="cn">
+  <head>
+    <title>jqGrid 实例</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    
+<!--
+    <link rel="stylesheet" href="https://blog.mn886.net/jqGrid/javascript/jqgrid/css/ui.jqgrid.css" />
+	<link rel="stylesheet" href="https://blog.mn886.net/jqGrid/javascript/jqgrid/css/css/redmond/jquery-ui-1.8.16.custom.css" />
+-->
+
+<!--<link rel="stylesheet" href="https://blog.mn886.net/jqGrid/common/common.css" />
+-->
+
+<!--<script type="text/javascript" src="https://blog.mn886.net/jqGrid/javascript/jquery-1.7.1.js"></script>
+<script type="text/javascript" src="https://blog.mn886.net/jqGrid/javascript/jqgrid/js/jquery.jqGrid.src.js"></script>
+
+--><!--<script type="text/javascript" src="https://blog.mn886.net/jqGrid/javascript/jquery-1.7.1.js"></script>
+<script type="text/javascript" src="https://blog.mn886.net/jqGrid/javascript/jqgrid/js/jquery.jqGrid.src.js"></script>
+
+-->
+<!--<script type="text/javascript" src="https://blog.mn886.net/jqGrid/javascript/jqgrid/js/i18n/grid.locale-cn.js"></script>
+     --><!--<link rel="stylesheet" href="./css/ui.jqgrid.min.css">
+    <link rel="stylesheet" href="./css/ui.jqgrid.css">
+    
+	<script type="text/javascript" src="./js/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="./js/jquery.jqGrid.min.js"></script>
+  -->
+  
+  
+<link rel="stylesheet" href="/scp/jqgrid/css/ui.jqgrid.css"/>
+<link rel="stylesheet" href="/scp/jqgrid/css/jquery-ui-1.8.16.custom.css"/>
+<link rel="stylesheet" href="/scp/jqgrid/css/ui.multiselect.css"/>
+
+<script type="text/javascript" src="/scp/jqgrid/js/jquery-1.7.1.js"></script>
+<script type="text/javascript" src="/scp/jqgrid/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/scp/jqgrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="/scp/jqgrid/js/ui.multiselect.js"></script>
+<script type="text/javascript" src="/scp/jqgrid/js/jquery.jqGrid.src.js"></script>
+<script type="text/javascript" src="/scp/jqgrid/js/grid.setcolumns.js"></script>
+
+<script type="text/javascript" src="/scp/jqgrid/js/taffy-min.js"></script>
+<script type="text/javascript" src="/scp/jqgrid/js/actpayrecedit.js?t=4"></script>
+
+</head>
+
+
+  <body style="font-size: 10px;">
+  	<input type="BUTTON" id="setAllDefaultAction" value="置数" onclick="changeModify('A');"/>
+  	<input type="BUTTON" id="setAllDefaultActionR" value="置数(AR)" onclick="changeModify('R');"/>
+  	<input type="BUTTON" id="setAllDefaultActionP" value="置数(AP)" onclick="changeModify('P');"/>
+  	<input type="BUTTON" id="setALLNullAction" value="置零" onclick="changeModify('N');"/>
+  	<input type="BUTTON" id="selectColumn" value="选择栏目" onclick="selectColumn();"/>
+  	
+  	
+  	<input type="BUTTON" id="showJobs" value="打开工作单" onclick="changeModify('N');"/>
+  	
+  	<input type="BUTTON" id="ed4" value="Edit row 13" />
+    <input type="BUTTON" id="sved4" disabled='true' value="Save row 13" />
+  	<br />
+    <table id="arapGrid"></table>
+    <div id="parapGrid"></div>
+  </body>
+</html>
+
+<script><!--
+
+		var localdb = TAFFY([
+                     			{"id":0,"amountwf":0,"amountrp":0,"xtype":"*","feetype":"N"}
+                 			]);
+
+		$(function(){
+    	  	pageInit();
+    	  	localdb().remove();
+    	  	var newHeight = $(window).height() - 140;
+  			$(".ui-jqgrid .ui-jqgrid-bdiv").css("cssText","height: "+newHeight+"px!important;");
+    	});
+
+		function debug() {
+			localdb().each(function (r) {
+			   console.log(r);
+			});
+		}
+
+		function addCellAttr(rowId, val, rawObject, cm, rdata) {
+		    //if (rawObject.SubmitState == '已提交') {
+		        return "style='background-color:pink'";
+		    //}
+		}
+
+		jQuery("#ed4").click(function() {
+       	    jQuery("#arapGrid").jqGrid('editRow', "13");
+       	    this.disabled = 'true';
+       	    jQuery("#sved4").attr("disabled", false);
+       	  });
+       	  jQuery("#sved4").click(function() {
+       	    jQuery("#arapGrid").jqGrid('saveRow', "13", checksave);
+       	  });
+       	  function checksave(result) {
+       	    if (result.responseText == "") {
+       	      alert("Update is missing!");
+       	      return false;
+       	    }
+       	    return true;
+       	  }
+       
+       	function startEdit() {
+       	    //var grid = $("#jqGrid");
+       	    var ids = $("#arapGrid").jqGrid('getDataIDs');
+       	    //循环开启行编辑
+       	    for (var i = 0; i < ids.length; i++) {
+       	    	$("#arapGrid").jqGrid('editRow', ids[i]);
+       	    }
+       	};
+		
+       	function pageInit(){
+       	  $("#arapGrid").jqGrid(
+       	      {
+       	        url : '/scp/service?src=jqgrid&action=getstatuseinfo',
+       	        datatype : "json",
+       	        ondblClickRow:function(row){
+         	        console.log(row);
+         	        
+        	  		var rowData = $('#arapGrid').jqGrid('getRowData',row);
+        	  		$("#arapGrid").editRow(rowData.dtlid,true);
+        	  		if(rowData.amountwf == 0){
+        	  			$("#arapGrid").setCell( row ,'amountwf' , rowData.amount);
+            	  		$("#arapGrid").setCell( row ,'amountrpflag' , rowData.amount);
+            	  		localdb.insert({"id":rowData.dtlid,"amountwf":rowData.amount,"amountrp":rowData.amount,"xtype":"*","feetype":"N"});
+        	  		}else{
+        	  			$("#arapGrid").setCell( row ,'amountwf' , 0);
+            	  		$("#arapGrid").setCell( row ,'amountrpflag' , 0);
+            	  		localdb({id:rowData.dtlid}).remove();
+        	  		}
+        	  		$("#arapGrid").jqGrid('editRow', row);
+        	  	},
+
+        	  	colModel : [ 
+       	                     {label:'actpayrecid' , name : 'actpayrecid',index : 'actpayrecid',width : 55,colindex:8}, 
+       	                  	 {label:'dtlid' , name : 'dtlid',index : 'dtlid',width : 55,colindex:2}, 
+       	                	 {label:'arapid' , name : 'arapid',index : 'arapid',width : 55,colindex:3}, 
+       	                     {label:'类别' , name:'araptype' ,index:'araptype' ,width:42,colindex:4},
+       	                     {label:'工作单id' , name:'jobid' ,index:'jobid' ,width:100 ,hidden:true,colindex:5},
+       	                     {label:'工作单号' , name:'jobno' ,index:'jobno' ,width:120 ,colindex:6},
+       	                     {label:'PP/CC' , name:'ppcc' ,index:'ppcc' ,width:50,colindex:7},
+       	                     {label:'费用名称' , name:'feeitemdec' ,index:'feeitemdec' ,width:130 ,colindex:1},
+       	                     {label:'币制' , name:'currency' ,index:'currency' ,width:40  ,colindex:9},
+       	                     {label:'发票号' , name:'invoiceno' ,index:'invoiceno' ,width:100 ,colindex:10},
+       	                     {label:'应收付总额' , name:'amount',index : 'amount',width : 80,align : 'right',colindex:11},
+
+       	                     {label:'额外费用' , name:'isamtcost' ,index:'isamtcost' ,width:70,formatter:'checkbox',align : 'center',colindex:12},
+
+       	                     {label:'销账余额' , name:'amountactrecpay0' ,index:'amountactrecpay0',align : 'right' ,width:80,colindex:13},
+       	                     {label:'销账余额(计算列)' , name:'amountactrecpay' ,index:'amountactrecpay' ,align : 'right',width:80, cellattr: addCellAttr ,hidden:true,colindex:14},
+       	                     {label:'销账金额' , name:'amountwf' ,index:'amountwf' ,align : 'right',width:80,editable : true, cellattr: addCellAttr,colindex:15},
+       	                     {label:'实收付金额' , name:'amountrpflag' ,index:'amountrpflag' ,align : 'right' ,width:95,editable : true, cellattr: addCellAttr,colindex:16},
+       	                     {label:'完成' , name:'isfinish' ,index:'isfinish' ,width:50,formatter:'checkbox',align : 'center',colindex:17},
+       	                     {label:'收付币制' , name:'currencyto' ,index:'currencyto' ,width:80,colindex:18},
+       	                     {label:'折算符' , name:'xtype' ,index:'xtype',align : 'right' ,width:60,colindex:19},
+       	                     {label:'兑换率' , name:'xrate' ,index:'xrate',align : 'right' ,width:60,colindex:20},
+       	                     {label:'结算地' , name:'arapbranch' ,index:'arapbranch' ,width:70,colindex:21},
+       	                     {label:'结算地' , name:'arapcorpid' ,index:'arapcorpid' ,width:70,colindex:22},
+       	                     {label:'结算方式' , name:'payplace' ,index:'payplace' ,width:70,colindex:23},
+       	                     {label:'订单号' , name:'orderno' ,index:'orderno' ,width:70,colindex:24},
+       	                     {label:'订舱号' , name:'sono' ,index:'sono' ,width:70,colindex:25},
+       	                     {label:'提单号' , name:'mblno' ,index:'mblno' ,width:70,colindex:26},
+       	                     {label:'船名' , name:'ves' ,index:'ves' ,width:70,colindex:27},
+       	                     {label:'航次' , name:'voy' ,index:'voy' ,width:70,colindex:28},
+       	                     {label:'ETD' , name:'etd' ,index:'etd' ,width:80,colindex:29},
+       	                     {label:'ETA' , name:'eta' ,index:'eta' ,width:80,colindex:30},
+
+       	                     {label:'单价' , name:'price' ,index:'price' ,width:60,colindex:31},
+       	                     {label:'待收付金额' , name:'amountremaindabs' ,index:'amountremaindabs',align : 'right' ,width:90,colindex:32},
+       	                     {label:'业务员' , name:'sales' ,index:'sales' ,width:90,colindex:33},
+       	                     {label:'结算单位' , name:'customecode' ,index:'customecode' ,width:140,colindex:34},
+       	                     {label:'账单号' , name:'billno' ,index:'billno' ,width:110,colindex:5},	
+       	                     {label:'柜号' , name:'cntnos' ,index:'cntnos' ,width:110,colindex:36},
+       	                     {label:'描述' , name:'arapdesc' ,index:'arapdesc' ,width:110,colindex:37},
+       	                     {label:'备注' , name:'arapremarks' ,index:'arapremarks' ,width:110,colindex:38},
+       	                     {label:'工作单日期' , name:'jobdate' ,index:'jobdate' ,width:80,colindex:39},
+       	                     {label:'驳船ETD' , name:'bargeetd' ,index:'bargeetd' ,width:80,colindex:40},
+       	                     {label:'付款' , name:'ispayagree' ,index:'ispayagree' ,width:80,formatter:'checkbox',align : 'center',colindex:41},
+       	                     {label:'商务审核' , name:'isconfirm_bus' ,index:'isconfirm_bus' ,width:80,formatter:'checkbox',align : 'center',colindex:42},
+       	                     {label:'委托人' , name:'jobscustomerabbr' ,index:'jobscustomerabbr' ,width:80,colindex:43},
+       	                     {label:'录入人' , name:'arapinputer' ,index:'arapinputer' ,width:80,colindex:44},
+       	                     {label:'参考号' , name:'refno' ,index:'refno' ,width:100,colindex:45}
+       	                   ],
+       	        rowNum : 50,
+       	     	rowTotal: 3000,
+       	    	//scroll:1,
+       	    	//loadonce:true,
+       	        rowList : [ 10, 20, 30 ],
+       	        pager : '#parapGrid',
+       	        sortname : 'id',
+       	        viewrecords : true,
+       	        sortorder : "desc",
+       	        //editurl : "/scp/RowEditing",
+       	        //width:window.screen.availWidth-20,
+       	        //width:1980,
+                gridview: true,
+				shrinkToFit:false,
+				autoScroll: true,
+				autowidth:true,
+                rownumbers:true,
+                sortable:true
+       	        //caption : "ARAP"
+       	});
+     }
+
+     function selectColumn(){
+    	 jQuery("#arapGrid").jqGrid('columnChooser','#parapGrid', {
+       	   done : function (perm) {
+       	      if (perm) {
+       	          // "OK" button are clicked
+       	          this.jqGrid("remapColumns", perm, true);
+       	          // the grid width is probably changed co we can get new width
+       	          // and adjust the width of other elements on the page
+       	          //var gwdth = this.jqGrid("getGridParam","width");
+       	          //this.jqGrid("setGridWidth",gwdth);
+       	      } else {
+       	          // we can do some action in case of "Cancel" button clicked
+       	      }
+       	   }
+       	});
+     }  
+        
+--></script>

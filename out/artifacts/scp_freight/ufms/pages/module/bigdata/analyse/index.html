@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>四宫格导航页面</title>
+<style>
+html, body { height: 100%; margin: 0; }
+.page {
+    position: absolute;
+	left: 0; top: 0; right: 0; bottom: 0;
+}
+.list {
+	float: left;
+	height: 50%; width: 50%;
+	position: relative;
+}
+.top{
+	float: left;
+	height: 50%; 
+	width: 33.3%;
+	position: relative;
+}
+.bottom{
+	float: left;
+	height: 50%; 
+	width: 50%;
+	position: relative;
+}
+.list:before {
+	content: '';
+	position: absolute;
+	left: 10px; right: 10px; top: 10px; bottom: 10px;
+	border-radius: 10px;
+	background-color: #cad5eb;
+}
+.list:after {
+	content:attr(data-index);
+	position: absolute;
+	height: 30px;
+	left: 0; right: 0; top: 0; bottom: 0;
+	margin: auto;
+	text-align: center;
+	font: 24px/30px bold 'microsoft yahei';
+}
+</style>
+</head>
+ 
+<body>
+<div class="page">
+	<a href="analyseTVolumeBarChart.html"><div class="list top" data-index="分公司T量对比图"></div></a>
+	<a href="analyseCustomer.html"><div class="list top" data-index="客户类型T量对比图"></div></a>
+    <a href="analyseRouteByPeichart.html"><div class="list top" data-index="航线分析"></div></a>
+    <a href="analyseCompanyRoute.html"><div class="list bottom" data-index="船公司航线分组"></div></a>
+    <a href="analysePortMap.html"><div class="list bottom" data-index="航线地图"></div></a>
+</div>
+</body>
+	<script type="text/javascript">
+	</script>
+</html>

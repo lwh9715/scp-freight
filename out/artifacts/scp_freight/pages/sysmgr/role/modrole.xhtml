@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/pages/module/common/css/tabPanelIcon.css" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+		<script>
+        //<![CDATA[
+		function copyadd(){
+
+        }
+		//]]>
+        </script>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page title="">
+		<ajax:conversationActivator/>
+
+		<w:form>
+			<div style="height: 0px;">
+			<w:textField selectOnFocus="true" id="roleid" hidden="true"></w:textField>
+			</div>
+			<w:toolBar>
+				<w:button id="saveModule" value="#{l.m['保存']}"
+					image="#{constantBean.contextPath}/images/save.png" />
+				<w:button id="expandAll" value="#{l.m['展开']}" onclick="navTreeJsVar.expandAll(true);"
+					image="#{constantBean.contextPath}/images/save.png" />
+				<w:button id="closeAll" value="#{l.m['收起']}" onclick="navTreeJsVar.collapseAll(true);"
+					image="#{constantBean.contextPath}/images/save.png" />
+			</w:toolBar>
+
+			<layout:panel height="620" hideBorders="true" width="250">
+				<w:tree id="navTree01" autoLeaf="true" expandAll="true" autoScroll="true" border="false" jsvar="navTreeJsVar"
+					style="height:100%;width:100%;border-color: blue" rootVisible="false" loadAllNodes="true" />
+			</layout:panel>
+
+		</w:form>
+	</w:page>
+</f:view>

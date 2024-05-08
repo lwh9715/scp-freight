@@ -1,0 +1,38 @@
+div.examDesc {
+	width: 80%;
+	background: #ffffa2;
+	font: normal 12px arial, helvetica, tahoma, sans-serif;
+	border: 1px solid #800000;
+	line-height: normal;
+	margin-bottom: 5px;
+}
+
+div.examDesc p {
+	margin: 6px;
+}
+
+body {
+	margin: 0;
+	font-size: 13px;
+}
+
+/*失去焦点时的样式*/
+.under_line {
+	border-top: 0px;
+	border-left: 0px;
+	border-right: 0px;
+	background: none;
+}
+
+/*获得焦点时的样式*/
+.surround {
+	border: 1px solid #7EADD9;
+	background: #FFFFFF
+		url(/bpdemos/_global/resource/ext/skin/default/yuiext/images/form/text-bg.gif)
+		repeat-x scroll 0 0;
+}
+
+/*下拉类文本框下拉按钮的样式*/
+.x-form-field-wrap .x-form-trigger {
+	border-left: 1px solid #B5B8C8;
+}

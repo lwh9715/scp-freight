@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+        xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+        xmlns:om="http://www.apusic.com/jsf/misc"
+        xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+    <w:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <w:stylesheet src="/common/css/common.css"></w:stylesheet>
+        <link rel="stylesheet" id="cmsbg" type="text/css"/>
+        <w:script src="/common/js/common.js?t=4"></w:script>
+        <w:stylesheet src="/common/css/list-style.css"></w:stylesheet>
+        <script type="text/javascript" src="/scp/common/js/jquery-2.0.0.min.js"></script>
+        <script type="text/javascript" src="/scp/common/js/jquery.cookie.js"></script>
+        <script type="text/javascript" src="/scp/common/js/savemodel2.js?t=5"></script>
+        <script type="text/javascript" src="/scp/common/js/jquery-ui.js"></script>
+        <script type="text/javascript" src="/scp/common/js/savemodel-list.js"></script>
+        <link rel="stylesheet" type="text/css" href="/scp/common/css/jquery.flexbox.css"/>
+        <script type="text/javascript" src="/scp/common/js/jquery.flexbox.js"></script>
+
+        <script type="text/javascript" src="/scp/common/js/gridRight.js?t=6"></script>
+
+        <script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+        <script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+
+        <link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico"/>
+        <link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico"/>
+        <script src="http://apps.bdimg.com/libs/jquery/1.11.3/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/scp/main/res/bootstrap.min.css"/>
+        <!-- 多文件下载 -->
+        <!--        <link rel="stylesheet" type="text/css" href="/scp/common/css/webuploader.css"></link>-->
+        <!--        <link rel="stylesheet" type="text/css" href="/scp/common/css/diyUpload.css"></link>-->
+        <!--        <link rel="stylesheet" type="text/css" href="/scp/pages/module/common/style.css"></link>-->
+
+        <script type="text/javascript" src="/scp/common/js/webuploader.html5only.min.js"></script>
+        <script type="text/javascript" src="/scp/common/js/webuploader.js"></script>
+        <script type="text/javascript" src="/scp/common/js/diyUpload.js"></script>
+        <script type="text/javascript" src="/scp/pages/module/common/md5.js"></script>
+        <script type="text/javascript" src="/scp/pages/module/common/upload.js"></script>
+        <!--二维码 -->
+        <script src="/scp/common/js/qrcode.js"></script>
+        <!--PDF预览 -->
+        <script type="text/javascript" src="/scp/common/js/pdfobject.js"></script>
+
+        <script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+        <script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+    </w:head>
+    <w:page loadMask="true" loadMaskText="Loading..." title="">
+        <ajax:conversationActivator/>
+        <layout:borderLayout fitToBody="true">
+            <layout:panel id="gridPanel" jsvar="gridPanelJsvar" height="100%" split="true" fit="true"
+                          hideBorders="true" region="center" width="500">
+                <div style="height: 0px;"><ui:include src="/common/gridpage.xhtml"/></div>
+                <w:form>
+
+                    <layout:panelGrid columns="4">
+                        <w:toolBar>
+                            <w:button id="qryRefresh" label="#{l.m['刷新']}"
+                                      image="#{constantBean.contextPath}/images/refresh.png"/>
+
+                            <h:outputLabel value="#{l.m['分组']}"></h:outputLabel>
+                            <w:combo typeAhead="true" readOnly="false" forceSelection="true" width="130" id="roleId" jsvar="roleIdJsVar" listWidth="250">
+                                <f:selectItems value="#{pages.sysmgr.filedownload.filedownloadBean.roleGroup}"/>
+                            </w:combo>
+
+                            <w:button id="downloadon" jsvar="downloadonJs" label="#{l.m['下载']}" onclick="downloadsubmit();"
+                                      image="#{constantBean.contextPath}/pages/module/common/resources/images/init.png"/>
+                            <w:button id="downloaddandu" jsvar="downloaddanduBtn" label="#{l.m['单项下载']}" hidden="true"
+                                      image="#{constantBean.contextPath}/pages/module/common/resources/images/init.png"/>
+
+                            <w:textField id="selectid" jsvar="selectidJs" hidden="true"></w:textField>
+                            <w:textField selectOnFocus="true" id="dPkVal" hidden="true"/>
+                        </w:toolBar>
+
+                        <om:fileDownload id="fileDownLoad" for="downloaddandu"
+                                         savedName="${pages.sysmgr.filedownload.filedownloadBean.fileName}"
+                                         contentType="${pages.sysmgr.filedownload.filedownloadBean.contentType}"/>
+                        <layout:cell>
+                            <ajax:status startStyle="color: red"
+                                         onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+                                         onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+                                <f:facet name="start">
+                                    <f:verbatim>
+                                        <img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 20px;">Loading...</img>
+                                    </f:verbatim>
+                                </f:facet>
+                            </ajax:status>
+                        </layout:cell>
+                    </layout:panelGrid>
+
+                    <layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+                        <layout:cell style="width: 25px;">
+                            <w:button id="clearQryKey" label="" width="25" image="#{constantBean.contextPath}/images/clear.png"/>
+                        </layout:cell>
+                        <w:textField selectOnFocus="true" width="150"
+                                     value="#{pages.sysmgr.filedownload.filedownloadBean.qryMap['nos']}" emptyText="#{l.m['工作单号']}"/>
+                        <w:textField selectOnFocus="true" width="110"
+                                     value="#{pages.sysmgr.filedownload.filedownloadBean.qryMap['refno']}" emptyText="#{l.m['参考号']}"/>
+                        <w:textField selectOnFocus="true" width="110"
+                                     value="#{pages.sysmgr.filedownload.filedownloadBean.qryMap['customerabbr']}" emptyText="#{l.m['委托人简称']}"/>
+                        <w:textField selectOnFocus="true" width="110"
+                                     id="saler" emptyText="#{l.m['业务员']}"/>
+                        <w:textField selectOnFocus="true" width="110"
+                                     id="sonoq" emptyText="#{l.m['订舱号']}"/>
+                        <w:textField selectOnFocus="true" width="121"
+                                     id="cntnoq" emptyText="#{l.m['箱号']}"/>
+                        <w:textField selectOnFocus="true" width="121"
+                                     id="mblnoq" emptyText="MBL#{l.m['单号']}"/>
+                        <w:textField selectOnFocus="true" width="121"
+                                     id="hblnoq" emptyText="HBL#{l.m['单号']}"/>
+
+                        <w:textField selectOnFocus="true" width="121"
+                                     id="nosstr" emptyText="HBL#{l.m['单号集合']}"/>
+                        <w:button id="refresh" value="#{l.m['查询']}"
+                                  image="#{constantBean.contextPath}/images/query-small.png"/>
+                    </layout:panelGrid>
+
+
+                    <w:dataGrid height="660" paged="true" id="grid" jsvar="gridJsvar" toolBarPosition="bottom" idColumn="id" selectable="true" selectionModel="#{constantBean.checkBox}"
+                                loadMask="true">
+                        <w:outputColumn id="id" header="ID" hidden="true"/>
+                        <w:outputColumn id="chid" header="CHID" hidden="true"/>
+                        <w:outputColumn id="genjobstype" header="genjobstype" hidden="true"/>
+                        <w:outputColumn header="#{l.m['序号']}" id="row" width="40" sortable="true"/>
+                        <w:outputColumn header="#{l.m['工作单号']}" id="nos" width="150" sortable="true" clientFormatter="formatnos"/>
+<!--                        <w:outputColumn header="#{l.m['工作单日期']}" id="jobdate" width="90" sortable="true">-->
+<!--                            <f:convertDateTime pattern="yy/MM/dd " timeZone="GMT+8"/>-->
+<!--                        </w:outputColumn>-->
+
+<!--                        <w:outputColumn header="#{l.m['动态']}" width="50" sortable="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['业务员']}" id="saledesc" width="100" sortable="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['参考号']}" id="refno" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['委托人简称']}" id="customerabbr" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['委托人中文名']}" id="customernamec" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="MBL" id="mblno" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="HBL" id="hblno" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="SO" id="sono" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['箱号']}" id="cntnos" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['装箱']}" id="ldtype" width="80" sortable="true" clientFormatter="formatldtype"/>-->
+<!--                        <w:outputColumn header="#{l.m['贸易方式']}" id="tradeway" width="80" sortable="true" clientFormatter="formatTradeway"/>-->
+<!--                        <w:outputColumn header="#{l.m['进出口']}" id="impexp" width="80" sortable="true" hidden="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['进出口']}" id="impexpv" width="80" sortable="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['收款状态']}" id="arstatus" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['付款状态']}" id="apstatus" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['发票状态']}" id="invstatus" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['发货人']}" id="cnortitle" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['收货人']}" id="cneetitle" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['通知人']}" id="notifytitle" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['目的港代理']}" id="agenabbr" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['工作单类型']}" id="jobtype" width="120" sortable="true" hidden="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['工作单类型']}" id="jobtypev" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['操作公司']}" id="opcompany" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['接单公司']}" id="company" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="#{l.m['截关日']}" id="cls" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="ETD" id="etd" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="ETA" id="eta" width="120" sortable="true"/>-->
+<!--                        <w:outputColumn header="BPM" width="80"/>-->
+<!--                        <w:outputColumn header="#{l.m['标箱量']}" id="cnts" width="50" sortable="true"/>-->
+
+<!--                        <w:outputColumn header="#{l.m['录入人']}" id="inputername" sortable="true" width="60"/>-->
+<!--                        <w:outputColumn header="#{l.m['录入时间']}" id="inputtime" width="120" sortable="true">-->
+<!--                            <f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8"/>-->
+<!--                        </w:outputColumn>-->
+
+<!--                        <w:outputColumn header="#{l.m['修改人']}" id="updatername" sortable="true" width="80"/>-->
+<!--                        <w:outputColumn header="#{l.m['修改时间']}" id="updatetime" width="120" sortable="true">-->
+<!--                            <f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8"/>-->
+<!--                        </w:outputColumn>-->
+                    </w:dataGrid>
+                </w:form>
+            </layout:panel>
+        </layout:borderLayout>
+    </w:page>
+
+    <script>
+        //<![CDATA[
+        function downloadsubmit() {
+            var lastRecord = gridJsvar.getSelectionModel().getSelections();
+            if (lastRecord.length == 0) {
+                alert("please choose one");
+            } else {
+                var lastRecordids = '';
+                for (var i = 1; i <= lastRecord.length; i++) {
+                    lastRecordids = lastRecordids + (lastRecord[i - 1].data.id) + ",";
+                }
+
+                var roleid = roleIdJsVar.getValue();
+                $.ajax({
+                    type: 'POST',
+                    url: '/scp/service?src=webServer&action=filedownload&lastRecordids=' + lastRecordids + '&roleid=' + roleid,
+                    success: function (data) {
+                        if (data.indexOf(",") > -1) {
+                            var lastRecordidsArray = data.split(",");
+                            for (var i = 1; i <= lastRecordidsArray.length - 1; i++) {
+                                (function (j) {
+                                    setTimeout(function timer() {
+                                        selectidJs.setValue(lastRecordidsArray[j - 1]);
+                                        downloaddanduBtn.fireEvent('click');
+                                    }, j * 1500);
+                                })(i);
+                            }
+                        } else {
+                            alert("无文件下载");
+                        }
+                    }
+                });
+            }
+        }
+
+        function formatnos(v, m, r) {
+            var nos = r.get('nos');
+            var id = r.get('id');
+            var jobtype = r.get('jobtype');
+            var temp;
+            var udid = uuid();
+            var ufid = uuid();
+            if (jobtype == 'S') {
+                temp = '<a target="_blank" href="/scp/pages/module/ship/jobsedit.xhtml?udid=' + udid + '&ufid=' + ufid + '&id=' + id + '"><font color="blue">' + nos + '</font></a>';
+            } else if (jobtype == 'A') {
+                temp = '<a target="_blank" href="/scp/pages/module/air/jobsedit.xhtml?id=' + id + '"><i><font color="green">' + nos + '</font></i></a>';
+            } else if (jobtype == 'L') {
+                temp = '<a target="_blank" href="/scp/pages/module/land/jobsedit.xhtml?id=' + id + '"><i><font color="blue">' + nos + '</font></i></a>';
+            } else if (jobtype == 'C') {
+                temp = '<a target="_blank" href="/scp/pages/module/customs/jobsedit.xhtml?id=' + id + '"><i><font color="black">' + nos + '</font></i></a>';
+            }
+            return temp;
+        }
+
+        function formatldtype(v, m, r) {
+            var ldtype = r.get('ldtype');
+            var temp = "";
+            if ("F" == ldtype) {
+                temp = "FCL";
+            } else if ("L" == ldtype) {
+                temp = "LCL";
+            }
+            return temp;
+        }
+
+
+        function formatTradeway(v, m, r) {
+            var tradeway = r.get('tradeway');
+            var temp = "";
+            if ("F" == tradeway) {
+                temp = "FOB";
+            } else if ("C" == tradeway) {
+                temp = "CIF";
+            } else if ("D" == tradeway) {
+                temp = "DDP";
+            } else if ("E" == tradeway) {
+                temp = "EXW";
+            }
+            return temp;
+        }
+
+
+        function resize() {
+            var newHeight = (gridPanelJsvar.getSize().height) - 58;
+            var newWidth = (gridPanelJsvar.getSize().width);
+            gridJsvar.setHeight(newHeight);
+            gridJsvar.setWidth(newWidth);
+            gridJsvar.render();
+        }
+
+
+        function sortAction(ct, column, direction, eOpts) {
+            var store = gridJsvar.getStore();
+            //store.getModifiedRecords();
+            var index = 1;
+            store.each(function (r_sum) {
+                r_sum.set("row", index);
+                index = index + 1;
+            });
+            store.commitChanges();
+        }
+
+        function resize() {
+            var newHeight = (gridPanelJsvar.getSize().height) - 55;
+            var newWidth = (gridPanelJsvar.getSize().width);
+            gridJsvar.setHeight(newHeight);
+            gridJsvar.setWidth(newWidth);
+            gridJsvar.render();
+        }
+
+        Ext.onReady(function () {
+            resize();
+            Ext.EventManager.onWindowResize(function () {
+                resize();
+            });
+            downloaddanduBtn.hide();
+        });
+        //]]>
+    </script>
+</f:view>

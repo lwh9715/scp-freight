@@ -1,0 +1,70 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>1.1 文挡介绍</title>
+<link rel="stylesheet" href="../../resource/css/template.css" type="text/css" />
+<link rel="stylesheet" href="../../resource/css/document.css" type="text/css" /></head>
+<style type="text/css">
+<!--
+.STYLE1 {font-family: "宋体"}
+-->
+img
+{
+	margin-left:50px;
+} 
+</style></head>
+
+<body>
+<div id="content-bg">
+	<div id="previous-next">
+		<!--  <div id="next"><a href="3.html">下一页</a></div>
+		<div id="previous"><a href="1.html">上一页</a></div>-->		
+	</div>
+	<div id="centent">
+	<div id="centent-title">
+	  <h2 style='margin-left:1.0cm;text-indent:-1.0cm;tab-stops:list 18.0pt 1.0cm'>
+	  <a name="_Toc230415866"></a>
+	  <a name="_Toc209513084"></a>
+	  <a name="_Toc209496263"></a>
+	  <a name="_Toc207683905"></a>
+	  <a name="_Toc181602145">
+	  <span style='mso-bookmark:_Toc207683905'>
+	  <span style='mso-bookmark:_Toc209496263'>
+	  <span style='mso-bookmark:_Toc209513084'>
+	  <span style='mso-bookmark:_Toc230415866'>
+	  <span lang=EN-US style='mso-fareast-font-family:Arial;mso-bidi-font-family:Arial'>
+	  <span style='mso-list:Ignore'>12.1<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
+</span></span></span><span style='font-family:&quot;黑体&quot;;mso-ascii-font-family: Arial'>EDI-PIL(操作)</span></span></span></span></span></a></h2>
+	</div>
+	</div>
+	<div class="related-title"><div class="related-title-left"></div> PIL注意事项:</div>
+		<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'><span style="color:Blue">1.录系统：</span><br/>
+		船名代码，SO日期，ETD ,ETA，约主，MBL 类型，航线，签单地点<br/>
+		  装港代码，卸港代码，目的港代码，目的地代码----不超过5个字母,起运港代码可以用附件POL CODE 资料查询<br/>
+		  货描处需要加上: FREIGHT PREPAID 或者 FREIGHT COLLECT ，否则提单上显示不出来，其他正常录入</p>
+		<p><img src="images/tu7.png" /></p>
+		<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'><span style="color:Blue">2.订舱界面：</span><br/>
+		需要提交的发货人，收货人，通知人要录在订舱这里；HS CODE 可以用附件资料查询</p>
+		<p><img src="images/tu8.png" /></p>
+		<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'><span style="color:Blue">3.EDI 界面 -- EDI-PIL：</span><br/>
+		船名代码处输入船名，选择正确的船名后，点击检索 -- 报文规范处现在对单 -- SALES CODE,看SO 上的SALES REP -- <br/>
+ 		  订舱代理代码以SO 上的订舱SHIPPER 为准，填写下面代码 -- 在对应工作号前面的框框点 勾 <br/>
+    	-- 点击导出(A.导出失败,按照结果里面的指示修改资料;B.导出成功到桌面的资料，可以用记事本文件格式打开查看）<br/>
+	  	Bkg party code: CN 900140 &nbsp; 深圳/汕头&nbsp;&nbsp;agent code CN900139&nbsp; 广州<br/>
+	  	BPC: &nbsp; CN900303 中山   <span style="width:50px;margin-left:100px;">code CN108608    江苏安徽江西</span> </p>
+	  	<p><img src="images/tu9.png" /></p>
+		<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'><span style="color:Blue">4.导出成功的附件，需要发邮件给到 :cnesi.email@sgp.pilship.com （中山PIL 发到这个邮箱，其他PIL 待定）  和对应的文件邮箱</span><br/>
+	 	 如要求显示的起运港，目的港等资料与系统显示不一样的，可以在邮件内注明<br/>
+	 	 如果是拆单或者并单的话不用做ESI 的，按以前的补料就行</p>
+	
+	<div id="related">
+		<div class="related-title"><div class="related-title-left"></div>相关主题：</div>
+		<div class="related-list"><li><span style='font-family:宋体;mso-ascii-font-family:"Times New Roman";mso-hansi-font-family:"Times New Roman"'><a href="2.html">第12章 第1节  PIL(IT)</a></span></li>
+</div>
+	</div>
+	<div id="footer">	
+		<div class="copyright" align="center">版权信息 @ CopyRight 航迅科技 <a href="http://www.ufms.cn" target="_blank">UFMS货代系统</a></div>
+	</div>
+</div>
+</body>
+</html>

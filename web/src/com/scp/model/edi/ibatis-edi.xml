@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>	
+	<select id="pages.module.edi.edi_mapBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM edi_map t 
+		WHERE $qry$
+		ORDER BY editype,maptype
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.edi.edi_mapBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM edi_map t 
+		WHERE $qry$
+	</select>
+	<select id="pages.module.edi.ediinttraBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 t.*,
+		 (SELECT SUM(e.expcount) FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'INTTRA') AS expcount,
+		 (SELECT string_agg(e.tips,',') FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'INTTRA') AS tips
+		FROM _fina_jobs t 
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND $dynamicClauseWhere$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+		ORDER BY jobdate DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.edi.ediinttraBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _fina_jobs t
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND $dynamicClauseWhere$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+	</select>
+
+	<select id="pages.module.edi.ediinttraphraseBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			 *
+			 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+			 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM edi_inttra_phrase t
+		WHERE $qry$
+		ORDER by segment,code,desc_seg,desc_code,srcfile,tblname,colname
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.edi.ediinttraphraseBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		 count(*) AS counts
+		FROM edi_inttra_phrase t
+		WHERE $qry$
+	</select>
+
+	<select id="pages.module.edi.ediinttrareportBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			 *
+		FROM edi_inttra_report t
+		WHERE $qry$
+		ORDER BY id DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.edi.ediinttrareportBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		 count(*) AS counts
+		FROM edi_inttra_report t
+		WHERE $qry$
+	</select>
+
+	<select id="pages.module.edi.ediinttrareportBean.gridReportdtl.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			 *
+		FROM edi_inttra_reportdtl t
+		WHERE $qry$
+		order by id
+	</select>
+	<select id="pages.module.edi.ediinttrareportBean.gridReportdtl.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		 count(*) AS counts
+		FROM edi_inttra_reportdtl t
+		WHERE $qry$
+	</select>
+
+	<select id="pages.module.edi.ediifcsumBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 id,nos,jobdate,sales,sonos,hblno,updater,carrier,
+		 (SELECT SUM(e.expcount) FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'IFCSUM') AS expcount,
+		 (SELECT string_agg(e.tips,',') FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'IFCSUM') AS tips,
+		 (SELECT string_agg(DISTINCT declareno,' ') FROM bus_ship_container WHERE isdelete = FALSE AND jobid = t.id) AS declarenos
+		FROM _fina_jobs t 
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND $dynamicClauseWhere$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+		ORDER BY jobdate DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.edi.ediifcsumBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _fina_jobs t
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND $dynamicClauseWhere$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.edi.edipilBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 t.*,
+		 (SELECT SUM(e.expcount) FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'PIL') AS expcount,
+		 (SELECT string_agg(e.tips,',') FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'PIL') AS tips
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _fina_jobs t 
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND $dynamicClauseWhere$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+		ORDER BY jobdate DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.edi.edipilBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _fina_jobs t
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND $dynamicClauseWhere$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.edi.pdiwetransBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 t.*,
+		 (SELECT SUM(e.expcount) FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'PIL') AS expcount,
+		 (SELECT string_agg(e.tips,',') FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'PIL') AS tips
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _fina_jobs t 
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND $dynamicClauseWhere$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+		ORDER BY jobdate DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.edi.pdiwetransBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _fina_jobs t
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND $dynamicClauseWhere$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.edi.ediiftminBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 t.*,
+		 (SELECT SUM(e.expcount) FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'IFTMIN') AS expcount,
+		 (SELECT string_agg(e.tips,',') FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'IFTMIN') AS tips
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		 ,(SELECT string_agg(DISTINCT declareno,' ') FROM bus_ship_container WHERE isdelete = FALSE AND jobid = t.id) AS declarenos
+		FROM _fina_jobs t 
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND $dynamicClauseWhere$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+		ORDER BY jobdate DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.edi.ediiftminBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _fina_jobs t
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND $dynamicClauseWhere$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+	</select>
+	<select id="pages.module.edi.ediiftmbfBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 t.*,
+		 (SELECT SUM(e.expcount) FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'IFTMBF') AS expcount,
+		 (SELECT string_agg(e.tips,',') FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'IFTMBF') AS tips
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _fina_jobs t 
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+		ORDER BY jobdate DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.edi.ediiftmbfBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _fina_jobs t
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+	</select>
+	
+	
+	<select id="pages.module.edi.edineolinkBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 t.*,
+		 (SELECT SUM(e.expcount) FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'NEOLINK') AS expcount,
+		 (SELECT string_agg(e.tips,',') FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'NEOLINK') AS tips
+		FROM _fina_jobs t 
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND $dynamicClauseWhere$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+		ORDER BY jobdate DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.edi.edineolinkBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _fina_jobs t
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND $dynamicClauseWhere$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.edi.edinbesbBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 t.*,
+		 (SELECT SUM(e.expcount) FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'NEOLINK') AS expcount,
+		 (SELECT string_agg(e.tips,',') FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'NEOLINK') AS tips
+		FROM _fina_jobs t 
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND $dynamicClauseWhere$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+		ORDER BY jobdate DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.edi.edinbesbBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _fina_jobs t
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND $dynamicClauseWhere$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+	</select>
+
+	<select id="pages.module.edi.ediproject44Bean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		 t.*,
+		 (SELECT SUM(e.expcount) FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'project44') AS expcount,
+		 (SELECT string_agg(e.tips,',') FROM edi_logs e WHERE  t.id=e.jobid AND edicode = 'project44') AS tips
+		FROM _fina_jobs t
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND $dynamicClauseWhere$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+		ORDER BY jobdate DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.edi.ediproject44Bean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		 count(*) AS counts
+		FROM _fina_jobs t
+		WHERE $qry$
+			 $filter$
+			 $corpfilter$
+			AND $dynamicClauseWhere$
+			AND jobtype = 'S'
+			AND isdelete = FALSE
+	</select>
+</sqlMap>

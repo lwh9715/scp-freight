@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.sysmgr.sms.smssentBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_sms t 
+		WHERE $qry$ 
+			AND isdelete = false
+		ORDER BY issent DESC , senttime DESC 
+	</select>
+	<select id="pages.sysmgr.sms.smssentBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_sms t 
+		WHERE $qry$ 
+			AND isdelete = false
+	</select>
+	
+	<select id="pages.sysmgr.sms.smsoutboxBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_sms t 
+		WHERE $qry$ 
+			AND isdelete = false
+		ORDER BY issent DESC , senttime , inputtime DESC
+	</select>
+	<select id="pages.sysmgr.sms.smsoutboxBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_sms t 
+		WHERE $qry$ 
+			AND isdelete = false
+	</select>
+	
+	
+	<select id="pages.sysmgr.sms.smssendBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _addresslist t 
+		WHERE $qry$ 
+		ORDER BY adrtype desc, code
+	</select>
+	<select id="pages.sysmgr.sms.smssendBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _addresslist t 
+		WHERE $qry$
+	</select>
+	
+	
+	<select id="pages.sysmgr.sms.smssendBean.gridHis.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_sms t 
+		WHERE $qry$ 
+			AND isdelete = false
+		ORDER BY issent DESC , senttime , inputtime DESC
+	</select>
+	<select id="pages.sysmgr.sms.smssendBean.gridHis.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_sms t 
+		WHERE $qry$ 
+			AND isdelete = false
+	</select>
+	
+	<select id="pages.sysmgr.sms.smssendBean.gridTemplet.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_templet t 
+		WHERE $qry$ 
+			AND isdelete = false
+			AND temtype = 'S'
+		ORDER BY inputtime DESC , abstract
+	</select>
+	<select id="pages.sysmgr.sms.smssendBean.gridTemplet.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_templet t 
+		WHERE $qry$ 
+			AND isdelete = false
+			AND temtype = 'S'
+	</select>
+	
+</sqlMap>

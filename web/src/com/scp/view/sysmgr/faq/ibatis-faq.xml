@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.sysmgr.faq.faqBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,(SELECT namec||'/'||COALESCE((SELECT namec FROM sys_corporation WHERE id = x.corpid),'')||'/'||COALESCE((SELECT name FROM sys_department WHERE id = x.deptid),'') FROM sys_user x WHERE code = t.inputer) inputeruser
+		FROM _sys_faq t 
+		WHERE $qry$
+		AND isdelete = FALSE
+		ORDER BY inputtime DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.faq.faqBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_faq t
+		WHERE $qry$
+		AND isdelete = FALSE
+	</select>
+	
+	
+	<select id="pages.sysmgr.faq.faqmgrBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _sys_faq t 
+		WHERE $qry$ 
+		AND isdelete = FALSE
+		ORDER BY inputtime DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.faq.faqmgrBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_faq t 
+		WHERE $qry$
+		AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.sysmgr.faq.faqeditBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _sys_faq t 
+		WHERE $qry$ 
+		AND isdelete = FALSE
+		ORDER BY inputtime DESC
+	</select>
+	<select id="pages.sysmgr.faq.faqeditBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_faq t 
+		WHERE $qry$
+		AND isdelete = FALSE
+	</select>
+	
+	
+	<select id="pages.sysmgr.faq.faqshowBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _sys_faq t 
+		WHERE $qry$ 
+		AND isdelete = FALSE
+		ORDER BY inputtime DESC
+	</select>
+	<select id="pages.sysmgr.faq.faqshowBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_faq t 
+		WHERE $qry$
+		AND isdelete = FALSE
+	</select>
+	
+	
+</sqlMap>

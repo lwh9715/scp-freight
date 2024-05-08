@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/pages/module/common/css/tabPanelIcon.css" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+		<script>
+        //<![CDATA[
+		function copyadd(){
+
+        }
+		//]]>
+        </script>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading...">
+		<ajax:conversationActivator/>
+		<layout:borderLayout fitToBody="true" fit="true">
+
+			<layout:panel id="gridPanel" fit="true" jsvar="gridPanelJsvar" hideBorders="true" region="west"
+				width="560" split="true">
+				
+				<layout:tabLayout>
+					<layout:panel title="组织架构">
+						<w:form>
+							<div style="height: 0px;">
+							<w:textField selectOnFocus="true" id="roleid" hidden="true"></w:textField>
+							</div>
+							<w:toolBar>
+								<w:button id="refreshTree" jsvar="refreshTreeJsVar" label="#{l.m['刷新']}"
+									image="#{constantBean.contextPath}/images/refresh.png" />
+								<w:button id="expandAll" value="#{l.m['展开']}" onclick="navTreeJsVar.expandAll(true);"
+									image="#{constantBean.contextPath}/images/save.png" />
+								<w:button id="closeAll" value="#{l.m['收起']}" onclick="navTreeJsVar.collapseAll(true);"
+									image="#{constantBean.contextPath}/images/save.png" />
+								<w:button id="selectTreeNode" value="#{l.m['选择']}" 
+									image="#{constantBean.contextPath}/images/save.png" />
+								
+								<w:textField id="company"></w:textField>
+								<w:button id="inquiry" value="#{l.m['查询']}"
+									image="#{constantBean.contextPath}/images/query-small.png" />
+							</w:toolBar>
+							
+							<w:tree id="navTree01" autoLeaf="true" expandAll="false" autoScroll="true" border="false" jsvar="navTreeJsVar" onclick="return false"
+								style="height:100%;width:100%;border-color: blue" rootVisible="false" loadAllNodes="true" />
+						</w:form>
+					</layout:panel>
+					<layout:panel title="用户">
+						<w:form>
+							<div style="height: 0px;">
+							<w:textField selectOnFocus="true" id="pkId" hidden="true" jsvar="pkId"></w:textField> <w:textField
+								selectOnFocus="false" id="roleid" hidden="true"></w:textField></div>
+							<w:toolBar>
+								<w:button id="qryRefresh" value="#{l.m['刷新']}"
+									image="#{constantBean.contextPath}/images/new.png" />
+								<w:button id="save" value="#{l.m['选择']}"
+									image="#{constantBean.contextPath}/images/save.png" />
+							</w:toolBar>
+							
+							<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+								<layout:cell style="width: 25px;">
+									<w:button id="clearQryKey" label="" width="25"
+										image="#{constantBean.contextPath}/images/clear.png" />
+								</layout:cell>
+								<w:textField selectOnFocus="true" width="90"
+									value="#{pages.sysmgr.role.userdtlBean.qryMap['code']}" />
+								<w:textField selectOnFocus="true" width="90"
+									value="#{pages.sysmgr.role.userdtlBean.qryMap['namec']}" />
+								<w:textField selectOnFocus="true" width="90"
+									value="#{pages.sysmgr.role.userdtlBean.qryMap['namee']}" />
+								<w:textField selectOnFocus="true" width="70"
+									value="#{pages.sysmgr.role.userdtlBean.qryMap['company']}" />
+								<w:textField selectOnFocus="true" width="90"
+									value="#{pages.sysmgr.role.userdtlBean.qryMap['department']}" />
+								<w:textField selectOnFocus="true" width="90"
+									value="#{pages.sysmgr.role.userdtlBean.qryMap['jobdesc']}" />
+							</layout:panelGrid>
+							
+							<w:dataGrid height="350" paged="false" rows="100000" id="grid" jsvar="gridJsvar" loadMask="false"
+								toolBarPosition="bottom" idColumn="id" selectionModel="#{constantBean.checkBox}"
+								selectable="true" onrowselect="return false" onrowdeselect="return false">
+								<w:outputColumn id="id" header="ID" hidden="true" />
+								<w:outputColumn header="#{l.m['用户代码']}" id="code" width="90" align="LEFT" sortable="true" />
+								<w:outputColumn header="#{l.m['中文名']}" id="namec" width="90" align="LEFT" sortable="true" />
+								<w:outputColumn header="#{l.m['英文名']}" id="namee" width="90" align="LEFT" sortable="true" />
+								<w:outputColumn header="#{l.m['公司']}" id="company" width="70" align="LEFT" sortable="true" />
+								<w:outputColumn header="#{l.m['部门']}" id="department" width="90" align="LEFT" sortable="true" />
+								<w:outputColumn header="#{l.m['职务']}" id="jobdesc" width="90" align="LEFT" sortable="true" />
+							</w:dataGrid>
+						</w:form>
+					</layout:panel>
+				</layout:tabLayout>
+				
+			</layout:panel>
+
+
+			<layout:panel id="gridRightPanel" fit="true" jsvar="gridRightPanelJsvar" hideBorders="true"
+				split="true" region="center">
+				<w:form>
+					<div style="height: 0px;">
+					<w:textField selectOnFocus="true" id="pkId" hidden="true" jsvar="pkId"></w:textField> <w:textField
+						selectOnFocus="false" id="roleid" hidden="true"></w:textField></div>
+					<w:toolBar>
+						<w:button id="refresh2" value="#{l.m['刷新']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+						<w:button id="remove" value="#{l.m['移除']}" onclick="return confirm('#{l.m['确定要移除吗?']}');"
+							image="#{constantBean.contextPath}/images/save.png" />
+					</w:toolBar>
+					<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+						<layout:cell style="width: 25px;">
+							<w:button id="clearQryKey2" label="" width="25"
+								image="#{constantBean.contextPath}/images/clear.png" />
+						</layout:cell>
+						<w:textField selectOnFocus="true" width="90"
+							value="#{pages.sysmgr.role.userdtlBean.qryMap2['code']}" />
+						<w:textField selectOnFocus="true" width="120"
+							value="#{pages.sysmgr.role.userdtlBean.qryMap2['namec']}" />
+						<!--<w:textField selectOnFocus="true" width="160"
+							value="#{pages.sysmgr.role.userdtlBean.qryMap2['namee']}" />
+						--><w:textField selectOnFocus="true" width="120"
+							value="#{pages.sysmgr.role.userdtlBean.qryMap2['company']}" />
+						<w:textField selectOnFocus="true" width="100"
+							value="#{pages.sysmgr.role.userdtlBean.qryMap2['department']}" />
+					</layout:panelGrid>
+					<w:dataGrid height="350" paged="false" rows="100000" id="gridRight" jsvar="gridRightJsvar"
+						loadMask="false" toolBarPosition="bottom" idColumn="id" onrowselect="return false" onrowdeselect="return false"
+						selectionModel="#{constantBean.checkBox}" selectable="true">
+						<w:outputColumn id="id" header="ID" hidden="true" />
+						<w:outputColumn id="showlevel" header="level" hidden="true" />
+						<w:outputColumn id="orgid" header="orgid" hidden="true" />
+						<w:outputColumn header="#{l.m['代码']}" id="code" width="90" align="LEFT" sortable="true" clientFormatter="formatLevel"/>
+						<w:outputColumn header="#{l.m['中文名']}" id="namec" width="120" align="LEFT" sortable="true" clientFormatter="formatLevel"/>
+						<!--<w:outputColumn header="#{l.m['英文名']}" id="namee" width="160" align="LEFT" sortable="true" clientFormatter="formatLevel"/>
+						--><w:outputColumn header="#{l.m['公司']}" id="company" width="120" align="LEFT" sortable="true" clientFormatter="formatLevel"/>
+						<w:outputColumn header="#{l.m['部门']}" id="department" width="100" align="LEFT" sortable="true" clientFormatter="formatLevel"/>
+						<w:outputColumn header="#{l.m['职务']}" id="jobdesc" width="100" align="right" sortable="true" clientFormatter="formatLevel"/>
+						<w:outputColumn header="#{l.m['数量']}" id="usercount" width="70" align="right" sortable="true" clientFormatter="formatLevel"/>
+						<w:outputColumn header="#{l.m['数量']}" id="usercountreal" width="70" align="right" sortable="true" clientFormatter="formatLevel"/>
+						
+					</w:dataGrid>
+				</w:form>
+			</layout:panel>
+
+		</layout:borderLayout>
+
+	</w:page>
+
+
+	<script>
+	//<![CDATA[
+	
+	function formatLevel(v,m,r) {
+	 	var showlevel = r.get('showlevel');
+		if("1" == showlevel){
+			m.attr = "style = 'color:red'";
+		}else if("2" == showlevel){	
+			m.attr = "style = 'color:green'";
+		}else{
+		
+		}
+        return v;
+    }
+	
+	function resize(){
+		var newHeight = (gridPanelJsvar.getSize().height) - 55;
+		var newWidth = (gridPanelJsvar.getSize().width);
+	    gridJsvar.setHeight(newHeight);
+	    gridJsvar.setWidth(newWidth);
+		gridJsvar.render();
+		
+		newHeight = (gridRightPanelJsvar.getSize().height) - 30;
+		newWidth = (gridRightPanelJsvar.getSize().width);
+	    gridRightJsvar.setHeight(newHeight);
+	    gridRightJsvar.setWidth(newWidth);
+		gridRightJsvar.render();
+	}
+	Ext.onReady(function(){
+		resize();
+		Ext.EventManager.onWindowResize(function(){
+			resize();
+		});
+		refreshTreeJsVar.fireEvent('click');
+     });
+     //]]>
+</script>
+</f:view>

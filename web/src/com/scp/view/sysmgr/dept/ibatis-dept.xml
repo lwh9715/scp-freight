@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.sysmgr.dept.deptBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,(select name from sys_department where isdelete = false AND id = t.parentid) AS parentdept
+		FROM _sys_department t 
+		WHERE $qry$ 
+		ORDER BY companycode,code,parentid
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.dept.deptBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_department t 
+		WHERE $qry$ 
+	</select>
+</sqlMap>

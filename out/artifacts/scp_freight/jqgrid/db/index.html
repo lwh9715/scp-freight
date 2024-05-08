@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>TaffyDB</title>
+	<script src="taffy-min.js"></script>
+</head>
+
+<body>
+	
+<h3>TaffyDB数据库，无演示效果，大家些注意查看原代码！</h3>	
+
+//https://www.cnblogs.com/bobzhangfw/p/3658508.html
+	
+<pre>
+//创建一个数据库
+var localdb = TAFFY([
+    {"id":1,"gender":"M","first":"John","last":"Smith","city":"Seattle, WA","status":"Active"},
+    {"id":2,"gender":"F","first":"Kelly","last":"Ruth","city":"Dallas, TX","status":"Active"},
+    {"id":3,"gender":"M","first":"Jeff","last":"Stevenson","city":"Washington, D.C.","status":"Active"},
+    {"id":4,"gender":"F","first":"Jennifer","last":"Gill","city":"Seattle, WA","status":"Active"}    
+]);
+
+//使用字段名或者字段的关系过滤
+// Find all the localdb in Seattle
+localdb({city:"Seattle, WA"});
+
+// Find John Smith, by ID
+localdb({id:1});
+
+// Find John Smith, by Name
+localdb({first:"John",last:"Smith"});
+
+//很容易访问数据
+// Kelly's record
+var kelly = localdb({id:2}).first();
+
+// Kelly's last name
+var kellyslastname = kelly.last;
+
+// Get an array of record ids
+var cities = localdb().select("id");
+
+// Get an array of distinct cities
+var cities = localdb().distinct("city");
+
+// Apply a function to all the male localdb
+localdb({gender:"M"}).each(function (r) {
+   alert(r.name + "!");
+});
+
+//快速地修改数据
+// Move John Smith to Las Vegas
+localdb({first:"John",last:"Smith"}).update({city:"Las Vegas, NV:"});
+
+// Remove Jennifer Gill as a friend
+localdb({id:4}).remove();
+
+// insert a new friend
+localdb.insert({"id":5,"gender":"F","first":"Jennifer","last":"Gill","city":"Seattle, WA","status":"Active"});
+</pre>	
+	
+<script>
+
+//创建并填充数据
+var localdb = TAFFY([
+	{"id":1,"gender":"M","first":"John","last":"Smith","city":"Seattle, WA","status":"Active"},
+	{"id":2,"gender":"F","first":"Kelly","last":"Ruth","city":"Dallas, TX","status":"Active"},
+	{"id":3,"gender":"M","first":"Jeff","last":"Stevenson","city":"Washington, D.C.","status":"Active"},
+	{"id":4,"gender":"F","first":"Jennifer","last":"Gill","city":"Seattle, WA","status":"Active"}	
+]);
+	
+//查找，注意得到的是一个TaffyDB对象
+// Find all the localdb in Seattle
+localdb({city:"Seattle, WA"});	
+
+	
+// Kelly's record
+var kelly = localdb({id:2}).first();
+
+	
+// Kelly's last name
+var kellyslastname = kelly.last;
+//alert(kellyslastname);
+// Get an array of record ids
+var cities = localdb().select("id");
+
+// Get an array of distinct cities
+var cities = localdb().distinct("city");
+
+
+</script>
+	
+	
+	
+</body>
+</html>

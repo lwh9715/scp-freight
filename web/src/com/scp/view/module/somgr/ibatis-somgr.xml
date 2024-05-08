@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.module.somgr.sonoBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+			 piece1,piece1,piece3,(piece4+piece5+piece6+piece7+piece8+piece9+piece10+piece11+piece12) AS pieceothers
+			,*
+			,(SELECT namec||'/'||namee FROM sys_user x WHERE id = b.salesid limit 1) sales
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = b.inputer and x.isdelete = false limit 1),b.inputer) AS inputername
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = b.updater and x.isdelete = false limit 1),b.updater) AS updatername
+			,(SELECT STRING_AGG(x.cntno,',') FROM bus_ship_book_cnt x where x.linkid = b.id) AS cntnos
+		FROM  _bus_ship_booking_cimc b
+		WHERE $qry$
+			$filter$
+			$filterStatus$
+		ORDER BY inputtime DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.somgr.sonoBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			count(1) AS counts
+		FROM _bus_ship_booking_cimc b
+		WHERE $qry$
+			$filter$
+			$filterStatus$
+	</select>
+
+	<select id="pages.module.somgr.soqueryBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			 piece1,piece1,piece3,(piece4+piece5+piece6+piece7+piece8+piece9+piece10+piece11+piece12) AS pieceothers
+			,*
+			,(SELECT namec||'/'||namee FROM sys_user x WHERE id = b.salesid limit 1) sales
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = b.inputer and x.isdelete = false limit 1),b.inputer) AS inputername
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = b.updater and x.isdelete = false limit 1),b.updater) AS updatername
+		FROM  _bus_ship_booking_cimc b
+		WHERE $qry$
+			$filter$
+			AND $dynamicClauseWhere$
+			AND b.sono is not null 
+			AND b.sono != ''
+		ORDER BY id DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.somgr.soqueryBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+			count(*) AS counts 
+		FROM _bus_ship_booking_cimc b
+		WHERE $qry$ 
+			$filter$
+			AND $dynamicClauseWhere$
+			AND b.sono is not null 
+			AND b.sono != ''
+	</select>
+
+	<select id="pages.module.somgr.qrysoBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+			* 
+			,(SELECT namec||'/'||namee FROM sys_user x WHERE id = b.salesid limit 1) sales
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = b.inputer and x.isdelete = false limit 1),b.inputer) AS inputername
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = b.updater and x.isdelete = false limit 1),b.updater) AS updatername
+		FROM  _bus_ship_booking_cimc b
+		WHERE $qry$ 
+			$filter$
+			AND b.jobid IS NULL 
+			AND b.isvalid=true
+			AND b.sono is not null 
+			AND b.sono != ''
+		ORDER BY id DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.somgr.qrysoBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  _bus_ship_booking_cimc b
+		WHERE $qry$ 
+			AND b.jobid IS NULL 
+			AND b.isvalid=true
+			AND b.sono is not null 
+			AND b.sono != ''
+	</select>
+	<select id="pages.module.somgr.sostatisticsBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+			 piece1,piece1,piece3,(piece4+piece5+piece6+piece7+piece8+piece9+piece10+piece11+piece12) AS pieceothers
+			,* 
+			,(SELECT namec||'/'||namee FROM sys_user x WHERE id = b.salesid limit 1) sales
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = b.inputer and x.isdelete = false limit 1),b.inputer) AS inputername
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = b.updater and x.isdelete = false limit 1),b.updater) AS updatername
+		FROM  _bus_ship_booking_cimc b
+		WHERE $qry$
+			$filter$
+			$dynamicClauseWhere$
+			AND b.sono is not null
+			AND b.sono != ''
+		ORDER BY id DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.somgr.sostatisticsBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+			count(*) AS counts 
+		FROM _bus_ship_booking_cimc b
+		WHERE $qry$ 
+			$filter$
+			$dynamicClauseWhere$
+			AND b.sono is not null 
+			AND b.sono != ''
+	</select>
+
+
+	<select id="pages.module.somgr.sonoBean.gridShipcarrier.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		 *
+		FROM sys_corporation t
+		WHERE
+			$qry$
+			AND iscarrier = TRUE AND isdelete = false
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.somgr.sonoBean.gridShipcarrier.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		  count(1) as counts
+		FROM sys_corporation t
+		WHERE
+			$qry$
+			AND iscarrier = TRUE AND isdelete = false
+	</select>
+	
+	<select id="pages.module.somgr.bookingBean.gridCnts.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		 *
+		FROM _bus_ship_book_cnt t
+		WHERE
+			$qry$
+			$filter$
+		ORDER BY id 
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.somgr.bookingBean.gridCnts.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		  count(1) as counts
+		FROM _bus_ship_book_cnt t
+		WHERE
+			$qry$
+			$filter$
+	</select>
+	
+	
+	<select id="pages.module.somgr.bookingBean.gridCntTracks.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		 *
+		FROM bus_ship_container_track t
+		WHERE
+			$qry$
+			$filter$
+		ORDER BY dealdate DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.somgr.bookingBean.gridCntTracks.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		  count(1) as counts
+		FROM bus_ship_container_track t
+		WHERE
+			$qry$
+			$filter$
+	</select>
+	
+	<select id="pages.module.somgr.bookingBean.gridVesVoy.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		 *
+		FROM bus_ship_book_vesvoy t
+		WHERE
+			$qry$
+			$filter$
+		ORDER BY id 
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.somgr.bookingBean.gridVesVoy.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		  count(1) as counts
+		FROM bus_ship_book_vesvoy t
+		WHERE
+			$qry$
+			$filter$
+	</select>
+
+	<select id="pages.module.somgr.gridCntTracksBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		 *
+		FROM
+		(
+            SELECT
+            	bsb.sono AS sono,
+                bsb.jobid AS jobid,
+                bsbc.cntno AS bsbcCntno,
+                bsct.*
+            FROM
+                bus_ship_booking bsb
+                LEFT JOIN bus_ship_book_cnt bsbc ON bsb.ID = bsbc.linkid
+                LEFT JOIN bus_ship_container_track bsct ON bsbc.ID = bsct.linkid
+            WHERE
+                bsct.ID IS NOT NULL
+		) t
+		WHERE
+			$qry$
+			$filter$
+		ORDER BY dealdate DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.somgr.gridCntTracksBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		  count(1) as counts
+		FROM
+		(
+            SELECT
+            	bsb.sono AS sono,
+                bsb.jobid AS jobid,
+                bsbc.cntno AS bsbcCntno,
+                bsct.*
+            FROM
+                bus_ship_booking bsb
+                LEFT JOIN bus_ship_book_cnt bsbc ON bsb.ID = bsbc.linkid
+                LEFT JOIN bus_ship_container_track bsct ON bsbc.ID = bsct.linkid
+            WHERE
+                bsct.ID IS NOT NULL
+		) t
+		WHERE
+			$qry$
+			$filter$
+	</select>
+
+
+	<select id="pages.module.somgr.sonoinquiryBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			*
+		from
+		(
+			select
+				b.*
+				,(COALESCE(b.id ::text,'')|| '_' || COALESCE(bsbc.id ::text,'')) AS bid
+				,bsbc.cntno as bsbccntno
+				,bsbc.cntype as bsbccntype
+
+				,(CASE WHEN EXISTS(SELECT 1 FROM bus_ship_container_track bsct WHERE bsbc.id = bsct.linkid and (sts1code ='EE' or sts1code ='STSP') limit 1) THEN 'Y' ELSE 'N' END) AS emptycase
+				,(SELECT dealdate FROM bus_ship_container_track bsct WHERE bsbc.id = bsct.linkid and (sts1code ='EE' or sts1code ='STSP') limit 1) AS emptycasetime
+				,(SELECT locatione FROM bus_ship_container_track bsct WHERE bsbc.id = bsct.linkid and (sts1code ='EE' or sts1code ='STSP') limit 1) AS emptycaseplace
+
+				,(CASE WHEN EXISTS(SELECT 1 FROM bus_ship_container_track bsct WHERE bsbc.id = bsct.linkid and (sts1code ='OA' or sts1code ='GITM') limit 1) THEN 'Y' ELSE 'N' END) AS heavybox
+				,(SELECT dealdate FROM bus_ship_container_track bsct WHERE bsbc.id = bsct.linkid and (sts1code ='OA' or sts1code ='GITM') limit 1) AS heavyboxtime
+				,(SELECT locatione FROM bus_ship_container_track bsct WHERE bsbc.id = bsct.linkid and (sts1code ='OA' or sts1code ='GITM') limit 1) AS heavyboxplace
+
+				,(SELECT pol FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 0) AS pol0
+				,(SELECT pod FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 0) AS pod0
+				,'' AS cutofftime0
+				,(SELECT ves FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 0) AS ves0
+				,(SELECT voy FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 0) AS voy0
+				,(SELECT etd FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 0) AS etd0
+				,(SELECT atd FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 0) AS atd0
+				,'' AS atdtime0
+
+				,(SELECT pol FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 1) AS pol1
+				,(SELECT pod FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 1) AS pod1
+				,'' AS cutofftime1
+				,(SELECT ves FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 1) AS ves1
+				,(SELECT voy FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 1) AS voy1
+				,(SELECT etd FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 1) AS etd1
+				,(SELECT atd FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 1) AS atd1
+
+				,(SELECT namec||'/'||namee FROM sys_user x WHERE id = b.salesid limit 1) sales
+				,(SELECT fj.nos FROM fina_jobs fj WHERE fj.id = bsbc.jobid AND fj.isdelete = false LIMIT 1) as jobno2
+				<!--,(select tl.status  FROM api_vgm t,api_vgmdtl tl where 1=1 and t.id=tl.vgmid and t.isdelete = FALSE and tl.isdelete = FALSE and t.jobid =bsbc.jobid
+							and tl.containerno=bsbc.cntno limit 1) as vgmstatus-->
+				,(select tl.status  FROM api_vgmdtl tl where 1=1  and tl.isdelete = FALSE and tl.containerno = bsbc.cntno limit 1) as vgmstatus
+				,(select tl.resptime  FROM api_vgmdtl tl where 1=1  and tl.isdelete = FALSE and tl.containerno = bsbc.cntno limit 1) as vgmresptime
+			FROM  _bus_ship_booking_cimc b
+			left join bus_ship_book_cnt bsbc on b.id = bsbc.linkid
+		) aa
+		WHERE $qry$
+			$filter$
+			$filterStatus$
+		ORDER BY aa.id DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.somgr.sonoinquiryBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			count(1) AS counts
+		FROM
+		(
+
+		select
+			*
+		from
+		(
+			select
+				b.*
+				,(COALESCE(b.id ::text,'')|| '_' || COALESCE(bsbc.id ::text,'')) AS bid
+				,bsbc.cntno as bsbccntno
+				,bsbc.cntype as bsbccntype
+
+				,(CASE WHEN EXISTS(SELECT 1 FROM bus_ship_container_track bsct WHERE bsbc.id = bsct.linkid and (sts1code ='EE' or sts1code ='STSP') limit 1) THEN 'Y' ELSE 'N' END) AS emptycase
+				,(SELECT dealdate FROM bus_ship_container_track bsct WHERE bsbc.id = bsct.linkid and (sts1code ='EE' or sts1code ='STSP') limit 1) AS emptycasetime
+				,(SELECT locatione FROM bus_ship_container_track bsct WHERE bsbc.id = bsct.linkid and (sts1code ='EE' or sts1code ='STSP') limit 1) AS emptycaseplace
+
+				,(CASE WHEN EXISTS(SELECT 1 FROM bus_ship_container_track bsct WHERE bsbc.id = bsct.linkid and (sts1code ='OA' or sts1code ='GITM') limit 1) THEN 'Y' ELSE 'N' END) AS heavybox
+				,(SELECT dealdate FROM bus_ship_container_track bsct WHERE bsbc.id = bsct.linkid and (sts1code ='OA' or sts1code ='GITM') limit 1) AS heavyboxtime
+				,(SELECT locatione FROM bus_ship_container_track bsct WHERE bsbc.id = bsct.linkid and (sts1code ='OA' or sts1code ='GITM') limit 1) AS heavyboxplace
+
+				,(SELECT pol FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 0) AS pol0
+				,(SELECT pod FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 0) AS pod0
+				,'' AS cutofftime0
+				,(SELECT ves FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 0) AS ves0
+				,(SELECT voy FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 0) AS voy0
+				,(SELECT etd FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 0) AS etd0
+				,(SELECT atd FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 0) AS atd0
+				,'' AS atdtime0
+
+				,(SELECT pol FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 1) AS pol1
+				,(SELECT pod FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 1) AS pod1
+				,'' AS cutofftime1
+				,(SELECT ves FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 1) AS ves1
+				,(SELECT voy FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 1) AS voy1
+				,(SELECT etd FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 1) AS etd1
+				,(SELECT atd FROM bus_ship_book_vesvoy bsbv WHERE b.id = bsbv.linkid ORDER BY id   LIMIT 1 OFFSET 1) AS atd1
+
+				,(SELECT namec||'/'||namee FROM sys_user x WHERE id = b.salesid limit 1) sales
+			FROM  _bus_ship_booking_cimc b
+			left join bus_ship_book_cnt bsbc on b.id = bsbc.linkid
+		) aa
+		WHERE $qry$
+			$filter$
+			$filterStatus$
+		ORDER BY aa.id DESC
+
+		) bb
+	</select>
+</sqlMap>

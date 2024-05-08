@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="login_new.useronlineBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		*
+		,(select code from sys_user where id = o.userid) AS code
+		,(select namec from sys_user where id = o.userid) AS namec
+		FROM sys_useronline o 
+		WHERE $qry$
+		AND o.isonline = 'Y'
+		AND o.isdelete = false
+		AND o.isvalid = 'Y'
+		ORDER BY logintime DESC
+	</select>
+	<select id="login_new.useronlineBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		COUNT(*) AS counts
+		FROM sys_useronline o
+		WHERE $qry$
+		AND o.isonline = 'Y'
+		AND o.isdelete = false
+		AND o.isvalid = 'Y'
+	</select>
+</sqlMap>

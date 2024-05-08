@@ -1,0 +1,203 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:om="http://www.apusic.com/jsf/misc"
+	renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> <link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" /><link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+        <style type="text/css">
+            .msg {
+                margin-left: 10px;
+                margin-right: 10px;
+               	border-bottom: 1px dashed black;
+            }
+            
+            .head {
+                margin-left: 10px;
+                background:  #DEE3E7;
+                width: 98.6%;
+            }
+            
+            .author {
+                font: normal 12px Arial, sans-serif;
+                height: 200px;
+            }
+            
+            .title {
+                font-size: 14px;
+                font-weight: bold;
+                color: #000080
+            }
+            
+            .user {
+               font-family: Arial black;
+               font-weight: bold;
+            }
+            
+            .subject {
+            	font-family: Arial black;
+                font-weight: bold;
+                font-size:15px;
+            	color: #006699;
+            }
+            
+            .info {
+            	font: normal 12px Arial, sans-serif;
+	            font-weight: bold;
+                color: #006699;
+            }
+            
+            .timeInfo {
+            	font: normal 12px Arial, sans-serif;
+	            font-weight: bold;
+                color: #006699;
+            }
+            .headerInfo {
+            	font-size:14px;
+            	color: #FFA34F;
+            	font-weight: bold;	
+            }
+            .column1{ 
+				width: 15%; 
+			} 
+			
+			.column2{ 
+				width: 85%;
+			} 
+			.column11{ 
+				border-style:solid; 
+				border-width: 1px;
+				width: 15%; 
+				background-color: #477AA5;
+			} 
+			
+			.column22{ 
+				border-style:solid; 
+				border-width: 1px;
+				width: 85%;
+				background-color: #477AA5;
+			} 
+			
+			.column111{ 
+				vertical-align: top;
+				width: 15%; 
+			} 
+			
+			.column222{ 
+				vertical-align: top;
+				width: 85%;
+			} 
+        </style>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page title="#{l.m['留言板']}">
+		<w:pagingToolbar for="msgView" pageSize="10" displayInfo="true" />
+		<w:form>
+			<ajax:submitAction id="doResponse" jsvar="doResponse"/>
+			<w:toolBar>
+				<w:button id="refresh" value="#{l.m['刷新']}" jsvar="refresh"
+					image="#{constantBean.contextPath}/images/refresh.png" />
+				<w:separator/>
+				<!--<w:button id="doUntie" value="#{l.m['结贴']}" jsvar="doUntie"
+					image="#{constantBean.contextPath}/pages/common/resources/images/log.png" />-->
+			</w:toolBar>
+			<ajax:keyBinding key="F5" clientScript="tmpLoad()"/>
+			<h:panelGrid columns="2" layout="block" styleClass="head" columnClasses="column1,column2">
+				<h:outputLabel value=""/>
+				<h:outputLabel id="subject" styleClass="subject"/>
+			</h:panelGrid>
+			<h:panelGrid columns="2" layout="block" styleClass="head" columnClasses="column11,column22">
+				<f:verbatim>
+					<div align="center" class="headerInfo"><span>#{l.m['作者']}</span></div>
+				</f:verbatim>
+				<f:verbatim>
+					<div align="center" class="headerInfo"><span>#{l.m['内容']}</span></div>
+				</f:verbatim>
+			</h:panelGrid>
+			<w:dataView id="msgView" jsvar="msgView" var="p" rows="8">
+				<w:outputColumn id="inputer" value="#{p.inputer}" />
+				<w:outputColumn id="company" value="#{p.company}" />
+				<w:outputColumn id="faqid" value="#{p.faqid}" />
+				<w:outputColumn id="subject" value="#{p.subject}" />
+				<w:outputColumn id="classify" value="#{p.classify}" />
+				<w:outputColumn id="inputtime" value="#{p.inputtime}">
+					<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" timeZone="#{constantBean.timeZone}" />
+				</w:outputColumn>
+				<w:outputColumn id="keywords" value="#{p.keywords}" />
+				<w:outputColumn id="msgcontent" value="#{p.msgcontent}" />
+				<w:outputColumn id="satisfying" value="#{p.satisfying}" />
+				<f:facet name="template">
+                    <h:panelGroup layout="block" styleClass="msg">
+                        <h:panelGrid columns="2" style="width: 100%" bgcolor="#EFEFEF" columnClasses="column111,column222">
+                        	<h:panelGrid columns="1" styleClass="author" style="width: 100%">
+	                        	<f:verbatim>
+	                        		<span class="user" style="text-align: center">{inputer}</span>
+	                        	</f:verbatim>
+	                        	<!--<f:verbatim>
+	                        		<span>部门</span>
+	                        		<span class="info">{company}</span>
+	                        	</f:verbatim>
+	                        	<f:verbatim>
+	                        	</f:verbatim>
+                        		-->
+                        	</h:panelGrid>
+                            <h:panelGrid columns="1" bgcolor="#FFFFFF" style="width: 100%;height: 200px;margin:5px 0px 5px 0px">
+                                <f:verbatim>
+                                	<span class="info">#{l.m['发表于']}</span>
+                                    <span class="timeInfo">{inputtime}</span>
+                                    <hr />
+                                </f:verbatim>
+                                <f:verbatim>
+                                    <span style="font-size: 14px">{msgcontent}</span>
+                                </f:verbatim>
+                                <f:verbatim>
+                                    <div align="right">
+										<input onclick="respFunc({faqid})" type="submit" value="#{l.m['回复']}" />
+									</div>
+                                </f:verbatim>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </f:facet>
+                <f:facet name="empty">
+                    <f:verbatim>No data to display.</f:verbatim>
+                </f:facet>
+			</w:dataView>
+		</w:form>
+		<layout:window maximizable="true" id="respWin" title="#{l.m['留言']}" width="800" height="500" jsvar="respWin" onclose="refresh.fireEvent('click');" constrainHeader="true">
+			<w:iframe id="respIfram" name="respIfram" frameborder="no" style="width: 100%;height: 100%"/>
+		</layout:window>
+	</w:page>
+	<w:script type="text/javascript" src="/pages/common/resources/js/computeTime.js"></w:script>
+		<script>
+			//<![CDATA[
+			function scrollCtrl(type) {
+				if(type == 1) {
+					window.setTimeout(scrollButtom,100);
+				}else if(type == 2){
+					window.scrollTo(0,0);
+				}
+			}
+			
+			function scrollButtom() {
+				window.scrollTo(0,document.body.scrollHeight);
+			}
+			
+			function respFunc (faqid) {
+				doResponse.addParam("faqid",faqid);
+				doResponse.submit();
+			}
+			/**
+				Ext.onReady(function() {
+		          	window.onbeforeunload = function(){
+		          		if(window.opener.refresh != undefined) {
+			          		window.opener.refresh.fireEvent('click');
+		          		}
+		          	}
+		        });
+			*/
+			//]]>
+		</script>
+</f:view>

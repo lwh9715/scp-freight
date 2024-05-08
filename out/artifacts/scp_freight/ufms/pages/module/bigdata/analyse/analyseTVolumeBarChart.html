@@ -1,0 +1,897 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<!-- 引入echarts文件 -->
+<script src="/scp/common/js/echarts.min.js"></script>
+<link rel="stylesheet" href="/scp/layui/css/layui.css">
+<script src="/scp/common/js/bak/jquery.min.js"></script>
+<script src="/scp/layui/layui.js"></script>
+<script src="/scp/common/js/jquery.cookie.js?t=1"></script>
+<script src="/scp/ufms/static/js/ufms.common.js?t=13" ></script>
+
+<title>月份年份T量对比图</title>
+	<style type="text/css">
+		html, body { height: 100%; margin: 0; }
+		.chart_box {
+			height: 33%; width: 98%;
+			position: relative;
+		}
+		select{
+		    height: 38px;
+		    width: 133px;
+		    border: 10px;
+		}
+		.layui-input-block{
+			margin-left: 80px;
+		}
+		.layui-form-label{
+			text-align: center;
+			width: 60px;
+			background-color: #f2f2f27d;
+			border-radius: 12px;
+		}
+		.layui-form-item{
+			border-radius: 2px;
+		}
+		.layui-tab-item {
+			width: 226px;
+		}
+	</style>
+</head>
+<body>
+	<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+	<div class="chart_box" id = "chart_box" >
+	    <div id="mainWeekOption" style="width: 900px; height: 300px; float: right;"></div>
+		<div id = "c_select"  style="width: 300px; float:right;">
+			<div class="layui-tab-item layui-show" >
+				    <!-- <div class="layui-form-item" id = "show_month_t_volume" style="display:none;">
+				    	<button onclick="show_month_charts()" id = "b_show_month" type="button"  class="layui-btn layui-btn-normal layui-btn-fluid" lay-submit="" lay-filter="queryfcl">切换月T量对比图(点击切换)</button>
+				    </div>
+				    <div class="layui-form-item" id = "show_week_t_volume">
+				    	<button onclick="show_week_charts()" id = "b_show_week" type="button" class="layui-btn layui-btn-normal layui-btn-fluid" lay-submit="" lay-filter="queryfcl">切换周T量对比图(点击切换)</button>
+				    </div> -->
+			    	<div class="layui-form-item" id="fun_div" style="border: #666666 1px solid; margin-top: 5px;">
+					    <label id = "l_company_choose" class="layui-form-label"><span class="translate">分公司</span></label>
+					    <div class="layui-input-block" d = "d_company_choose">
+					      <select id = "company_choose" onchange="change_company()">
+					         <option value="">所有分公司</option>
+					         <option value="100">宁波分公司</option>
+					         <option value="">宁波分公司</option>
+					      </select>
+					    </div>
+				    </div>
+			    </div>
+		</div>
+	</div>
+	<div class="chart_box">
+	    <div id="mainOption" style="width: 900px; height: 300px; float: right;"></div>
+	</div>
+	<div class="chart_box">
+		<div id="compByYear" style="width: 900px; height: 300px; "></div>
+	</div>
+	
+
+<script type="text/javascript">
+	var myChart;
+	var myChart2;
+	var myChart3;
+	layui.use('layer', function(){
+	   var layer = layui.layer;
+	}); 
+		window.onload=function(){
+			$('#c_select').css('display',"none");
+			var loading = layer.load(0, {
+    	        shade: false,
+    	        time: 2*1000
+    	    });
+			//初始化饼图需要数据
+			actionGet('/analyse_t_volume','get_t_volume_data', '',function(res){
+			    if('' == res || null == res){
+				    return false;
+				}
+			    data = eval('(' + res + ')');
+		    	// 初始化内容 
+		    	
+		    	var selectValue = eval('(' + data['selectValue'] + ')');
+		    	var select_option = '<option value="">所有分公司</option>';
+		    	$('#company_choose').html("");
+		    	for (var i = 0; i < selectValue.length; i++) {
+					var value = selectValue[i].id;
+					var abbr = selectValue[i].abbr;
+					select_option += '<option value="'+value+'">'+abbr+'</option>';
+				}
+		    	$('#company_choose').html(select_option);
+		    	
+		    	var yData = new Array();
+		    	var y1Data = new Array();
+		    	var y = new Array();
+		    	if(null != data['yData'] && '' != data['yData']){
+		    		y = eval('(' + data['yData'] + ')');
+		    	}
+		    	
+		    	var y1 = new Array();
+		    	if(null != data['y1Data'] && '' != data['y1Data']){
+		    		y1 = eval('(' + data['y1Data'] + ')');
+		    	}
+		    	var y1 = eval('(' + data['y1Data'] + ')');
+		    	var yearValue = eval('(' + data['yearValue'] + ')');
+				var integer = 0;
+				var index = 0;
+				var month = 0;
+		    	for (var i = 0; i < 12; i++) {
+		    		if(i<9){
+		    			month = '0' + (i + 1);
+		    		}else{
+		    			month = '' + (i + 1);
+		    		}
+	    			if(null != y[integer] && ('2019'+month) == y[integer].name){//取出来的月份不一定全，需要补足十二个月
+						yData[i] = y[integer].value;
+		    			integer++;//当匹配到了月份就匹配下一个
+					}else{
+						yData[i] = 0;
+					}
+	    			if(null != y1[index] && ('2020'+month) == y1[index].name){
+						y1Data[i] = y1[index].value;
+						index++;
+					}else{
+						y1Data[i] = 0;
+					}
+				}
+				//给option的series赋入DATA值
+	    	    option.series[0].data = yData;
+	    	    option.series[1].data = y1Data;
+		    	
+		    	var yweekData = new Array();
+		    	var y1weekData = new Array();
+		    	var yweek = new Array();
+		    	if(null != data['yweekData'] && '' != data['yweekData']){
+		    		yweek = eval('(' + data['yweekData'] + ')');
+		    	}
+		    	
+		    	var y1week = new Array();
+		    	if(null != data['y1weekData'] && '' != data['y1weekData']){
+		    		y1week = eval('(' + data['y1weekData'] + ')');
+		    	}
+				integer = 0;
+				index = 0;
+				var week = 0;
+		    	for (var i = 0; i < 54; i++) {
+		    		if(i<9){
+		    			week = '0' + (i + 1);
+		    		}else{
+		    			week = '' + (i + 1);
+		    		}
+	    			if(null != yweek[integer] && week == yweek[integer].name){
+						yweekData[i] = yweek[integer].value;
+		    			integer++;//当匹配到了月份就匹配下一个
+					}else{
+						yweekData[i] = 0;
+					}
+	    			if(null != y1week[index] && week == y1week[index].name){
+						y1weekData[i] = y1week[index].value;
+						index++;
+					}else{
+						y1weekData[i] = 0;
+					}
+				}
+		    	
+		    	var xweekData = new Array();
+		    	for (var i = 0; i < 54; i++) {
+		    		xweekData[i] = i+1;
+				}
+				//给option3的series赋入DATA值
+	    	    option3.series[0].data = yweekData;
+	    	    option3.series[1].data = y1weekData;
+	    	    option3.xAxis[0].data = xweekData;
+	    	   
+	    	    //年份对比图data组装
+	    	    var title = eval('(' + data['title'] + ')');//legend Data
+	    	    var yearValue = eval('(' + data['yearValue'] + ')');
+	    	    var newDate = new Array(); //先声明一维
+	    	    for(var k=0;k < title.length; k++){ //一维长度为i,i为变量，可以根据实际情况改变
+	    	    	newDate[k] = new Array(); //声明二维，每一个一维数组里面的一个元素都是一个数组；
+		    	    for(var j=0; j< 2 ; j++){ // 一维数组里面每个元素数组可以包含的数量p，p也是一个变量；
+			    	    newDate[k][j]= 0; //这里将变量初始化，我这边统一初始化为空，后面在用所需的值覆盖里面的值
+		    	    }
+	    	    }
+	    	    for (var i = 0; i < title.length; i++) {
+	    	    	for (var j = 0; j < yearValue.length; j++) {
+		    	    	if(yearValue[j].name == (title[i])){ //如果包含则放在第一位
+		    	    		if('2019' == yearValue[j].year){
+			    	    		newDate[i][0] = yearValue[j].value;
+		    	    		}else{
+		    	    			newDate[i][1] = yearValue[j].value;
+		    	    		}
+		    	    	}
+					}
+				}
+	    	    
+		    	// 初始化内容 
+				//给option的series赋入DATA值
+				//option2.title[0].text = '\n\r' + titleText.replace(reg, '\n\r');
+		    	option2.legend.data = title;
+		    	option2.xAxis[0].data = [2019,2020];
+		    	pushSeries(title,newDate);
+		    	
+		      	//给echarts canvas设置高度宽度
+	    	    chartssize(chart_box,mainOption,compByYear,c_select);
+				
+				$('#c_select').css('display','block');
+				layer.close(loading);
+		  	});
+		};
+
+        const chart_box = document.getElementById('chart_box');
+	    const mainOption = document.getElementById('mainOption');
+	    const compByYear = document.getElementById('compByYear');
+	    const c_select = document.getElementById('c_select');
+	    const mainWeekOption = document.getElementById('mainWeekOption');
+	    
+	  //参数container为图表盒子节点.charts为图表节点  
+	    function chartssize (container, charts, compByYear, c_select) {
+	        function getStyle(el, name) {　　
+	           if (window.getComputedStyle) {　　　
+	             return window.getComputedStyle(el, null);　　
+	           } else {　　　
+	             return el.currentStyle;　　
+	           }　
+	        }
+	        var wi = getStyle(container, 'width').width;
+	        var hi = getStyle(container, 'height').height;
+	        
+	        //charts.style.width = parseInt(wi.split('px')) * 0.75 + "px";
+	        charts.style.width = parseInt(wi.split('px')) * 0.85 + "px";
+	        charts.style.height = hi;
+	        mainWeekOption.style.width = parseInt(wi.split('px')) * 0.85 + "px";
+	        mainWeekOption.style.height = hi;
+	        compByYear.style.width = wi;
+	        compByYear.style.height = hi;
+	        
+	        c_select.style.width = parseInt(wi.split('px')) * 0.12 + "px";
+	        //$(".select").style.width = parseInt(wi.split('px')) * 0.1 + "px";
+	        //c_select.style.height = parseInt(hi.split('px')) * 0.33 + "px";
+	        
+	        //compByYear.style.width = (parseInt(wi.split('px')) * 0.2-10) + "px";
+
+	     	// 基于准备好的dom，初始化echarts实例
+	        myChart = echarts.init(charts);
+	        myChart2 = echarts.init(document.getElementById('compByYear'));
+	        myChart3 = echarts.init(mainWeekOption);
+
+	     	// 使用刚指定的配置项和数据显示图表。
+	     	myChart.setOption(option);
+	        myChart2.setOption(option2);
+	        myChart3.setOption(option3);
+	        //document.getElementById('mainOption').style.display = 'block';
+	        //document.getElementById('mainWeekOption').style.display = 'none';
+        }
+       
+
+
+        //准备动态数据开始
+		var data = {
+		    xData: ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二'],
+		    yData: [10, 15, 18, 25, 23, 32, 33, 36, 57, 72, 45, 45],
+		    y1Data: [20, 50, 80, 50, 30, 50, 60, 60, 70, 90, 50, 50]
+		}
+		var data3 = {
+			    xData: ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二','一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二','一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二','一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二', '七', '八', '九', '十', '十一', '十二'],
+			    yData: [10, 15, 18, 25, 23, 32, 33, 36, 57, 72, 45, 45,10, 15, 18, 25, 23, 32, 33, 36, 57, 72, 45, 45,10, 15, 18, 25, 23, 32, 33, 36, 57, 72, 45, 45,10, 15, 18, 25, 23, 32, 33, 36, 57, 72, 45, 45, 33, 36, 57, 72, 45, 45],
+			    y1Data: [20, 50, 80, 50, 30, 50, 60, 60, 70, 90, 50, 50,10, 15, 18, 25, 23, 32, 33, 36, 57, 72, 45, 45,10, 15, 18, 25, 23, 32, 33, 36, 57, 72, 45, 45,10, 15, 18, 25, 23, 32, 33, 36, 57, 72, 45, 45, 33, 36, 57, 72, 45, 45]
+			}
+		//动态数据结束
+		
+		/**
+		    双X轴标签对应，伪实现思路：
+		    底部的标签也是柱状图，对应包含的区域为上方X轴条数占总数的比例，设为宽度即可
+		*/
+		option = {
+		    tooltip: {
+				textStyle: {
+		            fontSize: 34
+		        },
+		        trigger: 'axis',
+		        axisPointer: {
+		            type: 'shadow'
+		        }
+		    },
+		    title: {
+		        text: "月份T量对比图",
+		        textStyle: {
+		            fontSize: 28
+		        },
+		        left: 10
+		    },
+		    legend: {
+		    	type:"scroll",
+		        top: 40,
+		        right: 80,
+		        textStyle: {
+		            fontSize: 24
+		        },
+		        data: ['2019', '2020']
+		    },
+		    grid: [
+		        {
+		            top: 100,
+		            bottom: 101
+		        },
+		        {
+		            height: 60,
+		            bottom: 40
+		        }
+		    ],
+		    xAxis: [{
+		        type: 'category',
+		        data: data.xData,
+		        gridIndex: 0,
+		        axisLabel: {
+	            	fontSize: 18,
+		            color: '#333'
+		        },
+		        axisLine: {
+		            lineStyle: {
+		                color: '#e7e7e7'
+		            }
+		        },
+		        axisTick: {
+		            lineStyle: {
+		                color: '#e7e7e7'
+		            }
+		        },
+		        zlevel: 2
+		    }, {
+		        type: 'category',
+		        gridIndex: 1,
+		        axisLine: {
+		            show: false
+		        },
+		        zlevel: 1
+		    }],
+		    yAxis: [{
+		        type: 'value',
+		        gridIndex: 0,
+		        axisLabel: {
+		    		fontSize: 24,
+		            color: '#333'
+		        },
+		        splitLine: {
+		            lineStyle: {
+		                type: 'dashed'
+		            }
+		        },
+		        axisLine: {
+		            lineStyle: {
+		                color: '#ccc'
+		            }
+		        },
+		        axisTick: {
+		            lineStyle: {
+		                color: '#ccc'
+		            }
+		        }
+		    },{
+		        type: 'value',
+		        gridIndex: 1,
+		        axisLabel: {
+		            show: false
+		        },
+		        axisLine: {
+		            show: false
+		        },
+		        splitLine: {
+		            show: false
+		        },
+		        axisTick: {
+		            show: false
+		        }
+		    }],
+		    series: [{
+		        name: '2019',
+		        data: data.yData,
+		        type: 'bar',
+		        barWidth : '20px',
+		        label: {
+		            show: true,
+		            position: 'top',
+		            textStyle: {
+		    			fontSize: 24,
+		                color: '#555'
+		            }
+		        },
+		        itemStyle: {
+		            normal: {
+		                color: (params) => {
+		                    var colors = ['#b6c2ff', '#96edc1', '#fcb75b', '#b6c2ff', '#96edc1', '#fcb75b','#b6c2ff', '#96edc1', '#fcb75b','#b6c2ff', '#96edc1', '#fcb75b']
+		                    return colors[params.dataIndex]
+		                }
+		            }
+		        },
+		        xAxisIndex: 0,
+		        yAxisIndex: 0
+		    },{
+		        name: '2020',
+		        data: data.y1Data,
+		        type: 'bar',
+		        barWidth : '20px',
+		        label: {
+		            show: true,
+		            position: 'top',
+		            textStyle: {
+		    			fontSize: 24,
+		                color: '#555'
+		            }
+		        },
+		        itemStyle: {
+		            normal: {
+		                color: (params) => {
+		                    var colors = ['#4150d8', '#28bf7e', '#ed7c2f', '#4150d8', '#28bf7e', '#ed7c2f', '#4150d8', '#28bf7e', '#ed7c2f', '#4150d8', '#28bf7e', '#ed7c2f']
+		                    return colors[params.dataIndex]
+		                }
+		            }
+		        },
+		        xAxisIndex: 0,
+		        yAxisIndex: 0
+		    }]
+		};
+        
+		option3 = {
+			    tooltip: {
+					textStyle: {
+			            fontSize: 34
+			        },
+			        trigger: 'axis',
+			        axisPointer: {
+			            type: 'shadow'
+			        }
+			    },
+			    title: {
+			        text: "每周T量对比图",
+			        textStyle: {
+			            fontSize: 28
+			        },
+			        left: 10
+			    },
+			    legend: {
+			    	type:"scroll",
+			        top: 40,
+			        right: 80,
+			        textStyle: {
+			            fontSize: 24
+			        },
+			        data: ['2019', '2020']
+			    },
+			    grid: [
+			        {
+			            top: 100,
+			            bottom: 101
+			        },
+			        {
+			            height: 60,
+			            bottom: 40
+			        }
+			    ],
+			    xAxis: [{
+			        type: 'category',
+			        data: data3.xData,
+			        gridIndex: 0,
+			        axisLabel: {
+		            	fontSize: 15,
+			            color: '#333'
+			        },
+			        axisLine: {
+			            lineStyle: {
+			                color: '#e7e7e7'
+			            }
+			        },
+			        axisTick: {
+			            lineStyle: {
+			                color: '#e7e7e7'
+			            }
+			        },
+			        zlevel: 2
+			    }, {
+			        type: 'category',
+			        gridIndex: 1,
+			        axisLine: {
+			            show: false
+			        },
+			        zlevel: 1
+			    }],
+			    yAxis: [{
+			        type: 'value',
+			        gridIndex: 0,
+			        axisLabel: {
+			    		fontSize: 24,
+			            color: '#333'
+			        },
+			        splitLine: {
+			            lineStyle: {
+			                type: 'dashed'
+			            }
+			        },
+			        axisLine: {
+			            lineStyle: {
+			                color: '#ccc'
+			            }
+			        },
+			        axisTick: {
+			            lineStyle: {
+			                color: '#ccc'
+			            }
+			        }
+			    },{
+			        type: 'value',
+			        gridIndex: 1,
+			        axisLabel: {
+			            show: false
+			        },
+			        axisLine: {
+			            show: false
+			        },
+			        splitLine: {
+			            show: false
+			        },
+			        axisTick: {
+			            show: false
+			        }
+			    }],
+			    series: [{
+			        name: '2019',
+			        data: data3.yData,
+			        type: 'bar',
+			        barWidth : '8px',
+			        label: {
+			            show: true,
+			            position: 'top',
+			            textStyle: {
+			    			fontSize: 12,
+			                color: '#555'
+			            }
+			        },
+			        itemStyle: {
+			            normal: {
+			                color: (params) => {
+			                    var colors = ['#b6c2ff', '#96edc1', '#fcb75b', '#b6c2ff', '#96edc1', '#fcb75b','#b6c2ff', '#96edc1', '#fcb75b','#b6c2ff', '#96edc1', '#fcb75b']
+			                    return colors[params.dataIndex]
+			                }
+			            }
+			        },
+			        xAxisIndex: 0,
+			        yAxisIndex: 0
+			    },{
+			        name: '2020',
+			        data: data3.y1Data,
+			        type: 'bar',
+			        barWidth : '10px',
+			        label: {
+			            show: true,
+			            position: 'top',
+			            textStyle: {
+			    			fontSize: 12,
+			                color: '#555'
+			            }
+			        },
+			        itemStyle: {
+			            normal: {
+			                color: (params) => {
+			                    var colors = ['#4150d8', '#28bf7e', '#ed7c2f', '#4150d8', '#28bf7e', '#ed7c2f', '#4150d8', '#28bf7e', '#ed7c2f', '#4150d8', '#28bf7e', '#ed7c2f']
+			                    return colors[params.dataIndex]
+			                }
+			            }
+			        },
+			        xAxisIndex: 0,
+			        yAxisIndex: 0
+			    }]
+			};
+        
+	    var data2 = {
+   		   title: ['2019', '2020'],
+   		   plan_production: 	[500,300,490,333,346,777,888,864,789, 765,500],
+   		   actual_production: 	[300,400,500,300,400,500,300,400,500, 500,500],
+   		   attainment_rate: 	[60, 80, 90, 60, 70, 80, 90, 60, 70,  90, 500],
+   		   productivity_1: 		[30, 45, 88, 100,110,70, 80, 90, 100, 100,500],
+   		   productivity_2: 		[30, 45, 88, 100,110,70, 80, 90, 100, 100,500],
+   		   productivity_3: 		[30, 45, 88, 100,110,70, 80, 90, 100, 100,500],
+   		   productivity_4: 		[30, 45, 88, 100,110, 0, 80, 90, 100, 100,500]
+   		};
+
+   		var option2 = {
+   		   color: ['#4472c4','#ed7d31', '#ffc000','#5b9bd5','70ad47','#264478','#a5a5a5'],
+   		   title: [{
+   		       text: '2019年与2020年T量对比图',
+   		       //bottom: 40, //控制表格Y轴方向
+   		       //top : 10,
+   		       left: 250,
+   		       textStyle: {
+   		           lineHeight: 30,
+   		           fontSize: 30,
+   		           //fontWeight: 'normal',
+   		           formatter: function(value) {
+   		               return '{table|' + value + '}';
+   		           },
+   		           rich: {
+   		               table: {
+   		                   align: 'center'
+   		               }
+   		           }
+   		       }
+   		   }],
+   		   tooltip: {
+	   		   textStyle: {
+				   fontWight: 300,
+				   fontSize: 30
+	           },
+   		       trigger: 'axis',
+   		       axisPointer: {
+   		           type: 'cross',
+   		           label: {
+   		               backgroundColor: '#283b56'
+   		           }
+   		       }
+   		   },
+   		   legend: {
+	   		   x:'left',      //可设定图例在左、右、居中
+	   	       y:'center',     //可设定图例在上、下、居中
+   			   type:"scroll",//左右排列
+   			   //type:"vertical",//上下排列
+   			   orient: 'vertical',
+			   align:'left',
+			   left:'50',
+	   		   textStyle: {
+				   fontWight: 300,
+				   fontSize: 30
+	           },
+   		       data: data2.title
+   		   },
+   		   grid: {
+   		       left: 350,
+   		       right: 80
+   		   },
+   		   xAxis: [{
+   		       type: 'category',
+   		       boundaryGap: true,
+   		       data2: data2.title
+   		   }],
+   		   yAxis: [{
+   			   axisLabel: {
+	    		   fontSize: 24
+	           },
+   		       type: 'value',
+   		       scale: true,
+   		       minInterval: 1,
+   		       //name: '数量',
+   		       axisLine: {
+   		           show: true
+   		       },
+   		       splitLine: {
+   		           show: true,
+   		           color:'#333'
+   		       },
+   		       min: function(v) {
+   		           return Math.max((v.min - 20), 0);
+   		       }
+   		   }],
+   		   series: [{
+   		       name: '其他',
+   		       stack:'aa',
+   		       type: 'bar',
+   		       barWidth: '40px',
+   		       label: {
+   		           show: true,
+   		           position: 'top'
+   		       },
+   		       yAxisIndex: 0,
+   		       data: data2.plan_production
+   		   }, {
+   		       name: '停业转型',
+   		       stack:'aa',
+   		       type: 'bar',
+   		       label: {
+   		           show: true,
+   		           position: 'top'
+   		       },
+   		       yAxisIndex: 0,
+   		       data: data2.actual_production
+   		   }, {
+   		       name: '立案侦查',
+   		       stack:'aa',
+   		       type: 'bar',
+   		       label: {
+   		           show: true,
+   		           position: 'top',
+   		           
+   		       },
+   		       yAxisIndex: 0,
+   		       data: data2.attainment_rate
+   		   }, {
+   		       name: '失联跑路',
+   		       type: 'bar',
+   		       stack:'aa',
+   		       label: {
+   		           show: true,
+   		           position: 'top',
+   		          
+   		       },
+   		       yAxisIndex: 0,
+   		       data: data2.prodata2ivity_1
+   		   }
+   		   , {
+   		       name: '僵尸企业',
+   		       type: 'bar',
+   		       stack:'aa',
+   		       label: {
+   		           show: true,
+   		           position: 'top',
+   		          
+   		       },
+   		       yAxisIndex: 0,
+   		       data: data2.productivity_2
+   		   }
+   		   , {
+   		       name: '清盘推出',
+   		       type: 'bar',
+   		       stack:'aa',
+   		       label: {
+   		           show: true,
+   		           position: 'top',
+   		          
+   		       },
+   		       yAxisIndex: 0,
+   		       data: data2.productivity_3
+   		   }
+   		   , {
+   		       name: '拟停业',
+   		       type: 'bar',
+   		       stack:'aa',
+   		       label: {
+   		           show: true,
+   		           position: 'top',
+   		          
+   		       },
+   		       yAxisIndex: 0,
+   		       data: data2.productivity_4
+   		   }]
+   		};
+
+   		var series = [];
+   		function pushSeries(title,data2){
+   		    var color = ['#4472c4','#ed7d31', '#ffc000','#5b9bd5','70ad47','#264478','#a5a5a5','#4472c4','#ed7d31', '#ffc000','#5b9bd5','70ad47','#264478','#a5a5a5','#4472c4','#ed7d31', '#ffc000','#5b9bd5','70ad47','#264478','#a5a5a5'];
+	        for (var i = 0; i < data2.length; i++) {
+	        	series.push({
+		   		       name: title[i],
+		   		       stack:'aa',
+		   		       type: 'bar',
+		   		       barWidth: '80px',
+		   		       label: {
+			        	   textStyle: {
+			    			  fontSize: 24
+			               },
+		   		           show: false,
+		   		           position: 'top'
+		   		       },
+		   		       yAxisIndex: 0,
+		   		       data: data2[i]
+		   		   }
+	        	);
+			}
+
+   		 	option2.series = series;
+   		}
+   		
+   		/* function show_month_charts(){
+   			$("#show_week_t_volume").attr("style","display:block;");
+   			$("#show_month_t_volume").attr("style","display:none;");
+   			document.getElementById('mainOption').style.display = 'block';
+	        document.getElementById('mainWeekOption').style.display = 'none';
+   		}
+   		
+   		function show_week_charts(){
+   			$("#show_month_t_volume").attr("style","display:block;");
+   			$("#show_week_t_volume").attr("style","display:none;");
+   			document.getElementById('mainOption').style.display = 'none';
+	        document.getElementById('mainWeekOption').style.display = 'block';
+   		} */
+   		
+   		function change_company(){
+   			var a = $("#company_choose");
+   			var company_id = $("#company_choose").val();
+   			actionGet('/analyse_t_volume', 'get_t_volume_data','key='+company_id,function(res){
+			    if('' == res || null == res){
+				    return false;
+				}
+			    data = eval('(' + res + ')');
+			    
+			    var yData = new Array();
+		    	var y1Data = new Array();
+		    	var y = new Array();
+		    	if(null != data['yData'] && '' != data['yData']){
+		    		y = eval('(' + data['yData'] + ')');
+		    	}
+		    	
+		    	var y1 = new Array();
+		    	if(null != data['y1Data'] && '' != data['y1Data']){
+		    		y1 = eval('(' + data['y1Data'] + ')');
+		    	}
+		    	var yearValue = eval('(' + data['yearValue'] + ')');
+				var integer = 0;
+				var index = 0;
+				var month = 0;
+		    	for (var i = 0; i < 12; i++) {
+		    		if(i<9){
+		    			month = '0' + (i + 1);
+		    		}else{
+		    			month = '' + (i + 1);
+		    		}
+	    			if(null != y[integer] && ('2019'+month) == y[integer].name){
+						yData[i] = y[integer].value;
+		    			integer++;//当匹配到了月份就匹配下一个
+					}else{
+						yData[i] = 0;
+					}
+	    			if(null != y1[index] && ('2020'+month) == y1[index].name){
+						y1Data[i] = y1[index].value;
+						index++;
+					}else{
+						y1Data[i] = 0;
+					}
+				}
+				//给option的series赋入DATA值
+	    	    option.series[0].data = yData;
+	    	    option.series[1].data = y1Data;
+	    	    
+		    	var yweekData = new Array();
+		    	var y1weekData = new Array();
+		    	var yweek = new Array();
+		    	if(null != data['yweekData'] && '' != data['yweekData']){
+		    		yweek = eval('(' + data['yweekData'] + ')');
+		    	}
+		    	
+		    	var y1week = new Array();
+		    	if(null != data['y1weekData'] && '' != data['y1weekData']){
+		    		y1week = eval('(' + data['y1weekData'] + ')');
+		    	}
+				integer = 0;
+				index = 0;
+				var week = 0;
+		    	for (var i = 0; i < 54; i++) {
+		    		if(i<9){
+		    			week = '0' + (i + 1);
+		    		}else{
+		    			week = '' + (i + 1);
+		    		}
+	    			if(null != yweek[integer] && week == yweek[integer].name){
+						yweekData[i] = yweek[integer].value;
+		    			integer++;//当匹配到了月份就匹配下一个
+					}else{
+						yweekData[i] = 0;
+					}
+	    			if(null != y1week[index] && week == y1week[index].name){
+						y1weekData[i] = y1week[index].value;
+						index++;
+					}else{
+						y1weekData[i] = 0;
+					}
+				}
+		    	
+		    	var xweekData = new Array();
+		    	for (var i = 0; i < 54; i++) {
+		    		xweekData[i] = '第'+(i+1)+'周';
+				}
+				//给option3的series赋入DATA值
+	    	    option3.series[0].data = yweekData;
+	    	    option3.series[1].data = y1weekData;
+	    	    option3.xAxis[0].data = xweekData;
+	    	    
+	    	    myChart.setOption(option);
+		     	myChart3.setOption(option3);
+		        //myChart2.setOption(option2);
+		        //myChart3.setOption(option3);
+		  	});
+   		}
+    </script>
+
+</body>
+</html>

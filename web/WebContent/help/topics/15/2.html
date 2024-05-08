@@ -1,0 +1,101 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>1.1 文挡介绍</title>
+<link rel="stylesheet" href="../../resource/css/template.css" type="text/css" />
+<link rel="stylesheet" href="../../resource/css/document.css" type="text/css" /></head>
+<link href="../../../reportEdit/file/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+.STYLE1 {font-family: "宋体"}
+-->
+img
+{
+	margin-left:50px;
+} 
+</style></head>
+<style>
+img
+{
+	margin-left:50px;
+} 
+</style>
+<body>
+<div id="content-bg">
+	<div id="previous-next">
+		<div id="next"><a href="3.html">下一页</a></div>
+		<!--  <div id="previous"><a href="1.html">上一页</a></div>-->		
+	</div>
+	<div id="centent">
+	<div id="centent-title">
+	  <h2 style='margin-left:1.0cm;text-indent:-1.0cm;tab-stops:list 18.0pt 1.0cm'>
+	  <a name="_Toc230415866"></a>
+	  <a name="_Toc209513084"></a>
+	  <a name="_Toc209496263"></a>
+	  <a name="_Toc207683905"></a>
+	  <a name="_Toc181602145">
+	  <span style='mso-bookmark:_Toc207683905'>
+	  <span style='mso-bookmark:_Toc209496263'>
+	  <span style='mso-bookmark:_Toc209513084'>
+	  <span style='mso-bookmark:_Toc230415866'>
+	  <span lang=EN-US style='mso-fareast-font-family:Arial;mso-bidi-font-family:Arial'>
+	  <span style='mso-list:Ignore'>12.1<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
+</span></span></span><span style='font-family:&quot;黑体&quot;;mso-ascii-font-family: Arial'>EDI-PIL(IT)</span></span></span></span></span></a></h2>
+	</div>
+	</div>
+	<div class="related-title"><div class="related-title-left"></div> PIL注意事项:</div>
+	<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'>现在订舱和提单确认均可以采用系统对接方式，这样将大大节省大家的工作量，系统录入我大部分都有验证，录错的情况下不能导出，但还请大家注意下面几点：</p>
+	<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'>1、EDI取的是工作单委托里面的，ESI取的是订舱里面的，订舱里面没有的取委托里面的。</p>
+	<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'>2、柜子里的唛头和品名(货描)是每个柜型需录一次，因为报文要求根据柜型分组</p>
+	<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'>3、箱型对应的isocode和包装对应的代码要自己录在EDI-Mapping里面，这个也是pil要求用的他们的代码，下面是录入界面，填好保存即可。</p>
+	<p><img src="images/tu3.png" /></p>
+	<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'>4、当柜子里面有备注(混装描述)的时候,以回车为界，每个回车就会多一行73B</p>
+	<p class=MsoNormal style='text-indent:17.95pt;mso-char-indent-count:1.71'> 5、如果欧改港的情况，情把委托和订舱中的起运港、目的港、卸货港录入不同，ESI报文就会有REC15来描述改港。</p>
+	<p class=MsoNormal style='text-indent:17.95pt;mso-char-indent-count:1.71'> 6、箱型只能填PIL文档要求的几种：20F、20GP、20HQ、20OT、20RF、40FR、40GP、40HC、40OT、40RF、40RH、45HQ。</p>
+	<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'>7、edi和esi的通知人pil文档里面要求分开  我们系统是在同一个框里面输入的   目前是根据大家输入中 序号加点（eg：1.  2.  3.） 来提取的 大家录入的时候如果通知单有多个（最多三个）  请在开头加上序号和英文的点，如下图：</p>
+	<p><img src="images/tu6.png" /></p>
+	<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'>8、导出来后为PMD为后缀的文件，这是PIL要求的，如果想看里面内容请将后缀改成TXT再用记事本看，但是不要修改里面内容，加一个空格都不行，发送给PIL的时候改回PMD的后缀。</p>
+	<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'>9、据同事要求，因为PIL要求每行是35个字符的，发货人和收货人自动分割字符串会将不足35个字符的自动补上，这样会导致每行的字符和输入字符回车位置不同的情况，所以在导出页面特意加入了不自动分割字符串的选项，选不自动分割时，发货人和收货人会按照回车来分割，但需要注意每行不能超过35个字符。</p>
+	<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'>10、录入的信息中不能含有中文，因为报文都是代码，所以都是取的英文名称，这个也是有验证的</p>
+	<p class=MsoNormal 	style='text-indent:17.95pt;mso-char-indent-count:1.71'>11、rec16(发货人)/17(操作公司)/18(约主)/21(收货人)/26(通知人)每行超过250字符部分放到箱型循环的第一个rec47下面 用多个*号拼接</p>
+	<p class=MsoNormal 	style='text-indent:17.95pt;mso-char-indent-count:1.71'>12、柜号那里的商品编码,除了欧洲等需要申报HS CODE的需要填写以外，其他一律不填写，否则就进舱单了</p>
+	<p class=MsoNormal 	style='text-indent:17.95pt;mso-char-indent-count:1.71'>13、 品名不要固定录入000000， 请按附件的"HS CODE" 录入实际的定舱品名 </p>
+	<p class=MsoNormal 	style='text-indent:17.95pt;mso-char-indent-count:1.71'>14、 RFA 有10位数和11位数两种格式， 如果录入不完全，请录入在73B 备注处(RFA-SZX17A12345)， 我司会以EXCEL BOOKING 的RFA 为准 </p>
+	
+	<p class=MsoNormal 	style='text-indent:17.95pt;mso-char-indent-count:1.71'>15、<img src="images/tu19.png" />此处合约号，如果SO 的RFA NO. 不是 DUM0000001，请按照SO 填写实际的；否则一律默认是 DUM0000001</p>
+	<div class="panel panel-primary"><div class="panel-heading">不使用自动分割字符串录系统注意事项：</div>
+		<div class="bg-info">
+			<p class=MsoNormal style="color:Blue"><strong>发货人和收货人</strong>：不能超过6行，每行不能超过35个字符，多余6行的先在发货人框中填若干个'*'号，然后把多余的拼接到第一个品名的后面</p>
+			<p class=MsoNormal style="color:Blue"><strong>通知人</strong>：只有一个通知人的情况下和发货人规则一样，多个通知人的情况下：用回车+数字+'.'来分割，且每个通知人多于6行的部分也要用'*'号拼接到第一个品名下</p>
+			<p><img src="images/tu6.png" /></p>
+			<p class=MsoNormal style="color:Blue"><strong>唛头</strong>：每个柜型填一次就行，唛头没有行数限制，但每行不能超过20个字符</p>
+			<p class=MsoNormal style="color:Blue"><strong>品名</strong>：请写在英文品名处，品名没有行数限制，但每行不能超过30个字符，若发货人、收货人、通知人中有多于的字符要用对应若干'*'号拼接在后面</p>
+		</div>
+	</div>
+	<div class="related-title"><div class="related-title-left"></div> PIL导出流程:</div>
+	<p class=MsoNormal style='text-indent:17.95pt;mso-char-indent-count:1.71'>请看下图所示，按步骤操作即可</p>
+	<p><img src="images/tu5.png"/></p>
+	<p class=MsoNormal style='text-indent:17.95pt;mso-char-indent-count:1.71'>1.请先将要导出的单子搜索出来，这样可以避免列表加载节省时间</p>
+	<p class=MsoNormal style='text-indent:17.95pt;mso-char-indent-count:1.71'>2.勾选好单号，填写发送信息(黄色底色部分)</p>
+	<p class=MsoNormal style='text-indent:17.95pt;mso-char-indent-count:1.71'>3.点导出，若导出失败说明录入不符合规范，请查看结果信息按要求录入后重新导出即可。</p>
+	<div class="related-title"><div class="related-title-left"></div> 通过PDF发送：</div>
+	<p class=MsoNormal style='text-indent:17.95pt;mso-char-indent-count:1.71'>如果欲通过FTP保存文件到自己的电脑，请在下图中的FTP配置中勾选通过FTP发送报文，然后点击保存</p>
+	<p class=MsoNormal style='text-indent:17.95pt;mso-char-indent-count:1.71'>1.下图是设置FTP页面</p>
+	<p class=MsoNormal style='text-indent:17.95pt;mso-char-indent-count:1.71'>主机、端口、用户、密码为必填项，必须与你客户端的FTP设置一样</p>
+	<p class=MsoNormal style='text-indent:17.95pt;mso-char-indent-count:1.71'>填写好FTP配置后先点击保存，点击测试，若弹出“FTP配置正确“说明可以连接到你的FTP客户端”</p>
+	<p><img src="images/tu2.jpg" /></p>
+	<p class=MsoNormal style='text-indent:17.95pt;mso-char-indent-count:1.71'>2.下图是FTP客户端页面</p>
+	<p class=MsoNormal style='text-indent:17.95pt;mso-char-indent-count:1.71'>FTP客户端可到网上自行下载，以下图为例，设置好后点击启动服务即可</p>
+	<p><img src="images/tu1.jpg" /></p>
+	
+	<div id="related">
+		<div class="related-title"><div class="related-title-left"></div>相关主题：</div>
+		<div class="related-list"><li><span style='font-family:宋体;mso-ascii-font-family:"Times New Roman";mso-hansi-font-family:"Times New Roman"'><a href="3.html">第12章 第2节  单位</a></span></li>
+</div>
+	</div>
+	<div id="footer">	
+		<div class="copyright" align="center">版权信息 @ CopyRight 航迅科技 <a href="http://www.ufms.cn" target="_blank">UFMS货代系统</a></div>
+	</div>
+</div>
+</body>
+</html>

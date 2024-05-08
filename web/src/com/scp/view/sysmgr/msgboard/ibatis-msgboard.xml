@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.sysmgr.msgboard.msgboardBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		 * 
+		FROM _sys_msgboard t 
+		WHERE $qry$ 
+			AND parentid is null 
+			AND linkid IS NULL
+		ORDER BY subject
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.msgboard.msgboardBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		 count(*) AS counts 
+		FROM _sys_msgboard t 
+		WHERE $qry$
+			AND parentid is null 
+			AND linkid IS NULL
+	</select>
+	
+	
+</sqlMap>

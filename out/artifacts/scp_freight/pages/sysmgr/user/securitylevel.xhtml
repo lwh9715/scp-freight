@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+		<layout:borderLayout fitToBody="true">
+			<layout:panel id="gridPanel" height="100%" split="true" jsvar="gridPanelJsvar" hideBorders="true"
+				region="center">
+				<w:form>
+					<div style="height: 0px;">
+					
+					</div>
+					<w:toolBar>
+						<w:button id="qryRefresh" label="#{l.m['刷新']}"
+							image="#{constantBean.contextPath}/images/refresh.png" />
+						<w:button id="toLevel3" label="#{l.m['设为无限制']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+						<w:button id="toLevel2" label="#{l.m['允许多地登陆']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+						<w:button id="toLevel1" label="#{l.m['限定办公室登陆']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+						
+						<!--<w:button id="del" jsvar="del" title="删除" label="#{l.m['删除']}"
+						onclick="return confirm('#{l.m['确定要删除吗?']}');"
+						image="#{constantBean.contextPath}/images/delete.png" />
+					-->
+					</w:toolBar>
+
+					<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+						<layout:cell style="width: 25px;">
+							<w:button id="clearQryKey" label="" width="25"
+								image="#{constantBean.contextPath}/images/clear.png" />
+						</layout:cell>
+						<w:combo value="#{pages.sysmgr.user.securitylevelBean.qryMap['securitylevel$']}" width="120">
+							<f:selectItem itemLabel="#{l.m['无限制']}" itemValue="3"/>
+							<f:selectItem itemLabel="#{l.m['多地登陆']}" itemValue="2"/>
+							<f:selectItem itemLabel="#{l.m['办公室登陆']}" itemValue="1"/>
+						</w:combo >
+						<w:textField selectOnFocus="true" width="80"
+							value="#{pages.sysmgr.user.securitylevelBean.qryMap['code']}" />
+						<w:textField selectOnFocus="true" width="120"
+							value="#{pages.sysmgr.user.securitylevelBean.qryMap['namec']}" />
+						<w:textField selectOnFocus="true" width="120"
+							value="#{pages.sysmgr.user.securitylevelBean.qryMap['namee']}" />
+						<w:textField selectOnFocus="true" width="60"
+							value="#{pages.sysmgr.user.securitylevelBean.qryMap['issales']}" />
+						<w:textField selectOnFocus="true" width="60"
+							value="#{pages.sysmgr.user.securitylevelBean.qryMap['isopr']}" />
+
+
+
+						<w:textField selectOnFocus="true" width="80"
+							value="#{pages.sysmgr.user.securitylevelBean.qryMap['inputer']}" />
+						<w:dateField selectOnFocus="true" width="90"
+							value="#{pages.sysmgr.user.securitylevelBean.qryMap['inputtime']}">
+							<f:convertDateTime pattern="yy/MM/dd" timeZone="GMT+8" />
+						</w:dateField>
+						<w:textField selectOnFocus="true" width="80"
+							value="#{pages.sysmgr.user.securitylevelBean.qryMap['updater']}" />
+						<w:dateField selectOnFocus="true" width="90"
+							value="#{pages.sysmgr.user.securitylevelBean.qryMap['updatetime']}">
+							<f:convertDateTime pattern="yy/MM/dd" timeZone="GMT+8" />
+						</w:dateField>
+					</layout:panelGrid>
+
+					<w:dataGrid height="700" paged="true" rows="30" id="grid" jsvar="gridJsvar"
+						toolBarPosition="bottom" idColumn="id" selectable="true" selectionModel="#{constantBean.checkBox}">
+						<w:outputColumn id="id" header="ID" hidden="true" />
+						<w:outputColumn header="#{l.m['安全级别']}" id="securitylevel" width="120" sortable="true"
+							clientFormatter="formateSecurityLevel" />
+						<w:outputColumn header="#{l.m['代码']}" id="code" width="80" sortable="true" />
+						<w:outputColumn header="#{l.m['中文名']}" id="namec" width="120" sortable="true" />
+						<w:outputColumn header="#{l.m['英文名']}" id="namee" width="120" sortable="true" />
+
+						<w:outputColumn header="#{l.m['业务员']}" id="issales" width="60" sortable="true" type="check"
+							align="center" />
+						<w:outputColumn header="#{l.m['操作员']}" id="isopr" width="60" sortable="true" type="check"
+							align="center" />
+
+						<w:outputColumn header="#{l.m['录入人']}" id="inputer" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['录入时间']}" id="inputtime" width="90" sortable="true">
+							<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" />
+						</w:outputColumn>
+						<w:outputColumn header="#{l.m['修改人']}" id="updater" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['修改时间']}" id="updatetime" width="90" sortable="true">
+							<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" />
+						</w:outputColumn>
+
+					</w:dataGrid>
+				</w:form>
+			</layout:panel>
+		</layout:borderLayout>
+	</w:page>
+
+
+	<script>
+	//<![CDATA[
+	function formateSecurityLevel(v,m,r) {
+	        var securitylevel = r.get('securitylevel');
+			if(securitylevel == 3){
+				v = "#{l.m['无限制用户']}";
+				 m.attr="style='color:green;'";
+			}else if(securitylevel==2){
+				v = "#{l.m['多地登陆用户']}";
+				 m.attr="style='color:blue;'";
+			}else if(securitylevel == 1){
+				v = "#{l.m['办公室登陆用户']}";
+				 m.attr="style='color:red;'";
+			}else {
+				v = "~~~";
+			}	
+	        return v;
+	     }
+	     
+	Ext.onReady(function(){
+		var newHeight = (gridPanelJsvar.getSize().height) - 55;
+		var newWidth = (gridPanelJsvar.getSize().width);
+        //alert(newHeight);
+        //alert(newWidth);
+        gridJsvar.setHeight(newHeight);
+        gridJsvar.setWidth(newWidth);
+     });
+     //]]>
+</script>
+</f:view>

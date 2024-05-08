@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> <link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" /><link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/pages/module/common/css/tabPanelIcon.css" />
+		<w:stylesheet src="./base_color.css" />
+		<w:stylesheet src="./base.css" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet>
+
+		<style type="text/css">
+/* ---------- 表格标题样式 ---------- */
+.TableHeader {
+	BACKGROUND: #D3E5FA;
+	color: #093645;
+	background-image: url("./img/top-bg.jpg")
+}
+
+.topwrap {
+	height: 51px;
+	background: url(./img/top-bg.jpg) repeat-x;
+}
+
+.treenodecss {
+	font-size: 30px;
+}
+</style>
+
+		<script type="">
+        //<![CDATA[
+            function openNavTree(obj , index){
+            	openNavTreeAjax.addParam('index',index);
+            	openNavTreeAjax.submit();
+            	//alert(obj);
+            	//obj.className = "nav-middle nav-select";
+            }
+        //]]>
+        </script>
+	</w:head>
+
+	<w:page loadMask="true" loadMaskText="......" title="#{constantBean.headTitle}">
+		<ajax:conversationActivator/>
+		<layout:borderLayout fitToBody="true" fit="true" id="border" border="false" hideBorders="true"
+			style="border: thin">
+				<layout:panel region="north" height="60" title="">
+				<ui:include src="./header.xhtml" />
+			</layout:panel>
+			<layout:panel region="west" width="176" height="100%" border="false" hideBorders="true"
+				style="border: thin" split="true"
+				>
+				<w:tree id="navTree" autoLeaf="true" expandAll="true" autoScroll="true" border="false"
+					style="height:100%;width:100%;border-color: blue" rootVisible="false" loadAllNodes="true"/>
+			</layout:panel>
+
+			<layout:panel region="center" fit="true" border="false" hideBorders="true" style="border: thin">
+				<layout:tabLayout id="centerPanel" border="false" hideBorders="true" fit="true"
+					tabPosition="top" style="border: thin" />
+			</layout:panel>
+		</layout:borderLayout>
+		<w:toolBar id="toolBar" target="centerPanel" />
+
+	</w:page>
+
+	<ajax:submitAction id="openNavTreeAjax" jsvar="openNavTreeAjax" />
+	
+	
+	
+	<script>
+	 //<![CDATA[
+	//初始化一些变量
+	//var aWeek=['星期天','星期一','星期二','星期三','星期四','星期五','星期六'];
+	//var clock = new Ext.Toolbar.TextItem(new Date().format('Y-m-d G:i:s A')+'  '+aWeek[new Date().getDay()]);
+	
+	//定期更新时间
+	Ext.TaskMgr.start({
+	  run: function(){
+	        var dd = new Date().format('Y-m-d G:i:s');
+	        //Ext.fly(clock.getEl()).update();
+	        thetime.setValue(dd);
+	        //alert(dd);
+	  },
+	  interval: 1000
+	});
+	
+	function openNewFrame(url){
+    		var widthVal  = screen.width;
+    		var heightVal = screen.height;
+    		var windowName = "_uu";
+    		
+    		var OsObject = getOs();
+    		//alert("您的浏览器类型为:" + OsObject);  
+    		if(OsObject == "MSIE"){
+	            if(window.name != windowName){
+	            	window.location.href = 'about:blank ';  
+	           		window.history.go(-2); 
+	            	window.close();
+	            	var id = window.open(url,windowName,'width='+widthVal+',height='+heightVal+',top=0,left=0, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, status=no');
+    				id.focus();
+	            }else{
+	            	window.location.href = url;
+	            }
+    		}else if(OsObject == "Firefox"){
+    			if(window.name != windowName){
+	            	window.location.href = 'about:blank ';  
+	            	window.history.go(-2); 
+    				var id = window.open(url,windowName,'width='+widthVal+',height='+heightVal+',top=0,left=0, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, status=no');
+    				id.focus();
+	            }else{
+	            	window.location.href = url;
+	            }
+    		}else if(OsObject == "Safari"){
+    			window.location.href = url; 
+    		}else{
+    			//window.location.href = 'about:blank ';  
+	            //window.history.go(-2); 
+    			//var id = window.open(url,windowName,'width='+widthVal+',height='+heightVal+',top=0,left=0, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, status=no');
+    			//id.focus();
+    			window.location.href = url; 
+    		}
+    		  
+    	}
+	    function getOs(){    
+				    var OsObject = "";    
+				    if(navigator.userAgent.indexOf("MSIE")>0) {    
+				         return "MSIE";    
+				    }    
+				    if(isFirefox=navigator.userAgent.indexOf("Firefox")>0){    
+				         return "Firefox";    
+				    }    
+				    if(isSafari=navigator.userAgent.indexOf("Safari")>0) {    
+				         return "Safari";    
+				    }     
+				    if(isCamino=navigator.userAgent.indexOf("Camino")>0){    
+				         return "Camino";    
+				    }    
+				    if(isMozilla=navigator.userAgent.indexOf("Gecko/")>0){    
+				         return "Gecko";    
+				    }    
+		 }    
+			
+		 
+		 function closeWebPage() {  
+		 		window.location.href = 'about:blank ';  
+	            window.history.go(-2); 
+	            
+	        // if (navigator.userAgent.indexOf("MSIE") > 0) {  
+	          //   if (navigator.userAgent.indexOf("MSIE 6.0") > 0) {  
+	            //     window.opener = null; 
+	              //   window.close();  
+	             //}  
+	             //else {  
+	               //  window.open('', '_top'); 
+//	                 window.top.close();  
+	//             }  
+	  //       }  
+	        // else if (navigator.userAgent.indexOf("Firefox") > 0) {  
+ 
+	        // }  
+	         //else {  
+	         //    window.opener = null;   
+	        //     window.open('', '_self', '');  
+	        //     window.close();  
+	        // }  
+     	}  
+     	
+		 	 
+		 	 
+		if(isFirefox=navigator.userAgent.indexOf("Firefox")>0)   
+     	{          
+        	 var _E = function(){  
+             var c=_E.caller;   
+             while(c.caller)c=c.caller;   
+             return c.arguments[0]  
+         };          
+         __defineGetter__("event", _E);   
+     	}   
+	 //]]>
+	</script>
+</f:view>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.module.website.webregisterBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+		FROM web_register a
+		WHERE $qry$
+		ORDER BY corpname
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.website.webregisterBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM web_register a
+		WHERE $qry$
+	</select>
+	
+	<select id="pages.module.website.webnewsBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+		FROM web_news a
+		WHERE $qry$
+		ORDER BY inputtime desc
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.website.webnewsBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM web_news a
+		WHERE $qry$
+	</select>
+	
+	<select id="pages.module.website.webmenuBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			 *
+			,(SELECT x.namec FROM web_menu x WHERE x.id = a.parentid) AS parenterc
+			,(SELECT x.namec FROM web_menu x WHERE x.id = a.parentid) AS parentere
+		FROM web_menu a
+		WHERE $qry$
+		ORDER BY ordno
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.website.webmenuBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM web_menu a
+		WHERE $qry$
+	</select>
+	
+	<select id="pages.module.website.webpagesBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+		FROM web_pages a
+		WHERE $qry$
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.website.webpagesBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM web_pages a
+		WHERE $qry$
+	</select>
+</sqlMap>

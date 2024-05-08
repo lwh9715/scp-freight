@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.sysmgr.cfg.lsmgrBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_ml t 
+		WHERE $qry$ 
+			$filter$ 
+			AND isdelete = false
+		ORDER BY id
+	</select>
+	<select id="pages.sysmgr.cfg.lsmgrBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_ml t 
+		WHERE $qry$ 
+			$filter$ 
+			AND isdelete = false
+	</select>
+	
+	<select id="pages.sysmgr.cfg.formdefineBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_formdef t 
+		WHERE $qry$ 
+			$filter$
+		ORDER BY beaname,orderno
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.cfg.formdefineBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_formdef t 
+		WHERE $qry$ 
+			$filter$
+	</select>
+	
+	<select id="pages.sysmgr.cfg.formcfgBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_formcfg t 
+		WHERE $qry$ 
+		ORDER BY formname,namec
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.cfg.formcfgBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_formcfg t 
+		WHERE $qry$ 
+	</select>
+	
+	<select id="pages.sysmgr.cfg.usrcfgBean.gridUser.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_user t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+			AND isinvalid = TRUE 
+			AND iscsuser = FALSE
+		ORDER BY code
+	</select>
+	<select id="pages.sysmgr.cfg.usrcfgBean.gridUser.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_user t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+			AND isinvalid = TRUE 
+			AND iscsuser = FALSE
+	</select>
+</sqlMap>

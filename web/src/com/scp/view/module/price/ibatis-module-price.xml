@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<select id="pages.module.price.mgrfclBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 *
+		 ,(select namec from sys_user where id=t.priceuserid) as priceuserids
+		 ,t.pieceother||'('||(SELECT dc.code FROM dat_cntype dc WHERE dc.id::TEXT = t.cntypeothercode)||')' AS pieceCntypeo
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		 	,(select count(DISTINCT f.jobid) from fina_arap f where f.isdelete = false and f.fkid = t.id) AS totaljobs
+		FROM _price_fcl t 
+		WHERE $qry$
+			$pol$
+			$pod$
+			$corpfilter$
+			$filter$
+			AND isdelete = false
+		ORDER BY pod,pol,shipping,shipline,datefm,dateto ,daterelease desc
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.price.mgrfclBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _price_fcl t 
+		WHERE $qry$ 
+			$pol$
+			$pod$
+			$corpfilter$
+			$filter$
+			AND isdelete = false
+	</select>
+	
+	
+	<select id="pages.module.price.mgrairBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 	* 
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		 	,f_price_air_getcostdesc('id='||t.id) AS costair
+		 	,(SELECT abbr from sys_corporation WHERE isairline = TRUE AND isdelete = false AND id = t.carrierid) AS carrier
+		 	,(SELECT abbr from sys_corporation WHERE isagent = TRUE AND isdelete = false AND id = t.bkagentid) AS bkagent
+		FROM price_air t 
+		WHERE $qry$
+			$pol$
+			$pod$
+			AND isdelete = false
+		ORDER BY daterelease desc ,pol,pod
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.price.mgrairBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM price_air t 
+		WHERE $qry$ 
+			$pol$
+			$pod$
+			AND isdelete = false
+	</select>
+	
+	
+	<select id="pages.module.price.pricehomepageBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 *	,t.id AS fclid
+		 	, ph.id AS homepageid
+		 	,ph.cost20 AS cost20p, ph.cost40gp AS cost40gpp, ph.cost40hq AS cost40hqp
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _price_fcl t ,price_homepage ph
+		WHERE $qry$
+			AND isvalid = 'R'
+			AND isrelease = true
+			AND isdelete = false
+			AND t.id = ph.priceid
+		ORDER BY daterelease desc ,pol,pod
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.price.pricehomepageBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _price_fcl t ,price_homepage ph
+		WHERE $qry$ 
+			AND isvalid = 'R'
+			AND isrelease = true
+			AND isdelete = false
+			AND t.id = ph.priceid
+	</select>
+	
+	<select id="pages.module.price.pricehomepageBean.gridHomepage.pageh" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _price_fcl t
+		WHERE  $qry$
+		AND isvalid = 'R'
+		AND isrelease = true
+		AND isdelete = false
+		ORDER BY daterelease desc ,pol,pod
+	</select>
+	<select id="pages.module.price.pricehomepageBean.gridHomepage.counth" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _price_fcl t 
+		WHERE $qry$
+			AND isvalid = 'R'
+			AND isrelease = true
+			AND isdelete = false
+	</select>
+	
+	<!-- 
+	<select id="pages.module.price.qryfclBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 t.* ,t.pieceother||'('||(SELECT code FROM dat_cntype WHERE id::TEXT = t.cntypeothercode)||')' AS pieceCntypeo
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		 	,b.polnamee
+		 	,b.podnamee
+		 	,b.cost20 AS barcost20
+		 	,b.cost40gp AS barcost40gp
+		 	,b.cost40hq AS barcost40hq
+		 	,b.remark
+		FROM _price_fcl t left join price_fcl_bargefeedtl b ON (b.line LIKE '%'||t.line||'%' AND  EXISTS(SELECT 1 FROM price_fcl_bargefee x WHERE x.id = b.bargefeeid  AND x.shipping = t.shipping)  $bargepol$)
+		WHERE $qry$
+			$pol$
+			$pod$
+			AND isdelete = false
+			$history$
+			$filter$
+			$pol$
+		ORDER BY daterelease desc ,pol,pod
+	</select>
+	<select id="pages.module.price.qryfclBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(t.*) AS counts 
+		FROM _price_fcl t left join price_fcl_bargefeedtl b ON (b.line LIKE '%'||t.line||'%' AND  EXISTS(SELECT 1 FROM price_fcl_bargefee x WHERE x.id = b.bargefeeid  AND x.shipping = t.shipping)  $bargepol$)
+		WHERE $qry$
+			$pol$
+			$pod$
+			AND isdelete = false
+			$history$
+			$filter$
+	</select>
+	 -->
+	 
+	 <select id="pages.module.price.qryfclBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT *,
+		     (select namec from sys_user where id=T.priceuserid) as priceuserids
+			,(SELECT x.bargedatefm FROM price_fcl x where x.id = T.id LIMIT 1) AS bargedatefm
+			,(SELECT x.bargedateto FROM price_fcl x where x.id = T.id LIMIT 1) AS bargedateto
+			,REPLACE(pricetotal, f_newline() , ' ') as pricetotal2
+		 FROM f_rpa_qryfcl_table('$args$') AS T WHERE $filter$ $ord$ LIMIT $limit$ OFFSET $start$;
+	</select>
+	<select id="pages.module.price.qryfclBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		 10000 AS counts;
+	</select>
+	 
+	<select id="pages.module.price.qryairBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	SELECT * FROM (	select 
+		 	* 
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		 	,(SELECT airflight from price_air WHERE isdelete = false AND id = t.id) AS airflight
+		 	,(SELECT abbr from sys_corporation s,price_air a WHERE s.isairline = TRUE AND s.isdelete = false AND s.id = a.carrierid AND a.id = t.id) AS carrier
+		 	,(SELECT pol from price_air WHERE isdelete = false AND id = t.id) AS pol
+		 	,(SELECT pod from price_air WHERE isdelete = false AND id = t.id) AS pod
+		FROM f_price_air('') t ) AS p
+		WHERE $qry$
+			$pol$
+			$pod$
+			$history$ LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.price.qryairBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM 
+			(select 
+		 	* 
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		 	,(SELECT airflight from price_air WHERE isdelete = false AND id = t.id) AS airflight
+		 	,(SELECT abbr from sys_corporation s,price_air a WHERE s.isairline = TRUE AND s.isdelete = false AND s.id = a.carrierid AND a.id = t.id) AS carrier
+		 	,(SELECT pol from price_air WHERE isdelete = false AND id = t.id) AS pol
+		 	,(SELECT pod from price_air WHERE isdelete = false AND id = t.id) AS pod
+		FROM f_price_air('') t ) AS p
+		WHERE $qry$ 
+			$pol$
+			$pod$
+			$history$
+	</select>
+	
+	
+	<select id="pages.module.price.pricehisBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+			*
+			,(SELECT abbr FROM sys_corporation i WHERE i.id = t.customerid ) AS customerabbr
+		FROM bus_price t
+		WHERE  $qry$
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.price.pricehisBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM bus_price t
+		WHERE  $qry$
+	</select>
+	<select id="pages.module.price.custompriceIframeBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		*
+		,(CASE WHEN level = '*' THEN '★' WHEN level = '**' THEN '★★' WHEN level = '***' THEN '★★★' WHEN level = '****' THEN '★★★★' WHEN level = '*****' THEN '★★★★★' END) AS level2
+		FROM price_fcl_pubrule ph
+		WHERE $qry$
+		AND ruletype = 'T'
+	</select>
+	<select id="pages.module.price.custompriceIframeBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM price_fcl_pubrule
+		WHERE $qry$ 
+		AND ruletype = 'T'
+	</select>
+	<select id="pages.module.price.fbafclBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * ,t.pieceother||'('||(SELECT dc.code FROM dat_cntype dc WHERE dc.id::TEXT = t.cntypeothercode)||')' AS pieceCntypeo
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _price_fcl t 
+		WHERE $qry$
+			$pol$
+			$pod$
+			AND isdelete = false
+		ORDER BY daterelease desc ,pol,pod
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.price.fbafclBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _price_fcl t 
+		WHERE $qry$ 
+			$pol$
+			$pod$
+			AND isdelete = false
+	</select>
+	<select id="pages.module.price.fbaqryfclBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * ,t.pieceother||'('||(SELECT dc.code FROM dat_cntype dc WHERE dc.id::TEXT = t.cntypeothercode)||')' AS pieceCntypeo
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _price_fcl t 
+		WHERE $qry$
+			$pol$
+			$pod$
+			AND isdelete = false
+		ORDER BY daterelease desc ,pol,pod
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.price.fbaqryfclBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _price_fcl t 
+		WHERE $qry$ 
+			$pol$
+			$pod$
+			AND isdelete = false
+	</select>
+	
+	<select id="pages.module.price.pricegroupBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		   * 
+		  ,((SELECT COUNT(priceid) FROM price_group_refprice x WHERE x.groupid = t.id) || '/' || (SELECT COUNT(1) FROM price_fcl y WHERE y.isdelete = FALSE))AS pricetcount
+		  ,((SELECT COUNT(userid) FROM price_group_refuser x WHERE x.groupid = t.id) || '/' || (SELECT COUNT(1) FROM sys_user y WHERE y.iscsuser = FALSE AND y.isdelete = FALSE AND y.isinvalid = TRUE)) AS usercount
+		FROM price_group t 
+		WHERE $qry$ 
+		ORDER BY code,name
+	</select>
+	<select id="pages.module.price.pricegroupBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM price_group t 
+		WHERE $qry$ 
+	</select>
+	
+	<select id="pages.module.price.pricegroupBean.userGrid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		   * 
+		FROM sys_user t 
+		WHERE $qry$
+			AND isdelete = FALSE 
+			AND isadmin = 'N'
+			ORDER BY corper,depter,jobdesc,code
+	</select>
+	<select id="pages.module.price.pricegroupBean.userGrid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts
+		FROM sys_user t 
+		WHERE $qry$ 
+			AND isdelete = FALSE 
+			AND isadmin = 'N'
+	</select>
+	
+	<select id="pages.module.price.pricecustBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM price_fcl t 
+		WHERE $qry$ 
+			AND isdelete = FALSE 
+			AND EXISTS(SELECT 1 FROM price_group_refprice x WHERE groupid = $libid$ AND x.priceid = t.id)
+		ORDER BY daterelease desc ,pol,pod
+	</select>
+	<select id="pages.module.price.pricecustBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM price_fcl t 
+		WHERE $qry$ 
+			AND isdelete = FALSE 
+			AND EXISTS(SELECT 1 FROM price_group_refprice x WHERE groupid = $libid$ AND x.priceid = t.id)
+	</select>
+	
+	<select id="pages.module.price.pricecustBean.from.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM price_fcl t 
+		WHERE $qry$ 
+			AND isdelete = FALSE 
+			AND NOT EXISTS(SELECT 1 FROM price_group_refprice x WHERE groupid = $libid$ AND x.priceid = t.id)
+		ORDER BY daterelease desc ,pol,pod
+	</select>
+	<select id="pages.module.price.pricecustBean.from.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		
+		select
+		count(*) AS counts
+		FROM price_fcl t
+		WHERE $qry$
+		AND isdelete = FALSE
+		AND NOT EXISTS(SELECT 1 FROM price_group_refprice x WHERE groupid = $libid$ AND x.priceid = t.id)
+	</select>
+	
+	<select id="pages.module.price.priceuserBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		 * 
+		FROM _sys_user t 
+		WHERE $qry$ 
+			AND isdelete = FALSE 
+			AND isadmin = 'N'
+			AND iscsuser = FALSE
+			AND EXISTS(SELECT 1 FROM price_group_refuser x WHERE x.groupid = $libid$ AND x.userid = t.id)
+		ORDER BY corpid,depter2,isinvalid DESC, code
+	</select>
+	<select id="pages.module.price.priceuserBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_user t 
+		WHERE $qry$ 
+			AND isdelete = false 
+			AND isadmin = 'N'
+			AND iscsuser = FALSE
+			AND EXISTS(SELECT 1 FROM price_group_refuser x WHERE x.groupid = $libid$ AND x.userid = t.id)
+	</select>
+	
+	<select id="pages.module.price.priceuserBean.from.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _sys_user t 
+		WHERE $qry$ 
+			AND isdelete = FALSE 
+			AND isadmin = 'N'
+			AND iscsuser = FALSE
+			AND NOT EXISTS(SELECT 1 FROM price_group_refuser x WHERE x.groupid = $libid$ AND x.userid = t.id)
+		ORDER BY corpid,depter2,isinvalid DESC, code
+	</select>
+	<select id="pages.module.price.priceuserBean.from.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_user t 
+		WHERE $qry$ 
+			AND isdelete = false 
+			AND isadmin = 'N'
+			AND iscsuser = FALSE
+			AND NOT EXISTS(SELECT 1 FROM price_group_refuser x WHERE x.groupid = $libid$ AND x.userid = t.id)
+	</select>
+	
+	<select id="pages.module.price.pricefclbargefeeBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT * FROM (
+			select 
+			 * 
+			 ,(select shipping from price_fcl_bargefee where id = b.bargefeeid) AS shipping
+		FROM price_fcl_bargefeedtl b ) AS t
+		WHERE $qry$ 
+		$corpfilter$ 
+		$filter$ 
+		ORDER BY convert_to(area,'GBK'),polnamee
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.price.pricefclbargefeeBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		 count(*) AS counts 
+		FROM (
+			select 
+			 * 
+			 ,(select shipping from price_fcl_bargefee where id = b.bargefeeid) AS shipping
+		FROM price_fcl_bargefeedtl b ) AS t
+		WHERE $qry$ 
+		$corpfilter$ 
+		$filter$ 
+	</select>
+	
+	
+	<select id="pages.module.price.localchargeBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			* 
+			,(CASE WHEN cntypeid > 0 THEN amtother ELSE 0 END) AS amtotherv 
+		FROM f_price_fcl_feeadd_filter($args$)
+		WHERE $qry$ 
+			$filter$
+			ORDER BY id
+	</select>
+	<select id="pages.module.price.localchargeBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 10000 AS counts 
+	</select>
+	
+	<select id="pages.module.price.localchargeconditionBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM price_fcl_feeadd t 
+		WHERE $qry$ 
+			$filter$
+			ORDER BY id
+	</select>
+	<select id="pages.module.price.localchargeconditionBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 10000 AS counts 
+	</select>
+	
+	<select id="pages.module.price.bargefeeEditBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT * FROM (
+			select 
+			 * 
+			 ,(select shipping from price_fcl_bargefee where id = b.bargefeeid) AS shipping
+		FROM price_fcl_bargefeedtl b ) AS t
+		WHERE $qry$ 
+		ORDER BY polnamee
+	</select>
+	<select id="pages.module.price.bargefeeEditBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		 count(*) AS counts 
+		FROM (
+			select 
+			 * 
+			 ,(select shipping from price_fcl_bargefee where id = b.bargefeeid) AS shipping
+		FROM price_fcl_bargefeedtl b ) AS t
+		WHERE $qry$ 
+	</select>
+	<select id="pages.module.price.addfeetempqueryBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT * 
+			,(SELECT code FROM dat_cntype WHERE id = x.cntypeid) cntynamec
+		FROM price_fcl_feeadd x
+		WHERE $qry$ AND COALESCE(templatename,'')<>'' 
+		AND isdelete = false 
+		AND istemplate = TRUE 
+		ORDER BY templatename
+		LIMIT $limit$ OFFSET $start$
+	]]>
+	</select>
+	<select id="pages.module.price.addfeetempqueryBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT count(*) AS counts FROM price_fcl_feeadd x
+		WHERE $qry$ AND COALESCE(templatename,'')<>'' 
+		AND isdelete = false 
+		AND istemplate = TRUE
+	]]>
+	</select>
+	
+	<select id="pages.module.price.showjobsBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		 b.* 
+		FROM fina_jobs b, price_fcl p, fina_arap f
+		WHERE $qry$ 
+		AND b.id = f.jobid
+		AND p.id = f.fkid
+		AND p.id = $priceid$ 
+		AND b.isdelete = false
+		AND p.isdelete = false
+		AND f.isdelete = false
+		ORDER BY nos
+	</select>
+	<select id="pages.module.price.showjobsBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		 count(*) AS counts 
+		FROM fina_jobs b, price_fcl p, fina_arap f
+		WHERE $qry$ 
+		AND b.id = f.jobid
+		AND p.id = f.fkid
+		AND P.id = $priceid$ 
+		AND b.isdelete = false
+		AND p.isdelete = false
+		AND f.isdelete = false
+	</select>
+	
+	<select id="pages.module.price.mgrtrainBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 	* 
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+			,(SELECT namee FROM dat_port WHERE isdelete = false  and code = t.pol limit 1) AS polnamee
+			,(SELECT namee FROM dat_port WHERE isdelete = false  and code = t.pod limit 1) AS podnamee
+		FROM price_train t 
+		WHERE $qry$
+			$pol$
+			$pod$
+			AND isdelete = false
+		ORDER BY daterrelease desc ,pol,pod
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.price.mgrtrainBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM price_train t 
+		WHERE $qry$ 
+			$pol$
+			$pod$
+			AND isdelete = false
+	</select>
+	<select id="pages.module.price.qrytrainBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 	* 
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		 	,(SELECT namee FROM dat_port WHERE isdelete = false  and code = t.pol limit 1) AS polnamee
+			,(SELECT namee FROM dat_port WHERE isdelete = false  and code = t.pod limit 1) AS podnamee
+		FROM price_train t 
+		WHERE $qry$
+			$pol$
+			$pod$
+			$history$
+			AND isdelete = false
+			AND isrelease = true
+	</select>
+	<select id="pages.module.price.qrytrainBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM price_train t 
+		WHERE $qry$ 
+			$pol$
+			$pod$
+			$history$
+			AND isdelete = false
+			AND isrelease = true
+	</select>
+	
+	<select id="pages.module.price.mgrlcltrainBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 	* 
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM price_train_lcl t 
+		WHERE $qry$
+			$pol$
+			$pod$
+			AND isdelete = false
+		ORDER BY daterrelease desc ,pol,pod
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.price.mgrlcltrainBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM price_train_lcl t 
+		WHERE $qry$ 
+			$pol$
+			$pod$
+			AND isdelete = false
+	</select>
+	<select id="pages.module.price.qrylcltrainBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 	* 
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM price_train_lcl t 
+		WHERE $qry$
+			$pol$
+			$pod$
+			$history$
+			AND isdelete = false
+			AND isrelease = true
+	</select>
+	<select id="pages.module.price.qrylcltrainBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM price_train_lcl t 
+		WHERE $qry$ 
+			$pol$
+			$pod$
+			$history$
+			AND isdelete = false
+			AND isrelease = true
+	</select>
+	
+	<select id="pages.module.price.mgrtruckBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 	* 
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM price_truck t 
+		WHERE $qry$
+			$pod$
+			AND isdelete = false
+		ORDER BY daterrelease desc ,pod
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.price.mgrtruckBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM price_truck t 
+		WHERE $qry$ 
+			$pod$
+			AND isdelete = false
+	</select>
+	
+	<select id="pages.module.price.qrytruckBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 	* 
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM price_truck t 
+		WHERE $qry$
+			$pod$
+			$history$
+			AND isdelete = false
+	</select>
+	<select id="pages.module.price.qrytruckBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM price_truck t 
+		WHERE $qry$ 
+			$pod$
+			$history$
+			AND isdelete = false
+	</select>
+
+	<select id="pages.module.price.shipqueryBean.gridShipcarrier.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		 *
+		FROM sys_corporation t
+		WHERE
+			$qry$
+			AND iscarrier = TRUE AND isdelete = false and remarks is not null and remarks !=''
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.price.shipqueryBean.gridShipcarrier.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		  count(1) as counts
+		FROM sys_corporation t
+		WHERE
+			$qry$
+			AND iscarrier = TRUE AND isdelete = false and remarks is not null and remarks !=''
+	</select>
+
+	<select id="pages.module.price.localchargetrainBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			* 
+			,(CASE WHEN cntypeid > 0 THEN amtother ELSE 0 END) AS amtotherv 
+		FROM f_price_fcl_feeadd_filter($args$)
+		WHERE $qry$ 
+			$filter$
+			ORDER BY id
+	</select>
+	<select id="pages.module.price.localchargetrainBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 10000 AS counts 
+	</select>
+	
+	
+	<select id="pages.module.price.pricefclpubruleBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			*
+			 ,(SELECT String_agg(namec,',') FROM dat_line WHERE code = ANY(regexp_split_to_array(lines,','))) AS linenamec
+		FROM price_fcl_pubrule t
+		WHERE $qry$ 
+	</select>
+	<select id="pages.module.price.pricefclpubruleBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM price_fcl_pubrule
+		WHERE $qry$ 
+	</select>
+</sqlMap>

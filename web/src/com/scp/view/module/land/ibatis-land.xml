@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.module.land.jobsBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select row_number() OVER() AS row
+		,*
+		,(SELECT string_agg(x.invoiceno,',') FROM  fina_invoice x , fina_arap y WHERE y.jobid = t.id AND x.isdelete = FALSE AND y.isdelete = FALSE AND y.invoiceid = x.id AND x.invoiceno IS NOT NULL) AS invoceno
+		,(SELECT y.abbr FROM bus_truck x,sys_corporation y WHERE x.isdelete = FALSE AND x.jobid = t.id AND x.truckid = y.id) AS truckabbr
+		,(SELECT truckcontact FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS truckcontact
+		,(SELECT factory FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS factory
+		,(SELECT loadcontact FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS loadcontact
+		,(SELECT contacttel FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS contacttel
+		,(SELECT loadaddress FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS loadaddress
+		,(SELECT unloadfactory FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS unloadfactory
+		,(SELECT unloadtime FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS unloadtime
+		,(SELECT etd FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS etd
+		,(SELECT unloadcontact FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS unloadcontact
+		,(SELECT unloadconttel FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS unloadconttel
+		,(SELECT unloadaddress FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS unloadaddress
+		,(SELECT loadplace FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS loadplace
+		,(SELECT cabinetlocation FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS cabinetlocation
+		,(SELECT returncabinet FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS returncabinet
+		,(SELECT driverno FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS driverno
+		,(SELECT string_agg(c.cntno,',') FROM bus_ship_container c WHERE c.jobid = t.id AND c.isdelete = FALSE AND c.cntno IS NOT NULL AND t.parentid is null) AS cntnos
+		,(SELECT string_agg(c.sealno,',') FROM bus_ship_container c WHERE c.jobid = t.id AND c.isdelete = FALSE AND c.sealno IS NOT NULL AND t.parentid is null) AS sealnos
+		,(SELECT string_agg(c.sono,',') FROM bus_ship_container c WHERE c.jobid = t.id AND c.isdelete = FALSE AND c.sono IS NOT NULL AND t.parentid is null) AS sonos
+		,(SELECT f_fina_jobs_cntdesc('jobid='::text || t.id)) AS cntdesc
+		,(SELECT remarks FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS remarks
+		,(SELECT special FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS special
+		,(SELECT string_agg(x.namec,',') FROM sys_user x , sys_user_assign y, bus_truck b WHERE b.jobid = t.id AND x.id =y.userid AND y.roletype = 'O' AND y.linkid = b.id AND  COALESCE(y.isdelete,false) = false AND x.isdelete = FALSE)  AS opname
+		 ,(SELECT string_agg(x.namec,',') FROM sys_user x , sys_user_assign y, bus_truck b WHERE b.jobid = t.id AND x.id =y.userid AND y.roletype = 'S' AND y.linkid = b.id AND  COALESCE(y.isdelete,false) = false AND x.isdelete = FALSE)  AS sname
+		,(CASE jobstate WHEN 'I' THEN '未安排' WHEN 'S' THEN '已选舱' WHEN 'TI' THEN '安排拖车' WHEN 'TF' THEN '拖车完成' WHEN 'CI' THEN '安排报关' WHEN 'CF' THEN '报关完成' 
+		WHEN 'BI' THEN '做提单' WHEN 'BF' THEN '提单已打印' WHEN 'DI' THEN '出账单' WHEN 'DF' THEN '账单已打印' WHEN 'J' THEN '已并单' WHEN 'E' THEN '已寄单' WHEN 'QG' THEN '已清关' WHEN 'TG' THEN '已拖柜' WHEN 'F' THEN '完成' END) AS jobstatedesc
+		,(SELECT namec FROM sys_corporation WHERE id = t.customerid) AS customernamec
+		,(SELECT x.namec||'/'||x.namee||'/'||d.name from  sys_user x ,sys_department d where x.deptid = d.id AND x.code = t.inputer) AS inpter2
+		,(SELECT sono FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS sono
+		,(SELECT abbr FROM sys_corporation WHERE id = t.corpidop AND isdelete = FALSE) AS opcompany
+		,(SELECT abbr FROM sys_corporation WHERE id = t.corpid AND isdelete = FALSE) AS company
+		,(SELECT f_fina_jobs_cnts('jobid='::text||t.id)) AS cnts
+		,(SELECT cls FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS cls
+		,remarks
+	from (
+		select 
+		 * 
+		FROM _fina_jobs_base t
+		WHERE $qry$
+			AND jobtype = 'L'
+			AND $icare$
+			$setDays$
+			$dynamicClauseWhere$
+			$filter$
+			$corpfilter$
+			AND isdelete = FALSE
+		LIMIT $limit$ OFFSET $start$ 
+	) as T 
+	$ordersql$
+	</select>
+	<select id="pages.module.land.jobsBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(1) AS counts 
+		FROM _fina_jobs_base t 
+		WHERE $qry$
+		AND jobtype = 'L'
+		AND $icare$
+		$setDays$
+		$dynamicClauseWhere$
+		$filter$
+		$corpfilter$
+		AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.land.busshippingBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM  _bus_ship_container t 
+		WHERE $qry$
+		AND isdelete = false
+	</select>
+	<select id="pages.module.land.busshippingBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  _bus_ship_container t 
+		WHERE $qry$ 
+	</select>
+	
+	<select id="pages.module.land.buslandBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 row_number() OVER(ORDER BY id) AS row,* 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		 ,(select isinsurance from bus_truck where id=t.id) AS isinsurance
+		 ,(select ischecknumber from bus_truck where id=t.id) AS ischecknumber
+		 ,(select iscls from bus_truck where id=t.id) AS iscls
+		 ,(select trucktype from bus_truck where id=t.id) AS trucktype
+		FROM  _bus_ship_container t 
+		WHERE $qry$
+			AND isdelete = false
+			AND parentid IS NULL
+		ORDER BY id
+	</select>
+	
+	<select id="pages.module.land.buslandBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  _bus_ship_container t 
+		WHERE $qry$ 
+			AND isdelete = false
+			AND parentid IS NULL
+	</select>
+	
+	
+	<select id="pages.module.land.jobschildpodBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		
+		SELECT DISTINCT t.*,(SELECT s.name FROM sys_department s WHERE s.id = t.deptid) AS name FROM(
+									<!-- down  -->
+									(WITH RECURSIVE cte AS(
+																SELECT a.* FROM _fina_jobs_base a WHERE $child$
+															UNION ALL 
+																SELECT k.* from _fina_jobs_base k INNER JOIN cte c on c.id = k.parentid
+															)SELECT * FROM cte
+									)
+									
+									UNION ALL
+									<!-- up  -->
+									(WITH RECURSIVE cte AS(
+																SELECT a.* FROM _fina_jobs_base a WHERE $child$
+															UNION ALL 
+																SELECT k.* from _fina_jobs_base k INNER JOIN cte c on k.id = c.parentid
+															)SELECT * from cte
+									)UNION ALL
+
+									<!-- 平级查找-->
+
+									SELECT a.* FROM _fina_jobs_base a WHERE parentid = (SELECT parentid FROM _fina_jobs WHERE $child$ AND isdelete = FALSE ) AND $child2$ AND isdelete = FALSE
+									
+						    )AS t
+		WHERE $qry$
+		ORDER BY nos
+	</select>
+	<select id="pages.module.land.jobschildpodBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 CAST(10 AS BIGINT) AS counts 
+		FROM  _fina_jobschild t 
+		
+	</select>
+	
+	<select id="pages.module.land.jobseditBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT DISTINCT	t.id,prefix,code ,r.datefm , t.namec
+			FROM sys_busnodesc t ,sys_busnorule r 
+			WHERE $qry$
+			AND t.id = r.busnotypeid 
+			AND code like 'fina_jobs_lan%'
+			AND t.isdelete = FALSE AND r.isdelete = FALSE
+		order by t.namec,r.datefm, prefix
+	]]>
+	</select>
+	<select id="pages.module.land.jobseditBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 10000 AS counts 
+	</select>
+	
+	<select id="pages.module.land.buslandnewBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,(SELECT string_agg(x.invoiceno,',') FROM  fina_invoice x , fina_arap y WHERE y.jobid = t.id AND x.isdelete = FALSE AND y.isdelete = FALSE AND y.invoiceid = x.id AND x.invoiceno IS NOT NULL) AS invoceno
+		 ,(SELECT y.abbr FROM bus_truck x,sys_corporation y WHERE x.isdelete = FALSE AND x.jobid = t.id AND x.truckid = y.id) AS truckabbr
+		 ,(SELECT truckcontact FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS truckcontact
+		 ,(SELECT factory FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS factory
+		 ,(SELECT loadtime FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS loadtime
+		 ,(SELECT loadcontact FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS loadcontact
+		 ,(SELECT contacttel FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS contacttel
+		 ,(SELECT loadaddress FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS loadaddress
+		 ,(SELECT unloadfactory FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS unloadfactory
+		 ,(SELECT unloadtime FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS unloadtime
+		 ,(SELECT unloadcontact FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS unloadcontact
+		 ,(SELECT unloadconttel FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS unloadconttel
+		 ,(SELECT unloadaddress FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS unloadaddress
+		 ,(SELECT loadplace FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS loadplace
+		 ,(SELECT cabinetlocation FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS cabinetlocation
+		 ,(SELECT returncabinet FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS returncabinet
+		 ,(SELECT driverno FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS driverno
+		 ,(SELECT string_agg(c.cntno,',') FROM bus_ship_container c WHERE c.jobid = t.id AND c.isdelete = FALSE AND c.cntno IS NOT NULL AND t.parentid is null) AS cntnos
+		 ,(SELECT string_agg(c.sealno,',') FROM bus_ship_container c WHERE c.jobid = t.id AND c.isdelete = FALSE AND c.sealno IS NOT NULL AND t.parentid is null) AS sealnos
+		 ,(SELECT string_agg(c.sono,',') FROM bus_ship_container c WHERE c.jobid = t.id AND c.isdelete = FALSE AND c.sono IS NOT NULL AND t.parentid is null) AS sonos
+		 ,(SELECT f_fina_jobs_cntdesc('jobid='::text || t.id)) AS cntdesc
+		 ,(SELECT remarks FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS remarks
+		 ,(SELECT special FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS special
+		 ,(SELECT string_agg(x.namec,',') FROM sys_user x , sys_user_assign y, bus_truck b WHERE b.jobid = t.id AND x.id =y.userid AND y.roletype = 'O' AND y.linkid = b.id AND  COALESCE(y.isdelete,false) = false)  AS opname
+		 ,(CASE jobstate WHEN 'I' THEN '未安排' WHEN 'S' THEN '已选舱' WHEN 'TI' THEN '安排拖车' WHEN 'TF' THEN '拖车完成' WHEN 'CI' THEN '安排报关' WHEN 'CF' THEN '报关完成' 
+			WHEN 'BI' THEN '做提单' WHEN 'BF' THEN '提单已打印' WHEN 'DI' THEN '出账单' WHEN 'DF' THEN '账单已打印' WHEN 'J' THEN '已并单' WHEN 'E' THEN '已寄单' WHEN 'QG' THEN '已清关' WHEN 'TG' THEN '已拖柜' WHEN 'F' THEN '完成' END) AS jobstatedesc
+		 ,(SELECT namec FROM sys_corporation WHERE id = t.customerid)AS customernamec
+		FROM _fina_jobs_base t 
+		WHERE $qry$
+		AND jobtype = 'L'
+		AND $icare$
+		$setDays$
+		$dynamicClauseWhere$
+		$filter$
+		$corpfilter$
+		AND isdelete = FALSE
+		ORDER BY ordenos DESC,nos 
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.land.buslandnewBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _fina_jobs_base t 
+		WHERE $qry$
+		AND jobtype = 'L'
+		AND $icare$
+		$setDays$
+		$dynamicClauseWhere$
+		$filter$
+		$corpfilter$
+		AND isdelete = FALSE
+	</select>
+	<select id="pages.module.land.buslandnewBean.setnos.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT DISTINCT	t.id,prefix,code ,r.datefm , t.namec
+			FROM sys_busnodesc t ,sys_busnorule r 
+			WHERE t.id = r.busnotypeid 
+			AND code like 'fina_jobs_lan%'
+			AND t.isdelete = FALSE AND r.isdelete = FALSE
+		order by t.namec,r.datefm, prefix
+	]]>
+	</select>
+	<select id="pages.module.land.buslandnewBean.container.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		 ,(select isinsurance from bus_truck where id=t.id) AS isinsurance
+		 ,(select ischecknumber from bus_truck where id=t.id) AS ischecknumber
+		 ,(select iscls from bus_truck where id=t.id) AS iscls
+		 ,(select trucktype from bus_truck where id=t.id) AS trucktype
+		FROM  _bus_ship_container t 
+		WHERE $qry$
+			AND isdelete = false
+			AND parentid IS NULL
+		ORDER BY id
+	]]>
+	</select>
+</sqlMap>

@@ -1,0 +1,1536 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+        xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+        xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+    <w:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico"/>
+        <link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico"/>
+        <w:stylesheet src="/common/css/common.css"></w:stylesheet>
+        <link rel="stylesheet" id="cmsbg" type="text/css"/>
+
+        <w:script src="/common/js/common.js?t=10"></w:script>
+        <script type="text/javascript" src="/scp/common/js/jquery-2.0.0.min.js"></script>
+
+        <w:script type="text/javascript" src="/common/ckeditor/ckeditor.js"></w:script>
+        <w:script type="text/javascript" src="/common/ckeditor/extckeditor.js"></w:script>
+
+        <script type="text/javascript"
+                src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+        <script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+    </w:head>
+    <w:page loadMask="true" loadMaskText="Loading..." title="" style="font-size: 12px;">
+        <ajax:conversationActivator/>
+        <layout:panel id="gridPanel" jsvar="gridPanelJsvar" hideBorders="true" width="100%" height="440"
+                      autoScroll="true" style="font-size: 12px;">
+            <w:form>
+                <w:toolBar>
+                    <w:button id="saveSysCfgBut" value="#{l.m['保存']}" jsvar="saveSysCfgButJsVar"
+                              image="#{constantBean.contextPath}/images/save.png"/>
+                    <w:button id="lsCfgBut" value="#{l.m['多语言']}"
+                              image="#{constantBean.contextPath}/images/save.png"/>
+                    <w:button id="clearCache" jsvar="clearCacheJsVar" value="#{l.m['清除缓存']}"
+                              image="#{constantBean.contextPath}/images/delete.png"/>
+                    <w:button id="showCache" value="#{l.m['查看缓存']}" onclick="showCacheWindowJsVar.show();"
+                              image="#{constantBean.contextPath}/images/delete.png"/>
+                    <w:button id="rptMgr" value="#{l.m['报表管理']}"
+                              image="#{constantBean.contextPath}/images/refresh.png"/>
+                </w:toolBar>
+
+                <layout:panelGrid columns="2" cellspacing="5px" width="500" style="font-size:12px">
+                    <h:outputLabel value="#{l.m['报表服务器URL']}"/>
+                    <w:textField selectOnFocus="true" id="oldPWD" width="300"
+                                 value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['rpt_srv_url']}"></w:textField>
+
+                    <!--<h:outputLabel value="#{l.m['首页图片']}445*370" />
+                    <w:textField selectOnFocus="true" width="300" value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['login_leftimg']}"></w:textField>
+
+                    <h:outputLabel value="#{l.m['首页Logo']}120*230" />
+                    <w:textField selectOnFocus="true" width="300" value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['login_logo']}"></w:textField>
+                    -->
+                </layout:panelGrid>
+
+                <layout:panelGrid columns="2">
+                    <layout:cell colspan="1">
+                        <layout:panelGrid columns="2">
+                            <!--<h:outputLabel value="#{l.m['海运报价自动生成费用类型']}" />
+                            <w:combo emptyText="#{l.m['费用名称']}" width="146" listWidth="200" id="feeitemid"
+                                jsvar="feeitemid" cls="under_line" focusClass="surround" value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['shipquote_feeitemid']}">
+                                <f:selectItems value="#{comboxBean.feeItem}" />
+                            </w:combo>
+                            -->
+
+
+                            <h:outputLabel value="#{l.m['控制检查5502 5503 5504必须录到借方']}"></h:outputLabel>
+                            <w:combo width="100" focusClass="surround"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fs_vch_checkact_55_dir']}">
+                                <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                            </w:combo>
+                            <h:outputLabel value="#{l.m['提单预览前检查业务数据']}"/>
+                            <w:combo width="100" focusClass="surround"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bu_shipping_hblrpt_check']}">
+                                <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                            </w:combo>
+                        </layout:panelGrid>
+                    </layout:cell>
+                </layout:panelGrid>
+
+                <layout:panelGrid columns="2">
+                    <layout:cell colspan="1">
+                        <fieldset style="width: 550px;">
+                            <legend>#{l.m['提醒']}</legend>
+                            <layout:panelGrid columns="4">
+                                <h:outputLabel value="#{l.m['客户超时间未接单自动提醒业务员']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_customer_alert_auto']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['天数']}"/>
+                                <w:textField selectOnFocus="true" width="50"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_customer_alert_day']}"></w:textField>
+
+                                <h:outputLabel value="#{l.m['客户超时间未接单自动转为公共客户']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_customer_transpublic_auto']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['天数']}"/>
+                                <w:textField selectOnFocus="true" width="50"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_customer_transpublic_day']}"></w:textField>
+                                <h:outputLabel value="#{l.m['工作单跟踪提醒']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['work_sheet_tracking_reminding']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                            </layout:panelGrid>
+                        </fieldset>
+                    </layout:cell>
+                    <layout:cell colspan="1">
+                        <fieldset style="width: 550px;">
+                            <legend>DashBoard</legend>
+                            <layout:panelGrid columns="2">
+                                <h:outputLabel value="#{l.m['欠款超期提醒']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['dash_show_fee_over']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['利润亏损提醒']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['dash_show_profit_less']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['业务审核天数']}"></h:outputLabel>
+                                    <w:textField selectOnFocus="true" width="50"
+                                                 value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_saled_check_date']}"></w:textField>
+                            </layout:panelGrid>
+                        </fieldset>
+                    </layout:cell>
+                    <layout:cell colspan="1">
+                        <fieldset style="width: 550px;">
+                            <legend>Logo</legend>
+                            <layout:panelGrid columns="2">
+                                <h:outputLabel value="#{l.m['名称']}"/>
+                                <w:textField selectOnFocus="true" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_header_title']}"></w:textField>
+
+                                <layout:cell colspan="1">
+                                    <layout:panelGrid columns="1">
+                                        <w:button label="#{l.m['上传']}LOGO" onclick="logoWindowJsVar.show()"></w:button>
+                                        <w:button label="#{l.m['刷新']}LOGO" id="refreshLogo" onclick=""></w:button>
+                                        <w:button label="#{l.m['清除']}LOGO" id="clearLogo" onclick=""></w:button>
+                                    </layout:panelGrid>
+                                </layout:cell>
+                                <layout:cell colspan="1">
+                                    <layout:panelGrid>
+                                        <h:graphicImage id="logoImg" value="#{pages.sysmgr.cfg.syscfgBean.logo}"
+                                                        height="100" alt="undefined"></h:graphicImage>
+                                    </layout:panelGrid>
+                                </layout:cell>
+
+                                <h:outputLabel value="#{l.m['高度']}px"/>
+                                <w:textField selectOnFocus="true" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_logo_height']}"></w:textField>
+
+                                <!--<h:outputLabel value="#{l.m['备案号']}" />
+                                <w:textArea selectOnFocus="true" width="300" value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_ICP_NO']}"></w:textArea>
+
+                            --></layout:panelGrid>
+                        </fieldset>
+                    </layout:cell>
+                    <layout:cell colspan="1">
+                        <fieldset style="width: 550px;">
+                            <legend>#{l.m['在线补料']}</legend>
+                            <layout:panelGrid columns="2">
+                                <h:outputLabel value="#{l.m['在线补料']}URL"></h:outputLabel>
+                                <w:textField selectOnFocus="true" id="csurlbase" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['cs_url_base']}"></w:textField>
+                                <h:outputLabel value="URL#{l.m['有效时间']}(h)"></h:outputLabel>
+                                <w:combo width="50" listWidth="50" id="" jsvar="" focusClass="surround"
+                                         forceSelection="true"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['cs_url_base_time']}">
+                                    <f:selectItems value="#{comboxBean.csurlbasetime}"/>
+                                </w:combo>
+                                <h:outputLabel value="UFMS URL"></h:outputLabel>
+                                <w:textField selectOnFocus="true" id="ufmsurl" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['ufms_url']}"></w:textField>
+                            </layout:panelGrid>
+                        </fieldset>
+                    </layout:cell>
+                </layout:panelGrid>
+                <ajax:status startStyle="color: red"
+                             onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+                             onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+                    <f:facet name="start">
+                        <f:verbatim>
+                            <img src="#{constantBean.contextPath}/images/waiting.gif"/>
+                        </f:verbatim>
+                    </f:facet>
+                </ajax:status>
+                <ajax:submitAction id="saveAction" jsvar="saveAction"/>
+            </w:form>
+        </layout:panel>
+        <layout:tabLayout fit="true">
+            <layout:panel title="#{l.m['系统设置']}" id="cfgPanel" autoScroll="true" style="font-size: 12px;">
+                <w:form>
+                    <w:toolBar>
+                        <w:button id="save1" value="#{l.m['保存']}"
+                                  image="#{constantBean.contextPath}/images/save.png"/>
+                    </w:toolBar>
+                    <layout:panelGrid columns="3" style="font-size: 12px;">
+                        <layout:cell>
+                            <layout:panelGrid columns="2" cellpadding="0" cellspacing="0">
+                                <h:outputLabel value="SAAS:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_cfg_saas']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['分公司共享结算单位']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_cfg_branch_share_arapcom']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['多语言']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_cfg_mult_language']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['收付日期不能早于工作单日期']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_cfg_rpdate_jobdate']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['销售管理客户授权分配人员']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_cfg_salesmgr_cus2assign']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['销售管理客户授权关联人员']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_cfg_salesmgr_cus2saleslink']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['销售管理客户授权相关人员']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_cfg_salesmgr_cus2link']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['分布式文件']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_cfg_file_soa']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+
+                                <h:outputLabel value="#{l.m['修改ETD同步工作单日期']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_cfg_etd_update_jobdate']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['订单必须审核']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_order_check']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+
+                                <h:outputLabel value="#{l.m['流程管理']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_bpm']}">
+                                    <f:selectItem itemValue="BPM" itemLabel="BPM"/>
+                                    <f:selectItem itemValue="FF" itemLabel="FF"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['待办显示已提交流程']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bpm_taskto_showsubmit']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['流程任务按岗位级别过滤']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bpm_task_filterbyorg']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['提交流程后业务员不能修改数据']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['lock_jobs_afterbpm']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['提单港口包含国家']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bill_port_connect_country']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+
+                                <h:outputLabel value="#{l.m['账单中账户按照抬头过滤']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bill_account']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['新增委托单复制主单柜子信息']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fina_jobs_addchild_copycntinfo_fromparent']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['修改委托人同步工作单分配']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fina_jobs_changecustomer_sync_assign']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['知识库自动提醒']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_knowledge_auto_tips']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['统计报表限定条件']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_rpt_required_condition']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+
+                                <h:outputLabel value="#{l.m['统计报表客户按业务员过滤']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_rpt_customer_filter_by_sales']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+
+                                <h:outputLabel value="#{l.m['禁止查找和查看收货通']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_forbidden_find_and_view_receipt']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+
+                            </layout:panelGrid>
+                        </layout:cell>
+                        <layout:cell>
+                            <layout:panelGrid columns="2" cellpadding="0" cellspacing="0">
+
+                                <h:outputLabel value="#{l.m['工厂需要审核']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_factoryneedcheck']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['提单打印后锁定']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_billprintlock']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['单号连号']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_noslink']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['安全登录']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_loginsafe']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['业务员按委托人提取']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['jobs_sales_filterby_client']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['接单公司不按业务员联动']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['jobs_dept_notchangeby_sales']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['收发通不按委托人提取']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['SFT_filterby_client']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['销售管理我的客户锁定']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['customer_management']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['附件按组权限过滤']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['attachment_filterby_role']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['柜号不允许重复']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['contrainer_cntno_notrepeat']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['参考号不允许重复']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['job_refno_notrepeat']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="SO#{l.m['不允许重复']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['job_so_notrepeat']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="MBL#{l.m['提单号不允许重复']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['job_mbl_notrepeat']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="HBL#{l.m['提单号不允许重复']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['job_hbl_notrepeat']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['修改ETD同步实际开船日期']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_cfg_etd_update_atd']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['工作单编辑界面检索重定向URL']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_cfg_jobedit_redirect_url']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['工作单录入人默认操作']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fina_jobs_ai_operation']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['卸港同步目的港(目的地)']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['pdd_pod_destination']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['留言板自动打开']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['JobsMessageAutoOpen']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['账单按编号规则']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fina_bill_nos_by_rule']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['开启账号登录认证']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['open_account_login_auth']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+
+                            </layout:panelGrid>
+                        </layout:cell>
+                        <layout:cell>
+                            <layout:panelGrid columns="2" cellpadding="0" cellspacing="0">
+                                <h:outputLabel value="#{l.m['公网']}URL:"/>
+                                <w:textField selectOnFocus="true" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_public_url']}"></w:textField>
+                                <h:outputLabel value="#{l.m['附件服务器URL']}"/>
+                                <w:textField selectOnFocus="true" id="annex" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_attachment_url']}"></w:textField>
+                                <h:outputLabel value="#{l.m['附件记录绝对地址']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_attachment_absurl']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['附件文件最大']}"/>
+                                <w:combo width="60" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_attachment_size']}">
+                                    <f:selectItem itemValue="0.5" itemLabel="0.5MB"/>
+                                    <f:selectItem itemValue="1" itemLabel="1MB"/>
+                                    <f:selectItem itemValue="1.5" itemLabel="1.5MB"/>
+                                    <f:selectItem itemValue="2" itemLabel="2MB"/>
+                                    <f:selectItem itemValue="3" itemLabel="3MB"/>
+                                    <f:selectItem itemValue="4" itemLabel="4MB"/>
+                                    <f:selectItem itemValue="5" itemLabel="5MB"/>
+                                    <f:selectItem itemValue="10" itemLabel="10MB"/>
+                                    <f:selectItem itemValue="20" itemLabel="20MB"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['上传SO自动解析']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_attachment_so_autogetdata']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['工作单附件显示水单']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['jobs_show_bankbill_attachment']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['发票税控系统']}URL:"/>
+                                <w:textField selectOnFocus="true" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_invsvr_url']}"></w:textField>
+                                <h:outputLabel value="#{l.m['电子发票税控系统']}URL:"/>
+                                <w:textField selectOnFocus="true" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_invsvr_electron_url']}"></w:textField>
+                                <h:outputLabel value="#{l.m['电子发票税控系统查询']}URL:"/>
+                                <w:textField selectOnFocus="true" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_invsvr_electron_find_url']}"></w:textField>
+                                <h:outputLabel value="#{l.m['身份认证']}:"/>
+                                <w:textField selectOnFocus="true" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['invoice_identity']}"></w:textField>
+                                <h:outputLabel value="html2pdf URL:"/>
+                                <w:textField selectOnFocus="true" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_print_html2pdf_URL']}"></w:textField>
+                                <h:outputLabel value="html2pdf args:"/>
+                                <w:textField selectOnFocus="true" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_print_html2pdf_args']}"></w:textField>
+                                <h:outputLabel value="#{l.m['登录提示']}:"/>
+                                <w:textArea width="300" height="50"
+                                            value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_login_tips']}"></w:textArea>
+
+                                <h:outputLabel value="BMS通用URL:"/>
+                                <w:textField selectOnFocus="true" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_bms_url']}"></w:textField>
+
+                                <h:outputLabel value="BMS请款URL:"/>
+                                <w:textField selectOnFocus="true" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_bms_expense_url']}"></w:textField>
+
+                                <h:outputLabel value="BMS开票URL:"/>
+                                <w:textField selectOnFocus="true" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_bms_kpsq_url']}"></w:textField>
+
+                                <h:outputLabel value="#{l.m['隐藏系统管理']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['system_ctrl_only']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+
+                                <h:outputLabel value="#{l.m['客商同步']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_edi_api_syncCustomer']}">
+                                    <f:selectItem itemValue="true" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="false" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+
+                            </layout:panelGrid>
+                        </layout:cell>
+                    </layout:panelGrid>
+                    <ajax:status startStyle="color: red"
+                                 onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+                                 onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+                        <f:facet name="start">
+                            <f:verbatim>
+                                <img src="#{constantBean.contextPath}/images/waiting.gif"/>
+                            </f:verbatim>
+                        </f:facet>
+                    </ajax:status>
+                </w:form>
+            </layout:panel>
+
+            <layout:panel title="#{l.m['提单设置']}" autoScroll="true" style="font-size: 12px;">
+                <w:form>
+                    <w:toolBar>
+                        <w:button value="#{l.m['保存']}" id="saveDate"
+                                  image="#{constantBean.contextPath}/images/save.png"/>
+                    </w:toolBar>
+                    <layout:panelGrid columns="2">
+                        <h:outputLabel value="#{l.m['柜封号换行']}:"/>
+                        <w:combo width="50" focusClass="surround"
+                                 value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bill_cntseal_newline']}">
+                            <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                            <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                        </w:combo>
+                        <h:outputLabel value="#{l.m['保函']}:"/>
+                        <w:combo width="50" focusClass="surround"
+                                 value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bill_single_new']}">
+                            <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                            <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                        </w:combo>
+                        <h:outputLabel value="#{l.m['标记与号码包含装箱资料']}:"/>
+                        <w:combo width="50" focusClass="surround"
+                                 value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bill_markno_with_cntinfo']}">
+                            <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                            <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                        </w:combo>
+                        <h:outputLabel value="#{l.m['柜号检查']}:"/>
+                        <w:combo width="50" focusClass="surround"
+                                 value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_ship_container_checkcntno']}">
+                            <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                            <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                        </w:combo>
+                        <h:outputLabel value="HBL#{l.m['代理档案不允许修改']}:"/>
+                        <w:combo width="50" focusClass="surround"
+                                 value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['hbl_agent_modify']}">
+                            <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                            <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                        </w:combo>
+                        <h:outputLabel value="MBL#{l.m['报表预览']}:"/>
+                        <w:combo width="50" focusClass="surround"
+                                 value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['mbl_report']}">
+                            <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                            <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                        </w:combo>
+
+                        <h:outputLabel value="#{l.m['提单资料附页行数']}:"/>
+                        <w:numberField selectOnFocus="true" width="100"
+                                       value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['hbl_att_rows']}"></w:numberField>
+                        <h:outputLabel value="#{l.m['提单资料附页信息']}:"/>
+                        <w:textArea width="300" height="50"
+                                    value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['hbl_att_rows_tips']}"></w:textArea>
+
+
+                    </layout:panelGrid>
+                </w:form>
+            </layout:panel>
+
+            <layout:panel title="#{l.m['费用设置']}" autoScroll="true" style="font-size: 12px;">
+                <w:form>
+                    <w:toolBar>
+                        <w:button value="#{l.m['保存']}" id="saveDate"
+                                  image="#{constantBean.contextPath}/images/save.png"/>
+                    </w:toolBar>
+                    <layout:panelGrid columns="6" style="font-size: 12px;width: 700px;" cellpadding="3" cellspacing="3">
+                        <layout:cell colspan="2">
+                            <layout:panelGrid columns="2" style="font-size: 12px;">
+                                <h:outputLabel value="#{l.m['运价导入成本锁定']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_arapfromprice_lock']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+
+                                <h:outputLabel value="#{l.m['结算方式必填']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_settlement_method']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['自动同步运价']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fina_arap_aotosync_fromprice']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+
+                                <h:outputLabel value="#{l.m['总单不显示子单费用']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fina_arap_mainjobshidechildren']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['收付款银行不按入账公司过滤']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fina_rp_banknotfilterbycorp']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['未审核不能录入费用']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['arap_filter_unchek_customer']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['按录入时间排序']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['arap_filter_orderby_inputtime']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['收付款生成临时凭证']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['rp2vchtemp']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['收付款生成凭证自动校正结算地']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['rp2vch_fix_arap_corpid']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['收付款收付日期为空做对账处理']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['rp2vch_no_rpdate_as_checkfee']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+								<h:outputLabel value="#{l.m['CROSS BOOKING利润公开']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fina_arap_profit_disclosure']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                            </layout:panelGrid>
+                        </layout:cell>
+                        <layout:cell colspan="2">
+                            <layout:panelGrid columns="2" style="font-size: 12px;">
+
+                                <h:outputLabel value="#{l.m['工作单完成锁定增减费用']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['finajobs_iscomplete_isamend_lock']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+
+                                <h:outputLabel value="#{l.m['发票银行按公司过滤']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fina_invoice_bank_filterbycorpid']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+
+                                <h:outputLabel value="#{l.m['收付款启用新模式']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['rp_newpage']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+
+                                <h:outputLabel value="#{l.m['启用费用项目隐藏模式']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fina_arap_feehide']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['纯客户类隔离']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['customer_isolation']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['收付款票据类别为水单不生成凭证号']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fina_actpayrec_bankslip_novch']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['发票银行按所选分公司过滤']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fina_invoice_accountid_by_corpid']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['增减费用凭证允许修改']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fs_vch_isamend_allowededit']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['工作单利润增减费用按工作单日期']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fina_arap_porfit_isamend_jobdate']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['默认弹窗新增']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fina_arap_addbywindow']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+
+                                <h:outputLabel value="#{l.m['结算单位按应收应付过滤']}:"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fee_customer_filterby_araptype']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+
+                            </layout:panelGrid>
+                        </layout:cell>
+                        <layout:cell colspan="2">
+                            <layout:panelGrid columns="2" style="font-size: 12px;">
+                                <h:outputLabel value="#{l.m['付款申请包含应收']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fina_payapply_showar']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['凭证']}SAP"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fs_vch_sap']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['电子发票接口']}"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['inv_ht_e']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['纸质发票接口']}SAP"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['inv_ht_page']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                            </layout:panelGrid>
+                        </layout:cell>
+                    </layout:panelGrid>
+
+                </w:form>
+            </layout:panel>
+
+            <layout:panel title="#{l.m['海运设置']}" autoScroll="true" style="font-size: 12px;">
+                <w:form>
+                    <w:toolBar>
+                        <w:button value="#{l.m['保存']}" id="saveDateshipping"
+                                  image="#{constantBean.contextPath}/images/save.png"/>
+                    </w:toolBar>
+                    <layout:panelGrid columns="2">
+                        <layout:cell colspan="1">
+                            <layout:panelGrid columns="2">
+                                <h:outputLabel value="MBL#{l.m['发货人']}"></h:outputLabel>
+                                <w:textArea width="300" height="50"
+                                            value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_shipping_mbl_shiper']}"></w:textArea>
+                                <h:outputLabel value="MBL#{l.m['收货人']}Auto"></h:outputLabel>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_shipping_mbl_con_copyfromhblagent']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                                <h:outputLabel value="MBL#{l.m['通知人']}"></h:outputLabel>
+                                <w:textArea width="300" height="50"
+                                            value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_shipping_mbl_notify']}"></w:textArea>
+
+                                <h:outputLabel value="UPlat URL:"/>
+                                <w:textField selectOnFocus="true" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['uplat_url']}"></w:textField>
+                            </layout:panelGrid>
+                        </layout:cell>
+
+                        <layout:cell colspan="1">
+                            <layout:panelGrid columns="2">
+                                <h:outputLabel value="#{l.m['其他']}1"></h:outputLabel>
+                                <w:textField width="200"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_shipping_label_other1']}"/>
+                                <h:outputLabel value="#{l.m['其他']}2"></h:outputLabel>
+                                <w:textField width="200"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_shipping_label_other2']}"/>
+                                <h:outputLabel value="#{l.m['其他']}3"></h:outputLabel>
+                                <w:textField width="200"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_shipping_label_other3']}"/>
+                                <h:outputLabel value="#{l.m['其他']}4"></h:outputLabel>
+                                <w:textField width="200"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_shipping_label_other4']}"/>
+                                <h:outputLabel value="#{l.m['其他']}5"></h:outputLabel>
+                                <w:textField width="200"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_shipping_label_other5']}"/>
+                                <h:outputLabel value="#{l.m['其他']}6"></h:outputLabel>
+                                <w:textField width="200"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_shipping_label_other6']}"/>
+                                <h:outputLabel value="#{l.m['其他']}7"></h:outputLabel>
+                                <w:textField width="200"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_shipping_label_other7']}"/>
+                                <h:outputLabel value="#{l.m['其他']}8"></h:outputLabel>
+                                <w:textField width="200"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_shipping_label_other8']}"/>
+                                <h:outputLabel value="#{l.m['其他']}9"></h:outputLabel>
+                                <w:textField width="200"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_shipping_label_other9']}"/>
+                                <h:outputLabel value="#{l.m['其他']}10"></h:outputLabel>
+                                <w:textField width="200"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_shipping_label_other10']}"/>
+                                <h:outputLabel value="#{l.m['其他']}11"></h:outputLabel>
+                                <w:textField width="200"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_shipping_label_other11']}"/>
+                                <h:outputLabel value="#{l.m['其他']}12"></h:outputLabel>
+                                <w:textField width="200"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_shipping_label_other12']}"/>
+                            </layout:panelGrid>
+                        </layout:cell>
+                    </layout:panelGrid>
+
+
+                </w:form>
+            </layout:panel>
+
+            <layout:panel title="#{l.m['空运设置']}" autoScroll="true" style="font-size: 12px;">
+                <w:form>
+                    <w:toolBar>
+                        <w:button value="#{l.m['保存']}" id="saveDateair"
+                                  image="#{constantBean.contextPath}/images/save.png"/>
+                    </w:toolBar>
+                    <layout:panelGrid columns="2">
+                        <h:outputLabel value="#{l.m['体积重自动计算']}"></h:outputLabel>
+                        <w:combo width="50" focusClass="surround"
+                                 value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_air_automatic_calculation']}">
+                            <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                            <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                        </w:combo>
+                        <h:outputLabel value="#{l.m['体积重比例']}"></h:outputLabel>
+                        <w:numberField selectOnFocus="true" width="150"
+                                       value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bus_air_automatic_calculation_val']}"></w:numberField>
+                    </layout:panelGrid>
+                </w:form>
+            </layout:panel>
+
+            <layout:panel title="#{l.m['升级授权']}" autoScroll="true" style="font-size: 12px;">
+                <w:form>
+                    <w:toolBar>
+                        <w:button id="save2" value="#{l.m['保存']}"
+                                  image="#{constantBean.contextPath}/images/save.png"/>
+                    </w:toolBar>
+                    <layout:panelGrid columns="4">
+                        <layout:cell rowspan="2">
+                            <fieldset style="height: 250px;width:300px;border: 0px;">
+                                <layout:panelGrid columns="3">
+                                    <h:outputLabel value="Licenses"/>
+                                    <w:button id="refreshLicenses" label="#{l.m['刷新']}"
+                                              image="#{constantBean.contextPath}/images/refresh.png"/>
+                                    <w:button id="licensesEdit" jsvar="saveJsvar" label="#{l.m['编辑']}"
+                                              image="#{constantBean.contextPath}/images/save.png"
+                                              onclick="licensesWindow.show();"/>
+                                    <layout:cell colspan="3">
+                                        <w:textArea selectOnFocus="true" id="licenses" width="300" height="200"
+                                                    readOnly="true"
+                                        ></w:textArea>
+                                    </layout:cell>
+                                </layout:panelGrid>
+                            </fieldset>
+                        </layout:cell>
+                        <layout:cell rowspan="2">
+                            <h:outputLabel value="#{l.m['客户端版本号']}:"/>
+                            <w:textField selectOnFocus="true" width="100"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['Version']}"></w:textField>
+                            <h:outputLabel value="#{l.m['版本号']}:"/>
+                            <w:textField selectOnFocus="true" width="100"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['Cli_Version']}"></w:textField>
+                            <h:outputLabel value="#{l.m['数据库版本号']}:"/>
+                            <w:textField selectOnFocus="true" width="100"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['DB_Version']}"></w:textField>
+                            <h:outputLabel value="#{l.m['服务号']}:"/>
+                            <w:textField selectOnFocus="true" width="100"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['CSNO']}"></w:textField>
+                            <!--<w:button value="#{l.m['升级']}" onclick="upgWindow.show();"
+                                      image="#{constantBean.contextPath}/images/refresh.png"/>
+                        --></layout:cell>
+                    </layout:panelGrid>
+                </w:form>
+            </layout:panel>
+
+
+            <layout:panel title="#{l.m['邮箱设置']}" autoScroll="true" style="font-size: 12px;">
+                <w:form>
+                    <w:toolBar>
+                        <w:button id="save3" value="#{l.m['保存']}"
+                                  image="#{constantBean.contextPath}/images/save.png"/>
+                        <w:button id="emailTest" value="#{l.m['测试']}"
+                                  image="#{constantBean.contextPath}/images/save.png"/>
+                        <w:button id="emailSign" value="#{l.m['邮箱签名']}"
+                                  image="#{constantBean.contextPath}/images/save.png"/>
+                    </w:toolBar>
+                    <layout:panelGrid columns="6" style="font-size: 12px;width: 500px;" cellpadding="3" cellspacing="3">
+                        <layout:cell colspan="2">
+                            <layout:panelGrid columns="2" style="font-size: 12px;">
+                                <h:outputLabel value="#{l.m['发件服务器']}"/>
+                                <w:textField selectOnFocus="true" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['email_srv_smtp']}"></w:textField>
+                                <h:outputLabel value="#{l.m['收件服务器']}"/>
+                                <w:textField selectOnFocus="true" width="300"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['email_srv_pop3']}"></w:textField>
+                                <h:outputLabel value="#{l.m['邮箱类型']}"></h:outputLabel>
+                                <w:combo width="70" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['email_type']}">
+                                    <f:selectItem itemValue="IMAP" itemLabel="#{l.m['IMAP']}"/>
+                                    <f:selectItem itemValue="POP3" itemLabel="#{l.m['POP3']}"/>
+                                </w:combo>
+                                <h:outputLabel value="#{l.m['账户']}"/>
+                                <w:textField selectOnFocus="true" width="300" id="syspop3account"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['email_pop3_account']}"></w:textField>
+                                <h:outputLabel value="#{l.m['密码']}"/>
+                                <w:textField selectOnFocus="true" width="300" inputType="password" id="syspop3pwd"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['email_pop3_pwd']}"></w:textField>
+                            </layout:panelGrid>
+
+                            <ajax:status startStyle="color: red"
+                                         onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+                                         onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+                                <f:facet name="start">
+                                    <f:verbatim>
+                                        <img src="#{constantBean.contextPath}/images/waiting.gif"/>
+                                    </f:verbatim>
+                                </f:facet>
+                            </ajax:status>
+                        </layout:cell>
+                        <layout:cell colspan="2">
+                            <layout:panelGrid columns="2" style="font-size: 12px;">
+                                <h:outputLabel value="#{l.m['发送端口']}"/>
+                                <w:textField selectOnFocus="true" width="50"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['email_srv_port']}"></w:textField>
+                                <h:outputLabel value="#{l.m['接收端口']}"/>
+                                <w:textField selectOnFocus="true" width="50"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['email_receive_port']}"></w:textField>
+                            </layout:panelGrid>
+                        </layout:cell>
+                    </layout:panelGrid>
+                </w:form>
+            </layout:panel>
+
+
+            <layout:panel title="#{l.m['微信设置']}" autoScroll="true" style="font-size: 12px;">
+                <w:form>
+                    <w:toolBar>
+                        <w:button id="save4" value="#{l.m['保存']}"
+                                  image="#{constantBean.contextPath}/images/save.png"/>
+                    </w:toolBar>
+                    <layout:panelGrid columns="2">
+                        <layout:cell colspan="1">
+                            <layout:panelGrid columns="1">
+                                <w:button label="#{l.m['上传二维码']}" onclick="weixinImgWindowJsVar.show()"></w:button>
+                                <w:button label="#{l.m['刷新']}" id="refreshWeixinImg" onclick=""></w:button>
+                                <w:button label="#{l.m['清除']}" id="clearWeixinImg" onclick=""></w:button>
+                            </layout:panelGrid>
+                        </layout:cell>
+                        <layout:cell colspan="1">
+                            <layout:panelGrid>
+                                <h:graphicImage id="weixinImg" value="#{pages.sysmgr.cfg.syscfgBean.weixinimg}"
+                                                height="100" alt="undefined"></h:graphicImage>
+                            </layout:panelGrid>
+                        </layout:cell>
+
+                        <layout:cell colspan="4">
+                            <layout:panelGrid columns="2">
+                                <h:outputLabel value="APPID"/>
+                                <w:textField selectOnFocus="true" width="400"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['WeiXin_AppID']}"
+                                             inputType="password"></w:textField>
+                                <h:outputLabel value="Appsecret"/>
+                                <w:textField selectOnFocus="true" width="400"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['WeiXin_Appsecret']}"
+                                             inputType="password"></w:textField>
+                                <h:outputLabel value="#{l.m['绑定域名']}"/>
+                                <w:textField selectOnFocus="true" width="400"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['WeiXin_BindUrl']}"></w:textField>
+                                <h:outputLabel value="#{l.m['回调地址']}"/>
+                                <w:textField selectOnFocus="true" width="400"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['WeiXin_CallBackUrl']}"></w:textField>
+                                <h:outputLabel value="#{l.m['消息模板-待办任务']}"/>
+                                <w:textField selectOnFocus="true" width="400"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['weixin_template_task']}"></w:textField>
+                                <h:outputLabel value="#{l.m['消息模板-工作单进度']}"/>
+                                <w:textField selectOnFocus="true" width="400"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['weixin_template_jobs']}"></w:textField>
+
+                                <h:outputLabel value="#{l.m['消息模板-货物消息提醒']}"/>
+                                <w:textField selectOnFocus="true" width="400"
+                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['weixin_template_goodstrack']}"></w:textField>
+
+                                <h:outputLabel value="#{l.m['只能微信扫码登录']}"/>
+                                <w:combo width="50" focusClass="surround"
+                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['login_by_openid_only']}">
+                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                                </w:combo>
+                            </layout:panelGrid>
+                        </layout:cell>
+                    </layout:panelGrid>
+                    <ajax:status startStyle="color: red"
+                                 onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+                                 onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+                        <f:facet name="start">
+                            <f:verbatim>
+                                <img src="#{constantBean.contextPath}/images/waiting.gif"/>
+                            </f:verbatim>
+                        </f:facet>
+                    </ajax:status>
+                </w:form>
+            </layout:panel>
+
+            <layout:panel title="#{l.m['小程序设置']}" autoScroll="true" style="font-size: 12px;">
+                <w:form>
+                    <layout:panelGrid columns="2">
+
+                        <layout:cell colspan="1">
+                            <layout:panelGrid columns="1">
+                                <w:button label="#{l.m['上传二维码']}" onclick="weixinXCXImgWindowJsVar.show()"></w:button>
+                                <w:button label="#{l.m['刷新']}" id="refreshWeixinXCXImg" onclick=""></w:button>
+                                <w:button label="#{l.m['清除']}" id="clearWeixinXCXImg" onclick=""></w:button>
+                            </layout:panelGrid>
+                        </layout:cell>
+                        <layout:cell colspan="1">
+                            <layout:panelGrid>
+                                <h:graphicImage id="weixinXCXImg" value="#{pages.sysmgr.cfg.syscfgBean.weixinXCXImg}"
+                                                height="100" alt="undefined"></h:graphicImage>
+                            </layout:panelGrid>
+                        </layout:cell>
+
+                    </layout:panelGrid>
+                    <ajax:status startStyle="color: red"
+                                 onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+                                 onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+                        <f:facet name="start">
+                            <f:verbatim>
+                                <img src="#{constantBean.contextPath}/images/waiting.gif"/>
+                            </f:verbatim>
+                        </f:facet>
+                    </ajax:status>
+                </w:form>
+            </layout:panel>
+
+
+            <layout:panel title="API#{l.m['设置']}" autoScroll="true" style="font-size: 12px;">
+                <w:form>
+                    <w:toolBar>
+                        <w:button id="saveApi" value="#{l.m['保存']}"
+                                  image="#{constantBean.contextPath}/images/save.png"/>
+                    </w:toolBar>
+                    <layout:panelGrid columns="2">
+                        <h:outputLabel value="#{l.m['马士基运价查询']}URL:"/>
+                        <w:textField selectOnFocus="true" width="300"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_maersk_qryprice_url']}"></w:textField>
+                        <h:outputLabel value="#{l.m['马士基运价查询']}KEY:"/>
+                        <w:textField selectOnFocus="true" width="300" inputType="password"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_maersk_qryprice_key']}"></w:textField>
+
+
+                        <h:outputLabel value="COSCO_SERVER_URL:"/>
+                        <w:textField selectOnFocus="true" width="300"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_cosco_server_url']}"></w:textField>
+
+                        <h:outputLabel value="COSCO_Api:"/>
+                        <w:textField selectOnFocus="true" width="300" inputType="password"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_cosco_api']}"></w:textField>
+                        <h:outputLabel value="COSCO_Secret:"/>
+                        <w:textField selectOnFocus="true" width="300" inputType="password"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_cosco_secret']}"></w:textField>
+
+                        <h:outputLabel value="UFMS URL:"/>
+                        <w:textField selectOnFocus="true" width="300"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_api_ufms_url']}"></w:textField>
+
+                        <h:outputLabel value="船期查询 URL:"/>
+                        <w:textField selectOnFocus="true" width="300"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_api_shipquery_url']}"></w:textField>
+
+                        <h:outputLabel value="soedi 地址:"/>
+                        <w:textField selectOnFocus="true" width="300"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_ftp_soedi_hostname']}"></w:textField>
+
+                        <h:outputLabel value="soedi 账号:"/>
+                        <w:textField selectOnFocus="true" width="300"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_ftp_soedi_username']}"></w:textField>
+
+                        <h:outputLabel value="soedi 密码:"/>
+                        <w:textField selectOnFocus="true" width="300"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_ftp_soedi_password']}"></w:textField>
+                    </layout:panelGrid>
+                    <ajax:status startStyle="color: red"
+                                 onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+                                 onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+                        <f:facet name="start">
+                            <f:verbatim>
+                                <img src="#{constantBean.contextPath}/images/waiting.gif"/>
+                            </f:verbatim>
+                        </f:facet>
+                    </ajax:status>
+                </w:form>
+            </layout:panel>
+
+
+            <layout:panel title="#{l.m['投保设置']}" autoScroll="true" style="font-size: 12px;">
+                <w:form>
+                    <w:toolBar>
+                        <w:button id="saveInsurance" value="#{l.m['保存']}"
+                                  image="#{constantBean.contextPath}/images/save.png"/>
+
+                        <w:button id="getInsuranceLogin" value="#{l.m['首次登陆授权']}"
+                                  image="#{constantBean.contextPath}/images/save.png"/>
+                    </w:toolBar>
+                    <layout:panelGrid columns="2">
+                        <h:outputLabel value="API_URL:"/>
+                        <w:textField selectOnFocus="true" width="300"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_insurance_apiurl']}"></w:textField>
+                        <h:outputLabel value="#{l.m['投保']}API_ID:"/>
+                        <w:textField selectOnFocus="true" width="300"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_insurance_client_id']}"></w:textField>
+                        <h:outputLabel value="#{l.m['投保']}API_KEY:"/>
+                        <w:textField selectOnFocus="true" width="300" inputType="password"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_insurance_client_secret']}"></w:textField>
+
+                        <h:outputLabel value="#{l.m['税号']}:"/>
+                        <w:textField selectOnFocus="true" width="300"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_taxtno']}"></w:textField>
+                        <h:outputLabel value="#{l.m['公司名']}COM_NAME:"/>
+                        <w:textField selectOnFocus="true" width="300"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_insurance_company']}"></w:textField>
+                        <h:outputLabel value="#{l.m['邮箱']}:"/>
+                        <w:textField selectOnFocus="true" width="300"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_insurance_email']}"></w:textField>
+                        <h:outputLabel value="#{l.m['手机号']}:"/>
+                        <w:textField selectOnFocus="true" width="300"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_insurance_phone']}"></w:textField>
+
+                        <h:outputLabel value="#{l.m['投保']}COM_ID:"/>
+                        <w:textField selectOnFocus="true" width="300" jsvar="insuranceUserIdJsVar"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_insurance_userId']}"></w:textField>
+
+                    </layout:panelGrid>
+                    <ajax:status startStyle="color: red"
+                                 onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+                                 onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+                        <f:facet name="start">
+                            <f:verbatim>
+                                <img src="#{constantBean.contextPath}/images/waiting.gif"/>
+                            </f:verbatim>
+                        </f:facet>
+                    </ajax:status>
+                </w:form>
+            </layout:panel>
+
+            <layout:panel title="UI#{l.m['设置']}" autoScroll="true" style="font-size: 12px;" onactivate="addDetail()">
+                <w:form>
+                    <w:toolBar>
+                        <w:button id="saveUI" value="#{l.m['保存']}" onclick="setBgColor()"
+                                  image="#{constantBean.contextPath}/images/save.png"/>
+                    </w:toolBar>
+                    <layout:panelGrid columns="4">
+                        <h:outputLabel value="#{l.m['开启登录页背景图']}"/>
+                        <w:combo width="50" focusClass="surround"
+                                 value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['login_bg_img_open']}">
+                            <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
+                            <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
+                        </w:combo>
+
+                        <h:outputLabel value="#{l.m['背景色']}"></h:outputLabel>
+                        <w:combo forceSelection="true" width="100" jsvar="bgColorJsVar"
+                                 value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bg_color']}">
+                            <f:selectItem itemValue="blue" itemLabel="商务蓝"/>
+                            <f:selectItem itemValue="green" itemLabel="护眼绿"/>
+                            <f:selectItem itemValue="pink" itemLabel="粉红色"/>
+                        </w:combo>
+
+                        <h:outputLabel value="#{l.m['首页背景图']}1:"/>
+                        <w:textField selectOnFocus="true" width="100" jsvar="bgImg1JsVar"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bgImg1']}"></w:textField>
+                        <h:outputLabel value="#{l.m['首页背景图']}2:"/>
+                        <w:textField selectOnFocus="true" width="100" jsvar="bgImg2JsVar"
+                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bgImg2']}"></w:textField>
+                    </layout:panelGrid>
+                    <layout:panelGrid columns="2">
+                        <table id="bgimg" class="nui-table nui-table-bill"
+                               style="width: 0;font-size: 16px;font-weight: bold;">
+                        </table>
+
+                    </layout:panelGrid>
+
+                    <ajax:status startStyle="color: red"
+                                 onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+                                 onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+                        <f:facet name="start">
+                            <f:verbatim>
+                                <img src="#{constantBean.contextPath}/images/waiting.gif"/>
+                            </f:verbatim>
+                        </f:facet>
+                    </ajax:status>
+                </w:form>
+            </layout:panel>
+
+
+        </layout:tabLayout>
+
+    </w:page>
+
+    <layout:window maximizable="true" id="logoWindow" jsvar="logoWindowJsVar" width="400" height="150"
+                   title="#{l.m['上传']}LOGO">
+        <w:form>
+            <layout:panelGrid columns="2" cellspacing="5px" width="500" style="font-size:12px">
+                <layout:cell colspan="2">
+                    <layout:panelGrid columns="6" width="450" style="font-size:12px">
+                        <h:outputLabel value="LOGO"/>
+                        <w:fileUpload id="fileUpload1" uploadListener="#{pages.sysmgr.cfg.syscfgBean.processUpload1}"
+                                      rich="true" maxSize="3000k"/>
+                    </layout:panelGrid>
+                </layout:cell>
+
+                <layout:cell colspan="2">
+                    <layout:panelGrid columns="6" width="450" style="font-size:12px">
+                        <w:button label="#{l.m['上传']}"></w:button>
+                        <w:fileUploadProgress startMessage="#{l.m['开始上传']}" id=""
+                                              uploadingMessage="#{l.m['正在上传，已经上传']}{readBytes}k/{total}k({percentage}%)"
+                                              completeMessage="#{l.m['上传结束，总共']}{total}k"
+                                              errorMessage="#{l.m['上传错误：']}{error}"/>
+                    </layout:panelGrid>
+                </layout:cell>
+
+                <!--<layout:cell colspan="2">
+                    <layout:panelGrid columns="6" width="500" style="font-size:12px">
+                        <h:outputLabel value="#{l.m['首页Logo']}410*120" />
+                        <w:fileUpload id="fileUpload2" uploadListener="#{pages.sysmgr.cfg.syscfgBean.processUpload2}"
+                            rich="true" maxSize="3000k" required="true" requiredMessage="Home Logo Can't be empty!" />
+                        <w:button value="Upload" id="submit" />
+                    </layout:panelGrid>
+                </layout:cell>
+
+                -->
+            </layout:panelGrid>
+        </w:form>
+    </layout:window>
+
+    <layout:window maximizable="true" id="weixinImgWindow" jsvar="weixinImgWindowJsVar" width="400" height="150"
+                   title="#{l.m['微信二维码上传']}">
+        <w:form>
+            <layout:panelGrid columns="2" cellspacing="5px" width="500" style="font-size:12px">
+                <layout:cell colspan="2">
+                    <layout:panelGrid columns="6" width="450" style="font-size:12px">
+                        <h:outputLabel value="#{l.m['二维码']}"/>
+                        <w:fileUpload id="weixinImgfileUpload1"
+                                      uploadListener="#{pages.sysmgr.cfg.syscfgBean.weixinImgUpload1}"
+                                      rich="true" maxSize="3000k"/>
+                    </layout:panelGrid>
+                </layout:cell>
+                <layout:cell colspan="2">
+                    <layout:panelGrid columns="6" width="450" style="font-size:12px">
+                        <w:button label="#{l.m['上传']}"></w:button>
+                        <w:fileUploadProgress startMessage="#{l.m['开始上传']}" id=""
+                                              uploadingMessage="#{l.m['正在上传，已经上传']}{readBytes}k/{total}k({percentage}%)"
+                                              completeMessage="#{l.m['上传结束，总共']}{total}k"
+                                              errorMessage="#{l.m['上传错误：']}{error}"/>
+                    </layout:panelGrid>
+                </layout:cell>
+            </layout:panelGrid>
+        </w:form>
+    </layout:window>
+
+    <layout:window maximizable="true" id="weixinXCXImgWindow" jsvar="weixinXCXImgWindowJsVar" width="400" height="150"
+                   title="#{l.m['微信小程序二维码上传']}">
+        <w:form>
+            <layout:panelGrid columns="2" cellspacing="5px" width="500" style="font-size:12px">
+                <layout:cell colspan="2">
+                    <layout:panelGrid columns="6" width="450" style="font-size:12px">
+                        <h:outputLabel value="#{l.m['二维码']}"/>
+                        <w:fileUpload id="weixinXCXImgfileUpload1"
+                                      uploadListener="#{pages.sysmgr.cfg.syscfgBean.weixinXCXImgUpload1}"
+                                      rich="true" maxSize="3000k"/>
+                    </layout:panelGrid>
+                </layout:cell>
+                <layout:cell colspan="2">
+                    <layout:panelGrid columns="6" width="450" style="font-size:12px">
+                        <w:button label="#{l.m['上传']}"></w:button>
+                        <w:fileUploadProgress startMessage="#{l.m['开始上传']}" id=""
+                                              uploadingMessage="#{l.m['正在上传，已经上传']}{readBytes}k/{total}k({percentage}%)"
+                                              completeMessage="#{l.m['上传结束，总共']}{total}k"
+                                              errorMessage="#{l.m['上传错误：']}{error}"/>
+                    </layout:panelGrid>
+                </layout:cell>
+            </layout:panelGrid>
+        </w:form>
+    </layout:window>
+
+    <layout:window maximizable="true" id="uiWindow" width="400" height="150" title="#{l.m['修改密码']}">
+        <w:form>
+            <layout:panelGrid columns="2" cellspacing="5px" width="500" style="font-size:12px">
+                <h:outputLabel value="#{l.m['当前密码']}"/>
+                <w:textField selectOnFocus="true" id="oldPWD" inputType="password" required="true"
+                             requiredMessage="#{l.m['密码不能为空']}"></w:textField>
+                <h:outputLabel value="#{l.m['新密码']}"/>
+                <w:textField selectOnFocus="true" id="newPWD1" inputType="password" required="true"
+                             requiredMessage="#{l.m['密码不能为空']}"></w:textField>
+                <h:outputLabel value="#{l.m['再次输入新密码']}"/>
+                <w:textField selectOnFocus="true" id="newPWD2" inputType="password" required="true"
+                             requiredMessage="#{l.m['密码不能为空']}"></w:textField>
+                <w:button id="savePWD" value="#{l.m['修改密码']}"
+                          image="#{constantBean.contextPath}/images/save.png"/>
+            </layout:panelGrid>
+        </w:form>
+    </layout:window>
+
+    <layout:window maximizable="true" id="licensesWindow" width="320" height="270" title="Licenses">
+        <w:form>
+            <w:toolBar>
+                <w:button id="licensesSave" value="#{l.m['保存']}"
+                          image="#{constantBean.contextPath}/images/save.png"/>
+            </w:toolBar>
+            <w:textArea selectOnFocus="true" id="" width="300" height="200"
+                        value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['rpt_licenses']}"></w:textArea>
+        </w:form>
+    </layout:window>
+
+    <layout:window maximizable="true" id="upgWindow" jsvar="upgWindow" width="590" height="500" title="UPG">
+        <w:form>
+            <layout:panelGrid columns="2">
+                <w:toolBar style="width: 120px;">
+                    <w:button id="upg" value="#{l.m['升级']}"
+                              image="#{constantBean.contextPath}/images/save.png"/>
+                </w:toolBar>
+                <ajax:status startStyle="color: red"
+                             onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+                             onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+                    <f:facet name="start">
+                        <f:verbatim>
+                            <img src="#{constantBean.contextPath}/images/waiting.gif"/>
+                        </f:verbatim>
+                    </f:facet>
+                </ajax:status>
+            </layout:panelGrid>
+
+            <w:textArea selectOnFocus="true" id="upglogs" width="570" height="450"></w:textArea>
+        </w:form>
+    </layout:window>
+
+    <layout:window maximizable="true" title="#{l.m['邮箱签名']}" id="showEmailSignWindow" jsvar="showEmailSignWindow"
+                   width="600" height="530"
+                   header="false" resizable="true" constrainHeader="true">
+        <layout:panel id="editPanel" jsvar="gridPanelJsvar" height="100%" hideBorders="true"
+                      fit="true">
+            <w:form id="formedt">
+                <layout:panelGrid columns="2">
+                    <w:toolBar>
+                        <w:button id="saveEmailSign" value="#{l.m['保存']}" allowReEnter="false" onclick="beforeSubmit()"
+                                  image="#{constantBean.contextPath}/images/save.png"/>
+                    </w:toolBar>
+                </layout:panelGrid>
+                <layout:panelGrid width="600" columns="2" style="font-size:12px">
+                    <f:verbatim></f:verbatim>
+                    <layout:cell colspan="2" styleClass="td-editor" style="width:600px; height:100%;">
+                        <h:outputText id="ckeditor" escape="false" style="width: 100%;height: 100%;"
+                                      value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['email_sign']}"/>
+                    </layout:cell>
+                </layout:panelGrid>
+            </w:form>
+        </layout:panel>
+    </layout:window>
+
+
+    <layout:window maximizable="true" id="showCacheWindow" jsvar="showCacheWindowJsVar" width="590" height="500"
+                   title="Cache">
+        <w:form>
+            <w:textArea selectOnFocus="true" id="cacheLogs" width="570" height="450"></w:textArea>
+        </w:form>
+    </layout:window>
+
+    <script>
+        //<![CDATA[
+        var img = null;
+
+        function checkPic(picForm) {
+            var location = picForm.pic.value;
+            if (location == "") {
+                alert("#{l.m['请先选择图片文件']}");
+                return false;
+            }
+            var point = location.lastIndexOf(".");
+            var type = location.substr(point);
+            if (type == ".jpg" || type == ".gif" || type == ".JPG" || type == ".GIF" || type == ".PNG" || type == ".png") {
+                img = document.createElement("img");
+                img.src = location;
+                if (img.fileSize > 102400) {
+                    alert("#{l.m['图片尺寸请不要大于100KB']}");
+                    return false;
+                } else
+                    return true;
+            } else {
+                alert("#{l.m['只能输入jpg或者gif格式的图片']}");
+                return false;
+            }
+            return true;
+        }
+
+        Ext.onReady(function () {
+            editor1 = Ext.form.CKEditor.create("formedt:ckeditor");
+            $('td').attr("valign", "top");
+        });
+
+        function beforeSubmit() {
+            saveAction.addParam('editor1', editor1.getValue());
+            saveAction.submit();
+        }
+
+        function setBgColor() {
+            var bgcolor = bgColorJsVar.getValue();
+            window.localStorage.bgcolor = bgcolor
+            setUserBgColor();
+        }
+
+        function addDetail() {
+            $("#bgimg").empty();
+            var apandhtml = "";
+            var row = 1;
+            for (var num = 1; num < 12; num++) {
+                apandhtml += '<tr>';
+                var td1 = '<td width="100"><img src="/scp/login_new/images/bg/bg' + num + '.jpg" onclick="chooseBgImg(' + num + ')" width="300px"/></td>';
+                num++;
+                var td2 = '<td width="100"><img src="/scp/login_new/images/bg/bg' + num + '.jpg" onclick="chooseBgImg(' + num + ')" width="300px"/></td>';
+                num++;
+                var td3 = '<td width="100"><img src="/scp/login_new/images/bg/bg' + num + '.jpg" onclick="chooseBgImg(' + num + ')" width="300px"/></td>';
+                num++;
+                var td4 = '<td width="100"><img src="/scp/login_new/images/bg/bg' + num + '.jpg" onclick="chooseBgImg(' + num + ')" width="300px"/></td>';
+                apandhtml += td1;
+                apandhtml += td2;
+                apandhtml += td3;
+                apandhtml += td4;
+                apandhtml += '</tr>';
+            }
+            $("#bgimg").append(apandhtml);
+        }
+
+        var flag = true;
+
+        function chooseBgImg(num) {
+            var bg = 'bg' + num + '.jpg';
+            if (flag) {
+                bgImg1JsVar.setValue(bg);
+            } else {
+                bgImg2JsVar.setValue(bg);
+            }
+            flag = !flag;
+        }
+
+        //]]>
+    </script>
+
+</f:view>

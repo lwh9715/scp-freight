@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:om="http://www.apusic.com/jsf/misc"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> <link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" /><link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet>
+		<link rel="stylesheet" id="cmsbg" type="text/css"/>
+		
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/common/js/savemodel2.js?t=5"></script>
+		<script type="text/javascript" src="/scp/common/js/jquery-2.0.0.min.js"></script>
+		<script type="text/javascript" src="/scp/common/js/common.js?t=4"></script>
+		
+		
+		<link rel="stylesheet" type="text/css" href="/scp/common/css/jquery.flexbox.css" />
+		<script type="text/javascript" src="/scp/common/js/jquery.flexbox.js"></script>
+		
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+		<layout:borderLayout fit="true" fitToBody="true">
+			<layout:panel id="editPanel" width="100%" height="180" region="north" split="true">
+				<w:form>
+					<ajax:submitAction id="doSave" jsvar="doSave" />
+					<ajax:submitAction id="export" jsvar="exportexl" />
+					<div style="height: 0px; display: none;">
+						<w:button id="simulateExport" jsvar="simulateExport" label="#{l.m['导出']}" title="#{l.m['下载']}" disabled="true" alwaysSubmit="true" />
+						<om:fileDownload id="doSimulateExport" for="simulateExport" savedName="userguarantee.xls" />
+					</div>
+					<layout:panelGrid columns="6">
+						<w:toolBar>
+							<w:button id="save" value="#{l.m['保存']}"
+								image="#{constantBean.contextPath}/images/save.png" />
+							<w:button id="modifyPWD" value="#{l.m['修改密码']}"
+								image="#{constantBean.contextPath}/images/save.png" />
+							<!-- <w:button id="changeCorpid" value="#{l.m['切换分公司']}"
+								image="#{constantBean.contextPath}/images/save.png" /> -->
+						</w:toolBar>
+
+						<layout:cell>
+							<ajax:status startStyle="color: red"
+								onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+								onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+								<f:facet name="start">
+									<f:verbatim>
+										<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 20px;">Loading...</img>
+									</f:verbatim>
+								</f:facet>
+							</ajax:status>
+						</layout:cell>
+					</layout:panelGrid>
+
+					<layout:panelGrid columns="8" style="font-size:12px" cellpadding="0" cellspacing="0">
+						<h:outputLabel value="#{l.m['代码']}" />
+						<w:textField selectOnFocus="true" style="color: red; "
+							value="#{pages.sysmgr.user.userinfomgrBean.selectedRowData.code}" width="120"
+							maxLength="50"  focusClass="surround" readOnly="true" />
+						<h:outputLabel value="#{l.m['中文名']}" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.userinfomgrBean.selectedRowData.namec}" width="120"
+							maxLength="50"  focusClass="surround" readOnly="true"/>
+						<h:outputLabel value="#{l.m['英文名']}" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.userinfomgrBean.selectedRowData.namee}" width="120"
+							maxLength="50"  focusClass="surround" />
+						<h:outputLabel value="#{l.m['电话1']}" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.userinfomgrBean.selectedRowData.tel1}" width="120"
+							maxLength="50"  focusClass="surround" />
+						<h:outputLabel value="#{l.m['电话2']}" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.userinfomgrBean.selectedRowData.tel2}" width="120"
+							maxLength="50"  focusClass="surround" />
+
+						<h:outputLabel value="Email1" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.userinfomgrBean.selectedRowData.email1}" readOnly="true" width="120"
+							maxLength="50"  focusClass="surround" />
+						<h:outputLabel value="Email2" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.userinfomgrBean.selectedRowData.email2}" width="120"
+							maxLength="50"  focusClass="surround" />
+
+						<h:outputLabel value="QQ" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.userinfomgrBean.selectedRowData.qq}" width="120" maxLength="50"
+							 focusClass="surround" />
+						<h:outputLabel value="MSN" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.userinfomgrBean.selectedRowData.msn}" width="120"
+							maxLength="50"  focusClass="surround" />
+
+						<h:outputLabel value="#{l.m['手机']}" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.userinfomgrBean.selectedRowData.mobilephone}" width="120"
+							maxLength="50"  focusClass="surround" />
+						<h:outputLabel value="FAX" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.userinfomgrBean.selectedRowData.fax}" width="120"
+							maxLength="50"  focusClass="surround" />
+						<h:outputLabel value="SKYPE" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.userinfomgrBean.selectedRowData.skype}" width="120"
+							maxLength="50"  focusClass="surround" />
+							
+						<h:outputLabel value="#{l.m['职务']}" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.userinfomgrBean.selectedRowData.jobdesc}" width="120"
+							maxLength="50"  focusClass="surround" />
+							
+						<h:outputLabel value="#{l.m['公司']}" />
+						<w:combo id="company" emptyText="" typeAhead="true" width="120" listWidth="120" readOnly="true"
+							focusClass="surround"  forceSelection="true" onselect="company_changed();" jsvar="company">
+							<f:selectItems id="companies" value="#{comboxBean.company}" />
+						</w:combo>
+						
+
+						<h:outputLabel value="#{l.m['部门']}" />
+						<!--<w:textField selectOnFocus="true" value="#{pages.sysmgr.user.userinfomgrBean.selectedRowData.depter}" width="120"
+							maxLength="50"  readOnly="true"/>
+						--><w:combo id="department" emptyText="" typeAhead="true" width="120" listWidth="120" 
+							focusClass="surround" forceSelection="true" >
+							<f:selectItems id="departments" />
+						</w:combo>
+						
+						<layout:cell colspan="2"> 
+							<layout:panelGrid columns="3" cellspacing="0">
+								<h:outputLabel value="#{l.m['上级']}" />
+								<layout:cell colspan="1">
+									<div id="parentuser"></div>
+									<w:textField selectOnFocus="true" width="100"
+									value="#{pages.sysmgr.user.userinfomgrBean.selectedRowData.parentid}" jsvar="parentidJs" hidden="true"/>
+								</layout:cell>
+								<w:button label="#{l.m['查看下属']}" onclick="userWindowJs.show()" width="25" image="#{constantBean.contextPath}/images/query-small.png" />
+							</layout:panelGrid>
+						</layout:cell>
+						
+
+						
+						<!-- <h:outputLabel value="#{l.m['所属仓库']}" />
+						<w:textArea readOnly="true"  selectOnFocus="true" id="warehouses"
+						width="120" height="36" /> -->
+					</layout:panelGrid>
+					<layout:panelGrid>
+						<layout:cell colspan="8">
+							<layout:panelGrid columns="8">
+								<h:outputLabel value="#{l.m['备注']}" />
+								<w:textArea selectOnFocus="true"
+									value="#{pages.sysmgr.user.userinfomgrBean.selectedRowData.remarks}" width="560"
+									height="30" maxLength="40"  focusClass="surround" />
+								<layout:panelGrid columns="2" >
+								<h:outputLabel value="信用额度" />
+								<w:button id="qureyguarantee" label=""
+									image="#{constantBean.contextPath}/images/query-small.png" />
+								</layout:panelGrid>
+								<w:numberField value="#{pages.sysmgr.user.userinfomgrBean.selectedRowData.creditlimit}" hidden = "true" width="140" maxLength="50" />
+							</layout:panelGrid>
+						</layout:cell>
+					</layout:panelGrid>
+				</w:form>
+			</layout:panel>
+
+
+			<layout:panel title="" region="center" split="true">
+				<layout:panel fit="true" lazyLoad="true" autoScroll="true">
+					<w:iframe id="dtlIframe" scrolling="true" border="0"
+						src="../cfg/usrcfg.xhtml" style="border: thin;width: 100%; height: 1000px;">
+					</w:iframe>
+				</layout:panel>
+			</layout:panel>
+		</layout:borderLayout>
+		
+		<ajax:submitAction id="changeDept" jsvar="changeDept"/>
+	</w:page>
+	
+	<layout:window maximizable="true" id="uiWindow" width="658" height="170" title="#{l.m['修改密码']}">
+		<w:form>
+			<layout:panelGrid columns="3" cellspacing="5px" style="font-size:12px">
+				<h:outputLabel value="#{l.m['当前密码']}" />
+				<w:textField selectOnFocus="true" id="oldPWD" inputType="password" required="true"
+					requiredMessage="#{l.m['密码不能为空']}"></w:textField>
+				<layout:cell colspan="1"></layout:cell>
+				<h:outputLabel value="#{l.m['新密码']}" />
+				<w:textField selectOnFocus="true" id="newPWD1" jsvar="newPWD1JsVar" inputType="password" required="true"
+					requiredMessage="#{l.m['密码不能为空']}" ></w:textField>
+				<h:outputLabel value="#{l.m['1、长度大于8 ']}" />
+				<h:outputLabel value="#{l.m['再次输入新密码']}" />
+				<w:textField selectOnFocus="true" id="newPWD2" jsvar="newPWD2JsVar" inputType="password" required="true"
+					requiredMessage="#{l.m['密码不能为空']}"></w:textField>
+				<h:outputLabel value="#{l.m['2、密码必须是字母大写，字母小写，数字，特殊字符中任意三个组合']}" />
+				<w:button id="savePWD" value="#{l.m['修改密码']}"  onclick="return checkChangePwd();"
+					image="#{constantBean.contextPath}/images/save.png" />
+			</layout:panelGrid>
+		</w:form>
+	</layout:window>
+	
+	<layout:window maximizable="false" id="searchWindow" jsvar="searchWindowJsVar" width="1000" height="550" header="false"
+		resizable="true" constrainHeader="true" >
+		<w:form>
+			<layout:panelGrid columns="4">
+				<w:toolBar>
+					<w:button id="exportBtn" value="#{l.m['导出']}" onclick="exportExcel();"
+							image="#{constantBean.contextPath}/pages/module/common/resources/images/excel.gif" />
+				</w:toolBar>
+			</layout:panelGrid>
+			<layout:panelGrid columns="1" style="font-size:12px" cellpadding="0" cellspacing="0">
+				<w:dataGrid height="475"  jsvar="guaranteegridVar" paged="true" rows="20" id="guaranteegrid"
+					selectionModel="#{constantBean.checkBox}" toolBarPosition="bottom" idColumn="id"
+					selectable="true">
+					<w:outputColumn id="id" header="ID" hidden="true" />
+					<w:outputColumn header="#{l.m['工作单号']}" id="nos" width="120" sortable="true" />
+					<w:outputColumn header="#{l.m['业务员']}" id="sales" width="70" sortable="true" />
+					<w:outputColumn header="#{l.m['担保人']}" id="guaranteeuser" width="70" sortable="true" />
+					<w:outputColumn header="#{l.m['金额']}" id="amount" width="70" sortable="true"/>
+					<w:outputColumn header="#{l.m['销账金额']}" id="amt2" width="70" sortable="true"/>
+					<w:outputColumn header="#{l.m['担保金额']}" id="guaranteeamount" width="70" sortable="true"/>
+					<w:outputColumn header="#{l.m['销账日期']}" id="rpdate" width="100" sortable="true" />
+					<w:outputColumn header="#{l.m['担保日期']}" id="guaranteedate" width="100" sortable="true" />
+					<w:outputColumn header="#{l.m['回款日期']}" id="paymentdate" width="100" sortable="true" />
+					<w:outputColumn header="#{l.m['担保流水号']}" id="prono" width="140" sortable="true" />
+				</w:dataGrid>
+				<w:textField selectOnFocus="true" id="guaranteeuserid" hidden="true"/>
+			</layout:panelGrid>
+		</w:form>
+	</layout:window>
+	
+	<layout:window maximizable="true" id="changeCorpidWindow" width="400" height="170" title="#{l.m['切换分公司']}" x="100" y="100" modal="true">
+		<w:form>
+			<layout:panelGrid columns="2" cellspacing="5px" style="font-size:12px">
+				<h:outputLabel value="#{l.m['分公司']}" />
+				<w:combo emptyText="" id="corpidCurrent" typeAhead="true" width="120" listWidth="120" value=""
+					focusClass="surround"  forceSelection="true">
+					<f:selectItems id="companies2" value="#{comboxBean.branchcompany}" />
+				</w:combo>
+				<w:button id="saveChangeCorpid" value="#{l.m['保存']}"
+					image="#{constantBean.contextPath}/images/save.png" />
+			</layout:panelGrid>
+		</w:form>
+	</layout:window>
+	
+	
+	<layout:window maximizable="true" width="500" height="530" id="userWindow" jsvar="userWindowJs" constrainHeader="true">
+		<layout:panel id="userPanel" height="100%" hideBorders="true" width="100%" fit="true">
+			<w:form>
+				<layout:panelGrid columns="10" cellspacing="0" cellpadding="0">
+				</layout:panelGrid>
+				<w:dataGrid height="500" jsvar="gridUserJsvar" paged="true" rows="20" id="gridUser"
+					selectionModel="#{constantBean.checkBox}" toolBarPosition="bottom" idColumn="id"
+					selectable="true">
+					<w:outputColumn id="id" header="ID" hidden="true" />
+					<w:outputColumn header="#{l.m['代码']}" id="code" sortable="true" width="80" />
+					<w:outputColumn header="#{l.m['中文名']}" id="namec" width="80" sortable="true" />
+					<w:outputColumn header="#{l.m['英文名']}" id="namee" width="80" sortable="true" />
+					<w:outputColumn header="#{l.m['部门']}" id="depter2" width="80" sortable="true" />
+					<w:outputColumn header="#{l.m['岗位']}" id="jobdesc" width="80" sortable="true" />
+				</w:dataGrid>
+				<w:pagingToolbar for="gridUser" target="gridUser" displayInfo="true"
+					displayMsg="{0}-{1}/{2}">
+				</w:pagingToolbar>
+			</w:form>
+		</layout:panel>
+	</layout:window>
+	
+<script>
+//<![CDATA[
+  		function company_changed() {
+           	changeDept.addParam('company', company.getValue());
+           	changeDept.submit();
+       	}
+       	
+		function exportExcel() {
+		 	var config = guaranteegridVar.getSelectionModel().grid.events.columnmove.obj.plugins[0].grid.colModel.config;
+		 	var key = "";
+		 	var value = "";
+		 	for(var i=1;i<config.length;i++) {
+		 		if(!config[i].hidden) {
+		 			key += config[i].dataIndex;
+		     		value += config[i].header;
+		     		if(i < config.length - 1) {
+		     			key += ",";
+		     			value += ",";
+		     		}
+		 		}
+		 	}
+		 	exportexl.addParam("key",key);
+		 	exportexl.addParam("value",value);
+		 	exportexl.submit();
+		 }
+       	
+          	
+       function checkChangePwd(){
+			var newPWD1 = newPWD1JsVar.getValue();
+			var newPWD2 = newPWD2JsVar.getValue();
+			if(newPWD1 != newPWD2){
+				alert("密码不匹配！");
+				return false ;
+			}
+			if(checkPass(newPWD1)<3){
+				alert("密码复杂度不够，请重新设置！");
+				newPWD1JsVar.focus();
+				return false ;
+			}
+		}
+		function checkPass(s){
+			if(s.length < 8){
+				return 0;
+			}
+			var ls = 0;
+			if(s.match(/([a-z])+/)){
+				ls++;
+			}
+			if(s.match(/([0-9])+/)){
+				ls++;  
+			}
+			if(s.match(/([A-Z])+/)){
+				ls++;
+			}
+			if(s.match(/[^a-zA-Z0-9]+/)){
+				ls++;
+			}
+			return ls
+		}
+		
+		Ext.onReady(function(){
+			initFlex();
+		})
+		
+		function initFlex(){
+			$('#parentuser').flexbox('/scp/service?src=flexbox&action=priceuser', {
+				resultTemplate: '<div class="col1">{name}</div><div class="col2">{namee}</div><div class="col3">{namec}</div>',
+				watermark: '',
+				initialValue: "#{pages.sysmgr.user.userinfomgrBean.username}",
+				width: 160,
+				position:'fixed',
+				top:'132px',
+				left:'492px',
+				onSelect: function() {	
+					var id=$(this).next().next().children().children(".row.ffb-sel").attr("id");
+					parentidJs.setValue(id);
+					var str1 = $(this).next().next().children().children(".row.ffb-sel").children(".col1").html();
+					str1 = str1.replace('<span class="ffb-match">',"");
+					str1 = str1.replace("</span>","");
+					var str3 = $(this).next().next().children().children(".row.ffb-sel").children(".col3").html();
+					str3 = str3.replace('<span class="ffb-match">',"");
+					str3 = str3.replace("</span>","");
+					$(this).val(str3!=null&&str3!=''?str3:str1);
+				}					
+			});
+		
+			$('#parentuser_input').bind("input propertychange", function(){
+				  if($('#parentuser_input').val()==''){//监听当改变值为空时候清掉priceuserid的值
+				  	parentidJs.setValue('');
+				  }
+			});
+		}
+//]]>
+</script>
+</f:view>

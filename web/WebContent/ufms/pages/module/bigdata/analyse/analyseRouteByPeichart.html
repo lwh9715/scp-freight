@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Demo</title>
+<!-- 引入echarts文件 -->
+<script src="/scp/common/js/echarts.min.js"></script>
+<link rel="stylesheet" href="/scp/layui/css/layui.css">
+<script src="/scp/common/js/bak/jquery.min.js"></script>
+<script src="/scp/layui/layui.js"></script>
+<script src="/scp/common/js/jquery.cookie.js?t=1"></script>
+<script src="/scp/ufms/static/js/ufms.common.js?t=13" ></script>
+
+<title>航线分析</title>
+<style type="text/css">
+	html, body { height: 100%; margin: 0; }
+	.chart_box{
+        width: 98%;
+        height: 90%;
+        margin: 0 auto;
+	}
+</style>
+</head>
+<body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    
+    <!--<div id="mainOption" style="width: 1100px; height: 900px; float:left;"></div> -->
+    <div class="chart_box" id = "chart_box">
+	      <div id="mainOption" class="" style="width: 600px;height: 400px; float:left;"></div>
+	</div>
+    <script type="text/javascript">
+    	layui.use('layer', function(){
+		   var layer = layui.layer;
+		}); 
+	  	//饼图各区域值与对应名称
+		var valueData = [{value:1,name:"test1"},{value:2,name:"test2"},{value:2,name:"test3"}];
+    	window.onload=function(){
+        	//初始化饼图需要数据
+        	var loading = layer.load(0, {
+    	        shade: false,
+    	        time: 2*1000
+    	    });
+    		actionGet('/analyse_route','get_analyse_route_data','',function(res){
+			    var data = JSON.parse(res);
+			    if(null != data && '' != data){
+			    	valueData = eval('(' + data.value + ')');
+			    	// 初始化内容 
+
+					//给option的series赋入DATA值
+		    	    option.series[0].data = valueData;
+		    	    option.legend.data = valueData;
+		    	    //给echarts canvas设置高度宽度
+		    	    chartssize(chart_box,mainOption);
+		    	    layer.close(loading);
+				}
+		  	});
+        };
+
+        const chart_box = document.getElementById('chart_box');
+	    const mainOption = document.getElementById('mainOption');
+	    
+	  //参数container为图表盒子节点.charts为图表节点  
+	    function chartssize (container,charts) {
+	        function getStyle(el, name) {　　
+	           if (window.getComputedStyle) {　　　
+	             return window.getComputedStyle(el, null);　　
+	           } else {　　　
+	             return el.currentStyle;　　
+	           }　
+	        }
+	        var wi = getStyle(container, 'width').width;
+	        var hi = getStyle(container, 'height').height;
+	        charts.style.width = wi;
+	        charts.style.height = hi;
+
+	     	// 基于准备好的dom，初始化echarts实例
+	        var myChart = echarts.init(charts);
+
+	     	// 使用刚指定的配置项和数据显示图表。
+	        myChart.setOption(option);
+        }
+       
+		option = {
+		    color: ['#37a2da','#32c5e9','#9fe6b8','#ffdb5c','#ff9f7f','#fb7293','#e7bcf3','#8378ea'],
+		    tooltip : {
+		        trigger: 'item',
+		        textStyle: {
+					fontWight: 300,
+	    			fontSize: 30
+	            },
+		        formatter: "{a} <br/>{b} : {c} ({d}%)"
+		    },
+		    toolbox: {
+		        show : true
+		    },
+	        legend: {
+		        type:"scroll",
+		        orient: 'vertical',
+		        left:'5%',
+		        align:'left',
+		        top:'middle',
+		        data: ['test1','test2','test3'],
+		        textStyle: {
+		    		fontWight: 300,
+		    		fontSize: 25,
+		            color:'#8C8C8C'
+	        	},
+	        	height:300
+		    },
+		    series : [
+		    	{
+			    	name:'航线分析',
+		            type:'pie',
+		            radius : [0, 220],
+		            center: ['55%', '50%'],
+		            label: {
+			            textStyle: {
+		            		//fontWight: 300,
+			    			fontSize: 25,
+			                color: '#555'
+			            }
+			        },
+		            data: valueData
+			    }
+		    ]
+		};
+		
+	</script>
+</body>
+</html>

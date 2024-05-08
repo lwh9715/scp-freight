@@ -1,0 +1,124 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:om="http://www.apusic.com/jsf/misc"
+	renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<script type="text/javascript" src="/scp/common/js/jquery-2.0.0.min.js"></script>
+		
+		<!--PDF预览 -->
+		<script type="text/javascript" src="/scp/common/js/pdfobject.js"></script>
+		
+		<script>
+		//<![CDATA[
+			Ext.onReady(function() {
+				window.onbeforeunload = function() {
+					if(window.opener.query!= undefined) {
+							window.opener.query.fireEvent('click');
+					}
+				}
+			});
+			//]]>
+		</script>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true">
+			<layout:panel id="mainContext" jsvar="mainContextJsVar" height="auto">
+				<layout:panelGrid columns="6" id="centerpenel">
+					<layout:cell colspan="6" align="center" style="width:100%; margin-top:30px; font-size: 41px;font-weight: bold; color: red;">
+						<!--<h:outputText value="#{l.m['标题']}:" />
+						--><h:outputText style="display:block; width: 1920px;" id="title" />
+						<w:textArea id="linkid" jsvar="linkidJs" hidden="true"></w:textArea>
+					</layout:cell>
+
+					<layout:cell align="center" style="font-size: 18px;" colspan="6">
+					<h:outputText value="#{l.m['关键字']}:" style="font-weight: bold;color: red" />
+					<h:outputText id="keywords" style="font-weight: bold;color: red" />
+					<h:outputText value="#{l.m['发布者']}:" />
+					<h:outputText id="inputer" />
+					<h:outputText value="#{l.m['类别']}:" />
+					<h:outputText id="classify" />
+					</layout:cell>
+
+					<layout:cell style="font-size: 18px;" colspan="6">
+						<h:outputText style="border: none; font-weight: bold; margin-left: 80px;" id="content" escape="false" />
+					</layout:cell>
+
+				</layout:panelGrid>
+				<span>
+					<span id="attach">
+					</span>
+					<span id="attachment">
+					</span>
+				</span>
+			</layout:panel>
+			<div id="myImg" style="width:100%;height:100%;overflow-x:auto;overflow-y:auto"></div>
+
+			<layout:panel style="display: none;">
+				<w:iframe id="attachmentIframe" style="border: thin;width: 100%;display: none;" height="" border="0">
+				</w:iframe>
+			</layout:panel>
+			
+			<layout:panel style="display: none;">
+				<w:iframe id="showIframe" style="border: thin;width: 100%;display: none;" height="" border="0">
+				</w:iframe>
+			</layout:panel>
+			
+			
+
+	</w:page>
+	
+	<script>
+    //<![CDATA[
+		
+		function showAttachment(){
+		var linkid = linkidJs.getValue();
+			$.ajax({
+				type:'POST',
+				url:'/scp/service?src=webServer&action=commonQueryByXml&sqlId=servlet.web.ff.queryattach&qry=linkid='+linkid+'',
+				contentType:'application/json',
+				success:function(data){
+					if(data == null || data == "")return;
+					if(typeof(data)=="string"){
+						data = JSON.parse(data);
+					}
+					console.log(data);
+					var html;
+					if(data.length > 0){
+						 for(var i = 0; i < data.length; i++) {
+						 	var j = i+1;
+							html="<a style='text-decoration: underline;' href='/scp/attachment/"+data[i].id+""+data[i].filename+"'>"+j+"."+data[i].filename+"</a>";
+							html +="		";
+							$("#attachment").append(html);
+							
+							var httpPrefix = "/scp/attachment/";
+							var filename = data[i].filename;
+							var pdfurl = data[i].id + filename;
+							console.log(pdfurl);
+							if(filename.toUpperCase().indexOf('.PDF')){
+								 var myPDF = new PDFObject({ url:httpPrefix+pdfurl.replace(/[\r\n]/g, "")}).embed("myImg");
+								 //showimgWindow.show();
+							}
+						};
+						$("#attach").append("附件：");
+					}
+					
+				}
+			});
+		}
+		
+		Ext.onReady(function(){
+			showAttachment();
+			if($('#content').text() == ''){//1998 FAQ页面显示调整，如果faq中没有录内容，只有附件pdf，页面上直接显示pdf内容，不显示上面的部分
+				$('#centerpenel').hide();
+			}
+			Ext.EventManager.onWindowResize(function(){
+				
+			});
+		 });
+	 //]]>
+     </script>
+</f:view>

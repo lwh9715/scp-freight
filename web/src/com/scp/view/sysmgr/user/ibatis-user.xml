@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.sysmgr.user.userBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		select
+			*
+			,(SELECT namec||'/'||namee FROM sys_user WHERE id = t.parentid) AS parentusername
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		 	,(SELECT count(1) FROM sys_custlib x,sys_custlib_user y WHERE x.libtype = 'S' AND y.custlibid = x.id AND y.userid = t.id) AS custlibcount
+		 	,(SELECT logintime FROM sys_useronline WHERE userid = t.id ORDER BY logintime DESC LIMIT 1) AS lastlogintime
+		FROM _sys_user t
+		WHERE $qry$
+		$filter$
+		$filter2$
+			AND isdelete = false AND isadmin = 'N' AND iscsuser = FALSE
+		ORDER BY isinvalid DESC, t.corpid , t.depter2, code
+		LIMIT $limit$ OFFSET $start$
+		]]>
+	</select>
+	<select id="pages.sysmgr.user.userBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		select
+			count(*) AS counts
+		FROM _sys_user t
+		WHERE $qry$
+			$filter$
+			$filter2$
+			AND isdelete = false AND isadmin = 'N' AND iscsuser = FALSE
+			AND id<>81433600
+			]]>
+	</select>
+	
+	<select id="pages.sysmgr.user.userBean.guaranteegrid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		SELECT	
+			t.nos
+			,t.endtime
+			,t.guaranteeuser
+			,SUM(amount) :: NUMERIC(18,2) as amount
+			,SUM(guaranteeamount) :: NUMERIC(18,2) as guaranteeamount
+			,t.prono
+			,t.prodate	
+			,SUM(amt2) :: NUMERIC(18,2) as amt2
+			,t.paymentdate
+		FROM
+		(SELECT 
+			(SELECT nos FROM fina_jobs WHERE id = a.jobid AND isdelete =FALSE limit 1) AS nos
+			,u.namec AS guaranteeuser
+		    ,(SELECT to_char(endtime, 'yyyy-mm-dd hh24:mi') FROM bpm_task where processinstanceid = g.processinstanceid ORDER BY endtime DESC nulls last LIMIT 1) AS endtime
+			,f_amtto(a.arapdate, a.currency, 'USD', a.amount) AS amount
+			,(f_amtto(a.arapdate, a.currency, 'USD', a.amount)-f_amtto(a.arapdate, a.currency, 'USD', COALESCE((SELECT SUM(d.amountwf) FROM fina_actpayrecdtl d WHERE d.isdelete = FALSE AND d.arapid = a.id AND EXISTS(SELECT 1 FROM fina_actpayrec WHERE id = d.actpayrecid AND isdelete = FALSE AND rpdate > '2021-01-01')  GROUP BY d.arapid),0)))	AS guaranteeamount
+			,b.nos AS prono
+			,to_char(COALESCE(b.endtime,b.startedtime), 'YY-MM-DD HH:MM') AS prodate
+			,COALESCE((SELECT SUM(d.amountwf) FROM fina_actpayrecdtl d WHERE d.isdelete = FALSE AND d.arapid = a.id AND EXISTS(SELECT 1 FROM fina_actpayrec WHERE id = d.actpayrecid AND isdelete = FALSE AND rpdate > '2021-01-01')  GROUP BY d.arapid),0) AS amt2
+			,(SELECT distinct rpdate FROM fina_actpayrec WHERE id = ANY(select d.actpayrecid from fina_actpayrecdtl d where isdelete =false AND d.arapid = a.id) AND isdelete = FALSE limit 1) AS rpdate
+			,(SELECT (SELECT NAMEC FROM sys_user WHERE id = j.saleid AND isdelete = FALSE) FROM fina_jobs j WHERE id = a.jobid AND isdelete =FALSE limit 1) AS sales
+			,to_char(COALESCE(b.endtime,b.startedtime), 'YY-MM-DD HH:MM')	AS	guaranteedate
+			,(SELECT TO_CHAR(val::DATE,'YYYY-MM-DD HH:MM') from bpm_processins_var WHERE name = 'paymentdate' AND processinstanceid = g.processinstanceid)	AS	paymentdate
+		FROM
+		sys_user_guarantee g 
+		LEFT JOIN sys_user u ON (u.id =g.userid AND u.isdelete = FALSE)
+		LEFT JOIN fina_arap a ON (a.id = g.arapid AND a.isdelete = FALSE)
+		LEFT JOIN	bpm_processinstance	b ON (b.id = g.processinstanceid AND b.isdelete = FALSE)
+		WHERE
+			f_amtto(a.arapdate, a.currency, 'USD', a.amount)!=f_amtto(a.arapdate, a.currency, 'USD', COALESCE((SELECT SUM(d.amountwf) FROM fina_actpayrecdtl d WHERE d.isdelete = FALSE AND d.arapid = a.id AND EXISTS(SELECT 1 FROM fina_actpayrec WHERE id = d.actpayrecid AND isdelete = FALSE AND rpdate > '2021-01-01')  GROUP BY d.arapid),0))
+			$qry$) t
+		group by t.prono,t.guaranteeuser,t.nos,t.endtime,t.prodate,t.paymentdate
+			
+		]]>
+	</select>
+	<select id="pages.sysmgr.user.userBean.guaranteegrid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		SELECT
+			count(*) AS counts
+		FROM (
+				 SELECT
+					 t.nos
+					  ,t.endtime
+					  ,t.guaranteeuser
+					  ,SUM(amount) :: NUMERIC(18,2) as amount
+			,SUM(guaranteeamount) :: NUMERIC(18,2) as guaranteeamount
+			,t.prono
+					  ,t.prodate
+					  ,SUM(amt2) :: NUMERIC(18,2) as amt2
+			,t.paymentdate
+				 FROM
+					 (SELECT
+							  (SELECT nos FROM fina_jobs WHERE id = a.jobid AND isdelete =FALSE limit 1) AS nos
+					,u.namec AS guaranteeuser
+					,(SELECT to_char(endtime, 'yyyy-mm-dd hh24:mi') FROM bpm_task where processinstanceid = g.processinstanceid ORDER BY endtime DESC nulls last LIMIT 1) AS endtime
+					,f_amtto(a.arapdate, a.currency, 'USD', a.amount) AS amount
+					,(f_amtto(a.arapdate, a.currency, 'USD', a.amount)-f_amtto(a.arapdate, a.currency, 'USD', COALESCE((SELECT SUM(d.amountwf) FROM fina_actpayrecdtl d WHERE d.isdelete = FALSE AND d.arapid = a.id AND EXISTS(SELECT 1 FROM fina_actpayrec WHERE id = d.actpayrecid AND isdelete = FALSE AND rpdate > '2021-01-01')  GROUP BY d.arapid),0)))	AS guaranteeamount
+					,b.nos AS prono
+					,to_char(COALESCE(b.endtime,b.startedtime), 'YY-MM-DD HH:MM') AS prodate
+					,COALESCE((SELECT SUM(d.amountwf) FROM fina_actpayrecdtl d WHERE d.isdelete = FALSE AND d.arapid = a.id AND EXISTS(SELECT 1 FROM fina_actpayrec WHERE id = d.actpayrecid AND isdelete = FALSE AND rpdate > '2021-01-01')  GROUP BY d.arapid),0) AS amt2
+					,(SELECT distinct rpdate FROM fina_actpayrec WHERE id = ANY(select d.actpayrecid from fina_actpayrecdtl d where isdelete =false AND d.arapid = a.id) AND isdelete = FALSE limit 1) AS rpdate
+					,(SELECT (SELECT NAMEC FROM sys_user WHERE id = j.saleid AND isdelete = FALSE) FROM fina_jobs j WHERE id = a.jobid AND isdelete =FALSE limit 1) AS sales
+					,to_char(COALESCE(b.endtime,b.startedtime), 'YY-MM-DD HH:MM')	AS	guaranteedate
+					,(SELECT TO_CHAR(val::DATE,'YYYY-MM-DD HH:MM') from bpm_processins_var WHERE name = 'paymentdate' AND processinstanceid = g.processinstanceid)	AS	paymentdate
+					 FROM
+		sys_user_guarantee g
+		LEFT JOIN sys_user u ON (u.id =g.userid AND u.isdelete = FALSE)
+					 LEFT JOIN fina_arap a ON (a.id = g.arapid AND a.isdelete = FALSE)
+					 LEFT JOIN	bpm_processinstance	b ON (b.id = g.processinstanceid AND b.isdelete = FALSE)
+				 WHERE
+					 f_amtto(a.arapdate, a.currency, 'USD', a.amount)!=f_amtto(a.arapdate, a.currency, 'USD', COALESCE((SELECT SUM(d.amountwf) FROM fina_actpayrecdtl d WHERE d.isdelete = FALSE AND d.arapid = a.id AND EXISTS(SELECT 1 FROM fina_actpayrec WHERE id = d.actpayrecid AND isdelete = FALSE AND rpdate > '2021-01-01')  GROUP BY d.arapid),0))
+					 $qry$) t
+		group by t.prono,t.guaranteeuser,t.nos,t.endtime,t.prodate,t.paymentdate
+				 ) foo
+			]]>
+	</select>
+
+	<select id="pages.sysmgr.user.useronlineBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			o.id AS pkid
+			,
+			(SELECT x.abbr FROM sys_corporation x WHERE x.isdelete = FALSE AND x.id = u.corpid) AS corpor
+			,*
+		FROM sys_useronline o , sys_user u
+		WHERE $qry$
+			AND o.userid = u.id
+			ORDER BY logintime DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.user.useronlineBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			COUNT(*) AS counts
+		FROM sys_useronline o , sys_user u
+		WHERE $qry$
+			AND o.userid = u.id
+	</select>
+
+
+	<select id="pages.sysmgr.user.securitylevelBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		*
+		FROM sys_user t
+		WHERE $qry$
+		AND isdelete = false AND isadmin = 'N' AND isinvalid = TRUE AND iscsuser
+		= FALSE
+		ORDER BY code , securitylevel 
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.user.securitylevelBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		count(*) AS counts
+		FROM sys_user t
+		WHERE $qry$
+		AND isdelete = false AND isadmin = 'N' AND isinvalid = TRUE AND iscsuser
+		= FALSE 
+	</select>
+
+
+	<select id="pages.sysmgr.user.cliloginauthBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		*
+		FROM sys_loginctrl t
+		WHERE $qry$
+		ORDER BY applytime , applyuser
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.user.cliloginauthBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		count(*) AS counts
+		FROM sys_loginctrl t
+		WHERE $qry$ 
+	</select>
+	
+	
+	
+	<select id="pages.sysmgr.user.linksalesBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT * FROM
+		(select 
+		   * 
+		  ,exists(SELECT 1 FROM sys_custlib_user x WHERE x.custlibid = t.id AND x.userid = $userid$) AS islink
+		  ,(SELECT x.abbr FROM sys_corporation  x WHERE x.isdelete = FALSE AND EXISTS(SELECT * FROM sys_user y WHERE y.isdelete = FALSE AND y.id= t.userid AND y.corpid = x.id)) AS corper1
+		  ,(SELECT x.name FROM sys_department  x WHERE x.isdelete = FALSE AND EXISTS(SELECT * FROM sys_user y WHERE y.isdelete = FALSE AND y.id= t.userid AND y.corpid = x.corpid AND y.deptid = x.id)) AS depter1
+		FROM _sys_custlib t 
+		) AS T
+		WHERE
+		 	($qry$ OR exists(SELECT 1 FROM sys_custlib_user x WHERE x.custlibid = T.id AND x.userid = $userid$)) 
+			AND libtype = 'S'
+			$filter$
+		ORDER BY islink DESC,corper,depter,jobdesc,code
+	</select>
+	<select id="pages.sysmgr.user.linksalesBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_custlib t 
+		WHERE exists(SELECT 1 FROM sys_custlib_user x WHERE x.custlibid = t.id AND x.userid = $userid$) 
+			AND libtype = 'S'
+			$filter$
+	</select>
+
+	<select id="pages.sysmgr.user.useroleBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select 
+		 * 
+		,(SELECT COUNT(1) FROM sys_user u WHERE isdelete = false AND isadmin = 'N' AND iscsuser = false AND isinvalid = true AND EXISTS (SELECT 1 FROM sys_userinrole x WHERE x.isdelete = false AND x.roleid=t.id AND x.userid = u.id)) || '/' ||(SELECT COUNT(1) FROM sys_user u WHERE isdelete = false AND isadmin = 'N' AND isinvalid = true AND iscsuser = false) AS userlinknos
+		,(SELECT COUNT(1) FROM sys_module m WHERE isdelete = false AND EXISTS (SELECT 1 FROM sys_modinrole x WHERE x.isdelete = false AND x.roleid=t.id AND x.moduleid = m.id)) || '/' ||(SELECT COUNT(1) FROM sys_module m WHERE isdelete = false) AS modulelinknos
+		,EXISTS (SELECT 1 FROM sys_userinrole x WHERE x.isdelete = false AND x.roleid=t.id AND x.userid = $userid$) AS islink
+		FROM sys_role t 
+		WHERE (
+				$qry$ 
+				OR EXISTS (SELECT 1 FROM sys_userinrole x WHERE x.isdelete = false AND x.roleid=t.id AND x.userid = $userid$)
+				OR t.roletype= 'C' AND EXISTS (SELECT 1 FROM sys_user x WHERE x.isdelete = false AND x.code=t.code AND x.id = $userid$)
+				) 
+			AND isdelete = false
+			AND t.roletype <> 'C'
+		ORDER BY islink DESC,code
+	]]>
+	</select>
+	<select id="pages.sysmgr.user.useroleBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_role t 
+		WHERE (
+				$qry$ 
+				OR EXISTS (SELECT 1 FROM sys_userinrole x WHERE x.isdelete = false AND x.roleid=t.id AND x.userid = $userid$)
+				OR t.roletype= 'C' AND EXISTS (SELECT 1 FROM sys_user x WHERE x.isdelete = false AND x.code=t.code AND x.id = $userid$)
+				) 
+			AND isdelete = false
+	</select>
+	
+	
+	<select id="pages.sysmgr.user.useractsetBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		  s.*
+		 ,(SELECT COALESCE(x.code,'') ||'/'|| COALESCE(x.abbr,'') FROM sys_corporation x where x.id = s.corpid) AS corper 
+		 ,EXISTS (SELECT 1 FROM fs_actsetctrl x WHERE x.userid = $userid$ AND x.actsetid = s.id) AS islink
+		FROM fs_actset s 
+		WHERE $qry$
+		AND s.isdelete = FALSE
+		ORDER BY islink DESC,code 	
+	</select>
+	<select id="pages.sysmgr.user.useractsetBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		count(*) AS counts 
+		FROM fs_actset s 
+		WHERE $qry$
+		AND s.isdelete = FALSE; 	
+	</select>
+	
+	<select id="pages.sysmgr.user.userlinkcorpBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			corpid AS id , true AS  islink , userid ,ischoose,(SELECT COALESCE(x.code,'') ||'/'|| COALESCE(x.abbr,'') FROM sys_corporation x where x.id = s.corpid) AS corper 
+		FROM sys_user_corplink s
+		WHERE $qry$ 
+			AND userid = $userid$
+		UNION ALL
+		SELECT 
+			id AS id , false AS  islink, 0 , false as ischoose ,COALESCE(c.code,'') ||'/'|| COALESCE(c.abbr,'') AS corper
+		FROM sys_corporation c 
+		WHERE $qry$ 
+			AND c.isdelete = false and c.iscustomer = false
+			AND NOT EXISTS(SELECT 1 FROM sys_user_corplink x WHERE x.corpid = c.id AND x.userid = $userid$)
+		ORDER BY id	
+		
+	</select>
+	<select id="pages.sysmgr.user.userlinkcorpBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		count(*) AS counts 
+		FROM sys_corporation c 
+		WHERE c.isdelete = false and c.iscustomer = false
+	</select>
+	
+	
+	
+	<select id="pages.sysmgr.user.userchangecorpBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			id , ischoose AS islink , userid ,(SELECT COALESCE(x.code,'') ||'/'|| COALESCE(x.abbr,'') FROM sys_corporation x where x.id = s.corpid) AS corper 
+		FROM sys_user_corplink s
+		WHERE userid = $userid$
+		ORDER BY id	
+		
+	</select>
+	<select id="pages.sysmgr.user.userchangecorpBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		count(*) AS counts 
+		FROM sys_user_corplink c 
+		WHERE c.userid = $userid$
+	</select>
+	
+	<select id="pages.sysmgr.user.rolelinksalesBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		   c.id,u.code,u.namec,u.namee,u.company,u.department ,u.jobdesc
+		FROM sys_custlib c , _sys_user u
+		WHERE $qry$
+			AND c.libtype = 'S'
+			AND c.userid = u.id
+			AND c.isdelete = false 
+			AND u.isdelete = false 
+			AND u.isinvalid = true
+		ORDER BY u.company,u.department,u.code
+	</select>
+	<select id="pages.sysmgr.user.rolelinksalesBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_custlib c , _sys_user u
+		WHERE $qry$
+			AND c.libtype = 'S'
+			AND c.userid = u.id
+			AND c.isdelete = false 
+			AND u.isdelete = false 
+			AND u.isinvalid = true
+	</select>
+	
+	<select id="pages.sysmgr.user.rolelinksalesBean.gridRight.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		
+		SELECT * FROM (
+			select
+				  r.id 
+				 ,t.code
+				 ,t.namec
+				 ,t.abbr AS company
+				 ,'' AS department
+				 ,r.orgid
+				 ,1 AS showlevel
+				 ,(SELECT count(1) FROM sys_custlib_role x WHERE x.parentid = t.id AND x.roleid = r.roleid) AS usercount
+				 ,'' AS custcount
+				 ,'' AS linkusercount
+				FROM sys_corporation t , sys_custlib_role r
+				WHERE t.isdelete = false
+					AND t.iscustomer = false
+					AND r.roleid=$roleid$
+					AND r.orgid = t.id					
+			UNION ALL 
+			select 
+				  r.id 
+				 ,t.code
+				 ,t.name AS namec
+				 ,(SELECT abbr FROM sys_corporation x WHERE x.id=t.corpid) AS company
+				 ,t.name AS department
+				 ,r.orgid
+				 ,2 AS showlevel
+				 ,(SELECT count(1) FROM sys_custlib_role x WHERE x.parentid = t.id AND x.roleid = r.roleid) AS usercount
+				 ,'' AS custcount
+				 ,'' AS linkusercount
+				FROM sys_department t , sys_custlib_role r
+				WHERE t.isdelete = false
+					AND r.roleid=$roleid$
+					AND r.orgid = t.id
+			UNION ALL 
+
+			select 
+				  r.id 
+				 ,t.code
+				 ,t.namec
+				 ,(SELECT x.abbr FROM sys_corporation  x WHERE x.isdelete = FALSE AND EXISTS(SELECT * FROM sys_user y WHERE y.isdelete = FALSE AND y.id= t.userid AND y.corpid = x.id)) AS company
+				 ,(SELECT x.name FROM sys_department  x WHERE x.isdelete = FALSE AND EXISTS(SELECT * FROM sys_user y WHERE y.isdelete = FALSE AND y.id= t.userid AND y.corpid = x.corpid AND y.deptid = x.id)) AS department
+				 ,r.orgid
+				 ,3 AS showlevel
+				 ,1 AS usercount
+				 ,((SELECT COUNT(corpid) FROM sys_custlib_cust x WHERE x.custlibid = t.id) || '/' || (SELECT COUNT(1) FROM sys_corporation y WHERE y.iscustomer = TRUE AND y.isdelete = FALSE)) AS custcount
+		  		 ,((SELECT COUNT(roleid) FROM sys_custlib_role x WHERE x.custlibid = t.id) || '/' || (SELECT COUNT(1) FROM sys_user y WHERE y.iscsuser = FALSE AND y.isdelete = FALSE AND y.isinvalid = TRUE)) AS linkusercount
+		
+				FROM sys_custlib t , sys_custlib_role r
+			WHERE r.custlibid = t.id AND r.roleid = $roleid$
+				AND libtype = 'S'
+				AND r.parentid IS NULL
+		) AS T
+		WHERE $qry$
+		ORDER BY showlevel,company,code
+			
+	</select>
+	<select id="pages.sysmgr.user.rolelinksalesBean.gridRight.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 10000 AS counts 
+	</select>
+
+	<select id="pages.sysmgr.user.userlinkreportBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			(CASE WHEN EXISTS ((SELECT 1 FROM sys_report_ctrl x WHERE x.reportid = a.id AND x.linktype = 'U' AND x.linkid = $userid$)) THEN TRUE ELSE FALSE END) AS islink,
+		   * 
+		FROM sys_report a 
+		WHERE $qry$
+		AND isdelete = FALSE
+		AND $filter$
+	</select>
+	<select id="pages.sysmgr.user.userlinkreportBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		   count(*) AS counts  
+		FROM sys_report a 
+		WHERE $qry$
+		AND isdelete = FALSE
+		AND $filter$
+	</select>
+	
+	<select id="pages.sysmgr.user.usershowreportBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		(CASE WHEN EXISTS ((SELECT 1 FROM sys_report_ctrl x WHERE x.reportid = a.id AND x.linktype = 'U' AND x.linkid = $userid$)) THEN TRUE ELSE (
+			CASE WHEN EXISTS (SELECT * FROM sys_report_ctrl c 
+			WHERE
+					c.linktype = 'M'
+			AND c.reportid = a.id
+			AND EXISTS(SELECT * FROM sys_role r WHERE r.isdelete = FALSE AND c.linkid = r.id
+			AND EXISTS(SELECT * FROM sys_userinrole x WHERE x.isdelete = FALSE AND x.roleid = r.id
+			AND EXISTS(SELECT * FROM sys_user y WHERE y.isdelete = FALSE AND y.id = x.userid AND y.id = $userid$)))) THEN TRUE ELSE FALSE END) END) AS islink,*
+		FROM 
+		sys_report a 
+		WHERE $qry$
+		AND	isdelete = FALSE 
+		AND $filter$;
+	</select>
+	<select id="pages.sysmgr.user.usershowreportBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		   count(*) AS counts  
+		FROM sys_report a 
+		WHERE $qry$
+		AND isdelete = FALSE
+		AND $filter$
+	</select>
+	
+	
+	<select id="pages.sysmgr.user.salesgroupBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		,(SELECT COUNT(1) FROM sys_user u WHERE isdelete = false AND isadmin = 'N' AND iscsuser = false AND isinvalid = true AND EXISTS (SELECT 1 FROM sys_userinrole x WHERE x.isdelete = false AND x.roleid=t.id AND x.userid = u.id)) || '/' ||(SELECT COUNT(1) FROM sys_user u WHERE isdelete = false AND isadmin = 'N' AND isinvalid = true AND iscsuser = false) AS userlinknos
+		,(SELECT COUNT(1) FROM sys_module m WHERE isdelete = false AND EXISTS (SELECT 1 FROM sys_modinrole x WHERE x.isdelete = false AND x.roleid=t.id AND x.moduleid = m.id)) || '/' ||(SELECT COUNT(1) FROM sys_module m WHERE isdelete = false) AS modulelinknos
+		, EXISTS (SELECT 1 FROM sys_custlib_role x , sys_custlib y WHERE x.roleid=t.id AND y.userid = $userid$ AND x.custlibid = y.id) AS islink
+		FROM sys_role t 
+		WHERE ($qry$ OR EXISTS (SELECT 1 FROM sys_custlib_role x , sys_custlib y WHERE x.roleid=t.id AND y.userid = $userid$ AND x.custlibid = y.id))  
+			AND isdelete = false
+		ORDER BY islink DESC,code
+	</select>
+	<select id="pages.sysmgr.user.salesgroupBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_role t 
+		WHERE ($qry$ OR EXISTS (SELECT 1 FROM sys_custlib_role x , sys_custlib y WHERE x.roleid=t.id AND y.userid = $userid$ AND x.custlibid = y.id))  
+			AND isdelete = false
+	</select>
+	
+	
+	
+	<select id="pages.sysmgr.user.userinfomgrBean.gridUser.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,(SELECT (COALESCE(creditlimit,0)-COALESCE((SELECT SUM(f_amtto(a.arapdate, a.currency, 'USD', a.amount))-SUM(f_amtto(a.arapdate, a.currency, 'USD', COALESCE((SELECT SUM(d.amountwf) FROM fina_actpayrecdtl d WHERE d.isdelete = FALSE AND d.arapid = a.id AND EXISTS(SELECT 1 FROM fina_actpayrec WHERE id = d.actpayrecid AND isdelete = FALSE AND rpdate > '2021-01-01')  GROUP BY d.arapid),0))) FROM fina_arap a WHERE isdelete = FALSE AND id = ANY(SELECT arapid FROM sys_user_guarantee WHERE userid = u.id)),0))) :: int
+		 as creditlimit2
+		FROM _sys_user t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+			AND isinvalid = TRUE 
+			AND iscsuser = FALSE
+		ORDER BY code
+	</select>
+	<select id="pages.sysmgr.user.userinfomgrBean.gridUser.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_user t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+			AND isinvalid = TRUE 
+			AND iscsuser = FALSE
+	</select>
+	
+</sqlMap>

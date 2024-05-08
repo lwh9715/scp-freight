@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+
+	<select id="pages.module.ship.busbilldtlBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		
+		SELECT a.* FROM(
+		SELECT 
+			a1.*
+			,(SELECT MAX(b.atd) FROM  bus_ship_bill b WHERE b.jobid = a1.jobid AND b.isdelete = FALSE )AS atd
+		FROM _fina_arap a1 WHERE a1.parentid is null)AS a
+		WHERE $qry$
+			AND $clause$
+			AND $filter$
+		ORDER BY a.jobno,a.araptype
+		
+	</select>
+	<select id="pages.module.ship.busbilldtlBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		
+		SELECT
+			COUNT(*) AS counts FROM(
+		SELECT 
+			a1.*
+			,(SELECT MAX(b.atd) FROM  bus_ship_bill b WHERE b.jobid = a1.jobid AND b.isdelete = FALSE )AS atd
+		FROM _fina_arap a1 WHERE a1.parentid is null)AS a
+		WHERE $qry$
+			AND $clause$
+			AND $filter$
+	</select>
+	
+	
+	
+	<select id="pages.module.ship.businvoicedtlBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		
+		SELECT a.* FROM(
+		SELECT 
+			a1.*
+			,(SELECT MAX(b.atd) FROM  bus_ship_bill b WHERE b.jobid = a1.jobid AND b.isdelete = FALSE )AS atd
+		FROM _fina_arap a1 WHERE a1.parentid is null)AS a
+		WHERE $qry$
+			AND $clause$
+			AND $filter$
+		ORDER BY a.jobno,a.araptype
+		
+	</select>
+	<select id="pages.module.ship.businvoicedtlBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		
+		SELECT
+			COUNT(*) AS counts FROM(
+		SELECT 
+			a1.*
+			,(SELECT MAX(b.atd) FROM  bus_ship_bill b WHERE b.jobid = a1.jobid AND b.isdelete = FALSE )AS atd
+		FROM _fina_arap a1 )AS a
+		WHERE $qry$
+			AND $clause$
+			AND $filter$
+		
+	</select>
+	
+	<select id="pages.module.ship.businvoicedtlBean.grid.rate" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT DISTINCT a.currency FROM(
+			SELECT 
+			a1.*
+			,(SELECT MAX(b.atd) FROM  bus_ship_bill b WHERE b.jobid = a1.jobid AND b.isdelete = FALSE )AS atd
+			FROM _fina_arap a1 WHERE a1.parentid is null)AS a
+		WHERE $qry$
+	</select>
+	
+	
+	<select id="pages.module.ship.busbillBean.billnogrid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT DISTINCT	t.id,prefix,code ,r.datefm , t.namec
+			FROM sys_busnodesc t ,sys_busnorule r 
+			WHERE $qry$
+			AND t.id = r.busnotypeid 
+			AND code like 'fina_bill_nos%'
+			AND t.isdelete = FALSE AND r.isdelete = FALSE
+		order by t.namec,r.datefm, prefix
+	]]>
+	</select>
+	<select id="pages.module.ship.busbillBean.billnogrid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 10000 AS counts 
+	</select>
+	
+	<select id="pages.module.ship.bmsbillBean.billnogrid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT DISTINCT	t.id,prefix,code ,r.datefm , t.namec
+			FROM sys_busnodesc t ,sys_busnorule r 
+			WHERE $qry$
+			AND t.id = r.busnotypeid 
+			AND code like 'fina_bill_nos%'
+			AND t.isdelete = FALSE AND r.isdelete = FALSE
+		order by t.namec,r.datefm, prefix
+	]]>
+	</select>
+	<select id="pages.module.ship.bmsbillBean.billnogrid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 10000 AS counts 
+	</select>
+	
+</sqlMap>

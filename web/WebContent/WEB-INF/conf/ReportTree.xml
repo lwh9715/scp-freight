@@ -1,0 +1,345 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<tree name="快逸报表" display="no">
+	<dic name="基础报表">
+	  <file name="简单网格式报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/简单网格式报表.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/简单网格式报表.txt"></comment>
+	  </file>
+	   <file name="显示格式、显示值报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/显示格式、显示值.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/显示格式、显示值报表.txt"></comment>
+	  </file>
+	   <file name="动态控制背景色报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/动态控制背景色.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/动态控制背景色.txt"></comment>
+	  </file>
+	   <file name="颜色预警报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/颜色预警.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/颜色预警.txt"></comment>
+	  </file>
+	   <file name="上方合计报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/上方合计.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/上方合计.txt"></comment>
+	  </file>
+	   <file name="下方合计报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/下方合计.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/下方合计.txt"></comment>
+	  </file>
+	   <file name="完整报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/完整报表.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/完整报表.txt"></comment>
+	  </file>
+	   <file name="自由格式报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/自由格式报表.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/自由格式报表.txt"></comment>
+	  </file>
+	  <file name="分组报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/分组报表.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/分组报表.txt"></comment>
+	  </file>
+	  <file name="上分组报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/上分组报表.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/上分组报表.txt"></comment>
+	  </file>
+	  <file name="分组汇总报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/分组汇总.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/分组汇总.txt"></comment>
+	  </file>
+	  <file name="上分组汇总报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/上分组汇总.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/上分组汇总.txt"></comment>
+	  </file>
+	  <file name="条件汇总报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/条件汇总.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/条件汇总.txt"></comment>
+	  </file>
+	    <file name="交叉报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/交叉报表.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/交叉报表.txt"></comment>
+	  </file>
+	    <file name="交叉汇总报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/交叉汇总报表.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/交叉汇总报表.txt"></comment>
+	  </file>
+	    <file name="定位拉伸报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/定位拉伸.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/定位拉伸.txt"></comment>
+	  </file>
+	    <file name="参数报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/参数报表.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/参数报表.txt"></comment>
+	  </file>
+	    <file name="宏报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/宏报表.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/宏报表.txt"></comment>
+	  </file>
+	    <file name="动态参数报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/动态参数报表.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/动态参数报表.txt"></comment>
+	  </file>
+	   <file name="动态宏报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础报表/动态宏报表.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础报表/动态宏报表.txt"></comment>
+	  </file>
+	</dic>
+	<dic name="基础统计图">
+	  <file name="柱形图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/柱形图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/柱形图.txt"></comment>
+	  </file>
+	<file name="三维柱形图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/三维柱形图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/三维柱形图.txt"></comment>
+	  </file>
+	  <file name="三维簇状柱形图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/三维簇状柱形图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/三维簇状柱形图.txt"></comment>
+	  </file>
+	  <file name="堆积柱形图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/堆积柱形图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/堆积柱形图.txt"></comment>
+	  </file>
+	  <file name="三维堆积柱形图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/三维堆积柱形图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/三维堆积柱形图.txt"></comment>
+	  </file>
+	  <file name="饼形图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/饼形图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/饼形图.txt"></comment>
+	  </file>
+	  <file name="三维饼形图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/三维饼形图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/三维饼形图.txt"></comment>
+	  </file>
+	  <file name="多系列三维饼形图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/多系列三维饼形图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/多系列三维饼形图.txt"></comment>
+	  </file>
+	  <file name="折线图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/折线图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/折线图.txt"></comment>
+	  </file>
+	  <file name="三维折线图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/三维折线图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/三维折线图.txt"></comment>
+	  </file>
+	   <file name="区域图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/区域图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/区域图.txt"></comment>
+	  </file>
+	   <file name="三维区域图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/三维区域图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/三维区域图.txt"></comment>
+	  </file> 
+	  <file name="条形图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/条形图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/条形图.txt"></comment>
+	  </file>
+	   <file name="三维簇状条形图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/三维簇状条形图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/三维簇状条形图.txt"></comment>
+	  </file>
+	   <file name="散列图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/散列图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/散列图.txt"></comment>
+	  </file>
+	   <file name="分组统计图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/分组统计图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/分组统计图.txt"></comment>
+	  </file>
+	   <file name="交叉统计图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/交叉统计图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/交叉统计图.txt"></comment>
+	  </file>
+	   <file name="超链接统计图">
+		<report url="/reportJsp/showReport.jsp?raq=/基础统计图/超链接统计图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础统计图/超链接统计图.txt"></comment>
+	  </file>
+	   </dic>
+	 <dic name="基础填报">
+		<file name="网格式填报">
+		<report url="/reportJsp/showReport.jsp?raq=/基础填报/网格式填报.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础填报/网格式填报.txt"></comment>
+	  </file>
+	  <file name="自动计算合法校验">
+		<report url="http://localhost:6001/quiee/jsp/zdjshfjy.jsp"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础填报/自动计算合法校验.txt"></comment>
+	  </file>
+	<file name="自由填报">
+		<report url="http://localhost:6001/quiee/jsp/zytb.jsp"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础填报/自由填报.txt"></comment>
+	  </file>
+	  <file name="行式填报">
+		<report url="http://localhost:6001/quiee/jsp/hstbb.jsp"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础填报/行式填报.txt"></comment>
+	  </file>
+	  <file name="流水号">
+		<report url="http://localhost:6001/quiee/jsp/lsh.jsp"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础填报/流水号.txt"></comment>
+	  </file>
+	  <file name="自动计算合计">
+		<report url="/reportJsp/showReport.jsp?raq=/基础填报/自动计算合计.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础填报/自动计算合计.txt"></comment>
+	  </file>
+	 </dic>
+	 <dic name="基础展现打印">
+	 <file name="固定表头报表">
+		<report url="http://localhost:6001/quiee/jsp/gdbtbb.jsp"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础展现打印/固定表头.txt"></comment>
+	  </file>
+		<file name="分栏">
+		<report url="http://localhost:6001/quiee/jsp/fl.jsp"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础展现打印/分栏.txt"></comment>
+	  </file>
+	  <file name="宽幅报表">
+		<report url="http://localhost:6001/quiee/jsp/kf.jsp"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础展现打印/宽幅.txt"></comment>
+	  </file>
+	  <file name="大报表一页打印">
+		<report url="/reportJsp/showReport.jsp?raq=/基础展现打印/大报表一页打印.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础展现打印/大报表一页打印.txt"></comment>
+	  </file>
+	  <file name="分页伸缩报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础展现打印/分页伸缩.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础展现打印/分页伸缩.txt"></comment>
+	  </file><file name="标题拆分">
+		<report url="/reportJsp/showReport.jsp?raq=/基础展现打印/标题拆分.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础展现打印/标题拆分.txt"></comment>
+	  </file>
+	  <file name="固定行分页">
+		<report url="/reportJsp/showReport.jsp?raq=/基础展现打印/固定行分页.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础展现打印/固定行分页.txt"></comment>
+	  </file>
+	  <file name="自由格式报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础展现打印/自由格式.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础展现打印/自由格式.txt"></comment>
+	  </file>
+	  <file name="套打">
+		<report url="/reportJsp/showReport.jsp?raq=/基础展现打印/套打.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础展现打印/套打.txt"></comment>
+	  </file>
+	  <file name="卡片报表">
+		<report url="/reportJsp/showReport.jsp?raq=/基础展现打印/卡片报表.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础展现打印/卡片式报表.txt"></comment>
+	  </file>
+	  <file name="大文本分页">
+		<report url="/reportJsp/showReport.jsp?raq=/基础展现打印/大文本分页.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/基础展现打印/大文本分页.txt"></comment>
+	  </file>
+	 </dic>
+	 <dic name="增强功能">
+	  <file name="冻结表头的HTML">
+		<report url="http://localhost:6001/quiee/jsp/djbtHTML.jsp"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/冻结表头的HTML.txt"></comment>
+	  </file>
+	   <file name="增强打印/分栏">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/分栏报表.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/分栏报表.txt"></comment>
+	  </file>
+	   <file name="一纸多页">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/一纸多页.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/一纸多页.txt"></comment>
+	  </file>
+	   <file name="横向分页">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/横向分页.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/横向分页.txt"></comment>
+	  </file>
+	   <file name="超链接钻取">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/超链接钻取.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/超链接钻取.txt"></comment>
+	  </file>
+	   <file name="时序状态图">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/时序状态图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/时序状态图.txt"></comment>
+	  </file>
+	   <file name="时间走势图">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/时间走势图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/时间走势图.txt"></comment>
+	  </file>
+	   <file name="双轴柱线图">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/双轴柱线图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/双轴柱线图.txt"></comment>
+	  </file>
+	  <file name="双轴折线图">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/双轴折线图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/双轴折线图.txt"></comment>
+	  </file>
+	  <file name="雷达图">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/雷达图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/雷达图.txt"></comment>
+	  </file>
+	  <file name="甘特图">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/甘特图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/甘特图.txt"></comment>
+	  </file>
+	  <file name="仪表盘">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/仪表盘.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/仪表盘.txt"></comment>
+	  </file>
+	  <file name="里程碑">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/里程碑.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/里程碑.txt"></comment>
+	  </file>
+	   <file name="全距图">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/全距图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/全距图.txt"></comment>
+	  </file>
+	   <file name="工字图">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/工字图.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/工字图.txt"></comment>
+	  </file>
+	   <file name="上传图片">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/上传图片.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/上传图片.txt"></comment>
+	  </file>
+          
+          <file name="上传文件">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/上传文件.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/上传文件.txt"></comment>
+	  </file>
+	  
+	  <file name="下载文件">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/下载文件.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/下载文件.txt"></comment>
+	  </file>
+	   <file name="下拉日历、下拉树">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/下拉日历、下拉树.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/下拉日历、下拉树.txt"></comment>
+	  </file>
+	  <file name="关联过滤、动态过滤">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/关联过滤、动态过滤.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/关联过滤、动态过滤.txt"></comment>
+	  </file>
+	   <file name="里程碑">
+		<report url="/reportJsp/showReport.jsp?raq=/增强功能/里程碑.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/里程碑.txt"></comment>
+	  </file>
+	    <file name="离线填报">
+		<report url="http://localhost:6001/quiee/jsp/lxtb.jsp"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/增强功能/离线填报.txt"></comment>
+	  </file>
+	 </dic>
+	 <dic name="多源关联">
+	<file name="多层交叉报表">
+		<report url="/reportJsp/showReport.jsp?raq=/多源关联/多层交叉.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/多源关联/多层交叉报表.txt"></comment>
+	  </file>
+	  <file name="多片扩展报表">
+		<report url="/reportJsp/showReport.jsp?raq=/多源关联/多片扩展.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/多源关联/多片扩展报表.txt"></comment>
+	  </file>
+	  <file name="纵向分片报表">
+		<report url="/reportJsp/showReport.jsp?raq=/多源关联/纵向分片.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/多源关联/纵向分片报表.txt"></comment>
+	  </file>
+	  <file name="横向分片报表">
+		<report url="/reportJsp/showReport.jsp?raq=/多源关联/横向分片.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/多源关联/横向分片报表.txt"></comment>
+	  </file>
+	  <file name="多源关联分片报表">
+		<report url="/reportJsp/showReport.jsp?raq=/多源关联/多源关联分片.raq"></report>
+		<comment url="/reportJsp/showComment.jsp?comment=/多源关联/多源关联分片报表.txt"></comment>
+	  </file>
+	 </dic>
+</tree>
+

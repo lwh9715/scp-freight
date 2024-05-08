@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>easy-cron</title>
+<link href="./res/app.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://www.layuicdn.com/layui-v2.5.4/css/layui.css" media="all">
+<script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://www.layuicdn.com/layui-v2.5.4/layui.js" charset="utf-8"></script>
+
+</head>
+<body style="width: 600px;height: 100px;padding-top: 50px;">
+<div id="app">
+<div data-v-a98ecb5c="" class="main-content">
+<div data-v-a98ecb5c="" class="card-content">
+<h2 data-v-a98ecb5c="">Cron表达式</h2>
+<div data-v-a98ecb5c="" class="form-list">
+
+<form data-v-a98ecb5c="" autocomplete="off" class="ivu-form ivu-form-label-right">
+	<div data-v-a98ecb5c="" class="ivu-form-item">
+	
+	</div>
+	</div>
+	<!---->
+	</div>
+	<!---->
+	</div>
+	</div>
+</form>
+
+ <button class="layui-btn" lay-filter="esisubmit" onclick="confirmCron()">确定</button>
+
+
+<script type="text/javascript">
+var cronReq = '0/3 * ? * ?'; 
+function getRequest() {
+    var url = location.search; // 获取url中含"?"符后的字串
+	var theRequest = new Object();
+	if (url.indexOf("?") != -1) {
+		var str = url.substr(1);
+		strs = str.split("&");
+		for ( var i = 0; i < strs.length; i++) {
+			theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+		}
+	}
+	return theRequest;
+}
+
+function confirmCron() {
+	var cron = $('.ivu-input').val();
+	parent.refreshCron(cron);
+}
+
+
+$(function(){
+	cronReq = getRequest().cron;
+	$('.ivu-input').val(cronReq);
+
+	$('label:contains("表单内容")').parent().hide();
+	$('label:contains("原始组件")').hide();
+	$('label:contains("原始组件")').next().hide();
+});
+</script>
+
+<script type="text/javascript" src="./res/manifest.js?t=1"></script>
+<script type="text/javascript" src="./res/vendor.js?t=1"></script>
+<script type="text/javascript" src="./res/app.js?t=1"></script>
+
+</body>
+</html>

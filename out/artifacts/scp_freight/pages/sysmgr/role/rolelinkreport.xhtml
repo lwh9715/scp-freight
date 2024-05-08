@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/pages/module/common/css/tabPanelIcon.css" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+		<w:script src="/common/js/common.js?t=4"></w:script>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page>
+		<ajax:conversationActivator/>
+
+		<layout:borderLayout fit="true" fitToBody="true">
+			<layout:panel id="gridPanel" jsvar="gridPanelJsvar" region="center" fit="true"
+				hideBorders="true" height="650" width="100%" split="true" minSize="450">
+				<w:form groupId="billForm">
+
+					<layout:panelGrid columns="6">
+						<w:toolBar>
+							<w:combo width="100" id="reportType" editable="false" forceSelection="true" allowBlank="false">
+								<f:selectItem itemLabel="#{l.m['利润统计']}" itemValue="profit" />
+								<f:selectItem itemLabel="#{l.m['单量统计']}" itemValue="orderquantity" />
+								<f:selectItem itemLabel="#{l.m['应收应付统计']}" itemValue="arap" />
+								<f:selectItem itemLabel="#{l.m['收付款统计']}" itemValue="rece" />
+								<f:selectItem itemLabel="#{l.m['箱量统计']}" itemValue="boxs" />
+							</w:combo>
+							<w:button id="save" value="#{l.m['保存']}"
+								image="#{constantBean.contextPath}/images/save.png" />
+						</w:toolBar>
+						<layout:cell>
+							<ajax:status startStyle="color: red"
+								onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+								onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+								<f:facet name="start">
+									<f:verbatim>
+										<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 20px;">Loading...</img>
+									</f:verbatim>
+								</f:facet>
+							</ajax:status>
+						</layout:cell>	
+					</layout:panelGrid>
+					<div style="width: 0px;height: 0px;">
+						<w:textField id="roleid" hidden="true" ></w:textField>
+					</div>
+					<w:dataGrid height="613" paged="false" rows="10000" id="grid" jsvar="gridJsvar"
+						idColumn="id" selectionModel="#{constantBean.checkBox}" onrowselect="return false" onrowdeselect="return false"
+						toolBarPosition="bottom" multiSelectOnClick="true" 
+						selections="#{pages.sysmgr.role.rolelinkreportBean.gridSelIds}">
+						<w:outputColumn id="id" header="id" hidden="true" />
+						<w:outputColumn header="#{l.m['代码']}" id="code" width="70" hidden="true" />
+						<w:outputColumn header="#{l.m['授权']}" id="islink" width="35" type="check" />
+						<w:outputColumn header="#{l.m['报表名称']}" id="namec" width="200" sortable="true" />
+						<w:outputColumn header="#{l.m['备注']}" id="remarks" width="200" sortable="true"/>
+					</w:dataGrid>
+					<w:pagingToolbar for="grid" target="grid" displayInfo="true" displayMsg="{0}-{1}/{2}">
+					</w:pagingToolbar>
+				</w:form>
+			</layout:panel>
+
+		</layout:borderLayout>
+	</w:page>
+	<script>
+	//<![CDATA[
+	
+	function resize(){
+				var newHeight = (gridPanelJsvar.getSize().height-35);
+	            gridJsvar.setHeight(newHeight);
+				gridJsvar.render();
+	}
+	
+	Ext.onReady(function(){
+				resize();
+				Ext.EventManager.onWindowResize(function(){
+					resize();
+				});
+	});
+
+     function gridSelectAll(){
+     	//alert('1');
+      	var selMod = gridJsvar.getSelectionModel();
+      	//alert(selMod);
+      	selMod.selectAll();
+     }
+
+
+
+	        
+	 //]]>	
+</script>
+</f:view>

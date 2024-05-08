@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	
+	<select id="pages.module.agenbill.agenbilldtlBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		  *
+		 ,(select code FROM sys_corporation d where t.agenid=d.id)AS agencode 
+		FROM fina_agenbill_dtl t
+		WHERE $qry$
+		ORDER BY t.nos desc
+	</select>
+	<select id="pages.module.agenbill.agenbilldtlBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM fina_agenbill_dtl t
+		WHERE $qry$
+	</select>
+	<select id="pages.module.agenbill.arapeditBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+			,(SELECT COALESCE(x.code,'') ||'/'|| COALESCE(x.abbr,'') FROM sys_corporation x WHERE x.id = t.corpid) AS corper
+			,COALESCE((SELECT SUM(COALESCE(amtreq,0)) FROM fina_rpreqdtl x , fina_rpreq y WHERE x.arapid = t.id AND x.isdelete = FALSE AND x.rpreqid = y.id AND y.reqtype = 'S' AND y.isdelete = FALSE),0) AS amtrpreq1
+			,f_amtto_glp(b.signdate,t.currency,t.amount) AS amounto
+			,f_fs_getxrate(b.signdate::DATE , t.currency) AS xrate
+			,b.cyidto
+		FROM _fina_arap t , fina_agenbill b
+		WHERE $qry$
+			AND t.agenbillid = b.id
+			AND t.isdelete = FALSE
+			AND t.rptype !='H'
+		ORDER BY jobno,araptype , customerid , feeitemid , currency
+	</select>
+	<select id="pages.module.agenbill.arapeditBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM _fina_arap t
+		WHERE $qry$
+			AND t.isdelete = FALSE
+			AND t.rptype !='H'
+	</select>
+	
+	
+	<select id="pages.module.agenbill.chooseagentfeeBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+		FROM _fina_arap t 
+		WHERE $qry$
+			AND t.isdelete = FALSE
+			AND t.rptype !='O'
+		ORDER BY araptype , customerid , feeitemid , currency
+	</select>
+	<select id="pages.module.agenbill.chooseagentfeeBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM _fina_arap t
+		WHERE $qry$
+			AND t.isdelete = FALSE
+			AND t.rptype !='O'
+	</select>
+	
+	<select id="pages.module.agenbill.agenbillBean.grid.vch"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+			,false AS iswl
+		FROM _fs_vch_main v
+		WHERE isdelete=false
+		AND v.srcid = $srcid$ 
+		AND v.srctype = 'G'
+		UNION ALL
+		SELECT
+			*
+			,true AS iswl
+		FROM _fs_vch_main v
+		WHERE isdelete=false
+		AND EXISTS(SELECT 1 FROM fs_vch v2 WHERE v.srcid = v2.id AND v2.isdelete = FALSE AND v2.srcid = $srcid$ AND v2.srctype = 'G')
+		AND v.srctype = 'L'
+		
+			
+	</select>
+	
+</sqlMap>

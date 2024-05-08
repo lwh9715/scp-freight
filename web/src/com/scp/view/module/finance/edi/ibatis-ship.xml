@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>	
+	<select id="pages.module.finance.edi.kisBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			   v.*
+			  ,srctype AS srctypedesc
+			  ,(CASE WHEN COALESCE(srctype,'')='' THEN TRUE ELSE FALSE END) AS isgenvch
+			  ,(CASE COALESCE(srctype,'') WHEN 'R' THEN (SELECT x.actpayrecno FROM fina_actpayrec x WHERE x.id = v.srcid AND x.isdelete = FALSE) 
+			  	WHEN 'A' THEN (SELECT x.nos FROM fina_jobs x WHERE x.id=v.srcid AND x.isdelete = FALSE) 
+			  	WHEN 'S' THEN (SELECT x.nos FROM fs_vch x WHERE x.id=v.srcid AND x.isdelete = FALSE) 
+			  	WHEN 'J' THEN (SELECT x.nos FROM fina_jobs x WHERE x.id=v.srcid AND x.isdelete = FALSE)
+			  	 END) AS srcno
+			  ,(CASE WHEN v.srctype = 'S' THEN CAST((SELECT x.nos FROM fs_vch x WHERE x.id = v.srcid AND x.isdelete = FALSE) AS INTEGER) ELSE CAST(v.nos AS INTEGER) END) AS orderno
+			  ,COALESCE((SELECT x.namec FROM sys_user x where x.code = v.inputer and x.isdelete = false limit 1),v.inputer) AS inputername
+		  	  ,COALESCE((SELECT x.namec FROM sys_user x where x.code = v.updater and x.isdelete = false limit 1),v.updater) AS updatername
+			  ,COALESCE((SELECT x.namec FROM sys_user x where x.code = v.checkter and x.isdelete = false limit 1),v.checkter) AS checktername
+		FROM _fs_vch_main v
+		WHERE $qry$
+			AND v.isdelete = FALSE
+			AND v.srctype != 'I' 
+		ORDER BY v.period,orderno,v.nos
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.finance.edi.kisBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM _fs_vch_main v
+		WHERE $qry$
+			AND v.isdelete = FALSE
+			AND v.srctype != 'I' 
+	</select>
+	
+	<select id="pages.module.finance.edi.kisBean.gridaccount.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			 * 
+			,(SELECT COALESCE(x.code,'') ||'/'|| COALESCE(x.abbr,'') FROM sys_corporation x where x.id = t.corpid) AS corper
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.starter and x.isdelete = false limit 1),t.starter) AS startername
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM fs_actset t 
+		WHERE $qry$ 
+			AND t.isdelete = FALSE
+		ORDER BY isbase , code
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.finance.edi.kisBean.gridaccount.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			100000  AS counts
+	</select>
+
+
+
+
+	<select id="pages.module.finance.edi.sapBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			   v.*
+			  ,srctype AS srctypedesc
+			  ,(CASE WHEN COALESCE(srctype,'')='' THEN TRUE ELSE FALSE END) AS isgenvch
+			  ,COALESCE(exportcount,0) AS thisexportcount
+			  ,(CASE WHEN COALESCE(exportcount,0) = 0 THEN '未导出' ELSE '已导出' END) AS isexport
+			  ,(CASE COALESCE(srctype,'') WHEN 'R' THEN (SELECT x.actpayrecno FROM fina_actpayrec x WHERE x.id = v.srcid AND x.isdelete = FALSE)
+				WHEN 'A' THEN (SELECT x.nos FROM fina_jobs x WHERE x.id=v.srcid AND x.isdelete = FALSE)
+				WHEN 'S' THEN (SELECT x.nos FROM fs_vch x WHERE x.id=v.srcid AND x.isdelete = FALSE)
+				WHEN 'J' THEN (SELECT x.nos FROM fina_jobs x WHERE x.id=v.srcid AND x.isdelete = FALSE)
+				 END) AS srcno
+			  ,(CASE WHEN v.srctype = 'S' THEN ((SELECT x.nos FROM fs_vch x WHERE x.id = v.srcid AND x.isdelete = FALSE) ) ELSE (v.nos ) END) AS orderno
+			  ,COALESCE((SELECT x.namec FROM sys_user x where x.code = v.inputer and x.isdelete = false limit 1),v.inputer) AS inputername
+			  ,COALESCE((SELECT x.namec FROM sys_user x where x.code = v.updater and x.isdelete = false limit 1),v.updater) AS updatername
+			  ,COALESCE((SELECT x.namec FROM sys_user x where x.code = v.checkter and x.isdelete = false limit 1),v.checkter) AS checktername
+		FROM _fs_vch_main v
+		WHERE $qry$
+		AND v.isdelete = FALSE
+		AND v.srctype != 'I'
+		ORDER BY v.nos :: BIGINT
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.finance.edi.sapBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			  COUNT(1) AS counts
+		FROM _fs_vch_main v
+		WHERE $qry$
+		AND v.isdelete = FALSE
+		AND v.srctype != 'I'
+	</select>
+
+	<select id="pages.module.finance.edi.sapBean.gridaccount.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			 *
+			,(SELECT COALESCE(x.code,'') ||'/'|| COALESCE(x.abbr,'') FROM sys_corporation x where x.id = t.corpid) AS corper
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.starter and x.isdelete = false limit 1),t.starter) AS startername
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM fs_actset t
+		WHERE $qry$
+			AND t.isdelete = FALSE
+		ORDER BY isbase , code
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.finance.edi.sapBean.gridaccount.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			100000  AS counts
+	</select>
+</sqlMap>

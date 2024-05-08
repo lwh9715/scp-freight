@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/pages/module/common/css/tabPanelIcon.css" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page title="">
+		<ajax:conversationActivator/>
+		<layout:panel id="gridPanel" jsvar="gridPanelJsvar" hideBorders="true" 
+			fit="true">
+			<w:form>
+				<div style="height: 0px;">
+					<w:textField selectOnFocus="true" id="userid" hidden="true"></w:textField>
+				</div>
+				<w:toolBar>
+					<w:button id="qryRefresh" value="#{l.m['刷新']}"
+						image="#{constantBean.contextPath}/images/refresh.png" />
+						
+					<w:button id="save" value="#{l.m['保存']}" allowReEnter="false"
+								image="#{constantBean.contextPath}/images/save.png" />
+								
+					<!--<w:button id="add" value="#{l.m['新增']}"
+						image="#{constantBean.contextPath}/images/new.png" />
+					<w:button id="doDel" jsvar="doDel" label="#{l.m['删除']}"
+						onclick="return confirm('#{l.m['确定要删除吗?']}');"
+						image="#{constantBean.contextPath}/images/delete.png" />
+
+					<w:button id="linkUser" value="#{l.m['关联用户']}"
+						image="#{constantBean.contextPath}/images/new.png" />
+					<w:button id="linkModule" value="#{l.m['关联模块']}"
+						image="#{constantBean.contextPath}/images/new.png" />
+				--></w:toolBar>
+				
+				<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+						<layout:cell style="width: 25px;">
+						<w:button id="clearQryKey" label="" width="25"
+							image="#{constantBean.contextPath}/images/clear.png" />
+					</layout:cell>
+						<w:textField selectOnFocus="true" width="150"
+							value="#{pages.sysmgr.user.useroleBean.qryMap['code']}" />
+						<w:textField selectOnFocus="true" width="140"
+							value="#{pages.sysmgr.user.useroleBean.qryMap['name']}" />
+				</layout:panelGrid>
+					
+				<w:dataGrid height="280" paged="false" rows="100000" id="grid" jsvar="gridJsvar" onrowselect="return false" onrowdeselect="return false"
+					idColumn="id" selectable="true" selectionModel="#{constantBean.checkBox}" toolBarPosition="bottom" multiSelectOnClick="true" 
+						selections="#{pages.sysmgr.user.useroleBean.gridSelIds}">
+					<w:outputColumn id="id" header="ID" hidden="true" />
+					<w:outputColumn header="" id="islink" width="30" type="check"/>
+					<w:outputColumn header="#{l.m['代码']}" id="code" width="120" sortable="true" />
+					<w:outputColumn header="#{l.m['名称']}" id="name" width="140" sortable="true">
+					</w:outputColumn>
+					
+					<w:outputColumn header="#{l.m['关联用户数']}" id="userlinknos" width="100" 
+						sortable="true" align="right" clientFormatter="formatuser" />
+					<w:outputColumn header="#{l.m['关联模块数']}" id="modulelinknos" width="100" 
+						sortable="true" align="right" clientFormatter="formatmod" />
+						<w:outputColumn header="#{l.m['备注']}" id="remarks" width="200" 
+						sortable="true" align="left"  />
+				</w:dataGrid>
+			</w:form>
+		</layout:panel>
+	</w:page>
+
+	<script>
+	//<![CDATA[
+	function formatuser(v,m,r) {
+		 	var userlinknos = r.get('userlinknos');
+		 	var roleid = r.get('id');
+		  	var temp;
+	    	
+	    	if(roleid == null){
+				temp = userlinknos;
+			}else{
+	    		temp = '<a target="_blank" href="/scp/pages/sysmgr/role/userdtl.xhtml?id='+roleid+'"><font color="blue">' + userlinknos + '</font></a>';
+			}	
+				
+            return temp;
+        }
+        
+     function formatmod(v,m,r) {
+		var modulelinknos = r.get('modulelinknos');
+		var id = r.get('id');
+	 	var temp;
+	  	
+	  	if(id == null){
+			temp = modulelinknos;
+		} else{
+	  		temp = '<a target="_blank" href="/scp/pages/sysmgr/role/modrole.xhtml?id='+id+'"><font color="blue">' + modulelinknos + '</font></a>';
+		}	
+		
+	    return temp;
+	 }
+	
+	function resize(){
+		var newHeight = (gridPanelJsvar.getSize().height)-55;
+		var newWidth = (gridPanelJsvar.getSize().width);
+	    gridJsvar.setHeight(newHeight);
+	    gridJsvar.setWidth(newWidth);
+		gridJsvar.render();
+	}
+	Ext.onReady(function(){
+		resize();
+		Ext.EventManager.onWindowResize(function(){
+			resize();
+		});
+     });
+     //]]>
+</script>
+</f:view>

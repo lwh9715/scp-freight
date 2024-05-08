@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ajax="http://www.apusic.com/jsf/ajax" xmlns:om="http://www.apusic.com/jsf/misc"
+	renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="/scp/common/css/common.css" />
+		
+		<script type="text/javascript" src="/scp/common/js/jquery-2.0.0.min.js"></script>
+		<script type="text/javascript" src="/scp/common/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="/scp/common/js/bootstrap-select.js"></script>
+		
+		<!-- neo 20160628 第三方分页下拉框 -->
+		<link rel="stylesheet" type="text/css" href="/scp/common/css/jquery.flexbox.css" />
+		<script type="text/javascript" src="/scp/common/js/jquery.flexbox.js"></script>
+		
+		<style type="text/css"> 
+			/* button 
+			---------------------------------------------- */ 
+			.button { 
+				display: inline-block; 
+				zoom: 1; /* zoom and *display = ie7 hack for display:inline-block */ 
+				*display: inline; 
+				vertical-align: baseline; 
+				margin: 0 2px; 
+				width:86px;
+				height:23px;
+				outline: none; 
+				cursor: pointer; 
+				text-align: center; 
+				text-decoration: none; 
+				font: 14px/100% Arial, Helvetica, sans-serif; 
+				/*padding: .5em 0.5em .55em;*/ 
+				text-shadow: 0 1px 1px rgba(0,0,0,.3); 
+				-webkit-border-radius: .5em; 
+				-moz-border-radius: .5em; 
+				border-radius: .5em; 
+				-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2); 
+				-moz-box-shadow: 0 1px 2px rgba(0,0,0,.2); 
+				box-shadow: 0 1px 2px rgba(0,0,0,.2); 
+			} 
+			.button:hover { 
+				text-decoration: none; 
+			} 
+			.button:active { 
+				position: relative; 
+				top: 1px; 
+			} 
+			.bigrounded { 
+				-webkit-border-radius: 2em; 
+				-moz-border-radius: 2em; 
+				border-radius: 2em; 
+			} 
+			.medium { 
+				font-size: 12px; 
+				padding: .4em 1.5em .42em; 
+			} 
+			.small { 
+				font-size: 11px; 
+				padding: .2em 1em .275em; 
+			} 
+			/* color styles 
+			---------------------------------------------- */ 
+			
+			/* white */ 
+			.white { 
+				color: #606060; 
+				border: solid 1px #b7b7b7; 
+				background: #fff; 
+				background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed)); 
+				background: -moz-linear-gradient(top, #fff, #ededed); 
+				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed'); 
+			} 
+			.white:hover { 
+				background: #ededed; 
+				background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#dcdcdc)); 
+				background: -moz-linear-gradient(top, #fff, #dcdcdc); 
+				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dcdcdc'); 
+			} 
+			.white:active { 
+				color: #999; 
+				background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#fff)); 
+				background: -moz-linear-gradient(top, #ededed, #fff); 
+				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#ffffff'); 
+			} 
+			
+			.nui-form-addon {
+			    /*position: absolute;*/
+			    left: 0;
+			    top: 0;
+			    z-index: 23;
+			    background: #e9ebef;
+			    height: 24px;
+			    line-height: 24px;
+			    width: 37px;
+			    border-right: 1px solid #b3c4d5;
+			    text-align: center;
+				display:inline-block;
+			}
+		</style> 
+
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page title="#{l.m['铁运底价维护']} FCL">
+		<ajax:conversationActivator/>
+		<w:textArea id="jsonArrayText" jsvar="jsonArrayTextJsvar" width="624" height="300" hidden="true"></w:textArea>
+		<w:textField id="templateName" jsvar="templateNameText"  hidden="true"></w:textField>
+		
+		<w:textField id="batchRefIds" jsvar="batchRefIds"  hidden="true"></w:textField>
+		<layout:panel autoScroll="true">
+			<div class="container-fluid">
+
+			<div class="row-fluid">
+			<div class="span12">
+			<div class="row-fluid">
+
+			<div class="span10">
+			<div class="row-fluid">
+			<div role="group" aria-label="...">
+				<layout:panelGrid>
+					<w:form>
+						<layout:panelGrid>
+						<w:button value="#{l.m['新增底价']}" onclick="addgoods();" image="#{constantBean.contextPath}/images/new.png"> </w:button>
+						<w:button value="#{l.m['清空并覆盖']}" id="save" jsvar="saveJsVar"  image="#{constantBean.contextPath}/images/save.png" onclick="saveSubmit();"
+									tooltip="#{l.m['清空原有附加费记录，并重新导入新的附加费']}"> </w:button>
+						<w:button value="#{l.m['追加或覆盖']}" onclick="addupdateSubmite();" image="#{constantBean.contextPath}/images/new.png"
+								   jsvar="addupdateSubmiteJs" tooltip="#{l.m['如果已经存在，更新记录，如果不存在，新增一条附加费']}"></w:button>
+						<w:button value="#{l.m['移除匹配费用']}" onclick="deleteSubmite();"  image="#{constantBean.contextPath}/images/delete.png"
+								  jsvar="deleteSubmiteJs" tooltip="#{l.m['如果已经存在则删除这条附加费']}"></w:button>
+						<w:button value="#{l.m['另存为模板']}" id="saveAsTemplate"  image="#{constantBean.contextPath}/images/save.png"> </w:button>
+						<w:button value="#{l.m['删除当前模板']}" id="delTemplate"  image="#{constantBean.contextPath}/images/delete.png"> </w:button>
+						
+						<w:button id="refresh" label="#{l.m['刷新']}" image="#{constantBean.contextPath}/images/refresh.png" />
+						</layout:panelGrid>
+					</w:form>
+					<w:combo id="templateComBo" width="200" listWidth="300">
+							<f:selectItems value="#{pages.module.price.addtrainfeeBean.template}" />
+					</w:combo>
+				</layout:panelGrid>
+			</div>
+			</div>
+			<div class="row-fluid">
+			<form action="#" method="post" id="orderForm">
+				<w:textField id="fclid" hidden="true"> </w:textField>
+				<div class="span12" style="margin: 10px 0 0 0;">
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th><h:outputLabel value="#{l.m['费用代码']}"/></th>
+							<th><h:outputLabel value="#{l.m['费用中文']}"/></th>
+							<th><h:outputLabel value="#{l.m['付费方式']}"/></th>
+							<th><h:outputLabel value="#{l.m['计费单位']}"/></th>
+							<th><h:outputLabel value="#{l.m['金额']}"/></th>
+							<th><h:outputLabel value="#{l.m['币别']}"/></th>
+							<th><h:outputLabel value="#{l.m['操作']}"/></th>
+						</tr>
+					</thead>
+					<tbody id="priceTypeDetail">
+						<tr style="text-align: right;display: none"  />
+					</tbody>
+				</table>
+				</div>
+			</form>
+			</div>
+			</div>
+			</div>
+			</div>
+			</div>
+
+			</div>
+
+		</layout:panel>
+		
+		<div style="display: none;height: 0px;width: 0px;">
+			<ajax:submitAction id="saveAjaxSubmit" jsvar="saveAjaxSubmit" />
+			<ajax:submitAction id="saveAsTemplateSubmit" jsvar="saveAsTemplateSubmit" />
+			<ajax:submitAction id="batchupdateSubmit" jsvar="batchupdateSubmit" />
+			<ajax:submitAction id="addupdateSubmiteSubmit" jsvar="addupdateSubmiteSubmit" />
+			<ajax:submitAction id="deleteSubmiteubmit" jsvar="deleteSubmiteubmit" />
+		</div>
+		
+	</w:page>
+	
+	
+
+	<script>
+		//<![CDATA[
+		var d;// = //[{"id":"1","feeitemcode":"DOC","feeitemname":"文件费","ppcc":"PP","currency":"USD","unit":"","amt20":"1000","amt40gp":"1500","amt40hq":"1500","amt":"1100"},
+				//{"id":"2","feeitemcode":"THC","feeitemname":"操作费","ppcc":"CC","currency":"USD","unit":"","amt20":"1000","amt40gp":"1500","amt40hq":"1500","amt":"1500"}
+				//];
+		var index = 0;
+
+
+		function addgoods() {
+			++index;
+			var updatebutten = '';
+			if(batchRefIds.getValue()!=''){
+				updatebutten = "<button type='button' class='button white' onclick='batchupdate("+(index-1)+")'>#{l.m['批量更新 ']}</button>";
+			}
+			var currencytype = '';
+			$.ajax({//获得系统币制
+               type: "GET",  //提交方式  
+               dataType: "html", //数据类型  
+               async : false,//设置为同步操作就可以给全局变量赋值成功 
+			   url:'/scp/service?src=webServer&action=commonQueryByXml&sqlId=pages.module.order.busorderfcl.currency.grid.page', // 需要提交的 url
+               success: function (jsonData) { //提交成功的回调函数  
+                   if(typeof(jsonData)==="string"){
+						jsonData = JSON.parse(jsonData);
+					}
+				   if(jsonData) {
+				   		for (var i = 0; i < jsonData.length; i++) {
+				   			if("USD" == jsonData[i].code){
+				   				currencytype += "<option selected='selected'>"+jsonData[i].code+"</option>";
+				   			}else{
+				   				currencytype += "<option>"+jsonData[i].code+"</option>";
+				   			}
+				   		}
+				    }
+				}
+		 	});
+			$("tbody tr:last")
+							.before("<tr> <td><input type='hidden' name='id' value='-100' /> <div id='feeitem"+index+"'></div></td> <td><input id = 'feecode"+index+"' type='hidden'><input id = 'feeitemid"+index+"' type='hidden'><input id = 'feename"+index+"' style='width: 120px;' placeholder='' name='' value=''  class='x-form-text x-form-field'/></td> <td><select style='clip:rect(2 80 20 2);margin:-2;width:84;background:#DDDDFF' id='country' name='country' > <option selected='selected'>预付</option> <option>到付</option> </select></td> <td><select id='boxTypeSelect"+index+"' name='country' > <option>箱</option> </select></td> <td id='boxTypeNumber'> <input type='text' style='width: 50px;' class='x-form-text x-form-field x-form-num-field' placeholder='' aria-describedby='basic-addon1'/> </td> <td><select id='currency"+index+"' name='country' > "+currencytype+"</select></td> <td><button class='button white' onclick='this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)'>#{l.m['删除']}</button>"+updatebutten+"</td> </tr>");
+			selectChange(index);
+			
+			$("#feeitem"+index).flexbox('/scp/service?src=flexbox&action=feei', {
+					resultTemplate: '<div class="col1">{name}</div><div class="col2">{namec}</div><div class="col3">{namee}</div>',
+					watermark: "#{l.m['费用代码']}",
+					initialValue: '',
+					width: 100,
+					onSelect: function() {
+						var id = this.id;
+						var index = id.substring(7,id.indexOf("_"));
+						var idVal = $('input[name=feeitem'+index+']').val();
+						//alert(idVal);
+						var col1 = $("div#feeitem"+index+" div#"+idVal+".row.ffb-sel .col1").text();
+						var col2 = $("div#feeitem"+index+" div#"+idVal+".row.ffb-sel .col2").text();
+						$('#feecode'+index).val(col1);
+						$('#feename'+index).val(col2);
+						$('#feeitemid'+index).val(idVal);
+						$.ajax({//获得对应费用的币制
+			               type: "GET",  //提交方式  
+			               dataType: "text", //数据类型  
+			               async : false,//设置为同步操作就可以给全局变量赋值成功 
+						   url:'/scp/service?src=webServer&action=getCurrencyType&feecode='+col1, // 需要提交的 url
+			               success: function (jsonData2) { //提交成功的回调函数  
+							   if(jsonData2) {
+							   		if(jsonData2!=null&&jsonData2!=''&&jsonData2.toString().trim()!="ERROR"){
+							   		  var currency = jsonData2.toString();
+							   		  if (currency.trim()!=null&&currency.trim()!=''&&currency.trim().length==3){
+							   		  	$('#currency'+index).val(currency.trim());//非常奇怪：明明输出的两边没有空格，却非要加trim()
+							   		  }else{
+							   		  	$('#currency'+index).val('USD');
+							   		  }
+							   		}
+							   		
+							   }
+							}
+					 	});
+					}
+				});
+		}
+		
+		function saveAsTemplate(){
+			d = getJsonData();
+			var dText = JSON.stringify(d);
+			var templatename = templateNameText.getValue();
+           	saveAsTemplateSubmit.addParam('data',dText);
+           	saveAsTemplateSubmit.addParam('templatename',templatename);
+           	saveAsTemplateSubmit.submit();
+		}
+		
+		function saveSubmit(){
+			d = getJsonData();
+			console.log(d);
+			var dText = JSON.stringify(d);
+           	saveAjaxSubmit.addParam('data',dText);
+           	saveAjaxSubmit.submit();
+   	 	}
+   	 	
+   	 	function addupdateSubmite(){
+			d = getJsonData();
+			var dText = JSON.stringify(d);
+           	addupdateSubmiteSubmit.addParam('data',dText);
+           	console.log(dText);
+           	addupdateSubmiteSubmit.submit();
+   	 	}
+   	 	
+   	 	function deleteSubmite(){
+			d = getJsonData();
+			console.log(d);
+			var dText = JSON.stringify(d);
+           	deleteSubmiteubmit.addParam('data',dText);
+           	deleteSubmiteubmit.submit();
+   	 	}
+    
+		function checkOrder() {
+			$("#orderForm").submit();
+		}
+		function selectChange(index){
+			$('#boxTypeSelect'+index).change(function(){
+				$(this).parent().parent().find('#boxTypeNumber > *').remove();
+				var p1=$(this).children('option:selected').val();
+				$(this).parent().parent().find('#boxTypeNumber').append("<input type='text' style='width: 40px;' class='x-form-text x-form-field x-form-num-field' placeholder='' aria-describedby='basic-addon1'/>");
+			}) 	
+		}
+		
+		function removeTableRow(){	
+			$("#priceTypeDetail tr:not(:last)").remove();
+		}
+		
+		function initData(){	
+			d = JSON.parse(jsonArrayTextJsvar.getValue(), function (key, value) {       
+				return key.indexOf('date') >= 0 ? new Date(value) : value;}
+			);
+			for(var i=0;i<d.length;i++){
+				//alert(d[i].id + " " + d[i].feeitemcode);
+				++index;
+				var ppcc = "";
+				if("预付"==d[i].ppcc){//预付
+					ppcc = "<option selected='selected'>预付</option> <option>到付</option>";
+				}else{//cc到付
+					ppcc = "<option>预付</option> <option selected='selected'>到付</option>";
+				}
+				var unit = "";
+				var amtType = "";
+				if("箱"==d[i].unit){
+					unit = "<option selected='selected' >箱</option> <option>票</option> <option>箱型</option>";
+					amtType = "<input type='text' value="+d[i].amt+" style='width: 50px;' class='x-form-text x-form-field x-form-num-field' placeholder='' aria-describedby='basic-addon1'/>";
+				}else if("票"==d[i].unit){
+					unit = "<option>箱</option> <option selected='selected'>票</option> <option>箱型</option>";
+					amtType = "<input type='text' value="+d[i].amt+" style='width: 50px;' class='x-form-text x-form-field x-form-num-field' placeholder='' aria-describedby='basic-addon1'/>";
+				}else{//箱型
+					unit = "<option>箱</option> <option>票</option> <option selected='selected'>箱型</option>";
+					amtType = "<input value="+d[i].amtother+" style='width: 40px;' type='text' class='x-form-text x-form-field x-form-num-field' placeholder='' aria-describedby='basic-addon1'/><input id = 'cntypeid"+index+"' type='hidden' value='"+d[i].cntypeid+"'><span class='nui-form-addon'>20'GP</span><input value="+d[i].amt20+" style='width: 40px;' type='text' class='x-form-text x-form-field x-form-num-field' placeholder='' aria-describedby='basic-addon1'/> <span class='nui-form-addon'>40'GP</span><input  value="+d[i].amt40gp+" style='width: 40px;' type='text' class='x-form-text x-form-field x-form-num-field' placeholder='' aria-describedby='basic-addon1'/> <span class='nui-form-addon'>40'HQ</span><input  value="+d[i].amt40hq+" style='width: 40px;' type='text' class='x-form-text x-form-field x-form-num-field' placeholder='' aria-describedby='basic-addon1'/><span class='nui-form-addon'>45'HQ</span><input  value="+d[i].amt45hq+" style='width: 40px;' type='text' class='x-form-text x-form-field x-form-num-field' placeholder='' aria-describedby='basic-addon1'/><div style='display:inline' id='cntype"+index+"'></div>";
+				}
+				var currency = "";
+				$.ajax({//获得系统币制
+	               type: "GET",  //提交方式  
+	               dataType: "html", //数据类型  
+	               async : false,//设置为同步操作就可以给全局变量赋值成功 
+				   url:'/scp/service?src=webServer&action=commonQueryByXml&sqlId=pages.module.order.busorderfcl.currency.grid.page', // 需要提交的 url
+	               success: function (jsonData) { //提交成功的回调函数  
+	                   if(typeof(jsonData)==="string"){
+							jsonData = JSON.parse(jsonData);
+						}
+					   if(jsonData) {
+					   		for (var j = 0; j < jsonData.length; j++) {
+					   			if(d[i].currency!=null||d[i].currency!=''){
+						   			if(d[i].currency == jsonData[j].code){
+						   				currency += "<option selected='selected'>"+jsonData[j].code+"</option>";
+						   			}else{
+						   				currency += "<option>"+jsonData[j].code+"</option>";
+						   			}
+						   		}else{
+						   			if("USD" == jsonData[j].code){
+						   				currency += "<option selected='selected'>"+jsonData[j].code+"</option>";
+						   			}else{
+						   				currency += "<option>"+jsonData[j].code+"</option>";
+						   			}
+						   		}
+					   		}
+					    }
+					}
+			 	});
+				
+				var updatebutten = '';
+				if(batchRefIds.getValue()!=''){
+					updatebutten = "<button type='button' class='button white' onclick='batchupdate("+(index-1)+")'>#{l.m['批量更新 ']}</button>";
+				}
+				$("tbody tr:last")
+					.before("<tr> <td><input type='hidden' name='id' value='"+d[i].id+"'/><div id='feeitem"+index+"'></div></td> <td><input id = 'feecode"+index+"' type='hidden' value='"+d[i].feeitemcode+"'><input id = 'feeitemid"+index+"' type='hidden' value='"+d[i].feeitemid+"'><input id = 'feename"+index+"' type='text' style='width: 120px;' class='x-form-text x-form-field' placeholder='' value='"+d[i].feeitemname+"'></td> <td><select style='clip:rect(2 80 20 2);margin:-2;width:84;background:#DDDDFF' id='ppcc' name='ppcc'> "+ppcc+" </select></td> <td><select id='boxTypeSelect"+index+"' name='cntype' > "+unit+" </select></td> <td id='boxTypeNumber'> "+amtType+" </td> <td><select id='currency"+index+"' name='currency' > "+currency+" </select></td> <td><button id = 'del"+index+"' class='button white' onclick='this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)'>#{l.m['删除']}</button>"+updatebutten+"</td> </tr>");
+				selectChange(index);
+				
+				$("#feeitem"+index).flexbox('/scp/service?src=flexbox&action=feei', {
+					resultTemplate: '<div class="col1">{name}</div><div class="col2">{namec}</div><div class="col3">{namee}</div>',
+					watermark: '费用代码',
+					initialValue: d[i].feeitemcode,
+					width: 100,
+					onSelect: function() {
+						var id = this.id;
+						var index = id.substring(7,id.indexOf("_"));
+						var idVal = $('input[name=feeitem'+index+']').val();
+						//alert(idVal);
+						var col1 = $("div#feeitem"+index+" div#"+idVal+".row.ffb-sel .col1").text();
+						var col2 = $("div#feeitem"+index+" div#"+idVal+".row.ffb-sel .col2").text();
+						$('#feecode'+index).val(col1);
+						$('#feename'+index).val(col2);
+						$('#feeitemid'+index).val(idVal);
+						$.ajax({//获得对应费用的币制
+			               type: "GET",  //提交方式  
+			               dataType: "text", //数据类型  
+			               async : false,//设置为同步操作就可以给全局变量赋值成功 
+						   url:'/scp/service?src=webServer&action=getCurrencyType&feecode='+col1, // 需要提交的 url
+			               success: function (jsonData2) { //提交成功的回调函数  
+							   if(jsonData2) {
+							   		if(jsonData2!=null&&jsonData2!=''&&jsonData2.toString().trim()!="ERROR"){
+							   		  var currency = jsonData2.toString();
+							   		  console.log(currency.trim().length);//返回的是空居然长度为2
+							   		  if (currency.trim()!=null&&currency.trim()!=''&&currency.trim().length==3){
+							   		  	$('#currency'+index).val(currency.trim());//非常奇怪：明明输出的两边没有空格，却非要加trim()
+							   		  }else{
+							   		  	$('#currency'+index).val('USD');
+							   		  }
+							   		}
+							   }
+							}
+					 	});
+					}
+				});
+			}
+		}
+		
+		function getJsonData(){
+			var newdata = new Array();
+			
+			var line = $("#priceTypeDetail").find("tr").length-1;
+			for(var i=0;i < line;i++){
+				var row={};
+				var li0 = i*7+0;
+				var li1 = i*7+1;
+				var li2 = i*7+2;
+				var li3 = i*7+3;
+				var li4 = i*7+4;
+				var li5 = i*7+5;
+				var li6 = i*7+6;
+				
+				row["id"] = parseInt($("#priceTypeDetail tr td:eq("+li0+")").children().val());
+				
+				row["feeitemcode"] = $("#priceTypeDetail tr td:eq("+li1+") input:eq(0)").val();
+				row["feeitemid"] = parseInt($("#priceTypeDetail tr td:eq("+li1+") input:eq(1)").val());
+				row["feeitemname"] = $("#priceTypeDetail tr td:eq("+li1+") input:eq(2)").val();
+				
+				row["ppcc"] = $("#priceTypeDetail tr td:eq("+li2+")").children().val();
+				row["unit"] = $("#priceTypeDetail tr td:eq("+li3+")").children().val();
+
+				//金额处理
+				if("箱型"==$("#priceTypeDetail tr td:eq("+li3+")").children().val()){
+					row["amt"] = 0;
+					row["amt20"] = parseFloat($("#priceTypeDetail tr td:eq("+li4+") input:eq(2)").val());
+					row["amt40gp"] = parseFloat($("#priceTypeDetail tr td:eq("+li4+") input:eq(3)").val());
+					row["amt40hq"] = parseFloat($("#priceTypeDetail tr td:eq("+li4+") input:eq(4)").val());
+					row["amt45hq"] = parseFloat($("#priceTypeDetail tr td:eq("+li4+") input:eq(5)").val());
+					row["amtother"] = parseFloat($("#priceTypeDetail tr td:eq("+li4+") input:eq(0)").val());
+					row["cntypeid"] = parseFloat($("#priceTypeDetail tr td:eq("+li4+") input:eq(1)").val());
+				}else{
+					row["amt"] = parseFloat($("#priceTypeDetail tr td:eq("+li4+")").children().val());
+					row["amt20"] = 0;
+					row["amt40gp"] = 0;
+					row["amt40hq"] = 0;
+					row["amt45hq"] = 0;
+					row["amtother"] = 0;
+				}
+				
+				row["currency"] = $("#priceTypeDetail tr td:eq("+li5+")").children().val();
+				newdata[i] = row;
+			}
+			return newdata;
+		}
+		
+		function batchupdate(index){
+			var newdata = new Array();
+			var row={};
+			var li0 = index*7+0;
+			var li1 = index*7+1;
+			var li2 = index*7+2;
+			var li3 = index*7+3;
+			var li4 = index*7+4;
+			var li5 = index*7+5;
+			var li6 = index*7+6;
+			
+			row["id"] = parseInt($("#priceTypeDetail tr td:eq("+li0+")").children().val());
+			
+			row["feeitemcode"] = $("#priceTypeDetail tr td:eq("+li1+") input:eq(0)").val();
+			row["feeitemid"] = parseInt($("#priceTypeDetail tr td:eq("+li1+") input:eq(1)").val());
+			row["feeitemname"] = $("#priceTypeDetail tr td:eq("+li1+") input:eq(2)").val();
+			
+			row["ppcc"] = $("#priceTypeDetail tr td:eq("+li2+")").children().val();
+			row["unit"] = $("#priceTypeDetail tr td:eq("+li3+")").children().val();
+
+			//金额处理
+			if("箱型"==$("#priceTypeDetail tr td:eq("+li3+")").children().val()){
+				row["amt"] = 0;
+				row["amt20"] = parseFloat($("#priceTypeDetail tr td:eq("+li4+") input:eq(2)").val());
+				row["amt40gp"] = parseFloat($("#priceTypeDetail tr td:eq("+li4+") input:eq(3)").val());
+				row["amt40hq"] = parseFloat($("#priceTypeDetail tr td:eq("+li4+") input:eq(4)").val());
+				row["amt45hq"] = parseFloat($("#priceTypeDetail tr td:eq("+li4+") input:eq(5)").val());
+				row["amtother"] = parseFloat($("#priceTypeDetail tr td:eq("+li4+") input:eq(0)").val());
+				row["cntypeid"] = parseFloat($("#priceTypeDetail tr td:eq("+li4+") input:eq(1)").val());
+			}else{
+				row["amt"] = parseFloat($("#priceTypeDetail tr td:eq("+li4+")").children().val());
+				row["amt20"] = 0;
+				row["amt40gp"] = 0;
+				row["amt40hq"] = 0;
+				row["amt45hq"] = 0;
+				row["amtother"] = 0;
+			}
+			
+			row["currency"] = $("#priceTypeDetail tr td:eq("+li5+")").children().val();
+			newdata[0] = row;
+			console.dir(newdata);
+			var dText = JSON.stringify(newdata);
+           	batchupdateSubmit.addParam('data',dText);
+           	batchupdateSubmit.submit();
+		}
+		
+		function buttonhide(){
+			addupdateSubmiteJs.hide();
+			deleteSubmiteJs.hide();
+			saveJsVar.setText("#{l.m['保存']}");
+		}
+		
+		Ext.onReady(function(){
+			initData();
+			Ext.EventManager.onWindowResize(function(){
+			});
+	     });
+	     	 //]]>
+</script>
+</f:view>

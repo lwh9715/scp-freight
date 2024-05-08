@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.sysmgr.role.roleBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		,(SELECT COUNT(1) FROM sys_user u WHERE isdelete = false AND isadmin = 'N' AND iscsuser = false AND isinvalid = true AND EXISTS (SELECT 1 FROM sys_userinrole x WHERE x.isdelete = false AND x.roleid=t.id AND x.userid = u.id)) || '/' ||(SELECT COUNT(1) FROM sys_user u WHERE isdelete = false AND isadmin = 'N' AND isinvalid = true AND iscsuser = false) AS userlinknos
+		,(SELECT COUNT(1) FROM sys_module m WHERE isdelete = false AND EXISTS (SELECT 1 FROM sys_modinrole x WHERE x.isdelete = false AND x.roleid=t.id AND x.moduleid = m.id)) || '/' ||(SELECT COUNT(1) FROM sys_module m WHERE isdelete = false) AS modulelinknos
+		,(SELECT COUNT(DISTINCT y.userid) FROM sys_custlib_role x, sys_custlib y where x.roleid = t.id AND x.custlibid = y.id AND y.libtype = 'S' AND y.userid IS NOT NULL AND y.isdelete = FALSE) || '/' ||(SELECT COUNT(1) FROM sys_user x WHERE x.isdelete = false AND x.isinvalid = true AND x.issales = TRUE) AS saleslinknos		
+		FROM sys_role t 
+		WHERE $qry$ 
+			AND roletype = 'M'
+			AND isdelete = false
+		ORDER BY code,groupname
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.role.roleBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_role t 
+		WHERE $qry$ 
+			AND roletype = 'M'
+			AND isdelete = false
+	</select>
+	
+	
+	
+	<select id="pages.sysmgr.role.roleattachmentBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		,(SELECT COUNT(1) FROM sys_user u WHERE isdelete = false AND isadmin = 'N' AND iscsuser = false AND isinvalid = true AND EXISTS (SELECT 1 FROM sys_userinrole x WHERE x.isdelete = false AND x.roleid=t.id AND x.userid = u.id)) || '/' ||(SELECT COUNT(1) FROM sys_user u WHERE isdelete = false AND isadmin = 'N' AND isinvalid = true AND iscsuser = false) AS userlinknos
+		FROM sys_role t 
+		WHERE $qry$ 
+			AND roletype = 'F'
+			AND isdelete = false
+		ORDER BY code,groupname
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.role.roleattachmentBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_role t 
+		WHERE $qry$ 
+			AND roletype = 'F'
+			AND isdelete = false
+	</select>
+	
+	
+	<select id="pages.sysmgr.role.userdtlBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _sys_user t 
+		WHERE $qry$ 
+			AND isdelete = false
+			AND isadmin = 'N'
+			AND iscsuser = FALSE
+			AND isinvalid = TRUE
+			AND NOT EXISTS( SELECT 1 FROM sys_userinrole x WHERE x.roleid=$roleid$ AND x.userid = t.id)
+		ORDER BY corpid,depter,code
+	</select>
+	<select id="pages.sysmgr.role.userdtlBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_user t 
+		WHERE $qry$ 
+			AND isdelete = false
+			AND isadmin = 'N'
+			AND iscsuser = FALSE
+			AND isinvalid = TRUE
+			AND NOT EXISTS( SELECT 1 FROM sys_userinrole x WHERE x.roleid=$roleid$ AND x.userid = t.id)
+	</select>
+	
+	<select id="pages.sysmgr.role.userdtlBean.right.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT * FROM 
+			(select
+				  r.id 
+				 ,t.code
+				 ,t.namec
+				 ,t.namee
+				 ,t.abbr AS company
+				 ,'' AS department
+				 ,t.corpid
+				 ,r.orgid
+				 ,1 AS showlevel
+				 ,(SELECT count(1) FROM sys_userinrole x WHERE x.parentid = t.id AND x.roleid = r.roleid) AS usercount
+				 ,(SELECT count(DISTINCT x.id) FROM sys_user x , f_sys_corporation_framework('refid='||t.id) ddx WHERE x.corpid = ddx.id AND x.isdelete = false and x.isinvalid = true) AS usercountreal
+				 ,'' AS jobdesc
+				FROM sys_corporation t , sys_userinrole r
+				WHERE t.isdelete = false
+					AND t.iscustomer = false
+					AND r.roleid=$roleid$
+					AND (r.orgid = t.id OR r.parentid = t.id) 
+					and r.userid is null				
+			UNION ALL 
+			select 
+				  r.id 
+				 ,t.code
+				 ,t.name AS namec
+				 ,t.namee AS namee
+				 ,(SELECT abbr FROM sys_corporation x WHERE x.id=t.corpid) AS company
+				 ,t.name AS department
+				 ,t.corpid
+				 ,r.orgid
+				 ,2 AS showlevel
+				 ,(SELECT count(1) FROM sys_userinrole x WHERE x.parentid = t.id AND x.roleid = r.roleid AND userid is NOT NULL) AS usercount
+				 ,(SELECT count(DISTINCT x.id) FROM sys_user x , f_sys_corporation_framework('refid='||t.id) ddx WHERE x.deptid = ddx.id AND x.isdelete = false and x.isinvalid = true) AS usercountreal
+				 ,'' AS jobdesc
+				FROM sys_department t , sys_userinrole r
+				WHERE t.isdelete = false
+					AND r.roleid=$roleid$
+					AND (r.orgid = t.id OR r.parentid = t.id) 
+					and r.userid is null
+			UNION ALL 
+			select 
+				  r.id 
+				 ,t.code
+				 ,t.namec
+				 ,t.namee
+				 ,t.company
+				 ,t.department
+				 ,t.corpid
+				 ,r.orgid
+				 ,3 AS showlevel
+				 ,1 AS usercount
+				 ,1 AS usercountreal
+				 ,t.jobdesc
+				FROM _sys_user t , sys_userinrole r
+				WHERE t.isdelete = false
+					AND t.isadmin = 'N'
+					AND t.iscsuser = FALSE
+					AND t.isinvalid = TRUE
+					AND r.roleid=$roleid$
+					AND r.userid = t.id
+					AND r.parentid IS NULL
+			) AS T
+		WHERE $qry$
+		ORDER BY showlevel,corpid,code
+	</select>
+	<select id="pages.sysmgr.role.userdtlBean.right.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 10000 AS counts 
+	</select>
+	
+	<select id="pages.sysmgr.role.modroleBean.level1" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+				m.*
+				,(CASE WHEN EXISTS(SELECT 1 FROM _sys_modinrole x WHERE x.roleid = $roleid$ AND x.moduleid = m.id) THEN 'Y' ELSE 'N' END) AS check
+		FROM sys_module m
+		WHERE m.pid =  $pid$ 
+			AND isdelete = false
+			$filter$
+		ORDER BY modorder::TEXT;
+	</select>
+	<select id="pages.sysmgr.role.modroleBean.levelother" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+				m.*
+				,(CASE WHEN EXISTS(SELECT 1 FROM _sys_modinrole x WHERE x.roleid = $roleid$ AND x.moduleid = m.id) THEN 'Y' ELSE 'N' END) AS check
+				,EXISTS(SELECT 1 FROM sys_module x WHERE x.isdelete = false AND x.pid = m.id) AS haschild
+		FROM sys_module m
+		WHERE m.pid =  $pid$ 
+			$filter$
+			AND isdelete = false
+		ORDER BY modorder;
+	</select>
+	
+	<select id="pages.sysmgr.role.modroleBean.roleUserSelect" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			ExISTS( SELECT 1 FROM sys_userinrole x WHERE x.roleid=$roleid$ AND x.userid = a.id) AS flag
+		FROM sys_user a 
+		WHERE isadmin = 'N'
+			ORDER BY code;
+	</select>
+	
+	<select id="pages.sysmgr.role.userrolemodBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			*
+		FROM _sys_user_rolemod t
+		WHERE $qry$
+			AND isdelete = false 
+			AND isadmin = 'N' 
+			AND isinvalid = TRUE 
+			AND iscsuser = FALSE
+		ORDER BY isinvalid DESC, code
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.role.userrolemodBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			count(*) AS counts
+		FROM _sys_user_rolemod t
+		WHERE $qry$
+			AND isdelete = false 
+			AND isadmin = 'N'
+			AND isinvalid = TRUE 
+			AND iscsuser = FALSE
+	</select>
+	
+	<select id="pages.sysmgr.role.modroleuserBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			*
+		FROM _sys_module_roleuser t
+		WHERE $qry$
+			AND isdelete = false
+		ORDER BY code
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.role.modroleuserBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			count(*) AS counts
+		FROM _sys_module_roleuser t
+		WHERE $qry$
+			AND isdelete = false
+	</select>
+	
+	<select id="pages.sysmgr.role.modroleallBean.level1" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+				m.*
+				,(CASE WHEN EXISTS(SELECT 1 FROM sys_modinrole x ,sys_userinrole u,sys_role r WHERE r.isdelete = FALSE AND r.id = x.roleid AND u.roleid = r.id AND u.userid = $userid$ AND u.roleid = x.roleid AND x.moduleid = m.id AND x.isdelete = FALSE AND u.isdelete = FALSE) THEN 'Y' ELSE 'N' END) AS check
+		FROM sys_module m
+		WHERE isdelete = false
+			AND m.pid =  $pid$ 
+		ORDER BY modorder;
+	</select>
+	<select id="pages.sysmgr.role.modroleallBean.levelother" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+				m.*
+				,(CASE WHEN EXISTS(SELECT 1 FROM sys_modinrole x ,sys_userinrole u WHERE u.userid = $userid$ AND u.roleid = x.roleid AND x.moduleid = m.id AND x.isdelete = FALSE AND u.isdelete = FALSE) THEN 'Y' ELSE 'N' END) AS check
+				,EXISTS(SELECT 1 FROM sys_module x WHERE x.isdelete = false AND x.pid = m.id) AS haschild
+		FROM sys_module m
+		WHERE m.pid =  $pid$ 
+			AND isdelete = false
+		ORDER BY modorder;
+	</select>
+	
+	<select id="pages.sysmgr.role.rolelinkreportBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			(CASE WHEN EXISTS ((SELECT 1 FROM sys_report_ctrl x WHERE x.reportid = a.id AND x.linktype = 'M' AND x.linkid = $roleid$)) THEN TRUE ELSE FALSE END) AS islink,
+		   * 
+		FROM sys_report a 
+		WHERE $qry$
+		AND isdelete = FALSE
+		AND $filter$
+	</select>
+	<select id="pages.sysmgr.role.rolelinkreportBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		   count(*) AS counts  
+		FROM sys_report a 
+		WHERE $qry$
+		AND isdelete = FALSE
+		AND $filter$
+	</select>
+</sqlMap>

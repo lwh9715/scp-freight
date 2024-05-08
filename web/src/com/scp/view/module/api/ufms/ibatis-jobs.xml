@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.module.api.ufms.jobsAllBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<!--工作单号，工作单日期，业务员，参考号，委托人中文名，业务员，MBL HBL ，SO ，箱号 ，装箱，进出口，收款状态，付款状态，发票状态，发货人，收货人，通知人，目的港代理 工作单类型（jobtype），-->
+		SELECT row_number() OVER() AS row,* FROM(
+				SELECT id,nos,jobdate,inputtime
+					,(SELECT namec||'/'||namee||'/'||COALESCE((SELECT name FROM sys_department WHERE id = x.deptid),'') FROM sys_user x WHERE id = t.saleid) AS saledesc
+					,t.refno
+					,(SELECT (CASE WHEN COALESCE(namec,'') = '' THEN namee ELSE namec END) FROM sys_corporation WHERE id = t.customerid) AS customernamec
+					,t.ldtype
+					,t.impexp
+					,(SELECT COALESCE(d.namee,d.namec) FROM dat_filedata AS d WHERE d.isleaf = TRUE AND d.isdelete = false AND d.fkcode = 170 AND d.code = t.impexp LIMIT 1) AS impexpv
+					,t.arstatus
+					,t.apstatus
+					,t.invstatus
+					,t.jobtype
+					,(CASE  t.jobtype WHEN 'S' THEN '海运' WHEN 'A' THEN '空运' WHEN 'L' THEN '陆运' WHEN 'C' THEN '报关' END) AS jobtypev
+					,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+					,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+					,inputtime
+					,updatetime
+					,(SELECT (CASE WHEN COALESCE(abbr,'') = '' THEN namec ELSE abbr END) FROM sys_corporation WHERE id = t.customerid) AS customerabbr
+					,(SELECT abbr FROM sys_corporation WHERE id = t.corpidop AND isdelete = FALSE) AS opcompany
+					,(SELECT abbr FROM sys_corporation WHERE id = t.corpid AND isdelete = FALSE) AS company
+					,(SELECT f_fina_jobs_cnts('jobid='::text||t.id)) AS cnts
+				FROM fina_jobs t
+				WHERE $qry$
+					$filter$
+					$corpfilter$
+					$dynamicClauseWhere$
+					AND isdelete = FALSE
+					AND t.jobtype = 'S'
+					AND t.jobdate > '2020-10-31'
+					ORDER BY jobdate DESC,nos DESC
+		) AS T
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.api.ufms.jobsAllBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			count(*) AS counts
+		FROM fina_jobs t
+		WHERE $qry$
+			$filter$
+			$corpfilter$
+			$dynamicClauseWhere$
+			AND isdelete = FALSE
+			AND t.jobtype = 'S'
+			AND t.jobdate > '2020-10-31'
+	</select>
+
+
+</sqlMap>

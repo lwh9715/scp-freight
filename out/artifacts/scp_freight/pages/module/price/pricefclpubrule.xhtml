@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+		<w:stylesheet src="/common/css/list-style.css"></w:stylesheet>
+		<w:script src="/common/js/common.js?t=4"></w:script>
+		<script type="text/javascript" src="/scp/common/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/scp/common/js/jquery-2.0.0.min.js"></script>
+		<script type="text/javascript" src="/scp/common/js/jquery-ui.js"></script>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="#{l.m['运价网规则']}">
+		<ajax:conversationActivator/>
+		<layout:panel id="gridPanel" jsvar="gridPanelJsvar" height="100%" hideBorders="true" width="100%"
+			fit="true">
+			<div style="height: 0px;"><ui:include src="/common/gridpage.xhtml"/></div>
+			<w:form>
+				<div style="height: 0px;"></div>
+               <layout:panelGrid columns="4">
+				<w:toolBar>
+					<w:button id="qryRefresh" label="#{l.m['刷新']}"
+						image="#{constantBean.contextPath}/images/refresh.png" />
+					<w:button id="qryAdd" value="#{l.m['新增']}"
+						image="#{constantBean.contextPath}/images/new.png" />
+					<w:button id="del" value="#{l.m['删除']}" onclick="return confirm('#{l.m['确定要删除吗?']}');"
+						image="#{constantBean.contextPath}/images/delete.png" />
+					<w:button id="edit" label="#{l.m['编辑']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+				</w:toolBar>
+				<layout:cell>
+							<ajax:status startStyle="color: red"
+								onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+								onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+								<f:facet name="start">
+									<f:verbatim>
+										<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 20px;">Loading...</img>
+									</f:verbatim>
+								</f:facet>
+							</ajax:status>
+						</layout:cell>
+				</layout:panelGrid>
+
+				<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+					<layout:cell style="width: 25px;">
+						<w:button id="clearQryKey" label="" width="25"
+							image="#{constantBean.contextPath}/images/clear.png" />
+					</layout:cell>
+					<w:textField selectOnFocus="true" width="130" emptyText="#{l.m['航线']}"
+						value="#{pages.module.price.pricefclpubruleBean.qryMap['lines']}" />
+					<w:button id="refresh" value="#{l.m['查询']}" 
+							image="#{constantBean.contextPath}/images/query-small.png" />
+				</layout:panelGrid>
+				<w:dataGrid height="700" jsvar="gridJsvar" paged="true" rows="30" id="grid"
+					toolBarPosition="bottom" idColumn="id" selectable="true" selectionModel="#{constantBean.checkBox}">
+					<w:outputColumn id="id" header="ID" hidden="true" />
+					<w:outputColumn header="#{l.m['航线']}" id="linenamec" sortable="true" width="200"/>
+					<w:outputColumn header="20'GP" id="cost20" sortable="true" width="80" />
+					<w:outputColumn header="40'GP" id="cost40gp" sortable="true" width="80" />
+					<w:outputColumn header="40'HQ" id="cost40hq" sortable="true" width="80" />
+					<w:outputColumn header="45'HQ" id="cost45hq" sortable="true" width="80" />
+				</w:dataGrid>
+				</w:form>
+		</layout:panel>
+	</w:page>
+	
+	
+	<layout:window maximizable="false" width="500" height="300" id="editWindow" resizable="true"
+		title="#{l.m['运价网规则编辑']}">
+		<layout:panel id="editPanel" height="300" hideBorders="true" style="font-size:12px"
+			region="center">
+				<w:form id="editForm">
+				<w:toolBar>
+					<w:button id="save" value="#{l.m['保存']}" image="#{constantBean.contextPath}/images/save.png" />
+					</w:toolBar>
+				<layout:panelGrid columns="2" cellspacing="5px" style="font-size:12px">	
+					<h:outputLabel value="#{l.m['航线']}" />
+					<w:textArea width="140" readOnly="true" selectOnFocus="true" id="lines" jsvar="linesJs" 
+								value="#{pages.module.price.pricefclpubruleBean.selectedRowData.lines}" emptyText="#{l.m['双击修改']}"/>
+					<h:outputLabel value="20GP" />
+					<w:numberField selectOnFocus="true" value="#{pages.module.price.pricefclpubruleBean.selectedRowData.cost20}"
+								allowNegative="false" style="text-align: right" width="100"/>
+					<h:outputLabel value="40GP" />
+					<w:numberField selectOnFocus="true" value="#{pages.module.price.pricefclpubruleBean.selectedRowData.cost40gp}"
+								allowNegative="false" style="text-align: right" width="100"/>
+					<h:outputLabel value="40HQ" />
+					<w:numberField selectOnFocus="true" value="#{pages.module.price.pricefclpubruleBean.selectedRowData.cost40hq}"
+								allowNegative="false" style="text-align: right" width="100"/>
+					<h:outputLabel value="45HQ" />
+					<w:numberField selectOnFocus="true" value="#{pages.module.price.pricefclpubruleBean.selectedRowData.cost45hq}"
+								allowNegative="false" style="text-align: right" width="100"/>
+					
+					<!--<h:outputLabel value="#{l.m['类型']}"  style="color:red;"/>
+					<w:combo value="#{pages.module.price.pricefclpubruleBean.selectedRowData.ruletype}" width="100" listWidth="200" forceSelection="true">
+						<f:selectItem itemLabel="T" itemValue="T"/>
+						<f:selectItem itemLabel="B" itemValue="B"/>
+					</w:combo>	
+				--></layout:panelGrid>
+				<w:textField selectOnFocus="true" id="pkVal" hidden="true" />
+			</w:form>
+		</layout:panel>
+	</layout:window>
+	
+	
+	
+	<layout:window maximizable="true" width="650" height="530" id="linesWindow" jsvar="linesWindowJs" y="10"
+		constrainHeader="true">
+		<layout:panel id="linesPanel" height="100%" hideBorders="true" width="100%" fit="true">
+			<w:form>
+				<layout:panelGrid columns="10" cellspacing="0" cellpadding="0">
+					<w:button id="confirm" value="#{l.m['确认']}" jsvar="confirmJsVar"
+						image="#{constantBean.contextPath}/images/save.png" />
+					<w:button value="#{l.m['确认并关闭']}" allowReEnter="true"  onclick='confirmJsVar.fireEvent("click");linesWindowJs.hide()'
+							image="#{constantBean.contextPath}/images/save.png" />
+					<w:button id="empty" value="#{l.m['清空']}" onclick="linesJs.setValue('')"
+						image="#{constantBean.contextPath}/images/save.png" />
+				</layout:panelGrid>
+				<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+					<layout:cell style="width: 25px;"> 
+						<w:button id="clearQryKey" label="" width="25"
+							image="#{constantBean.contextPath}/images/clear.png" /> 
+					</layout:cell>
+					<w:textField emptyText="#{l.m['代码']}" selectOnFocus="true" width="120" value="#{pages.module.price.pricefclpubruleBean.qryMapLin['code']}"/>
+					<w:combo emptyText="#{l.m['类型']}" selectOnFocus="true" value="#{pages.module.price.pricefclpubruleBean.qryMapLin['lintype']}" width="120">
+						<f:selectItem itemLabel="#{l.m['海运']}" itemValue="S"/>
+						<f:selectItem itemLabel="#{l.m['空运']}" itemValue="A"/>
+						<f:selectItem itemLabel="#{l.m['铁运']}" itemValue="T"/>
+					</w:combo>
+					<w:textField selectOnFocus="true" width="180" value="#{pages.module.price.pricefclpubruleBean.qryMapLin['namec']}"/>
+					<w:textField selectOnFocus="true" width="120" value="#{pages.module.price.pricefclpubruleBean.qryMapLin['namee']}"/>
+					<w:button id="qryLine" value="#{l.m['查询']}"
+						image="#{constantBean.contextPath}/images/query-small.png" />
+				</layout:panelGrid>
+				<w:dataGrid height="700" paged="true" rows="200" id="lineGrid" jsvar="lineGridJsvar" selectionModel="#{constantBean.checkBox}"
+						toolBarPosition="bottom" idColumn="id" selectable="true">
+					<w:outputColumn id="id" header="ID" hidden="true" />
+					<w:outputColumn header="#{l.m['代码']}" id="code" width="120"  sortable="true" clientFormatter="formatisleaf"/>
+					<w:outputColumn header="#{l.m['类型']}" id="lintypedesc" width="120"  sortable="true" clientFormatter="formatisleaf"/>
+					<w:outputColumn header="#{l.m['中文名']}" id="namec" width="180" sortable="true" clientFormatter="formatisleaf"/>
+					<w:outputColumn header="#{l.m['英文名']}" id="namee" width="120" sortable="true" clientFormatter="formatisleaf"/>
+					<w:outputColumn header="#{l.m['航线級別']}" id="isleaf" width="80" sortable="true" clientFormatter="formatisleafvalue"/>
+					<w:outputColumn header="#{l.m['父航线']}" id="parentnamec" width="80" sortable="true" clientFormatter="formatisleaf"/>
+					<w:outputColumn header="#{l.m['录入人']}" id="inputername" sortable="true" width="80"/>
+					<w:outputColumn header="#{l.m['录入时间']}" id="inputtime" width="90" sortable="true">
+						<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" /> 
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['修改人']}" id="updatername" sortable="true" width="80" />
+					<w:outputColumn header="#{l.m['修改时间']}" id="updatetime" width="100" sortable="true">
+						<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" /> 
+					</w:outputColumn>
+				</w:dataGrid>
+				<w:pagingToolbar for="grid" target="grid" displayInfo="true" displayMsg="{0}-{1}/{2}"></w:pagingToolbar>
+			</w:form>
+		</layout:panel>
+	</layout:window>
+	
+	
+	<script>
+	function resize(){
+			var newHeight = (gridPanelJsvar.getSize().height) - 60;
+			var newWidth = (gridPanelJsvar.getSize().width);
+			gridJsvar.setHeight(newHeight);
+			gridJsvar.setWidth(newWidth);
+			gridJsvar.render();
+		}
+	
+	function formatisleaf(v,m,r) {
+		 	var isleaf = r.get('isleaf');
+			if("true" == isleaf){
+				m.attr = "style = 'color:green'";
+			}
+			else{		
+			}
+            return v;
+        }
+        
+        function formatisleafvalue(v,m,r) {
+		 	var isleaf = r.get('isleaf');
+		 	var temp = "";
+			if("true" == isleaf){
+				m.attr = "style = 'color:green'";
+				temp="#{l.m['二級航线']}";
+			}
+			else{		
+				temp="#{l.m['主航线']}";
+			}
+            return temp;
+        }
+	
+	Ext.onReady(function(){
+			resize();
+			Ext.EventManager.onWindowResize(function(){
+				resize();
+			});
+			$("#editForm\\:lines").dblclick( function () { linesWindowJs.show(); });
+		 });
+	
+	</script>
+
+</f:view>

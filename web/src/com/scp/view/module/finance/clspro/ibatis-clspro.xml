@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+		<select id="pages.module.finance.clspro.adjustmentBean.gridRate.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+			SELECT 
+			 	 *
+			 	,(CASE WHEN t.rateadjust IS NULL THEN 
+				 (SELECT x.rateadjust FROM  _fs_xrate x , fs_actset y WHERE x.actsetid = y.id AND y.id = t.actsetid AND x.perioddesc = t.perioddesc AND x.yeardesc = t.yeardesc AND x.currencyfm = t.currencyfm AND x.isdelete = false) ELSE t.rateadjust END) AS rateadjustval 
+			FROM  _fs_xrate t 
+			WHERE $qry$ 
+				AND isdelete = FALSE
+			
+		</select>
+		<select id="pages.module.finance.clspro.adjustmentBean.gridRate.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+			SELECT 
+			 count(*) AS counts 
+			FROM _fs_xrate t 
+			WHERE $qry$
+			AND isdelete = FALSE 
+				
+		</select>
+		<!--  
+		<select id="pages.module.finance.clspro.shareprofitlistBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		
+			SELECT
+				v.*
+				,a.id AS jobid
+				,a.nos AS jobnos
+				,(SELECT string_agg(x.tips,',') FROM fs_vchgen x WHERE  x.actsetid = v.actsetid AND x.linkid = a.id ) AS tips
+			FROM fs_vch v ,_fs_arap a
+			WHERE $qry$
+			AND v.srcid = a.id
+				AND v.isdelete = FALSE
+	</select>
+	<select id="pages.module.finance.clspro.shareprofitlistBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+			SELECT
+				COUNT(*) AS counts
+			FROM fs_vch v ,_fs_arap a
+			WHERE $qry$
+			AND v.srcid = a.id
+			AND v.isdelete = FALSE
+	</select>
+	-->
+	
+	<select id="pages.module.finance.clspro.shareprofitendBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		
+			SELECT
+				v.*
+				,a.pol
+				,a.pod
+				,a.jobcorpid
+				,a.id AS jobid
+				,a.nos AS jobnos
+				,a.arcounts
+				,a.apcounts
+				,(SELECT string_agg(x.tips,',') FROM fs_vchgen x WHERE  x.actsetid = v.actsetid AND x.linkid = a.id ) AS tips
+			FROM fs_vch v ,_fs_arap a
+			WHERE $qry$
+			AND v.srcid = a.id
+				AND v.isdelete = FALSE
+	</select>
+	<select id="pages.module.finance.clspro.shareprofitendBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+			SELECT
+				COUNT(*) AS counts
+			FROM fs_vch v ,_fs_arap a
+			WHERE $qry$
+			AND v.srcid = a.id
+			AND v.isdelete = FALSE
+	</select>
+	
+	
+	
+	<select id="pages.module.finance.clspro.shareagentprofitBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		
+			SELECT 
+				j.id,j.nos ,j.jobdate,a.nos AS agentbillno
+				,(SELECT x.nos FROM fs_vch x where x.srcid = a.id AND x.isdelete = false AND x.srctype = 'G') AS vchno
+				,(SELECT (SELECT yy.code FROM fs_actset yy WHERE yy.id = y.actsetid AND yy.isdelete = false) || '/' || y."year"|| '/' || y.period|| '/' || y.nos FROM fs_vch x , fs_vch y where x.srcid = a.id AND x.isdelete = false AND y.srcid = x.id AND y.isdelete = FALSE AND x.srctype = 'G' AND y.srctype = 'L') AS vchnolink
+			FROM fina_jobs j , fina_agenbill a
+			WHERE $qry$
+				AND j.jobdate::DATE > '2015-01-01'
+				AND j.id = a.jobid
+				AND a.isdelete = false
+				AND j.isdelete = false
+				AND j.isclose = false
+				AND EXISTS(SELECT 1 FROM fina_agenbill_dtl x where x.agenbillid = a.id and x.isdelete = false)
+				
+
+	</select>
+	<select id="pages.module.finance.clspro.shareagentprofitBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+			SELECT
+				COUNT(*) AS counts
+			FROM fina_jobs j , fina_agenbill a
+			WHERE $qry$
+				AND j.jobdate::DATE > '2015-01-01'
+				AND j.id = a.jobid
+				AND a.isdelete = false
+				AND j.isdelete = false
+				AND j.isclose = false
+				AND EXISTS(SELECT 1 FROM fina_agenbill_dtl x where x.agenbillid = a.id and x.isdelete = false)
+				
+	</select>
+	
+	
+	
+	
+	<!--  
+	<select id="pages.module.finance.clspro.shareprofitBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_corporation t 
+		WHERE $qry$ 
+			AND iscustomer = false
+			AND ishare = TRUE
+		ORDER BY parentid desc , code
+	</select>
+	<select id="pages.module.finance.clspro.shareprofitBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_corporation t 
+		WHERE $qry$ 
+			AND iscustomer = false
+			AND ishare = TRUE
+	</select>
+	-->
+	
+	<select id="pages.module.finance.clspro.shareprofitBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			t.* 
+			,'['||(SELECT string_agg(d.comiddesc||' '||d.ratedesc,';') FROM _fs_config_sharedtl d WHERE d.shareid = t.id)||']'AS ratedesc
+			,(SELECT code FROM fs_actset a WHERE a.id = t.actsetid )AS actsetcodedesc
+	FROM fs_config_share t 
+	WHERE $qry$ 
+	</select>
+	<select id="pages.module.finance.clspro.shareprofitBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM fs_config_share t 
+	WHERE $qry$ 
+	</select>
+	
+	<select id="pages.module.finance.clspro.shareprofitdtlBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			t.* 
+	FROM _fs_config_sharedtl t 
+	WHERE $qry$ 
+	</select>
+	<select id="pages.module.finance.clspro.shareprofitdtlBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _fs_config_sharedtl t 
+	WHERE $qry$ 
+	</select>
+	
+</sqlMap>

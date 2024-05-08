@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.module.report.taxesBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		*
+		FROM sys_report t
+		WHERE $qry$
+		AND modcode = 'taxes'
+	</select>
+	<select id="pages.module.report.taxesBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		count(*) AS counts
+		FROM sys_report t
+		WHERE $qry$
+		AND modcode = 'taxes'
+	</select>
+
+	<select id="pages.module.report.boxquantityBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		*
+		FROM sys_report t
+		WHERE $qry$
+		AND modcode = 'boxs'
+		$filter$
+		$setgeneralsql$
+		ORDER BY namec
+	</select>
+	<select id="pages.module.report.boxquantityBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		count(*) AS counts
+		FROM sys_report t
+		WHERE $qry$
+		AND modcode = 'boxs'
+		$filter$
+		$setgeneralsql$
+	</select>
+
+	<select id="pages.module.report.receivablespayablesBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			*
+		FROM sys_report t
+		WHERE $qry$
+			AND modcode = 'arap'
+			$filter$
+			$setgeneralsql$
+		ORDER BY namec
+	</select>
+	<select id="pages.module.report.receivablespayablesBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		count(*) AS counts
+		FROM sys_report t
+		WHERE $qry$
+		AND modcode = 'arap'
+		$filter$
+		$setgeneralsql$
+	</select>
+
+	<select id="pages.module.report.receiptsoutBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		*
+		FROM sys_report t
+		WHERE $qry$
+		AND modcode = 'rece'
+		$filter$
+		$setgeneralsql$
+		ORDER BY namec
+	</select>
+	<select id="pages.module.report.receiptsoutBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		count(*) AS counts
+		FROM sys_report t
+		WHERE $qry$
+		AND modcode = 'rece'
+		$filter$
+		$setgeneralsql$
+	</select>
+
+	<select id="pages.module.report.operateserviceBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		*
+		FROM sys_report t
+		WHERE $qry$
+		AND modcode = 'operateservice'
+	</select>
+	<select id="pages.module.report.operateserviceBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		count(*) AS counts
+		FROM sys_report t
+		WHERE $qry$
+		AND modcode = 'operateservice'
+	</select>
+
+
+	<select id="pages.module.report.profitBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		*
+		FROM sys_report t
+		WHERE $qry$
+		AND modcode = 'profit'
+		$filter$
+		$setgeneralsql$
+		ORDER BY namec
+	</select>
+	<select id="pages.module.report.profitBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		count(*) AS counts
+		FROM sys_report t
+		WHERE $qry$
+		AND modcode = 'profit'
+		$filter$
+		$setgeneralsql$
+	</select>
+
+	<select id="pages.module.report.orderquantityBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		*
+		FROM sys_report t
+		WHERE $qry$
+		AND modcode = 'orderquantity'
+		AND isdelete = FALSE
+		$filter$
+		$setgeneralsql$
+		ORDER BY namec
+	</select>
+	<select id="pages.module.report.orderquantityBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		count(*) AS counts
+		FROM sys_report t
+		WHERE $qry$
+		AND modcode = 'orderquantity'
+		AND isdelete = FALSE
+		$filter$
+		$setgeneralsql$
+	</select>
+
+	<select id="pages.module.report.boxQuantityNewBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			select
+				sum(joblength) as joblength
+			from(
+				SELECT
+					count(1) as joblength
+				FROM fina_jobs t
+				INNER JOIN bus_shipping b on b.isdelete = FALSE AND t.id = b.jobid
+				WHERE t.isdelete = false AND t.jobtype = 'S'
+					$dynamicClauseWhereAll$
+					$unloadedWhere$
+					$filter$
+					$corpfilter$
+
+				UNION ALL
+				SELECT
+					count(1) as joblength
+				FROM fina_jobs t
+				INNER JOIN bus_air b on b.isdelete = FALSE AND t.id = b.jobid
+				WHERE t.isdelete = false AND t.jobtype = 'A'
+					$dynamicClauseWhereAll$
+					$unloadedWhere$
+					$filter$
+					$corpfilter$
+
+				UNION ALL
+				SELECT
+					count(1) as joblength
+				FROM fina_jobs t
+				INNER JOIN bus_truck b on b.isdelete = FALSE AND t.id = b.jobid
+				WHERE t.isdelete = false AND t.jobtype = 'L'
+					$dynamicClauseWhereAll$
+					$filter$
+					$corpfilter$
+
+				UNION ALL
+				SELECT
+					count(1) as joblength
+				FROM fina_jobs t
+				INNER JOIN bus_customs b on b.isdelete = FALSE AND t.id = b.jobid
+				WHERE t.isdelete = false AND t.jobtype = 'C'
+					$dynamicClauseWhereAll$
+					$filter$
+					$corpfilter$
+			) ss
+		 ]]>
+	</select>
+
+	<select id="pages.module.report.boxQuantityNewBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			SELECT
+				t.id
+				,t.jobdate
+				,t.jobtype
+				,t.saleid
+				,t.inputer
+				,t.corpid
+				,t.corpidop
+				,t.corpidop2
+				$Afield$
+				,b.mblno
+				,b.hblno
+				,b.sono
+				,b.cnortitle
+				,b.cneetitle
+				,b.notifytitle
+				,(SELECT abbr FROM sys_corporation WHERE id = b.agenid) AS agenabbr
+				,to_char( b.etd ::timestamp, 'yyyy-mm-dd') AS etd
+				,to_char( b.eta ::timestamp, 'yyyy-mm-dd') AS eta
+				,to_char( b.cls ::timestamp, 'yyyy-mm-dd hh24:mi:ss') AS cls
+				$Sfield$
+			FROM fina_jobs t
+			INNER JOIN bus_shipping b on b.isdelete = FALSE AND t.id = b.jobid
+			WHERE t.isdelete = false AND t.jobtype = 'S'
+				$dynamicClauseWhereAll$
+				$unloadedWhere$
+				$filter$
+				$corpfilter$
+
+			UNION ALL
+			SELECT
+				t.id
+				,t.jobdate
+				,t.jobtype
+				,t.saleid
+				,t.inputer
+				,t.corpid
+				,t.corpidop
+				,t.corpidop2
+				$Afield$
+				,b.mawbno AS mblno
+				,b.hawbno AS hblno
+				,b.sono
+				,b.cnortitle
+				,b.cneetitle
+				,b.notifytitle
+				,(SELECT abbr FROM sys_corporation WHERE id = b.agentdesid) AS agenabbr
+				,to_char( b.flightdate1 ::timestamp, 'yyyy-mm-dd hh24:mi:ss') AS etd
+				,to_char( b.eta ::timestamp, 'yyyy-mm-dd') AS eta
+				,NULL AS cls
+				$Ofield$
+			FROM fina_jobs t
+			INNER JOIN bus_air b on b.isdelete = FALSE AND t.id = b.jobid
+			WHERE t.isdelete = false AND t.jobtype = 'A'
+				$dynamicClauseWhereAll$
+				$unloadedWhere$
+				$filter$
+				$corpfilter$
+
+			UNION ALL
+			SELECT
+				t.id
+				,t.jobdate
+				,t.jobtype
+				,t.saleid
+				,t.inputer
+				,t.corpid
+				,t.corpidop
+				,t.corpidop2
+				$Afield$
+				,'' AS mblno
+				,'' AS hblno
+				,b.sono
+				,'' AS cnortitle
+				,'' AS cneetitle
+				,'' AS notifytitle
+				,'' AS agenabbr
+				,to_char( b.etd ::timestamp, 'yyyy-mm-dd hh24:mi:ss') AS etd
+				,NULL AS eta
+				,to_char( b.cls ::timestamp, 'yyyy-mm-dd hh24:mi:ss') AS cls
+				$Ofield$
+			FROM fina_jobs t
+			INNER JOIN bus_truck b on b.isdelete = FALSE AND t.id = b.jobid
+			WHERE t.isdelete = false AND t.jobtype = 'L'
+				$dynamicClauseWhereAll$
+				$filter$
+				$corpfilter$
+
+			UNION ALL
+			SELECT
+				t.id
+				,t.jobdate
+				,t.jobtype
+				,t.saleid
+				,t.inputer
+				,t.corpid
+				,t.corpidop
+				,t.corpidop2
+				$Afield$
+				,'' AS mblno
+				,'' AS hblno
+				,b.sono
+				,'' AS cnortitle
+				,'' AS cneetitle
+				,'' AS notifytitle
+				,'' AS agenabbr
+				,NULL AS etd
+				,NULL AS eta
+				,NULL AS cls
+				$Ofield$
+			FROM fina_jobs t
+			INNER JOIN bus_customs b on b.isdelete = FALSE AND t.id = b.jobid
+			WHERE t.isdelete = false AND t.jobtype = 'C'
+				$dynamicClauseWhereAll$
+				$filter$
+				$corpfilter$
+		 ]]>
+	</select>
+
+	<select id="pages.module.report.receivablespayablesnewBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select (SELECT u.namec FROM sys_user u WHERE u.isdelete = FALSE AND u.id = aa.saleid LIMIT 1)                                                                          as sales
+			 , (SELECT name
+				FROM sys_department d
+				WHERE d.isdelete = FALSE
+				  AND d.id =
+					  (SELECT u.deptid FROM sys_user u WHERE u.isdelete = FALSE AND u.id = aa.saleid LIMIT 1)
+				LIMIT 1)                                                                                                                                                       AS dept
+			 , (SELECT c.namec FROM sys_corporation c WHERE c.isdelete = FALSE AND c.id = aa.customerid LIMIT 1)                                                               AS customernamec
+			 , daysar
+			 , (aa.jobid)                                                                                                                                                      as jobid
+			 , (select jobtype FROM _fina_jobs x where x.id = aa.jobid and x.isdelete = false)                                                                                 as jobtype
+			 , nos
+			 , to_char(jobdate ::timestamp, 'yyyy-mm-dd')                                                                                                                      as jobdate
+			 , (select abbr from sys_corporation where id = (select customerid from fina_jobs where id = aa.jobid))                                                            as customerabbr2
+			 , (SELECT x.csname FROM _fina_jobs x where x.id = aa.jobid and x.isdelete = false)                                                                                AS csname
+			 , refno
+			 , mblnos
+			 , (SELECT COALESCE(to_char(dategetmbl, 'yyyy/MM/dd'), '') || '/' || COALESCE(to_char(datereleasembl, 'yyyy/MM/dd'), '') FROM bus_shipping WHERE jobid = aa.jobid) as getrelacembl
+			 , eta
+			 , etd
+			 , pod
+			 , cntdesc
+			 , invoicenos
+			 , sum(amt_ar_cny_stl)                                                                                                                                             as amt_ar_cny_stl_all
+			 , sum(amt_ar_usd_stl)                                                                                                                                             as amt_ar_usd_stl_all
+			 , sum(amt_ar_hkd_stl)                                                                                                                                             as amt_ar_hkd_stl_all
+			 , sum(amount)                                                                                                                                                     as ar2sum
+		from (
+				 SELECT fj.id                                                                                                           as jobid
+					  , fj.nos
+					  , fj.saleid
+					  , fj.sales
+					  , fj.jobdate
+					  , fj.refno
+
+					  , (case
+							 when fj.jobtype = 'S' then bs.eta ::text
+							 when fj.jobtype = 'A' then ba.eta ::text
+							 when fj.jobtype = 'L' then ''
+							 when fj.jobtype = 'C' then bc.eta ::text
+							 when fj.jobtype = 'H' then bt2.eta ::text
+							 else '' end)                                                                                               AS eta
+					  , (case
+							 when fj.jobtype = 'S' then bs.etd ::text
+							 when fj.jobtype = 'A' then ba.etd ::text
+							 when fj.jobtype = 'L' then ''
+							 when fj.jobtype = 'C' then ''
+							 when fj.jobtype = 'H' then bt2.etd ::text
+							 else '' end)                                                                                               AS etd
+					  , (case
+							 when fj.jobtype = 'S' then bs.pod ::text
+							 when fj.jobtype = 'A' then ba.pod ::text
+							 when fj.jobtype = 'L' then ''
+							 when fj.jobtype = 'C' then ''
+							 when fj.jobtype = 'H' then bt2.pod ::text
+							 else '' end)                                                                                               AS pod
+
+					  , (case
+							 when fj.jobtype = 'S' then (SELECT x.mblno FROM bus_shipping x WHERE x.jobid = fj.id AND x.isdelete = FALSE)
+							 when fj.jobtype = 'A' then (SELECT y.mawbno FROM bus_air as y WHERE y.isdelete = FALSE AND y.jobid = fj.id)
+							 else '' end)                                                                                               as mblnos
+					  , (case
+							 when fj.jobtype = 'S' then (SELECT f_bus_shipping_cntdesc('shipid=' || bs1.id) FROM bus_shipping bs1 WHERE bs1.jobid = fj.id AND bs1.isdelete = FALSE)
+							 else '' end)                                                                                               AS cntdesc
+
+					  , (SELECT string_agg(DISTINCT x.invoiceno, ',')
+						 FROM fina_invoice x,
+							  fina_arap y
+						 WHERE x.isdelete = FALSE
+						   AND x.clientid = fa.customerid
+						   AND y.isdelete = FALSE
+						   AND y.invoiceid = x.id
+						   AND y.jobid = fj.id)                                                                                         AS invoicenos
+
+					  , fa.id                                                                                                           as arapid
+					  , fa.customerid
+					  , (case when fa.currency = 'CNY' then COALESCE((COALESCE(fa.amount, 0) - COALESCE(fa.amtstl2, 0)), 0) else 0 end) AS amt_ar_cny_stl
+					  , (case when fa.currency = 'USD' then COALESCE((COALESCE(fa.amount, 0) - COALESCE(fa.amtstl2, 0)), 0) else 0 end) AS amt_ar_usd_stl
+					  , (case when fa.currency = 'HKD' then COALESCE((COALESCE(fa.amount, 0) - COALESCE(fa.amtstl2, 0)), 0) else 0 end) AS amt_ar_hkd_stl
+					  , f_amtto(fa.arapdate, fa.currency, 'USD', (fa.amount - fa.amtstl2))::NUMERIC(18, 2)                              AS amount
+					  , sc.daysar
+				 FROM fina_jobs fj
+						  left JOIN bus_shipping bs ON (bs.isdelete = FALSE AND fj.id = bs.jobid)
+						  left JOIN bus_air ba ON (ba.isdelete = FALSE AND fj.id = ba.jobid)
+						  left JOIN bus_truck bt ON (bt.isdelete = FALSE AND fj.id = bt.jobid)
+						  left JOIN bus_customs bc ON (bc.isdelete = FALSE AND fj.id = bc.jobid)
+						  left JOIN bus_train bt2 ON (bt2.isdelete = FALSE AND fj.id = bt2.jobid)
+						  inner JOIN fina_arap fa ON (fa.isdelete = FALSE AND fj.id = fa.jobid AND fa.araptype = 'AR' AND fa.amount - fa.amtstl2 > 0)
+						  inner JOIN sys_corporation sc ON (sc.isdelete = FALSE AND sc.iscustomer = TRUE AND fa.customerid = sc.id)
+				 WHERE fj.isdelete = FALSE
+				   AND to_char(NOW() - (DATE_TRUNC('MONTH', fj.jobdate ::DATE) + INTERVAL '1 MONTH'), 'DD')::INT >
+					   (select daysar from sys_corporation where isdelete = FALSE and id = fa.customerid limit 1)
+					$dynamicClauseAllWhere$
+					$permissionsWhere$
+					$corpfilterWhere$
+					$filterJobs$
+			 ) aa
+		group by saleid, customerid, daysar, jobid, nos, jobdate, refno, mblnos, getrelacembl, eta, etd, pod, cntdesc, invoicenos
+		ORDER BY saleid, customerid, daysar, jobid
+	</select>
+</sqlMap>

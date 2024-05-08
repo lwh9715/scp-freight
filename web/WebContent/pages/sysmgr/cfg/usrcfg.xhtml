@@ -1,0 +1,633 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ajax="http://www.apusic.com/jsf/ajax" xmlns:om="http://www.apusic.com/jsf/misc"
+	renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet>
+		<link rel="stylesheet" id="cmsbg" type="text/css"/>
+		<w:script src="/common/js/common.js?t=4"></w:script>
+		
+		<script src="http://apps.bdimg.com/libs/jquery/1.11.3/jquery.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="/scp/common/css/jquery.flexbox.css" />
+		<script type="text/javascript" src="/scp/common/js/jquery.flexbox.js"></script>
+		
+		<w:script type="text/javascript" src="/common/ckeditor/ckeditor.js"></w:script>
+		<w:script type="text/javascript" src="/common/ckeditor/extckeditor.js"></w:script>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+		<!--二维码 -->
+		<script src="/scp/common/js/qrcode.js"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+		<layout:tabLayout fit="true">
+
+			<layout:panel id="usercfgpanel" title="#{l.m['个人设置']}">
+				<w:form id="usercfg">
+					<w:toolBar>
+						<w:button id="saveUserCfgBut" value="#{l.m['保存']}" onclick="setBgColor()"
+							image="#{constantBean.contextPath}/images/save.png" />
+						<w:button id="cfgSignature" jsvar="cfgSignature" value="#{l.m['设置签名']}"
+							image="#{constantBean.contextPath}/images/save.png" />
+					</w:toolBar>
+					<layout:panelGrid columns="8">
+					<layout:panelGrid columns="6" cellspacing="5px" style="font-size:12px">
+						<!--  <h:outputLabel value="#{l.m['编辑界面校验提示颜色']}" />
+						<w:combo id="gridPageCom" value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['view_tip_color']}"
+							width="200" emptyText="">
+							<f:selectItem itemLabel="#{l.m['红色']}" itemValue="color: red" />
+							<f:selectItem itemLabel="#{l.m['绿色']}" itemValue="color: green" />
+							<f:selectItem itemLabel="#{l.m['黄色']}" itemValue="color: yellow" />
+							<f:selectItem itemLabel="#{l.m['蓝色']}" itemValue="color: blue" />
+						</w:combo>-->
+						<layout:cell colspan="2" style="width: 245px; border: solid #ABCDEF 1px;">
+							<layout:panelGrid columns="2" >
+								<layout:cell colspan="2">
+									<layout:panelGrid columns="2">
+										<h:outputLabel value="#{l.m['费用']}" style="text-decoration:underline;font-size: 16px;color: red;padding-left: 0px;" />	
+									</layout:panelGrid>
+								</layout:cell>
+								<h:outputLabel value="#{l.m['利润折合币制']}"></h:outputLabel>
+								<w:combo width="60" value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['fee_profits_cy2']}">
+									<f:selectItems id="" value="#{comboxBean.currency}" />
+								</w:combo>
+								<h:outputLabel value="#{l.m['默认费用币制']}"></h:outputLabel>
+								<w:combo width="60" value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['fee_add_cyid']}">
+									<f:selectItems id="" value="#{comboxBean.currency}" />
+								</w:combo>
+								<h:outputLabel value="#{l.m['默认结算方式']}"></h:outputLabel>
+								<w:combo width="60" value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['fee_add_payplace']}">
+									<f:selectItem itemValue="CS" itemLabel="#{l.m['现金']}" />
+									<f:selectItem itemValue="PB" itemLabel="#{l.m['公账']}" />
+									<f:selectItem itemValue="HK" itemLabel="#{l.m['香港']}" />
+								</w:combo>
+								<h:outputLabel value="#{l.m['批量编辑新增行放最上面']}"></h:outputLabel>
+								<w:combo width="60" value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['isAddOnUp']}">
+									<f:selectItem itemValue="Y" itemLabel="#{l.m['是']}" />
+									<f:selectItem itemValue="N" itemLabel="#{l.m['否']}" />
+								</w:combo>
+							</layout:panelGrid>
+						</layout:cell>
+						
+						<layout:cell colspan="2" style="width: 220px; border: solid #ABCDEF 1px;">
+						<layout:panelGrid columns="2" >
+							<layout:cell colspan="2">
+								<layout:panelGrid columns="2">
+									<h:outputLabel value="#{l.m['提单']}" style="text-decoration:underline;font-size: 16px;color: red;padding-left: 0px;" />	
+								</layout:panelGrid>
+							</layout:cell> 
+							<h:outputLabel value="#{l.m['船公司显示简称']}" ></h:outputLabel>
+							<w:combo forceSelection="true" width="100" value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['bill_ship_abbrs']}">
+								<f:selectItem itemValue="t" itemLabel="#{l.m['显示']}" />
+								<f:selectItem itemValue="f" itemLabel="#{l.m['不显示']}" />
+							</w:combo>
+							<h:outputLabel value="#{l.m['报表服务器URL']}" />
+							<w:textField selectOnFocus="true" id="oldPWD" width="100" value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['rpt_srv_url']}"></w:textField>
+							<h:outputLabel value="#{l.m['HBL分单规则']}" />
+							<w:combo forceSelection="true" width="100" value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['bill_ship_suffix']}">
+								<f:selectItem itemValue="en" itemLabel="#{l.m['字母']}" />
+								<f:selectItem itemValue="num" itemLabel="#{l.m['数字']}" />
+							</w:combo>
+						</layout:panelGrid>
+						</layout:cell>
+						
+						<layout:cell colspan="2" style="width: 190px; border: solid #ABCDEF 1px;">
+						<layout:panelGrid columns="2" >
+						<layout:cell colspan="2">
+							<layout:panelGrid columns="2">
+								<h:outputLabel value="#{l.m['委托']}" style="text-decoration:underline;font-size: 16px;color: red;padding-left: 0px;" />	
+							</layout:panelGrid>
+						</layout:cell>
+						<h:outputLabel value="#{l.m['签单地点']}"></h:outputLabel>
+						<w:combo width="100" value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['busshipping_signplace']}">
+							<f:selectItems value="#{comboxBean.signplace}" />
+						</w:combo>
+						<h:outputLabel value="#{l.m['运输条款']}"></h:outputLabel>
+						<w:combo width="100" value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['busshipping_carryitem']}">
+							<f:selectItems value="#{comboxBean.carryitem}" />
+						</w:combo>
+						<h:outputLabel value="#{l.m['运费条款']}"></h:outputLabel>
+						<w:combo width="100" value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['busshipping_freightitem']}">
+							<f:selectItems value="#{comboxBean.freightitem}" />
+						</w:combo>
+						<h:outputLabel value="#{l.m['付款条款']}"></h:outputLabel>
+						<w:combo width="100" value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['busshipping_paymentitem']}">
+							<f:selectItems value="#{comboxBean.freightitem}" />
+						</w:combo>
+						</layout:panelGrid>
+						</layout:cell>
+						
+						
+						<layout:cell colspan="2" style="width: 265px; border: solid #ABCDEF 1px;">
+						<layout:panelGrid columns="2" >
+						<layout:cell colspan="2">
+							<layout:panelGrid columns="2">
+								<h:outputLabel value="#{l.m['账单']}" style="text-decoration:underline;font-size: 16px;color: red;padding-left: 0px;" />	
+							</layout:panelGrid>
+						</layout:cell> 
+						<h:outputLabel value="#{l.m['账单导出后自动确认']}" ></h:outputLabel>
+						<w:combo forceSelection="true" width="100"  value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['bill_export_lock']}">
+							<f:selectItem itemValue="true" itemLabel="是" />
+							<f:selectItem itemValue="false" itemLabel="否" />
+						</w:combo>
+						</layout:panelGrid>
+						</layout:cell>
+						
+						<layout:cell colspan="2" style="width: 265px; border: solid #ABCDEF 1px;">
+							<layout:panelGrid columns="2" >
+								<h:outputLabel value="#{l.m['背景色']}" ></h:outputLabel>
+								<w:combo forceSelection="true" width="100" jsvar="bgColorJsVar" value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['bg_color']}">
+									<f:selectItem itemValue="blue" itemLabel="商务蓝" />
+									<f:selectItem itemValue="green" itemLabel="护眼绿" />
+									<f:selectItem itemValue="pink" itemLabel="粉红色" />
+								</w:combo>
+								<h:outputLabel value="#{l.m['时区']}" ></h:outputLabel>
+								<w:combo forceSelection="true" width="100" value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['timestamp_with_time_zone']}">
+									<f:selectItems value="#{comboxBean.timezone}" />
+								</w:combo>
+								<h:outputLabel value="#{l.m['流程处理备选人']}" ></h:outputLabel>
+								<layout:cell colspan="2">
+									<w:textArea width="120" readOnly="true" selectOnFocus="true" id="user" jsvar="userJs" emptyText="#{l.m['双击修改']}"/>
+									<w:textArea width="120" id="salesid" jsvar="saleidJsVar" hidden="true"/>
+									<w:textArea width="120" value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['process_handling_standbyid']}" hidden="true" jsvar="useridJsVar"/>
+								</layout:cell>
+							</layout:panelGrid>
+						</layout:cell>
+					
+						<layout:cell colspan="2" style="width: 265px; border: solid #ABCDEF 1px;">
+						<layout:panelGrid columns="2" >
+						<layout:cell colspan="1">
+							<layout:panelGrid columns="1">
+								<w:button label="#{l.m['上传头像']}" onclick="logoWindowJsVar.show()"></w:button>
+								<w:button label="#{l.m['刷新头像']}" id="refreshLogo" onclick=""></w:button>
+								<w:button label="#{l.m['清除头像']}" id="clearLogo" onclick=""></w:button>
+							</layout:panelGrid>
+						</layout:cell>
+						<layout:cell colspan="1">
+							<layout:panelGrid>
+								<h:graphicImage id="headImg" value="#{pages.sysmgr.cfg.usrcfgBean.head}" height="50" alt="undefined"></h:graphicImage>
+							</layout:panelGrid>
+						</layout:cell>
+						</layout:panelGrid>
+						</layout:cell>
+						
+					</layout:panelGrid>
+					<layout:panelGrid columns="2">
+						<layout:cell colspan="2" style="width: 265px; border: solid #ABCDEF 1px;">
+							<layout:panelGrid columns="2" >
+								<layout:cell colspan="2">
+									<h:outputLabel value="#{l.m['订阅']}:" style="text-decoration:underline;font-size: 16px;color: red;padding-left: 0px;" />
+								</layout:cell>
+								<h:outputLabel value="#{l.m['待办任务通知']}" ></h:outputLabel>
+								<w:combo width="50" focusClass="surround"  value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['subscribe_msg_todojobs']}" jsvar="isstandbyid">
+									<f:selectItem itemValue="Y" itemLabel="#{l.m['是']}" />
+									<f:selectItem itemValue="N" itemLabel="#{l.m['否']}" />
+								</w:combo>
+								<h:outputLabel value="#{l.m['工作单状态通知']}" ></h:outputLabel>
+								<w:combo width="50" focusClass="surround"  value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['subscribe_msg_jobstatus']}" jsvar="isjobstatus">
+									<f:selectItem itemValue="Y" itemLabel="#{l.m['是']}" />
+									<f:selectItem itemValue="N" itemLabel="#{l.m['否']}" />
+								</w:combo>
+								<h:outputLabel value="#{l.m['流程结束邮件通知']}" ></h:outputLabel>
+								<w:combo width="50" focusClass="surround"  value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['subscribe_msg_email']}" jsvar="isjobstatus">
+									<f:selectItem itemValue="Y" itemLabel="#{l.m['是']}" />
+									<f:selectItem itemValue="N" itemLabel="#{l.m['否']}" />
+								</w:combo>
+
+
+								<layout:cell colspan="2">
+									<w:button id="portnotice" value="#{l.m['港口通知']}" image="#{constantBean.contextPath}/images/query-small.png" />
+								</layout:cell>
+
+								<layout:cell colspan="2">
+								<h:outputLabel value="#{l.m['方式']}:" style="text-decoration:underline;font-size: 16px;color: red;padding-left: 0px;" />
+								</layout:cell>
+								
+								<layout:cell colspan="2">
+									<layout:panelGrid columns="4">
+									<h:outputLabel value="#{l.m['内部消息']}" ></h:outputLabel>
+									<w:combo width="50" focusClass="surround"  value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['subscribe_type_im']}" jsvar="isimjs">
+										<f:selectItem itemValue="Y" itemLabel="#{l.m['是']}" />
+										<f:selectItem itemValue="N" itemLabel="#{l.m['否']}" />
+									</w:combo>
+									<h:outputLabel value="#{l.m['间隔']}" ></h:outputLabel>
+									<w:combo width="50" focusClass="surround" forceSelection="true" value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['subscribe_interval_time']}">
+										<f:selectItem itemValue="10" itemLabel="10#{l.m['秒']}" />
+										<f:selectItem itemValue="20" itemLabel="20#{l.m['秒']}" />
+										<f:selectItem itemValue="30" itemLabel="30#{l.m['秒']}" />
+										<f:selectItem itemValue="60" itemLabel="60#{l.m['秒']}" />
+										<f:selectItem itemValue="120" itemLabel="120#{l.m['秒']}" />
+										<f:selectItem itemValue="600" itemLabel="600#{l.m['秒']}" />
+									</w:combo>
+									</layout:panelGrid>
+								</layout:cell>
+								
+								
+								<h:outputLabel value="#{l.m['微信']}" ></h:outputLabel>
+								<w:combo width="50" focusClass="surround"  value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['subscribe_type_weixin']}" jsvar="isweixinjs">
+									<f:selectItem itemValue="Y" itemLabel="#{l.m['是']}" />
+									<f:selectItem itemValue="N" itemLabel="#{l.m['否']}" />
+								</w:combo>
+								<h:outputLabel value="#{l.m['短信']}" ></h:outputLabel>
+								<w:combo width="50" focusClass="surround"  value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['subscribe_type_sms']}" jsvar="issmsjs">
+									<f:selectItem itemValue="Y" itemLabel="#{l.m['是']}" />
+									<f:selectItem itemValue="N" itemLabel="#{l.m['否']}" />
+								</w:combo>
+								<h:outputLabel value="#{l.m['邮件']}" ></h:outputLabel>
+								<w:combo width="50" focusClass="surround"  value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['subscribe_type_email']}" jsvar="isemailjs">
+									<f:selectItem itemValue="Y" itemLabel="#{l.m['是']}" />
+									<f:selectItem itemValue="N" itemLabel="#{l.m['否']}" />
+								</w:combo>
+							</layout:panelGrid>
+						</layout:cell>
+					</layout:panelGrid>
+					</layout:panelGrid>
+					
+					<ajax:status startStyle="color: red"
+						onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+						onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+						<f:facet name="start">
+							<f:verbatim>
+								<img src="#{constantBean.contextPath}/images/waiting.gif" />
+							</f:verbatim>
+						</f:facet>
+					</ajax:status>
+					
+					<ajax:submitAction id="saveAction" jsvar="saveAction" />
+					<w:textField selectOnFocus="true" id = "userid" jsvar="userid" hidden="true"/>
+				</w:form>
+				<div id="myImg"></div>
+			</layout:panel>
+
+
+			<layout:panel title="#{l.m['邮箱设置']}">
+				<w:form>
+					<w:toolBar>
+						<w:button id="save" value="#{l.m['保存']}"
+							image="#{constantBean.contextPath}/images/save.png" />
+						<w:button id="emailTest" value="#{l.m['测试']}"
+							image="#{constantBean.contextPath}/images/save.png" />
+						<w:button id="emailSign" value="#{l.m['邮箱签名']}" onclick="showEmailSignWindow.show()"
+							image="#{constantBean.contextPath}/images/save.png" />
+					</w:toolBar>
+					<layout:panelGrid columns="2" cellspacing="5px" width="500" style="font-size:12px">
+						<h:outputLabel value="#{l.m['发送邮件服务器SMTP']}" />
+						<w:textField selectOnFocus="true" width="300"
+							value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['email_srv_smtp']}"></w:textField>
+
+						<h:outputLabel value="#{l.m['POP3服务器']}" />
+						<w:textField selectOnFocus="true" width="300"
+							value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['email_srv_pop3']}"></w:textField>
+						
+						<h:outputLabel value="#{l.m['端口']}" />
+						<w:textField selectOnFocus="true" width="300"
+							value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['email_srv_port']}"></w:textField>
+
+						<h:outputLabel value="#{l.m['POP3账户']}" />
+						<w:textField selectOnFocus="true" width="300" id="userpop3account"
+							value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['email_pop3_account']}"></w:textField>
+
+						<h:outputLabel value="#{l.m['邮箱密码']}" />
+						<w:textField selectOnFocus="true" width="300" inputType="password" id="userpop3pwd"
+							value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['email_pop3_pwd']}"></w:textField>
+					</layout:panelGrid>
+
+
+					<ajax:status startStyle="color: red"
+						onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+						onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+						<f:facet name="start">
+							<f:verbatim>
+								<img src="#{constantBean.contextPath}/images/waiting.gif" />
+							</f:verbatim>
+						</f:facet>
+					</ajax:status>
+				</w:form>
+			</layout:panel>
+			<layout:panel title="#{l.m['微信绑定']}">
+				<w:form>
+					<w:toolBar>
+						<h:outputLabel value="#{l.m['']}" style="font-size: 16px;color: red;padding-left: 0px;" />
+						<w:button value="#{l.m['刷新']}" onclick="refreshQrCode()"
+							image="#{constantBean.contextPath}/images/save.png" />
+						<w:button id="delopenid" value="#{l.m['解除绑定']}"
+							image="#{constantBean.contextPath}/images/save.png" />
+						<w:button id="testSendWeiXin" value="#{l.m['测试发送']}"
+							image="#{constantBean.contextPath}/images/save.png" />
+					</w:toolBar>
+					<layout:panelGrid columns="2" cellspacing="5px" width="300" style="font-size:12px;margin-left: 50px">
+						<layout:cell colspan="1">
+							<form>
+								<div style="margin: 30px">
+									<h4 style="font-size: 16px;color: red;padding-left: 0px;">#{l.m['请使用微信扫描下方二维码，绑定账号']}</h4>
+									<div id="qrcode">
+									</div>
+								</div>
+								<layout:panelGrid columns="2" cellspacing="5px" width="500" style="font-size:12px">	
+									<w:textField id="optext" cls="under_line" readOnly="true" style="font-size: 16px;color: red;padding-left: 0px;"/>
+									<w:checkBox id="ispenid" jsvar="ispenid" hidden="true"></w:checkBox>
+									<layout:cell colspan="2">
+										<layout:panelGrid columns="2" >	
+											<h:outputLabel value="OPNEID：" style="font-size:18px"></h:outputLabel>
+											<w:textField id="openid" readOnly="true" width="280" cls="under_line"></w:textField>
+										</layout:panelGrid>时区
+									</layout:cell>
+									<layout:cell colspan="2">
+										<w:textArea id="codeUrl" jsvar="codeUrlJsVar" width="370" height="90" hidden="false" readOnly="true"/>
+									</layout:cell>
+								</layout:panelGrid>
+								<ajax:submitAction id="timeraction" jsvar="timeraction" />
+							</form>
+						</layout:cell>
+						
+						<layout:cell colspan="1">
+							<div style="margin: 30px">
+								<h4 style="font-size: 16px;color: red;padding-left: 0px;">#{l.m['请使用微信扫描下方二维码，关注微信公众号']}</h4>
+								<div id="qrcode">
+								</div>
+								<layout:panelGrid columns="1" cellspacing="5px" width="400" style="font-size:12px">	
+									<h:graphicImage id="weixinImg" value="#{pages.sysmgr.cfg.usrcfgBean.weixinimg}" height="250" alt="undefined"></h:graphicImage>
+								</layout:panelGrid>
+							</div>
+						</layout:cell>
+					</layout:panelGrid>
+					
+					<ajax:status startStyle="color: red"
+						onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+						onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+						<f:facet name="start">
+							<f:verbatim>
+								<img src="#{constantBean.contextPath}/images/waiting.gif" />
+							</f:verbatim>
+						</f:facet>
+					</ajax:status>
+				</w:form>
+			</layout:panel>
+
+
+			<layout:panel title="API">
+				<w:form>
+					<w:toolBar>
+						<w:button id="saveApi" value="#{l.m['保存']}"
+								  image="#{constantBean.contextPath}/images/save.png" />
+					</w:toolBar>
+					<layout:panelGrid columns="2" cellspacing="5px" width="500" style="font-size:12px">
+						<h:outputLabel value="OOCL_APIKey" />
+						<w:textField selectOnFocus="true" width="300" id="oocl_apikey" inputType="password"
+									 value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['oocl_apikey']}"></w:textField>
+						<h:outputLabel value="OOCL_COME_NAME" />
+						<w:textField selectOnFocus="true" width="300" id="oocl_come_name"
+									 value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['oocl_come_name']}"></w:textField>
+						<h:outputLabel value="OOCL_COME_ADDR1" />
+						<w:textField selectOnFocus="true" width="300" id="oocl_come_addr1"
+									 value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['oocl_come_addr1']}"></w:textField>
+						<h:outputLabel value="OOCL_COME_ADDR2" />
+						<w:textField selectOnFocus="true" width="300" id="oocl_come_addr2"
+									 value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['oocl_come_addr2']}"></w:textField>
+					</layout:panelGrid>
+					<ajax:status startStyle="color: red"
+								 onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+								 onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+						<f:facet name="start">
+							<f:verbatim>
+								<img src="#{constantBean.contextPath}/images/waiting.gif" />
+							</f:verbatim>
+						</f:facet>
+					</ajax:status>
+				</w:form>
+			</layout:panel>
+		</layout:tabLayout>
+		
+		<layout:window maximizable="true" title="#{l.m['设置签名']}" id="showSignWindow" jsvar="showSignWindow" width="600" height="530"
+			header="false" resizable="true" constrainHeader="true">
+				<w:iframe style="width: 100%; height: 100%;" frameborder="no" id="signIframe"
+					name="signIframe" />
+		</layout:window>
+		
+		<layout:window maximizable="true" title="#{l.m['邮箱签名']}" id="showEmailSignWindow" jsvar="showEmailSignWindow" width="600" height="530"
+			header="false" resizable="true" constrainHeader="true">
+		<layout:panel id="editPanel" jsvar="gridPanelJsvar" height="100%" hideBorders="true" 
+			fit="true">
+			<w:form id="formedt">
+				<layout:panelGrid columns="2">
+					<w:toolBar>
+						<w:button id="saveEmailSign" value="#{l.m['保存']}" allowReEnter="false" onclick="beforeSubmit()"
+							image="#{constantBean.contextPath}/images/save.png" />
+					</w:toolBar>
+				</layout:panelGrid>
+				<layout:panelGrid width="600" columns="2" style="font-size:12px">
+					<f:verbatim></f:verbatim>
+					<layout:cell colspan="2" styleClass="td-editor" style="width:600px; height:100%;">
+						<h:outputText id="ckeditor" escape="false" style="width: 100%;height: 100%;"
+							value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['email_sign']}" />
+					</layout:cell>
+				</layout:panelGrid>
+			</w:form>
+		</layout:panel>
+		</layout:window>
+		
+		<layout:window maximizable="true" id="logoWindow" jsvar="logoWindowJsVar" width="400" height="150" title="#{l.m['上传']}LOGO">
+			<w:form>
+					<layout:panelGrid columns="2" cellspacing="5px" width="500" style="font-size:12px">
+						<layout:cell colspan="2">
+							<layout:panelGrid columns="6" width="450" style="font-size:12px">
+								<h:outputLabel value="LOGO" />
+								<w:fileUpload id="fileUpload1"  uploadListener="#{pages.sysmgr.cfg.usrcfgBean.processUpload1}"
+									rich="true" maxSize="3000k"/>
+							</layout:panelGrid>
+						</layout:cell>
+						
+						<layout:cell colspan="2">
+							<layout:panelGrid columns="6" width="450" style="font-size:12px">
+								<w:button label="#{l.m['上传']}"></w:button>
+								<w:fileUploadProgress startMessage="#{l.m['开始上传']}" id=""
+									uploadingMessage="#{l.m['正在上传，已经上传']}{readBytes}k/{total}k({percentage}%)"
+									completeMessage="#{l.m['上传结束，总共']}{total}k" errorMessage="#{l.m['上传错误：']}{error}" />
+							</layout:panelGrid>
+						</layout:cell>
+						
+						<!--<layout:cell colspan="2">
+							<layout:panelGrid columns="6" width="500" style="font-size:12px">
+								<h:outputLabel value="#{l.m['首页Logo']}410*120" />
+								<w:fileUpload id="fileUpload2" uploadListener="#{pages.sysmgr.cfg.syscfgBean.processUpload2}"
+									rich="true" maxSize="3000k" required="true" requiredMessage="Home Logo Can't be empty!" />
+								<w:button value="Upload" id="submit" />
+							</layout:panelGrid>
+						</layout:cell>
+		
+						-->
+					</layout:panelGrid>
+			</w:form>
+		</layout:window>
+
+		
+		<layout:window maximizable="true" width="510" height="530" id="userWindow" jsvar="userWindowJs" y="10"
+		constrainHeader="true">
+		<layout:panel id="userPanel" height="100%" hideBorders="true" width="100%" fit="true">
+			<w:form>
+				<layout:panelGrid columns="10" cellspacing="0" cellpadding="0">
+					<w:textField id="qryuserdesc" selectOnFocus="true" width="200" emptyText="#{l.m['代码/中文名/英文名/分公司/部门']}"/>
+					<w:button id="qryuser" value="#{l.m['查询']}"
+						image="#{constantBean.contextPath}/images/query-small.png" />
+					<w:button id="confirm" value="#{l.m['确认']}" jsvar="confirmJsVar"
+						image="#{constantBean.contextPath}/images/save.png" />
+					<w:button value="#{l.m['确认并关闭']}" allowReEnter="true"  onclick='confirmJsVar.fireEvent("click");userWindowJs.hide()'
+							image="#{constantBean.contextPath}/images/save.png" />
+					<w:button id="empty" value="#{l.m['清空']}"
+						image="#{constantBean.contextPath}/images/save.png" />
+				</layout:panelGrid>
+				<w:dataGrid height="475" jsvar="gridUserJsvar" paged="true" rows="200" id="gridUser"
+					selectionModel="#{constantBean.checkBox}" toolBarPosition="bottom" idColumn="id"
+					selectable="true">
+					<w:outputColumn id="id" header="ID" hidden="true" />
+					<w:outputColumn header="#{l.m['代码']}" id="code" sortable="true" width="80" />
+					<w:outputColumn header="#{l.m['中文名']}" id="namec" width="80" sortable="true" />
+					<w:outputColumn header="#{l.m['英文名']}" id="namee" width="80" sortable="true" />
+					<w:outputColumn header="#{l.m['部门']}" id="depter2" width="80" sortable="true" />
+					<w:outputColumn header="#{l.m['分公司']}" id="company" width="120" sortable="true" />
+				</w:dataGrid>
+				<w:pagingToolbar for="gridUser" target="gridUser" displayInfo="true"
+					displayMsg="{0}-{1}/{2}">
+				</w:pagingToolbar>
+			</w:form>
+		</layout:panel>
+	</layout:window>
+
+
+		<layout:window maximizable="true" title="#{l.m['']}" id="portnoticeWindow" jsvar="portnoticeWindowJs" width="400" height="230"
+					   header="false" resizable="true" constrainHeader="true">
+			<layout:panel id="editPanel2" jsvar="gridPanelJsvar" height="100%" hideBorders="true"
+						  fit="true">
+				<w:form id="formedt2">
+					<layout:panelGrid columns="2">
+						<w:toolBar>
+							<w:button id="saveUserCfgBut2" value="#{l.m['保存']}" allowReEnter="false"
+									  image="#{constantBean.contextPath}/images/save.png"/>
+						</w:toolBar>
+					</layout:panelGrid>
+					<layout:panelGrid columns="6" cellspacing="0" cellpadding="0">
+						<layout:panelGrid columns="6" cellpadding="0" cellspacing="0">
+							<h:outputLabel value="#{l.m['提空箱']}"/>
+							<w:checkBox value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['subscribe_msg_portnotice_STSP']}"></w:checkBox>
+
+							<h:outputLabel value="#{l.m['码头放行']}"/>
+							<w:checkBox value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['subscribe_msg_portnotice_TMPS']}"></w:checkBox>
+
+							<h:outputLabel value="#{l.m['卸船']}"/>
+							<w:checkBox value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['subscribe_msg_portnotice_DSCH']}"></w:checkBox>
+
+							<h:outputLabel value="#{l.m['进港']}"/>
+							<w:checkBox value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['subscribe_msg_portnotice_GITM']}"></w:checkBox>
+
+							<h:outputLabel value="#{l.m['配载']}"/>
+							<w:checkBox value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['subscribe_msg_portnotice_PRLD']}"></w:checkBox>
+
+							<h:outputLabel value="#{l.m['提货']}"/>
+							<w:checkBox value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['subscribe_msg_portnotice_PCAB']}"></w:checkBox>
+
+							<h:outputLabel value="#{l.m['海关放行']}"/>
+							<w:checkBox value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['subscribe_msg_portnotice_PASS']}"></w:checkBox>
+
+							<h:outputLabel value="#{l.m['上船']}"/>
+							<w:checkBox value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['subscribe_msg_portnotice_LOBD']}"></w:checkBox>
+
+							<h:outputLabel value="#{l.m['还空箱']}"/>
+							<w:checkBox value="#{pages.sysmgr.cfg.usrcfgBean.cfgDataMap['subscribe_msg_portnotice_RCVE']}"></w:checkBox>
+						</layout:panelGrid>
+					</layout:panelGrid>
+				</w:form>
+			</layout:panel>
+		</layout:window>
+
+	</w:page>
+
+<script>
+	//<![CDATA[
+	
+	var qrcode = new QRCode(document.getElementById("qrcode"), {
+       	width : 250,//设置宽高
+       	height : 250
+    });
+	
+	function resize(){
+		var newHeight = (gridPanelJsvar.getSize().height) - 35;
+		var newWidth = (gridPanelJsvar.getSize().width);
+		gridJsvar.setHeight(newHeight);
+		gridJsvar.setWidth(newWidth);
+		gridJsvar.render();
+	}
+	
+	Ext.onReady(function(){
+		Ext.EventManager.onWindowResize(function(){
+		});
+		$.ajax({
+				type:'POST',
+				dataType: 'html',
+				url:'/scp/service?src=webServer&action=getFile&userid='+userid.getValue(),
+				success:function(date){
+					if(date.toString().indexOf("ERROR") == 0){
+						return;
+					}
+					var img = $('<img>').attr('src', date);
+		            $(myImg).append($('<p>').text("Signature:"));
+		            $(myImg).append(img);
+				}
+         });
+         	$('#sales_input').bind("input propertychange", function(){
+			  	if($('#sales_input').val()==''){//监听当改变值为空时候清掉saleid的值
+			  		saleidJsVar.setValue('');
+			  	}
+			});
+		editor1 = Ext.form.CKEditor.create("formedt:ckeditor");
+		
+		refreshQrCode();
+		$("#usercfg\\:user").dblclick( function () { userWindowJs.show(); });
+	 });
+	 
+	  function refreshQrCode(){
+	  	// var utl = window.location.protocol + "//" + window.location.host;
+		//var urlQrCode = utl + '#{constantBean.contextPath}' + '/reportJsp/businesscardupload.jsp?userid='+userIdJsvar.getValue();
+		var url = codeUrlJsVar.getValue();
+		qrcode.makeCode(url);
+	  }
+	 
+	  function setValue(text) {
+        	editor1.setValue(text);
+      }
+      
+      function beforeSubmit() {
+       	saveAction.addParam('editor1',editor1.getValue());
+       	saveAction.submit();
+	  }
+	    
+	    setInterval('timeraction.submit();',5000);//监控opneid是否被赋值
+	    setInterval('setopenid()',1000)
+	    
+		function setopenid(){
+			if(ispenid.getValue() == true){
+				$('#qrcode').hide();
+			}else{
+				$('#qrcode').show();
+			}
+		}
+		
+		function setuserid(){
+			useridJsVar.setValue(saleidJsVar.getValue());
+		}
+		
+		function setBgColor(){
+			var bgcolor = bgColorJsVar.getValue();
+			window.localStorage.bgcolor = bgcolor
+			setUserBgColor();
+		}
+	 
+	 //]]>
+</script>
+
+</f:view>

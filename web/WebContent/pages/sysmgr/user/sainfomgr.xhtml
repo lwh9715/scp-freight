@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> <link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" /><link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+		<layout:borderLayout fit="true" fitToBody="true">
+			<layout:panel id="editPanel"  width="100%" height="180" region="center" split="true">
+				<w:form>
+					<ajax:submitAction id="doSave" jsvar="doSave" />
+					<w:toolBar><!--
+						<w:button id="save" value="#{l.m['保存']}" type="button" alwaysSubmit="false"
+							onclick="doSave.submit();"
+							image="#{constantBean.contextPath}/images/save.png" />
+						-->
+						<w:button id="modifyPWD" value="#{l.m['修改密码']}"
+							image="#{constantBean.contextPath}/images/save.png" />
+					</w:toolBar>
+
+					<layout:panelGrid height="50" columns="2" width="400" style="font-size:12px">
+						<h:outputLabel value="#{l.m['代码']}" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.sainfomgrBean.selectedRowData['code']}" width="120"
+							maxLength="50" cls="under_line" focusClass="surround" readOnly="true" />
+						<h:outputLabel value="#{l.m['中文名']}" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.sainfomgrBean.selectedRowData['namec']}" width="120"
+							maxLength="50" cls="under_line" focusClass="surround" readOnly="true"  />
+						<h:outputLabel value="#{l.m['英文名']}" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.sainfomgrBean.selectedRowData['namee']}" width="120"
+							maxLength="50" cls="under_line" focusClass="surround" readOnly="true"  />
+						<!--<h:outputLabel value="#{l.m['电话1']}" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.sainfomgrBean.selectedRowData['tel1']}" width="120"
+							maxLength="50" cls="under_line" focusClass="surround" readOnly="true"  />
+						<h:outputLabel value="#{l.m['电话2']}" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.sainfomgrBean.selectedRowData['tel2']}" width="120"
+							maxLength="50" cls="under_line" focusClass="surround" />
+
+						<h:outputLabel value="Email1" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.sainfomgrBean.selectedRowData['email1']}" width="120"
+							maxLength="50" cls="under_line" focusClass="surround" />
+						<h:outputLabel value="Email2" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.sainfomgrBean.selectedRowData['email2']}" width="120"
+							maxLength="50" cls="under_line" focusClass="surround" />
+
+						<h:outputLabel value="QQ" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.sainfomgrBean.selectedRowData['qq']}" width="120" maxLength="50"
+							cls="under_line" focusClass="surround" />
+						<h:outputLabel value="MSN" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.sainfomgrBean.selectedRowData['msn']}" width="120"
+							maxLength="50" cls="under_line" focusClass="surround" />
+
+						<h:outputLabel value="mobilephone" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.sainfomgrBean.selectedRowData['mobilephone']}" width="120"
+							maxLength="50" cls="under_line" focusClass="surround" />
+						<h:outputLabel value="fax" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.sainfomgrBean.selectedRowData['fax']}" width="120"
+							maxLength="50" cls="under_line" focusClass="surround" />
+						<h:outputLabel value="skype" />
+						<w:textField selectOnFocus="true"
+							value="#{pages.sysmgr.user.sainfomgrBean.selectedRowData['skype']}" width="120"
+							maxLength="50" cls="under_line" focusClass="surround" />
+
+						--><layout:cell colspan="6">
+							<layout:panelGrid columns="2">
+								<h:outputLabel value="#{l.m['备注']}" />
+								<w:textArea selectOnFocus="true"
+									value="#{pages.sysmgr.user.sainfomgrBean.selectedRowData['remarks']}" width="300"
+									height="30" maxLength="40" cls="under_line" focusClass="surround" />
+							</layout:panelGrid>
+						</layout:cell>
+
+					</layout:panelGrid>
+				</w:form>
+			</layout:panel>
+
+
+			<layout:panel title="" width="300" height="300" region="south" split="true">
+				<!--<layout:panel fit="true" lazyLoad="true">
+					<w:iframe id="dtlIframe" height="700" width="1024" lazyLoad="true" style="border: thin;"
+						src="../cfg/usrcfg.xhtml">
+					</w:iframe>
+				</layout:panel>
+			--></layout:panel>
+			
+			</layout:borderLayout>
+	</w:page>
+
+	<layout:window maximizable="true" id="uiWindow" width="400" height="170" title="#{l.m['修改密码']}">
+		<w:form>
+			<layout:panelGrid columns="2" cellspacing="5px" width="350" style="font-size:12px">
+				<h:outputLabel value="#{l.m['当前密码']}" />
+				<w:textField selectOnFocus="true" id="oldPWD" inputType="password" required="true"
+					requiredMessage="Can not be null!"></w:textField>
+				<h:outputLabel value="#{l.m['新密码']}" />
+				<w:textField selectOnFocus="true" id="newPWD1" inputType="password" required="true"
+					requiredMessage="Can not be null!"></w:textField>
+				<h:outputLabel value="#{l.m['再次输入新密码']}" />
+				<w:textField selectOnFocus="true" id="newPWD2" inputType="password" required="true"
+					requiredMessage="Can not be null!"></w:textField>
+				<w:button id="savePWD" value="#{l.m['修改密码']}"
+					image="#{constantBean.contextPath}/images/save.png" />
+			</layout:panelGrid>
+		</w:form>
+	</layout:window>
+</f:view>

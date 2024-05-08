@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	
+	<select id="pages.module.api.oocl.bookingBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT * 
+		 ,(SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1) AS inputername
+		 ,(SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1) AS updatername
+		FROM api_oocl_bookingdata t
+		WHERE $qry$
+			AND isdelete = FALSE
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	
+	<select id="pages.module.api.oocl.bookingBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM api_oocl_bookingdata s
+		WHERE $qry$
+			AND isdelete = FALSE
+	</select>
+	
+</sqlMap>

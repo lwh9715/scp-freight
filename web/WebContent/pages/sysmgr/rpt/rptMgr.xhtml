@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ajax="http://www.apusic.com/jsf/ajax" xmlns:om="http://www.apusic.com/jsf/misc"
+	renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+		<w:script src="/common/js/common.js?t=4"></w:script>
+		
+		<link rel="stylesheet" href="/scp/common/css/notjsfplus.css" />
+		<link rel="stylesheet" href="/scp/common/css/notjsfcommon.css" />
+		
+		<script type="text/javascript" src="/scp/common/js/jquery-2.0.0.min.js"></script>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="Rpt Mgr">
+		<layout:panel id="gridPanel" jsvar="gridPanelJsvar" fit="true" hideBorders="true" width="100%"
+			height="100%" split="true">
+			<div style="height: 0px;"><ui:include src="/common/gridpage.xhtml"/></div>
+			<w:form>
+				<layout:panelGrid columns="1">
+					<w:toolBar>
+						<w:button id="qryRefresh" value="#{l.m['刷新']}"
+							image="#{constantBean.contextPath}/images/refresh.png" />
+						<w:button id="getFilePath" value="#{l.m['校正']}"
+							image="#{constantBean.contextPath}/images/shezhi.png" />
+						<w:button id="lockRaq" value="#{l.m['锁定']}"
+							image="#{constantBean.contextPath}/images/lock.png" />
+						<w:button id="unlockRaq" value="#{l.m['解锁']}"
+							image="#{constantBean.contextPath}/images/unlock.png" />
+						<w:button id="add" value="#{l.m['新增']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+						<w:button id="del" value="#{l.m['删除']}" onclick="return confirm('#{l.m['确定要删除吗?']}');"
+							image="#{constantBean.contextPath}/images/delete.png" />
+						<w:button id="download" jsvar="downloadBtn" label="#{l.m['下载']}"
+							image="#{constantBean.contextPath}/pages/module/common/resources/images/init.png" />
+						<w:button id="upload" label="#{l.m['上传']}" image="#{constantBean.contextPath}/pages/module/common/resources/images/up.gif" ></w:button>
+						<w:button onclick="reportimgWindowJsVar.show()" label="#{l.m['上传底图']}" image="#{constantBean.contextPath}/pages/module/common/resources/images/up.gif" ></w:button>
+					</w:toolBar>
+					<w:toolBar>
+						<w:button id="saveLocal" value="#{l.m['另存为']}"
+							image="#{constantBean.contextPath}/images/save.png" />
+						<w:button id="saveDatabase" value="#{l.m['保存格式到DB']}"
+							image="#{constantBean.contextPath}/images/save.png" />
+						<w:button id="updateDataLocal" value="#{l.m['更新DB格式到本地']}"
+							image="#{constantBean.contextPath}/images/save.png" />
+							
+						<w:button id="export2json" onclick="exportWindowJsVar.show();json2dbJsVar.hide();" value="#{l.m['导出']}JSON"
+							image="#{constantBean.contextPath}/pages/module/common/resources/images/up.gif" />
+							
+						<w:button onclick="exportWindowJsVar.show();json2dbJsVar.show();" value="#{l.m['导入']}DB"
+							image="#{constantBean.contextPath}/pages/module/common/resources/images/up.gif" />
+							
+						<w:button onclick="getRptListFromCenter()" value="#{l.m['报表中心']}"
+							image="#{constantBean.contextPath}/pages/module/common/resources/images/up.gif" />
+							
+					</w:toolBar>
+					
+				</layout:panelGrid>
+				<layout:panelGrid>
+					<w:button value="#{l.m['海运账单']}" onclick="showByModcode('海运账单')"/>
+					<w:button value="#{l.m['空运账单']}" onclick="showByModcode('空运账单')"/>
+					<w:button value="#{l.m['陆运账单']}" onclick="showByModcode('陆运账单')"/>
+					<w:button value="#{l.m['拖车账单']}" onclick="showByModcode('拖车账单')"/>
+					<w:button value="#{l.m['报关账单']}" onclick="showByModcode('报关账单')"/>
+					<w:button value="#{l.m['铁运账单']}" onclick="showByModcode('铁运账单')"/>
+					<w:button value="#{l.m['电商账单']}" onclick="showByModcode('电商账单')"/>
+				</layout:panelGrid>
+				<layout:panelGrid>
+					<w:button value="#{l.m['应收应付']}" onclick="showByModcode('应收应付')"/>
+					<w:button value="#{l.m['利润']}" onclick="showByModcode('利润')"/>
+					<w:button value="#{l.m['箱量']}" onclick="showByModcode('箱量')"/>
+					<w:button value="#{l.m['收付款']}" onclick="showByModcode('收付款')"/>
+					<w:button value="#{l.m['单量']}" onclick="showByModcode('单量')"/>
+				</layout:panelGrid>
+				<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+					<layout:cell style="width: 25px;">
+						<w:button id="clearQryKey" label="" width="25"
+							image="#{constantBean.contextPath}/images/clear.png" />
+					</layout:cell>
+					<w:textField selectOnFocus="true" width="100"
+						value="#{pages.sysmgr.rpt.rptMgrBean.qryMap['corpabbr']}" />
+					<w:textField selectOnFocus="true" width="150"
+						value="#{pages.sysmgr.rpt.rptMgrBean.qryMap['code']}" />
+					<w:textField selectOnFocus="true" width="150"
+						value="#{pages.sysmgr.rpt.rptMgrBean.qryMap['namec']}" />
+					<w:textField selectOnFocus="true" width="150"
+						value="#{pages.sysmgr.rpt.rptMgrBean.qryMap['namee']}" />
+					<w:textField selectOnFocus="true" width="150"
+						value="#{pages.sysmgr.rpt.rptMgrBean.qryMap['filename']}"/>
+					<w:textField selectOnFocus="true" width="100" jsvar="modcodeJsvar"
+						value="#{pages.sysmgr.rpt.rptMgrBean.qryMap['modcode']}" />
+					<w:textField selectOnFocus="true" width="100" jsvar="modnameJsvar"
+						value="#{pages.sysmgr.rpt.rptMgrBean.qryMap['modname']}" />
+					<w:button id="refresh" value="#{l.m['查询']}" jsvar="refreshJsvar"
+						image="#{constantBean.contextPath}/images/query-small.png" />
+						
+					<om:fileDownload id="fileDownLoad" for="download"
+						savedName="${pages.sysmgr.rpt.rptMgrBean.fileName}"
+						contentType="raq" />
+					<layout:cell>
+						<ajax:status startStyle="color: red"
+							onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+							onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+							<f:facet name="start">
+								<f:verbatim>
+									<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 20px;">Loading...</img>
+								</f:verbatim>
+							</f:facet>
+						</ajax:status>
+					</layout:cell>
+				</layout:panelGrid>
+				
+
+				<layout:cell>
+					<ajax:status startStyle="color: red"
+						onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+						onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+					</ajax:status>
+				</layout:cell>
+				<w:dataGrid height="660" paged="true" rows="#{pages.sysmgr.rpt.rptMgrBean.gridPageSize}" id="grid" jsvar="gridJsvar" selectionModel="#{constantBean.checkBox}"
+					onrowselect="return false" onrowdeselect="return false" toolBarPosition="bottom" idColumn="id" selectable="true" >
+					<w:outputColumn id="id" header="ID" hidden="true" />
+					<w:outputColumn header="#{l.m['公司']}" id="corpabbr" width="100" sortable="true" clientFormatter="format"/>
+					<w:outputColumn header="#{l.m['代码']}" id="code" width="150" sortable="true" clientFormatter="format"/>
+					<w:outputColumn header="#{l.m['名称(中文)']}" id="namec" width="150" sortable="true" clientFormatter="format" />
+					<w:outputColumn header="#{l.m['名称(英文)']}" id="namee" width="150" sortable="true" clientFormatter="format" />
+					<w:outputColumn header="#{l.m['报表名称']}" id="filename" width="150" sortable="true" clientFormatter="format"/>
+					<w:outputColumn header="#{l.m['模块']}" id="modcode" width="100" sortable="true" clientFormatter="format"/>
+					<w:outputColumn header="#{l.m['模块']}" id="modname" width="100" sortable="true" clientFormatter="format"/>
+					<w:outputColumn header="filepath" id="filepath" width="350" sortable="true" clientFormatter="format" />
+					<w:outputColumn header="#{l.m['备注']}" id="remarks" width="200" sortable="true" clientFormatter="format" />
+					<w:outputColumn header="#{l.m['公共']}" id="ispublic" width="40" sortable="true" type="check" clientFormatter="format"/>
+					<w:outputColumn header="#{l.m['只读']}" id="isreadonly" width="40" sortable="true" type="check" clientFormatter="format"/>
+					<w:outputColumn header="#{l.m['可用']}" id="isinuse" width="40" sortable="true" type="check" clientFormatter="format"/>
+					<w:outputColumn header="#{l.m['锁定']}" id="islock" width="40" sortable="true" type="check" clientFormatter="format"/>
+					<w:outputColumn header="#{l.m['用户上传']}" id="isusermodif" width="80" sortable="true" type="check" align="center" clientFormatter="format"/>
+					<w:outputColumn header="#{l.m['录入人']}" id="inputer" sortable="true" width="60" />
+					<w:outputColumn header="#{l.m['录入时间']}" id="inputtime" width="120" sortable="true">
+						<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" />
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['修改人']}" id="updater" sortable="true" width="80" />
+					<w:outputColumn header="#{l.m['修改时间']}" id="updatetime" width="120" sortable="true">
+						<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" />
+					</w:outputColumn>
+					<w:outputColumn header="corpid" id="corpid" width="40" sortable="true" hidden="true"/>
+				</w:dataGrid>
+			</w:form>
+		</layout:panel>
+	</w:page>
+	
+	
+	<layout:window maximizable="true" width="950" height="680" id="editWindow">
+			<layout:panel id="editPanel" height="195" hideBorders="true" style="font-size:12px" split="true">
+				<w:form>
+					<w:toolBar>
+						<w:button id="save" value="#{l.m['保存']}"
+							image="#{constantBean.contextPath}/images/save.png" />
+					</w:toolBar>
+					<layout:panelGrid columns="2" cellspacing="0" width="450" style="font-size:12px">
+						<h:outputLabel value="#{l.m['代码']}" />
+						<w:textField selectOnFocus="true" value="#{pages.sysmgr.rpt.rptMgrBean.data.code}" width="250" />
+						<h:outputLabel value="#{l.m['中文名']}" />
+						<w:textField selectOnFocus="true" value="#{pages.sysmgr.rpt.rptMgrBean.data.namec}" width="250" />
+						<h:outputLabel value="#{l.m['英文名']}" />
+						<w:textField selectOnFocus="true" value="#{pages.sysmgr.rpt.rptMgrBean.data.namee}" width="250" />
+						<h:outputLabel value="#{l.m['报表名称']}" />
+						<w:textField selectOnFocus="true" value="#{pages.sysmgr.rpt.rptMgrBean.data.filename}" width="250" />
+						<h:outputLabel value="#{l.m['模块']}" />
+						<w:textField selectOnFocus="true" value="#{pages.sysmgr.rpt.rptMgrBean.data.modcode}" width="150" />
+						<h:outputLabel value="filepath" />
+						<w:textField selectOnFocus="true" value="#{pages.sysmgr.rpt.rptMgrBean.data.filepath}" width="250" />
+						<h:outputLabel value="#{l.m['备注']}" />
+						<w:textField selectOnFocus="true" value="#{pages.sysmgr.rpt.rptMgrBean.data.remarks}" width="250" />
+						<h:outputLabel value="#{l.m['公共']}" />
+						<w:checkBox value="#{pages.sysmgr.rpt.rptMgrBean.data.ispublic}" width="50">
+						</w:checkBox>
+						<h:outputLabel value="#{l.m['只读']}" />
+						<w:checkBox value="#{pages.sysmgr.rpt.rptMgrBean.data.isreadonly}" width="50">
+						</w:checkBox>
+						<h:outputLabel value="#{l.m['锁定']}" />
+						<w:checkBox value="#{pages.sysmgr.rpt.rptMgrBean.data.islock}" width="50">
+						</w:checkBox>
+						
+						<w:textField value="#{pages.sysmgr.rpt.rptMgrBean.data.isleaf}" hidden="true" width="50" />
+					</layout:panelGrid>
+					<div style="height: 0px; display: none">
+					<w:textField selectOnFocus="true" id="pkVal" hidden="true" />
+					</div>
+				</w:form>
+			</layout:panel>
+	</layout:window>
+	
+	
+	<layout:window maximizable="true" id="reportfileWindow" jsvar="reportfileWindowJsVar" width="450" height="200" title="#{l.m['上传报表']}">
+		<w:form>
+				<layout:panelGrid columns="2" cellspacing="5px" width="500" style="font-size:12px">
+					<layout:cell colspan="2">
+						<layout:panelGrid columns="6" width="450" style="font-size:12px">
+							<h:outputLabel value="报表名称" />
+							<w:fileUpload id="fileUpload1"  uploadListener="#{pages.sysmgr.rpt.rptMgrBean.processUpload1}"
+								rich="true" maxSize="3000k"/>
+						</layout:panelGrid>
+					</layout:cell>
+					
+					<layout:cell colspan="2">
+						<layout:panelGrid columns="6" width="450" style="font-size:12px">
+							<w:button label="#{l.m['上传']}"></w:button>
+							<w:fileUploadProgress startMessage="#{l.m['开始上传']}" id=""
+								uploadingMessage="#{l.m['正在上传，已经上传']}{readBytes}k/{total}k({percentage}%)"
+								completeMessage="#{l.m['上传结束，总共']}{total}k" errorMessage="#{l.m['上传错误：']}{error}" />
+						</layout:panelGrid>
+					</layout:cell>
+				</layout:panelGrid>
+		</w:form>
+	</layout:window>
+	
+	<layout:window maximizable="true" id="reportimgWindow" jsvar="reportimgWindowJsVar" width="450" height="200" title="#{l.m['上传报表']}">
+		<w:form>
+				<layout:panelGrid columns="2" cellspacing="5px" width="500" style="font-size:12px">
+					<layout:cell colspan="2">
+						<layout:panelGrid columns="6" width="450" style="font-size:12px">
+							<h:outputLabel value="图片名称" />
+							<w:fileUpload id="fileUploadimg"  uploadListener="#{pages.sysmgr.rpt.rptMgrBean.processUploadimg}"
+								rich="true" maxSize="3000k" />
+						</layout:panelGrid>
+					</layout:cell>
+					
+					<layout:cell colspan="2">
+						<layout:panelGrid columns="6" width="450" style="font-size:12px">
+							<w:button label="#{l.m['上传']}"></w:button>
+							<w:fileUploadProgress startMessage="#{l.m['开始上传']}" id=""
+								uploadingMessage="#{l.m['正在上传，已经上传']}{readBytes}k/{total}k({percentage}%)"
+								completeMessage="#{l.m['上传结束，总共']}{total}k" errorMessage="#{l.m['上传错误：']}{error}" />
+						</layout:panelGrid>
+					</layout:cell>
+				</layout:panelGrid>
+		</w:form>
+	</layout:window>
+	
+	<layout:window maximizable="true" id="exportWindow" jsvar="exportWindowJsVar" width="800" height="670" title="#{l.m['导出']}">
+		<w:form>
+			<layout:panelGrid columns="1" cellspacing="5px" width="500" style="font-size:12px">
+				<w:toolBar jsvar="local2PlatJsVar" >
+					<w:button label="#{l.m['上传到平台']}" onclick="uploadRptCenter()" image="#{constantBean.contextPath}/pages/module/common/resources/images/init.png" allowReEnter="false"></w:button>
+				</w:toolBar>
+				<w:toolBar jsvar="json2dbJsVar" >
+					<w:button label="#{l.m['导入']}DB" id="json2db" jsvar="json2dbButtonJsVar" image="#{constantBean.contextPath}/pages/module/common/resources/images/init.png" allowReEnter="false"></w:button>
+					<w:button label="#{l.m['生成']}Insert" id="json2sqlInsert" image="#{constantBean.contextPath}/pages/module/common/resources/images/init.png" allowReEnter="false"></w:button>
+					<w:button label="#{l.m['生成']}Update" id="json2sqlUpdate" image="#{constantBean.contextPath}/pages/module/common/resources/images/init.png" allowReEnter="false"></w:button>
+				</w:toolBar>
+				<w:textArea width="780" height="580" id="exportJsonText" jsvar="exportJsonTextJsVar" selectOnFocus="true"></w:textArea>		
+				
+			</layout:panelGrid>
+		</w:form>
+	</layout:window>
+	
+	<layout:window maximizable="true" id="rptCenterWindow" jsvar="rptCenterWindowJsVar" width="960" height="670" title="#{l.m['报表中心']}">
+			<layout:panel style="font-size:12px" autoScroll="true">
+				<table class="nui-table nui-table-bill" style="width: 0;">
+					<thead>
+						<tr>
+							<th width="90">ID</th>
+							<th width="90">#{l.m['代码']}</th>
+							<th width="220">#{l.m['中文名']}</th>
+							<th width="220">#{l.m['英文名']}</th>
+							<th width="120">#{l.m['模块名称']}</th>
+						</tr>
+					</thead>
+					<tbody class='quotation-batch-add' id='pricesDetailBody'>
+					</tbody>
+				</table>
+			</layout:panel>
+	</layout:window>
+
+	<script>
+	//<![CDATA[
+		function getRptListFromCenter(){
+			rptCenterWindowJsVar.show();
+			$.ajax({
+				type: 'get',
+				url:'http://hangxun.vicp.io:8288/dev/rptcenter?method=getRptList',
+				contentType:'application/json', //需要加contentType
+				dataType: 'json',
+				data:'',
+				crossDomain: true,
+				success:function(res){
+					if(res == null || res == "")return;
+					console.log(res);
+					var jsonData = res;
+					if(jsonData.success){
+						$("#pricesDetailBody tr").remove();
+						var gridDatas = JSON. parse(jsonData.data);
+						var apandhtml = "";
+						for(var i = 0;i < gridDatas.length;i++){
+							console.log(gridDatas[i]);
+							apandhtml += "<tr>";
+							apandhtml += "  <td> <div class='' style='width:90px;'>"+gridDatas[i].id+"</div> </td> ";
+							apandhtml += "  <td> <div class='' style='width:90px;'>"+gridDatas[i].code+"</div> </td> ";
+							apandhtml += "  <td> <div class='' style='width:220px;'>"+gridDatas[i].namec+"</div> </td> ";
+							apandhtml += "  <td> <div class='' style='width:220px;'>"+gridDatas[i].namee+"</div> </td> ";
+							apandhtml += "  <td> <div class='' style='width:120px;'>"+gridDatas[i].modname+"</div> </td> ";
+							apandhtml += "	<td><button class='j_sm_del del' onclick='downLoadRpt(this,"+gridDatas[i].id+");' style='color: red;font-weight: bold;width:80px;'>下载</button>  </td>  ";
+							apandhtml += "</tr>";
+						}
+						//console.log(apandhtml);
+						$("#pricesDetailBody").append(apandhtml);
+					}else{
+						alert(jsonData.message);
+					}
+				},
+				error:function(data){
+					console.log(data);
+				}
+			});
+		}
+		
+		function downLoadRpt(obj,id){
+			console.log("id:",id,"obj:",obj);
+			$.ajax({
+				type: 'get',
+				url:'http://hangxun.vicp.io:8288/dev/rptcenter?method=downLoadRpt&id='+id,
+				contentType:'application/json', //需要加contentType
+				dataType: 'json',
+				data:'',
+				crossDomain: true,
+				success:function(res){
+					if(res == null || res == "")return;
+					console.log(res);
+					var jsonData = res;
+					if(jsonData.success){
+						exportJsonTextJsVar.setValue(jsonData.data);
+						json2dbButtonJsVar.fireEvent('click');
+						alert("OK");
+						//console.log(jsonData.data);
+					}else{
+						alert(jsonData.message);
+					}
+				},
+				error:function(data){
+					console.log(data);
+				}
+			});
+		}
+	
+		function uploadRptCenter(){
+			var jsonPost = exportJsonTextJsVar.getValue();
+			$.ajax({
+				type: 'post',
+				url:'http://hangxun.vicp.io:8288/dev/rptcenter?method=uploadRpt',
+				contentType:'application/json', //需要加contentType
+				dataType: 'json',
+				data:jsonPost,
+				crossDomain: true,
+				success:function(res){
+					if(res == null || res == "")return;
+					console.log(res);
+					var jsonData = res;
+					if(jsonData.success){
+						alert(jsonData.message);
+					}else{
+						alert(jsonData.message);
+					}
+				},
+				error:function(data){
+					console.log(data);
+				}
+			});
+		}
+	
+		function format(v,m,r) {
+		 	var isusermodif = r.get('isusermodif');
+			if("true" == isusermodif){
+				m.attr="style='color:red;'";
+			}else{
+	    		//m.attr="style='color:gray;'";
+			}		
+	       return v;
+        }
+	
+	
+		function resize(){
+			var newHeight = (gridPanelJsvar.getSize().height) - 135;
+			var newWidth = (gridPanelJsvar.getSize().width);
+			gridJsvar.setHeight(newHeight);
+			gridJsvar.setWidth(newWidth);
+			gridJsvar.render();
+		}
+		
+		function showByModcode(modname){
+			modnameJsvar.setValue(modname);
+			refreshJsvar.fireEvent('click');
+		}
+	
+		Ext.onReady(function(){
+			resize();
+			Ext.EventManager.onWindowResize(function(){
+				resize();
+			});
+		 });
+		 //]]>
+	</script>
+</f:view>

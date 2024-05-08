@@ -1,0 +1,229 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:om="http://www.apusic.com/jsf/misc"
+	renderKitId="AJAX">
+
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<w:script type="text/javascript" src="/common/ckeditor/ckeditor.js"></w:script>
+		<w:script type="text/javascript" src="/common/ckeditor/extckeditor.js"></w:script>
+		<w:script src="/common/js/emailaddress_check.js"></w:script>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="Mail send..." style="overflow:auto;">
+		<ajax:conversationActivator/>
+		<ajax:submitAction id="saveAction" jsvar="saveAction" />
+
+		<layout:panel fit="true" height="100%" id="editPanel" jsvar="editPanelJsvar">
+			<w:form id="formedt">
+					<layout:panelGrid columns="4">
+						<w:toolBar>
+							<w:button id="showAddresslist" value="#{l.m['通讯录']}"
+								image="#{constantBean.contextPath}/pages/module/common/resources/images/execute.png" />
+							<w:button id="showHisEmail" value="#{l.m['历史']}"
+								image="#{constantBean.contextPath}/pages/module/common/resources/images/execute.png" />
+							<w:button id="sendBtn" value="#{l.m['发送']}" allowReEnter="false" onclick="beforeSubmit()"
+								image="#{constantBean.contextPath}/images/save.png" />
+							<w:button id="mgrAttachment" value="#{l.m['附件管理']}"
+								image="#{constantBean.contextPath}/pages/module/common/resources/images/cfg.png" />
+						</w:toolBar>
+						<layout:cell style="width:120px;font-size: 12px;">
+							<ajax:status startStyle="color: red"
+								onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+								onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+								<f:facet name="start">
+									<f:verbatim>
+										<img src="#{constantBean.contextPath}/images/waiting.gif" />Loading...</f:verbatim>
+								</f:facet>
+							</ajax:status>
+						</layout:cell>
+					</layout:panelGrid>
+
+					<layout:panelGrid columns="4" style="font-size:12px;" cellpadding="0" cellspacing="0">
+						<h:outputLabel value="#{l.m['收件人']}" title="#{l.m['收件人']}" escape="false"
+							style="width: 100px; color:red" />
+						<layout:cell colspan="3">
+							<w:textArea width="700" jsvar="addressee" id="addressee" />
+						</layout:cell>
+
+						<h:outputLabel value="#{l.m['抄送']}" title="#{l.m['抄送']}" escape="false" style="width: 100px" />
+						<layout:cell colspan="3">
+							<w:textArea id="copys" width="700" jsvar="copys" height="50" />
+						</layout:cell>
+
+						<h:outputLabel value="#{l.m['主题']}" title="#{l.m['主题']}" escape="false"
+							style="width: 100px; color:red" />
+						<layout:cell colspan="3">
+							<w:textField style="width: 700px;" id="subject" jsvar="subject"
+								value="#{pages.sysmgr.mail.emailsendeditBean.selectedRowData.subject}" />
+						</layout:cell>
+
+						<h:outputLabel value="#{l.m['正文']}" />
+						<layout:cell colspan="3" styleClass="td-editor" style="700px; height:100%;">
+							<h:outputText id="ckeditor" escape="false" style="width: 100%;height: 100%;"
+								value="#{pages.sysmgr.mail.emailsendeditBean.selectedRowData.content}" />
+						</layout:cell>
+					</layout:panelGrid>
+					<w:textField id="pkVal" hidden="true"></w:textField>
+			</w:form>
+		</layout:panel>
+	</w:page>
+
+	<layout:window maximizable="true" width="700" height="450" id="addresslistWindow"
+		title="Address List">
+		<layout:panel id="addsPanel" height="700" hideBorders="true" style="font-size:12px">
+			<w:form>
+				<w:toolBar>
+					<w:button id="qryRefresh" label="#{l.m['刷新']}"
+						image="#{constantBean.contextPath}/images/refresh.png" />
+					<w:button id="addAddressee" value="#{l.m['导入收件人']}"
+						image="#{constantBean.contextPath}/pages/module/common/resources/images/down.gif" />
+					<w:button id="addCC" value="#{l.m['导入抄送人']}"
+						image="#{constantBean.contextPath}/pages/module/common/resources/images/down.gif" />
+				</w:toolBar>
+
+				<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+					<layout:cell style="width: 25px;">
+						<w:button id="clearQryKey" label="" width="25"
+							image="#{constantBean.contextPath}/images/clear.png" />
+					</layout:cell>
+					<w:combo value="#{pages.sysmgr.mail.emailsendeditBean.qryMap['adrtype$']}" width="55">
+						<f:selectItem itemLabel="#{l.m['个人']}" itemValue="2" />
+						<f:selectItem itemLabel="#{l.m['客户']}" itemValue="1" />
+						<f:selectItem itemLabel="#{l.m['系统']}" itemValue="0" />
+					</w:combo>
+					<w:textField selectOnFocus="true" width="100"
+						value="#{pages.sysmgr.mail.emailsendeditBean.qryMap['code']}" />
+					<w:textField selectOnFocus="true" width="120"
+						value="#{pages.sysmgr.mail.emailsendeditBean.qryMap['namec']}" />
+					<w:textField selectOnFocus="true" width="150"
+						value="#{pages.sysmgr.mail.emailsendeditBean.qryMap['email1']}" />
+					<w:textField selectOnFocus="true" width="150"
+						value="#{pages.sysmgr.mail.emailsendeditBean.qryMap['email2']}" />
+				</layout:panelGrid>
+				<layout:panelGrid columns="4" cellspacing="5px" width="600" style="font-size:12px">
+					<w:dataGrid height="350" jsvar="gridJsvar" paged="true" rows="14" id="grid"
+						toolBarPosition="bottom" idColumn="id" selectable="true"
+						selectionModel="#{constantBean.checkBox}">
+						<w:outputColumn id="id" header="ID" hidden="true" />
+						<w:outputColumn header="#{l.m['类别']}" id="adrtype" sortable="true" width="55"
+							clientFormatter="formateAddType" />
+						<w:outputColumn header="#{l.m['代码']}" id="code" sortable="true" width="100"
+							clientFormatter="formateAddTypeColor" />
+						<w:outputColumn header="#{l.m['中文名']}" id="namec" width="120" sortable="true"
+							clientFormatter="formateAddTypeColor" />
+						<w:outputColumn header="email1" id="email1" width="150" sortable="true" />
+						<w:outputColumn header="email2" id="email2" width="150" sortable="true" />
+					</w:dataGrid>
+				</layout:panelGrid>
+			</w:form>
+		</layout:panel>
+	</layout:window>
+
+	<layout:window maximizable="true" width="700" height="450" id="hisEmailWindow" title="History">
+		<layout:panel id="addsPanel1" height="700" hideBorders="true" style="font-size:12px">
+			<w:form>
+				<w:toolBar>
+					<w:button id="qryRefreshHis" label="#{l.m['刷新']}"
+						image="#{constantBean.contextPath}/images/refresh.png" />
+					<w:button id="addHisAddressee" value="#{l.m['导入收件人']}"
+						image="#{constantBean.contextPath}/pages/module/common/resources/images/down.gif" />
+					<w:button id="addHisCC" value="#{l.m['导入抄送人']}"
+						image="#{constantBean.contextPath}/pages/module/common/resources/images/down.gif" />
+				</w:toolBar>
+				<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+					<layout:cell style="width: 25px;">
+						<w:button id="clearQryKeyHis" label="" width="25"
+							image="#{constantBean.contextPath}/images/clear.png" />
+					</layout:cell>
+					<w:textField selectOnFocus="true" width="150"
+						value="#{pages.sysmgr.mail.emailsendeditBean.qryMapHis['addressee']}" />
+					<w:textField selectOnFocus="true" width="150"
+						value="#{pages.sysmgr.mail.emailsendeditBean.qryMapHis['copys']}" />
+					<w:textField selectOnFocus="true" width="200"
+						value="#{pages.sysmgr.mail.emailsendeditBean.qryMapHis['subject']}" />
+				</layout:panelGrid>
+				<layout:panelGrid columns="4" cellspacing="5px" width="600" style="font-size:12px">
+					<w:dataGrid height="350" paged="true" rows="14" id="gridHisEmail" toolBarPosition="bottom"
+						idColumn="id" selectable="true" selectionModel="#{constantBean.checkBox}">
+						<w:outputColumn id="id" header="ID" hidden="true" />
+						<w:outputColumn header="#{l.m['收件人']}" id="addressee" sortable="true" width="150" />
+						<w:outputColumn header="#{l.m['抄送']}" id="copys" sortable="true" width="150" />
+						<w:outputColumn header="#{l.m['主题']}" id="subject" width="200" sortable="true" />
+					</w:dataGrid>
+				</layout:panelGrid>
+			</w:form>
+		</layout:panel>
+	</layout:window>
+	
+	<layout:window maximizable="true" width="700" height="450" id="attachmentWindow" title="Attachment">
+		<w:iframe id="attachmentIframe" style="height:100%; width:100%;">
+		</w:iframe>
+	</layout:window>
+	
+	<script type="text/javascript">
+	//<![CDATA[
+	        Ext.onReady(function() {
+	        	editor1 = Ext.form.CKEditor.create("formedt:ckeditor");
+	        });
+	        function setValue(text) {
+	        	editor1.setValue(text);
+	        }
+	        /**
+	         * 表单提交前的处理事件：将编辑器的值设置到源TextArea字段
+	         */
+	        function beforeSubmit() {
+	        	if(!confirm("确定发送吗？")) return false; 
+	        	//editor1.getValue();
+	        	saveAction.addParam('addressee',addressee.getValue());
+	        	saveAction.addParam('copys',copys.getValue());
+	        	saveAction.addParam('editor1',editor1.getValue());
+	        	saveAction.addParam('subject',subject.getValue());
+	        	if(checkAddress(addressee.getValue())) {
+	        		if(copys.getValue()=='' || copys.getValue()==null){
+	        			saveAction.submit();
+	        		}else if(checkAddress(copys.getValue())){
+	        			saveAction.submit();
+	        		}
+	        		
+	        	}
+	        }
+	        function selectImg(imgid) {
+	        	alert(imgid);
+	        }
+	        function formateAddType(v,m,r) {
+		        var adrtype = r.get('adrtype');
+				if(adrtype == 0){
+					v = "#{l.m['系统']}";
+					 m.attr="style='color:red;'";
+				}else if(adrtype==1){
+					v = "#{l.m['客户']}";
+					 m.attr="style='color:blue;'";
+				}else if(adrtype == 2){
+					v = "#{l.m['个人']}";
+					m.attr="style='color:green;'";
+				}else {
+					v = "~~~";
+				}	
+		        return v;
+	     	}
+	     
+	     function formateAddTypeColor(v,m,r) {
+	        var adrtype = r.get('adrtype');
+			if(adrtype == 0){
+				 m.attr="style='color:red;'";
+			}else if(adrtype==1){
+				 m.attr="style='color:blue;'";
+			}else if(adrtype == 2){
+				m.attr="style='color:green;'";
+			}else {
+			}	
+	        return v;
+	     }
+	     //]]>
+		</script>
+	
+</f:view>

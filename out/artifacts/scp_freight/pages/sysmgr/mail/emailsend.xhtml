@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		 <link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		 <link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		 <w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+		<w:stylesheet src="/common/css/list-style.css"></w:stylesheet>
+		<w:script src="/common/js/common.js?t=4"></w:script>
+		<script type="text/javascript" src="/scp/common/js/savemodel2.js?t=5"></script>
+		<script type="text/javascript" src="/scp/common/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/scp/common/js/jquery-2.0.0.min.js"></script>
+		<script type="text/javascript" src="/scp/common/js/jquery-ui.js"></script>
+		<script type="text/javascript" src="/scp/common/js/savemodel-list.js"></script>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+
+		<layout:panel id="gridPanel" jsvar="gridPanelJsvar" height="100%" hideBorders="true" width="100%"
+			fit="true">
+			<div style="height: 0px;"><ui:include src="/common/gridpage.xhtml"/></div>
+			<w:form>
+				<layout:panelGrid columns="4">
+					<w:toolBar>
+						<w:button id="qryRefresh" label="#{l.m['刷新']}"
+							image="#{constantBean.contextPath}/images/refresh.png" />
+						<w:button id="add" value="#{l.m['新增']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+						<w:button id="setIsautosend" value="#{l.m['自动发送']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+						<w:button id="send" value="#{l.m['发送']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+						<w:button id="del" label="#{l.m['删除']}"
+							image="#{constantBean.contextPath}/images/delete.png" />
+						<w:button id="addString" value="#{l.m['批量追加']}" onclick="addStringwindow.show()"
+							image="#{constantBean.contextPath}/images/new.png" />
+						<w:button label="#{l.m['保存定制']}" onclick="saveColModelFun(gridJsvar,'pages.sysmgr.mail.emailsendBean.grid');" 
+							image="#{constantBean.contextPath}/images/save.png" />
+						<w:button label="#{l.m['还原定制']}" onclick="saveColModelFunDefault('pages.sysmgr.mail.emailsendBean.grid');" 
+							image="#{constantBean.contextPath}/images/return-small.png" /> 	
+						<w:button id="selectColumn" value="#{l.m['选择栏目']}" onclick="columnWindowFunction();"
+							image="#{constantBean.contextPath}/images/shezhi.png" />
+					</w:toolBar>
+					<layout:cell>
+						<ajax:status startStyle="color: red"
+							onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+							onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+							<f:facet name="start">
+								<f:verbatim>
+									<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 18px;"></img>
+								</f:verbatim>
+							</f:facet>
+						</ajax:status>
+					</layout:cell>
+				</layout:panelGrid>
+				<ajax:submitAction id="saveGridUserDef" jsvar="saveGridUserDef" />
+				<ajax:submitAction id="saveGridUserDefSetDefault" jsvar="saveGridUserDefSetDefault" />
+				<ajax:submitAction id="columnRefresh" jsvar="columnRefresh" />
+				<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+					<layout:cell style="width: 25px;"> <w:button id="clearQryKey" label="" width="25"
+						image="#{constantBean.contextPath}/images/clear.png" /> </layout:cell>
+					<w:textField selectOnFocus="true" width="50"
+						value="#{pages.sysmgr.mail.emailsendBean.qryMap['trycount$']}" />
+					<w:textField selectOnFocus="true" width="180"
+						value="#{pages.sysmgr.mail.emailsendBean.qryMap['sender']}" />
+					<w:textField selectOnFocus="true" width="180"
+						value="#{pages.sysmgr.mail.emailsendBean.qryMap['addressee']}" />
+					<w:textField selectOnFocus="true" width="420"
+						value="#{pages.sysmgr.mail.emailsendBean.qryMap['subject']}" />
+					<w:button id="refresh" value="#{l.m['查询']}"
+							image="#{constantBean.contextPath}/images/query-small.png" />
+				</layout:panelGrid>
+
+				<w:dataGrid height="700" jsvar="gridJsvar" paged="true" rows="#{pages.sysmgr.mail.emailsendBean.gridPageSize}" id="grid" onrowselect="return false" onrowdeselect="return false"
+					toolBarPosition="bottom" idColumn="id" selectable="true" selectionModel="#{constantBean.checkBox}">
+					<w:outputColumn id="id" header="ID" hidden="true" />
+					<w:outputColumn header="Count" id="trycount" width="50" sortable="true" />
+					<w:outputColumn header="#{l.m['自动发送']}" id="isautosend" width="80" sortable="true" type="check"/>
+					<w:outputColumn header="#{l.m['发件人']}" id="sender" width="180" sortable="true" />
+					<w:outputColumn header="#{l.m['收件人']}" id="addressee" width="180" sortable="true" />
+					<w:outputColumn header="#{l.m['主题']}" id="subject" sortable="true" width="420" />
+					<w:outputColumn header="#{l.m['日期']}" id="inputtime" width="120" sortable="true">
+						<f:convertDateTime pattern="yyyy-MM-dd HH:mm" timeZone="GMT+8" />
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['失败原因']}" id="status" sortable="true" width="420" />
+				</w:dataGrid>
+
+				<!--<w:pagingToolbar for="grid" target="grid" displayInfo="true" displayMsg="{0}-{1}/{2}">
+				</w:pagingToolbar>
+			--></w:form>
+		</layout:panel>
+	</w:page>
+
+
+	<layout:window maximizable="true" id="editWindow" jsvar="editWindowJsVar" width="781" height="720"  constrainHeader="true"
+		title="" border="false">
+		<w:iframe id="editIframe" style="height:100%; width:100%;border:none">
+		</w:iframe>
+	</layout:window>
+	<layout:window maximizable="false" id="columnWindow" jsvar="columnWindow" width="600" height="550"
+		header="false" resizable="true" constrainHeader="true" title="#{l.m['选择栏目']}">
+		<layout:panel id="" height="100%" hideBorders="true" width="100%" fit="true">
+			<w:form>
+				<w:toolBar>
+					<h:outputLabel  value="#{l.m['查询：']}" />
+					<w:textField jsvar="findValueJs" id="findValue">
+					</w:textField>
+					<w:button id="columnfind" label="" onclick="findColmn()"
+						image="#{constantBean.contextPath}/images/query-small.png" />
+				</w:toolBar>
+				<layout:panelGrid columns="2">
+					<div id="selectTitle" class="list-select">
+						<div class="list-title">
+							<h4>#{l.m['双击鼠标左键或选一项单击>添加']}</h4>
+						</div>
+						<span style="font-size:20px;margin-left:50px;">#{l.m['可选栏目']}</span><span style="margin-left:180px;font-size:20px">#{l.m['显示栏目']}</span>
+						<div class="list-body">
+							<div class="item-box left-box">
+								<!-- 左边框初始化待选项 -->
+							</div>
+							<div class="center-box">
+								<button class="add-one"  style="width:60px" title="#{l.m['添加选中项']}">&gt;</button>
+								<button class="remove-one" style="width:60px" title="#{l.m['移除选中项']}">&lt;</button>
+								<button class="add-all" style="width:60px" title="#{l.m['添加全部']}">&gt;&gt;</button>
+								<button class="remove-all" style="width:60px" title="#{l.m['移除全部']}">&lt;&lt;</button>
+								<button class="selected-val" style="width:60px" title="" value="#{l.m['确认']}">#{l.m['确认']}</button>
+							</div>
+							<div id="sortable" class="item-box right-box">
+								<!-- 右边框存放已选项 -->
+							</div>
+						</div>
+						<div class="list-footer">
+							<button onclick="columnWindow.hide();" value="#{l.m['取消']}">#{l.m['取消']}</button>
+						</div>
+					</div>
+				</layout:panelGrid>
+			</w:form>
+		</layout:panel>
+	</layout:window>
+	
+	<layout:window maximizable="false" id="addStringwindow" jsvar="addStringwindow" width="550" height="460"
+		header="false" resizable="true" constrainHeader="true" title="#{l.m['批量追加']}">
+		<layout:panel id="" height="100%" hideBorders="true" width="100%" fit="true">
+			<w:form>
+				<w:toolBar>
+					<w:button value="#{l.m['追加']}" id="addStringon" 
+						image="#{constantBean.contextPath}/images/new.png" onclick="return stringisnull();"/>
+				</w:toolBar>
+				<layout:panelGrid>
+					<w:simpleHtmlEditor id="insertStringv" width="520" height="360" jsvar="addStringonJsvar"/>
+				</layout:panelGrid>
+			</w:form>
+		</layout:panel>
+	</layout:window>
+	
+	<script>
+	//<![CDATA[
+		function resize(){
+			var newHeight = (gridPanelJsvar.getSize().height) - 55;
+			var newWidth = (gridPanelJsvar.getSize().width);
+			gridJsvar.setHeight(newHeight);
+			gridJsvar.setWidth(newWidth);
+			gridJsvar.render();
+		}
+		
+		function columnWindowFunction(){
+			showALLColumn(gridJsvar,'pages.sysmgr.mail.emailsendBean.grid');
+			columnWindow.show();
+			$('#selectTitle').initList();
+			$('.center-box').find('.selected-val').click(function(){
+				showALLColumna(gridJsvar,'pages.sysmgr.mail.emailsendBean.grid');
+				columnRefresh.submit();
+				columnWindow.hide();
+			});
+			$( "#sortable" ).sortable();//启用jQuery鼠标拖拽
+	    	$( "#sortable" ).disableSelection();
+		}
+		
+		function stringisnull(){
+			if(addStringonJsvar.getValue()==''||addStringonJsvar.getValue()==null){
+				alert("#{l.m['追加字符串不能为空']}");
+				return false;
+			}else{
+				return true;
+			}
+		}
+		Ext.onReady(function(){
+			resize();
+			Ext.EventManager.onWindowResize(function(){
+				resize();
+			});
+			editWindowJsVar.on('resize',function(){
+				//$('#editIframe').css("height",(editWindowJsVar.getHeight()-20)+"px");
+				//$('#editIframe').css("width",(editWindowJsVar.getWidth()-20)+"px");
+				//$('#editIframe').css("height",(editWindowJsVar.getHeight()-20)+"px");
+			});
+		 });
+		 //]]>
+	</script>
+</f:view>

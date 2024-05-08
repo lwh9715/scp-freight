@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> <link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" /><link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+		<w:stylesheet src="/common/css/list-style.css"></w:stylesheet>
+		<w:script src="/common/js/common.js?t=4"></w:script>
+		<script type="text/javascript" src="/scp/common/js/savemodel2.js?t=5"></script>
+		<script type="text/javascript" src="/scp/common/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/scp/common/js/jquery-2.0.0.min.js"></script>
+		<script type="text/javascript" src="/scp/common/js/jquery-ui.js"></script>
+		<script type="text/javascript" src="/scp/common/js/savemodel-list.js"></script>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+		<layout:panel id="gridPanel" jsvar="gridPanelJsvar" height="100%" hideBorders="true" width="100%"
+			fit="true">
+			<div style="height: 0px;"><ui:include src="/common/gridpage.xhtml"/></div>
+			<w:form>
+				<div style="height: 0px;"></div>
+				<layout:panelGrid columns="4">
+					<w:toolBar>
+						<w:button id="qryRefresh" label="#{l.m['刷新']}"
+							image="#{constantBean.contextPath}/images/refresh.png" />
+						<w:button id="add" value="#{l.m['新增']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+						<w:button id="del" jsvar="del" label="#{l.m['删除']}"
+							onclick="return confirm('#{l.m['确定要删除吗?']}');"
+							image="#{constantBean.contextPath}/images/delete.png" />
+						<w:button label="#{l.m['保存定制']}" onclick="saveColModelFun(gridJsvar,'pages.sysmgr.memo.memoBean.grid');" 
+							image="#{constantBean.contextPath}/images/save.png" />
+						<w:button label="#{l.m['还原定制']}" onclick="saveColModelFunDefault('pages.sysmgr.memo.memoBean.grid');" 
+							image="#{constantBean.contextPath}/images/return-small.png" /> 	
+						<w:button id="selectColumn" value="#{l.m['选择栏目']}" onclick="columnWindowFunction();"
+							image="#{constantBean.contextPath}/images/shezhi.png" />
+					</w:toolBar>
+					<layout:cell>
+						<ajax:status startStyle="color: red"
+							onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+							onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+							<f:facet name="start">
+								<f:verbatim>
+									<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 20px;">Loading...</img>
+								</f:verbatim>
+							</f:facet>
+						</ajax:status>
+					</layout:cell>
+				</layout:panelGrid>
+
+				<ajax:submitAction id="saveGridUserDef" jsvar="saveGridUserDef" />
+				<ajax:submitAction id="saveGridUserDefSetDefault" jsvar="saveGridUserDefSetDefault" />
+				<ajax:submitAction id="columnRefresh" jsvar="columnRefresh" />
+				<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+					<layout:cell style="width: 25px;"> <w:button id="clearQryKey" label="" width="25"
+						image="#{constantBean.contextPath}/images/clear.png" /> </layout:cell>
+					<w:textField selectOnFocus="true" width="400"
+						value="#{pages.sysmgr.memo.memoBean.qryMap['name']}" />
+					<w:textField selectOnFocus="true" width="80"
+						value="#{pages.sysmgr.memo.memoBean.qryMap['grade']}" />
+					<w:dateField selectOnFocus="true" width="120"
+						value="#{pages.sysmgr.memo.memoBean.qryMap['remindertimefm']}">
+						<f:convertDateTime pattern="yy/MM/dd" timeZone="GMT+8" />
+					</w:dateField>
+					<w:dateField selectOnFocus="true" width="120"
+						value="#{pages.sysmgr.memo.memoBean.qryMap['remindertimeend']}">
+						<f:convertDateTime pattern="yy/MM/dd" timeZone="GMT+8" />
+					</w:dateField>
+					<w:textField selectOnFocus="true" width="60"
+						value="#{pages.sysmgr.memo.memoBean.qryMap['ispublic']}" />
+					<w:textField selectOnFocus="true" width="60"
+						value="#{pages.sysmgr.memo.memoBean.qryMap['isvalid']}" />
+						<w:button id="refresh" value="#{l.m['查询']}"
+							image="#{constantBean.contextPath}/images/query-small.png" />
+				</layout:panelGrid>
+
+
+				<w:dataGrid height="700" jsvar="gridJsvar" paged="true" rows="30" id="grid"
+					toolBarPosition="bottom" idColumn="id" selectable="true">
+					<w:outputColumn id="id" header="ID" hidden="true" />
+					<w:outputColumn header="#{l.m['名称']}" id="name" width="400" sortable="true" />
+					<w:outputColumn header="#{l.m['优先级']}" id="grade" sortable="true" width="80"/>
+					<w:outputColumn header="#{l.m['提醒时间起']}" id="remindertimefm" width="120" sortable="true" clientFormatter="coloralert">
+						<f:convertDateTime pattern="yyyy-MM-dd HH:mm" timeZone="GMT+8" />
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['提醒时间止']}" id="remindertimeend" width="120" sortable="true" clientFormatter="coloralert">
+						<f:convertDateTime pattern="yyyy-MM-dd HH:mm" timeZone="GMT+8" />
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['公共']}" id="ispublic" width="60" align="center" sortable="true" type="check"/>
+					<w:outputColumn header="#{l.m['有效']}" id="isvalid" width="60" align="center" sortable="true" type="check"/>
+					<w:outputColumn header="" id="flag" width="60" hidden="true"/>
+				</w:dataGrid>
+       <!--<w:pagingToolbar for="grid" target="grid" displayInfo="true" displayMsg="{0}-{1}/{2}">
+		</w:pagingToolbar>
+			--></w:form>
+		</layout:panel>
+		<ui:include src="/common/datetimechooser.xhtml"/>
+	</w:page>
+
+
+	<layout:window maximizable="true" id="editWindow" width="720" height="450"  constrainHeader="true"
+		title="" border="false">
+		<layout:panel id="editPanel" region="north" height="100%" width="100%" fit="true">
+			<w:form>
+				<w:toolBar>
+					<w:button id="add" value="#{l.m['新增']}"
+						image="#{constantBean.contextPath}/images/new.png" />
+					<w:button id="del" value="#{l.m['删除']}" onclick="return confirm('#{l.m['确定要删除吗?']}');"
+						image="#{constantBean.contextPath}/images/delete.png" />
+					<w:button id="save" value="#{l.m['保存']}"
+						image="#{constantBean.contextPath}/images/save.png" />
+				</w:toolBar>
+				<layout:panelGrid height="300" columns="6" cellspacing="5px" width="500" style="font-size:12px">
+					<h:outputLabel value="#{l.m['名称']}" />
+					<w:textField selectOnFocus="true" value="#{pages.sysmgr.memo.memoBean.selectedRowData.name}"
+						width="200" maxLength="200" cls="under_line" focusClass="surround"
+						clientFormatter="coloralert" />
+					<h:outputLabel value="#{l.m['优先级']}" />
+					<w:combo emptyText="#{l.m['优先级']}" typeAhead="true" width="150" forceSelection="true"
+						value="#{pages.sysmgr.memo.memoBean.selectedRowData.grade}" cls="under_line" focusClass="surround">
+						<f:selectItems value="#{comboxBean.level}" />
+					</w:combo>
+
+
+					<h:outputLabel value="#{l.m['是否公共']}" />
+					<w:checkBox value="#{pages.sysmgr.memo.memoBean.selectedRowData.ispublic}" />
+
+					<h:outputLabel value="#{l.m['提醒时间起']}" />
+					<w:dateTimeField selectOnFocus="true" id="remindertimefm" jsvar="remindertimefmJsvar"
+						value="#{pages.sysmgr.memo.memoBean.selectedRowData.remindertimefm}" cls="under_line"
+						focusClass="surround" />
+
+					<h:outputLabel value="#{l.m['提醒时间止']}" />
+					<w:dateTimeField selectOnFocus="true" id="remindertimeend" jsvar="remindertimeendJsvar"
+						value="#{pages.sysmgr.memo.memoBean.selectedRowData.remindertimeend}" cls="under_line"
+						focusClass="surround" />
+
+
+					<h:outputLabel value="#{l.m['是否有效']}" />
+					<w:checkBox value="#{pages.sysmgr.memo.memoBean.selectedRowData.isvalid}" />
+
+					<layout:cell colspan="6">
+						<h:outputLabel value="#{l.m['内容']}" />
+						<w:textArea selectOnFocus="true" value="#{pages.sysmgr.memo.memoBean.selectedRowData.contents}"
+							width="700" height="200" />
+					</layout:cell>
+
+					<layout:cell colspan="6">
+						<h:outputLabel value="#{l.m['备注']}" />
+						<w:textArea selectOnFocus="true" value="#{pages.sysmgr.memo.memoBean.selectedRowData.remarks}"
+							width="700" height="70" />
+					</layout:cell>
+				</layout:panelGrid>
+				<w:textField selectOnFocus="true" id="pkVal" hidden="true" />
+			</w:form>
+		</layout:panel>
+	</layout:window>
+	
+	<layout:window maximizable="false" id="columnWindow" jsvar="columnWindow" width="600" height="550"
+		header="false" resizable="true" constrainHeader="true" title="#{l.m['选择栏目']}">
+		<layout:panel id="" height="100%" hideBorders="true" width="100%" fit="true">
+			<w:form>
+				<w:toolBar>
+					<h:outputLabel  value="#{l.m['查询：']}" />
+					<w:textField jsvar="findValueJs" id="findValue">
+					</w:textField>
+					<w:button id="columnfind" label="" onclick="findColmn()"
+						image="#{constantBean.contextPath}/images/query-small.png" />
+				</w:toolBar>
+				<layout:panelGrid columns="2">
+					<div id="selectTitle" class="list-select">
+						<div class="list-title">
+							<h4>#{l.m['双击鼠标左键或选一项单击>添加']}</h4>
+						</div>
+						<span style="font-size:20px;margin-left:50px;">#{l.m['可选栏目']}</span><span style="margin-left:180px;font-size:20px">#{l.m['显示栏目']}</span>
+						<div class="list-body">
+							<div class="item-box left-box">
+								<!-- 左边框初始化待选项 -->
+							</div>
+							<div class="center-box">
+								<button class="add-one"  style="width:60px" title="#{l.m['添加选中项']}">&gt;</button>
+								<button class="remove-one" style="width:60px" title="#{l.m['移除选中项']}">&lt;</button>
+								<button class="add-all" style="width:60px" title="#{l.m['添加全部']}">&gt;&gt;</button>
+								<button class="remove-all" style="width:60px" title="#{l.m['移除全部']}">&lt;&lt;</button>
+								<button class="selected-val" style="width:60px" title="" value="#{l.m['确认']}">#{l.m['确认']}</button>
+							</div>
+							<div id="sortable" class="item-box right-box">
+								<!-- 右边框存放已选项 -->
+							</div>
+						</div>
+						<div class="list-footer">
+							<button onclick="columnWindow.hide();" value="#{l.m['取消']}">#{l.m['取消']}</button>
+						</div>
+					</div>
+				</layout:panelGrid>
+			</w:form>
+		</layout:panel>
+	</layout:window>
+	<script>
+	 //<![CDATA[
+		function resize(){
+			var newHeight = (gridPanelJsvar.getSize().height) - 55;
+			var newWidth = (gridPanelJsvar.getSize().width);
+			gridJsvar.setHeight(newHeight);
+			gridJsvar.setWidth(newWidth);
+			gridJsvar.render();
+		}
+	
+		Ext.onReady(function(){
+			resize();
+			Ext.EventManager.onWindowResize(function(){
+				resize();
+			});
+			$("input[id*='remindertimefm']").next('img').bind("click", function(){
+			  showTime(remindertimefmJsvar , 570 , 310);
+			});
+			$("input[id*='remindertimeend']").next('img').bind("click", function(){
+			  showTime(remindertimeendJsvar , 910 , 310);
+			});
+		 });
+		 
+		 function columnWindowFunction(){
+			showALLColumn(gridJsvar,'pages.sysmgr.memo.memoBean.grid');
+			columnWindow.show();
+			$('#selectTitle').initList();
+			$('.center-box').find('.selected-val').click(function(){
+				showALLColumna(gridJsvar,'pages.sysmgr.memo.memoBean.grid');
+				columnRefresh.submit();
+				columnWindow.hide();
+			});
+			$( "#sortable" ).sortable();//启用jQuery鼠标拖拽
+	    	$( "#sortable" ).disableSelection();
+		}
+		function coloralert(v,m,record) {
+           		var flag= new Number(record.get("flag")+"");
+           		if(flag == -1){
+           			m.attr="style='background-color: GREEN;'";
+           		}else if(flag == 0){
+           			m.attr="style='background-color: RED;'";
+           		}else{
+           			m.attr="style='background-color: YELLOW;'";
+           		}
+           		return v;
+       }
+       	 //]]>
+	</script>
+</f:view>

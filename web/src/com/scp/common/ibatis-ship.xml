@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="common.busshipaddresBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		 <![CDATA[
+		select 
+		 t.*
+		FROM bus_ship_addres t 
+		WHERE $qry$
+		 ]]>
+	</select>
+	<select id="common.busshipaddresBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(1) AS counts 
+		FROM bus_ship_addres t 
+		WHERE $qry$
+	</select>
+</sqlMap>

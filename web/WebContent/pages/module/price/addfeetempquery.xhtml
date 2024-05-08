@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:om="http://www.apusic.com/jsf/misc"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> <link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" /><link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+	
+		<script type="text/javascript" src="/scp/common/js/jquery-2.0.0.min.js"></script>
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." >
+		<ajax:conversationActivator/>
+		<layout:borderLayout fitToBody="true">
+			<layout:panel id="gridPanel" jsvar="gridPanelJsvar" height="100%" split="true" fit="true"
+				title=""  hideBorders="true" region="center">
+				<div style="height: 0px;"><ui:include src="/common/gridpage.xhtml"/></div>
+				<w:form>
+					
+					<w:toolBar>
+						<w:button id="qryRefresh" label="#{l.m['刷新']}"
+							image="#{constantBean.contextPath}/images/refresh.png" />
+						<w:button id="exportBtn" value="#{l.m['导出列表']}" onclick="exportExcel();"
+							image="#{constantBean.contextPath}/pages/module/common/resources/images/excel.gif" />
+						<w:button onclick="showRptWindows();" label="#{l.m['导出附加费']}"
+								image="#{constantBean.contextPath}/common/img/preview.gif" width="100" />
+					</w:toolBar>
+					<ajax:submitAction id="export" jsvar="exportexl" />
+					<div style="height: 0px; display: none;">
+						<w:button id="simulateExport" jsvar="simulateExport" label="#{l.m['导出']}" title="#{l.m['下载']}" disabled="true" alwaysSubmit="true" />
+						<om:fileDownload id="doSimulateExport" for="simulateExport" savedName="feeaddlist.xls" />
+					</div>
+					<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+						<layout:cell style="width: 25px;"> <w:button id="clearQryKey" label="" width="25"
+							image="#{constantBean.contextPath}/images/clear.png" /> </layout:cell>
+						<w:combo id="templateComBo" width="153" listWidth="300" jsvar="templateJsvar"
+								value="#{pages.module.price.addfeetempqueryBean.qryMap['templatename']}">
+								<f:selectItems value="#{pages.module.price.addfeetempqueryBean.template}" />
+						</w:combo>
+						<w:textField selectOnFocus="true" width="102" value="#{pages.module.price.addfeetempqueryBean.qryMap['feeitemcode']}"/>
+						<w:textField selectOnFocus="true" width="121" value="#{pages.module.price.addfeetempqueryBean.qryMap['feeitemname']}"/>
+						<w:textField selectOnFocus="true" width="81" value="#{pages.module.price.addfeetempqueryBean.qryMap['ppcc']}"/>
+						<w:textField selectOnFocus="true" width="82" value="#{pages.module.price.addfeetempqueryBean.qryMap['unit']}"/>
+						<w:button id="refresh" value="#{l.m['查询']}"
+							image="#{constantBean.contextPath}/images/query-small.png" />
+						<layout:cell>
+							<ajax:status startStyle="color: red"
+								onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+								onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+								<f:facet name="start">
+									<f:verbatim>
+										<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 18px;">Loading</img>
+									</f:verbatim>
+								</f:facet>
+							</ajax:status>
+						</layout:cell>
+					</layout:panelGrid>
+					
+					<w:dataGrid height="700" paged="true" rows="#{pages.module.price.addfeetempqueryBean.gridPageSize}" id="grid" jsvar="gridJsvar"
+						toolBarPosition="bottom" idColumn="id" selectable="true" selectionModel="#{constantBean.checkBox}" onrowselect="return false" onrowdeselect="return false">
+						<w:outputColumn id="id" header="ID" hidden="true" />
+						<w:outputColumn header="#{l.m['模板名称']}" id="templatename" width="150"  sortable="true"/>
+						<w:outputColumn header="#{l.m['费用代码']}" id="feeitemcode" width="100" sortable="true"/>
+						<w:outputColumn header="#{l.m['费用中文']}" id="feeitemname" width="120" sortable="true"/>
+						<w:outputColumn header="#{l.m['付费方式']}" id="ppcc" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['计费单位']}" id="unit" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['金额']}" id="amt" sortable="true" width="80" align="right" />
+						<w:outputColumn header="#{l.m['其他箱型']}" id="cntynamec" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['金额']}" id="amtother" sortable="true" width="80"  align="right"/>
+						<w:outputColumn header="20GP" id="amt20" sortable="true" width="80" align="right"/>
+						<w:outputColumn header="40GP" id="amt40gp" sortable="true" width="80" align="right" />
+						<w:outputColumn header="40HQ" id="amt40hq" sortable="true" width="80" align="right" />
+						<w:outputColumn header="45HQ" id="amt45hq" sortable="true" width="80" align="right" />
+						<w:outputColumn header="#{l.m['币别']}" id="currency" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['录入人']}" id="inputer" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['录入时间']}" id="inputtime" width="90" sortable="true">
+							<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" /> 
+						</w:outputColumn>
+						<w:outputColumn header="#{l.m['修改人']}" id="updater" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['修改时间']}" id="updatetime" width="90" sortable="true">
+							<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" /> 
+						</w:outputColumn>
+					</w:dataGrid>
+				</w:form>
+			</layout:panel>
+		</layout:borderLayout>
+		
+		<layout:window maximizable="true" id="showExportWindow" jsvar="showExportWindowJsVar" width="400" height="300" header="false" constrainHeader="true" modal="false" >
+			<form  id="from1" method="post" target="_blank">
+				<input id="showRpt" type="submit" value="预览 "/>
+				<input name="gridids" id="rptids" type="text" style= "height:100px; display: none;" value="123" />
+			</form>
+		</layout:window>
+	</w:page>
+
+
+	<script>
+	//<![CDATA[
+	
+		//导出附加费表
+		function showRptWindows() { 
+			var gridIds = "";
+			var rs=gridJsvar.getSelectionModel().getSelections();
+			Ext.each(rs,function(){
+				gridIds = gridIds+this.get("id")+",";
+			});
+			gridIds = gridIds.substr(0,gridIds.length-1);
+			console.log(gridIds);
+			if(gridIds == null || gridIds == ""){
+				alert("#{l.m['请先勾选数据！']}");
+			}else{
+				$('#rptids').attr("value",gridIds);
+				$('#from1').attr("action" , "/scp/reportJsp/showReport.jsp?raq=/static/rp/addfeetempquery.raq");
+				$('#showRpt').trigger("click");
+			}
+	    }  
+		
+		function exportExcel() {
+	    	var config = gridJsvar.getSelectionModel().grid.events.columnmove.obj.plugins[0].grid.colModel.config;
+	    	var key = "";
+	    	var value = "";
+	    	for(var i=1;i<config.length;i++) {
+	    		if(!config[i].hidden) {
+	    			key += config[i].dataIndex;
+	        		value += config[i].header;
+	        		if(i < config.length - 1) {
+	        			key += ",";
+	        			value += ",";
+	        		}
+	    		}
+	    	}
+	    	exportexl.addParam("key",key);
+	    	exportexl.addParam("value",value);
+	    	exportexl.submit();
+	    }
+	    
+		function resize(){
+			var newHeight = (gridPanelJsvar.getSize().height) - 50;
+			var newWidth = (gridPanelJsvar.getSize().width);
+			gridJsvar.setHeight(newHeight);
+			gridJsvar.setWidth(newWidth);
+			gridJsvar.render();
+		}
+		
+		Ext.onReady(function(){
+			resize();
+			Ext.EventManager.onWindowResize(function(){
+				resize();
+			});
+		 });
+		 //]]>
+	</script>
+
+
+</f:view>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+		<layout:borderLayout fitToBody="true">
+			<layout:panel id="gridPanel" height="100%" split="true" jsvar="gridPanelJsvar" hideBorders="true"
+				region="center" width="500">
+				<w:form>
+
+					<div style="height: 0px;">
+					
+					</div>
+					<w:toolBar>
+						<w:button id="qryRefresh" label="#{l.m['刷新']}"
+							image="#{constantBean.contextPath}/images/refresh.png" />
+						<w:button id="qryAdd" label="#{l.m['新增']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+					</w:toolBar>
+
+					<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+						<layout:cell style="width: 25px;">
+							<w:button id="clearQryKey" label="" width="25"
+								image="#{constantBean.contextPath}/images/clear.png" />
+						</layout:cell>
+						<w:textField selectOnFocus="true" width="200"
+							value="#{pages.sysmgr.unit.businessunitBean.qryMap['code']}" />
+						<w:textField selectOnFocus="true" width="200"
+							value="#{pages.sysmgr.unit.businessunitBean.qryMap['name']}" />
+					</layout:panelGrid>
+
+					<w:dataGrid height="700" paged="true" rows="30" id="grid" jsvar="gridJsvar"
+						toolBarPosition="bottom" idColumn="id" selectable="true">
+						<w:outputColumn id="id" header="ID" hidden="true" />
+						<w:outputColumn header="#{l.m['代码']}" id="code" width="200" sortable="true" />
+						<w:outputColumn header="#{l.m['名称']}" id="name" width="200" sortable="true" />
+
+						<w:outputColumn header="#{l.m['录入人']}" id="inputer" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['录入时间']}" id="inputtime" width="90" sortable="true">
+							<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" />
+						</w:outputColumn>
+						<w:outputColumn header="#{l.m['修改人']}" id="updater" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['修改时间']}" id="updatetime" width="90" sortable="true">
+							<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" />
+						</w:outputColumn>
+					</w:dataGrid>
+				</w:form>
+			</layout:panel>
+		</layout:borderLayout>
+	</w:page>
+
+	<layout:window maximizable="true" width="400" height="300" id="editWindow">
+		<layout:panel id="editPanel" title="" height="170" hideBorders="true" style="font-size:12px"
+			width="500" region="center">
+			<w:form>
+				<w:toolBar>
+					<w:button id="add" value="#{l.m['新增']}"
+						image="#{constantBean.contextPath}/images/new.png" />
+					<w:button id="save" value="#{l.m['保存']}"
+						image="#{constantBean.contextPath}/images/save.png" />
+					<w:button id="del" jsvar="del" label="#{l.m['删除']}"
+						onclick="return confirm('#{l.m['确定要删除吗?']}');"
+						image="#{constantBean.contextPath}/images/delete.png" />
+				</w:toolBar>
+
+				<layout:panelGrid columns="2" cellspacing="5px" width="500" style="font-size:12px">
+					<h:outputLabel value="#{l.m['代码']}" />
+					<w:textField selectOnFocus="true" value="#{pages.sysmgr.unit.businessunitBean.data.code}"
+						width="280" maxLength="50" cls="under_line" focusClass="surround" />
+					<h:outputLabel value="#{l.m['名称']}" />
+					<w:textField selectOnFocus="true" value="#{pages.sysmgr.unit.businessunitBean.data.name}"
+						width="280" maxLength="50" cls="under_line" focusClass="surround" />
+				</layout:panelGrid>
+
+				<div style="height: 0px; display: none"><w:textField selectOnFocus="true" id="pkVal"
+					hidden="true" /></div>
+			</w:form>
+		</layout:panel>
+	</layout:window>
+
+	<script>
+	//<![CDATA[
+	Ext.onReady(function(){
+		var newHeight = (gridPanelJsvar.getSize().height) - 55;
+		var newWidth = (gridPanelJsvar.getSize().width);
+        //alert(newHeight);
+        //alert(newWidth);
+        gridJsvar.setHeight(newHeight);
+        gridJsvar.setWidth(newWidth);
+     });
+     //]]>
+</script>
+</f:view>

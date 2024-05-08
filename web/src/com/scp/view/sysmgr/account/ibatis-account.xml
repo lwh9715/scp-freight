@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	
+	
+	<select id="pages.sysmgr.account.accountpermissBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_user t 
+		WHERE $qry$ 
+			AND isdelete = false
+			AND isadmin = 'N'
+			AND iscsuser = FALSE
+			AND isinvalid = TRUE
+		ORDER BY code
+	</select>
+	<select id="pages.sysmgr.account.accountpermissBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_user t 
+		WHERE $qry$ 
+			AND isdelete = false
+			AND isadmin = 'N'
+			AND iscsuser = FALSE
+			AND isinvalid = TRUE
+	</select>
+	
+	<select id="pages.sysmgr.account.accountpermissdtlBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		  s.*
+		 ,(SELECT COALESCE(x.code,'') ||'/'|| COALESCE(x.abbr,'') FROM sys_corporation x where x.id = s.corpid) AS corper 
+		FROM fs_actset s 
+		WHERE $qry$
+		AND s.isdelete = FALSE; 	
+	</select>
+	<select id="pages.sysmgr.account.accountpermissdtlBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		count(*) AS counts 
+		FROM fs_actset s 
+		WHERE $qry$
+		AND s.isdelete = FALSE; 	
+	</select>
+</sqlMap>

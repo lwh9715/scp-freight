@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="servlet.web.ff.salesArAmt.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+			SELECT 
+					 T.nos,T.ordno,T.id,T.sales,T.arapcustomer,T.jobdate,T.arstatus
+					,SUM(T.amountcny) AS amountcny1
+					,SUM(T.amounthkd) AS amounthkd1
+					,SUM(T.amountusd) AS amountusd1
+					,SUM(T.amountdhs) AS amountdhs1
+					,(SELECT x.mblno FROM bus_shipping x WHERE x.jobid = T.jobid AND x.isdelete = FALSE LIMIT 1) AS mblno 
+		 		FROM (
+						SELECT 					 
+							 a.nos
+							,a.id AS jobid
+							,0 AS ordno
+							,a.id||'-'||b.customerid AS id
+							,a.sales
+							,(SELECT COALESCE(x.namec,x.code) FROM sys_corporation x where x.id = b.customerid) AS arapcustomer
+							,a.jobdate::DATE AS jobdate
+							,a.arstatus
+							,(CASE WHEN b.currency = 'CNY' THEN COALESCE((b.amount-b.amtstl2),0)::NUMERIC(18,2) ELSE 0 END ) AS amountcny
+							,(CASE WHEN b.currency = 'HKD' THEN COALESCE((b.amount-b.amtstl2),0)::NUMERIC(18,2) ELSE 0 END ) AS amounthkd
+							,(CASE WHEN b.currency = 'USD' THEN COALESCE((b.amount-b.amtstl2),0)::NUMERIC(18,2) ELSE 0 END ) AS amountusd
+							,(CASE WHEN b.currency = 'AED' THEN COALESCE((b.amount-b.amtstl2),0)::NUMERIC(18,2) ELSE 0 END ) AS amountdhs
+							
+						FROM
+							fina_jobs a , fina_arap b
+						WHERE
+							a.isdelete = FALSE			
+							AND a.isclose = FALSE
+							AND a.customerid not in (select id from sys_corporation WHERE iscustomer = false AND isdelete = FALSE)
+							AND a.customerid=$customerid$
+							AND a.saleid=$salesid$
+							AND b.customerid != a.corpid AND b.customerid != a.corpidop
+							and b.isdelete = false and b.araptype='AR'
+							AND b.jobid = a.id AND (b.amount-b.amtstl2)>0
+						UNION ALL
+						
+						SELECT 					 
+							 a.nos
+							,a.id AS jobid
+							,1 AS ordno
+							,a.id||'-'||b.customerid AS id
+							,a.sales
+							,(SELECT COALESCE(x.namec,x.code) FROM sys_corporation x where x.id = b.customerid) AS arapcustomer			
+							,a.jobdate::DATE AS jobdate
+							,a.arstatus
+							,(CASE WHEN b.currency = 'CNY' THEN COALESCE((b.amount-b.amtstl2),0)::NUMERIC(18,2) ELSE 0 END ) AS amountcny
+							,(CASE WHEN b.currency = 'HKD' THEN COALESCE((b.amount-b.amtstl2),0)::NUMERIC(18,2) ELSE 0 END ) AS amounthkd
+							,(CASE WHEN b.currency = 'USD' THEN COALESCE((b.amount-b.amtstl2),0)::NUMERIC(18,2) ELSE 0 END ) AS amountusd
+							,(CASE WHEN b.currency = 'AED' THEN COALESCE((b.amount-b.amtstl2),0)::NUMERIC(18,2) ELSE 0 END ) AS amountdhs
+							
+						FROM
+							fina_jobs a , fina_arap b
+						WHERE
+							a.isdelete = FALSE			
+							AND a.isclose = FALSE
+							AND a.customerid != $customerid$
+							AND b.customerid = $customerid$
+							AND a.saleid=$salesid$
+							and b.isdelete = false and b.araptype='AR'
+							AND b.jobid = a.id AND (b.amount-b.amtstl2)>0
+					) AS T
+					GROUP BY T.ordno,T.nos,T.jobid,T.id,T.sales,T.arapcustomer,T.jobdate,T.arstatus
+					ORDER BY ordno , jobdate , nos , arapcustomer
+			) AS T
+	</select>
+	
+	<select id="servlet.web.ff.dayReportInfo" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+			SELECT 
+				o.depter,o.logdate,o.desc_late,o.desc_leave,o.desc_bustravel,o.desc_absence,o.desc_misspunch
+		 		FROM 
+					 oa_timesheet_day o
+					 WHERE
+					o.isdelete = FALSE		
+					$qry$	
+					ORDER BY depter, logdate	
+			) AS T
+	</select>
+	
+	<select id="servlet.web.ff.querycustrans" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT array_to_json (ARRAY_AGG(row_to_json(Z))) :: TEXT AS json FROM (
+			SELECT 
+				 T.*
+				,(NOW()::DATE - T.lastjobday) AS daynojobs
+				FROM (SELECT 
+				 COALESCE((SELECT MAX(x.jobdate::DATE) FROM fina_jobs x WHERE x.saleid = c.salesid AND x.customerid = c.id AND x.isdelete = false and x.isclose = false),c.inputtime)::DATE AS lastjobday
+				,c.code,COALESCE(c.namec,c.namee)
+				FROM sys_corporation c
+				WHERE $qry$  AND isdelete = false) AS T
+				WHERE (NOW()::DATE - T.lastjobday) > $qry2$
+				ORDER BY lastjobday	
+			) AS Z
+	</select>
+	
+	<select id="servlet.web.ff.querycusalert" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT array_to_json (ARRAY_AGG(row_to_json(Z))) :: TEXT AS json FROM (
+			SELECT 
+	 			T.*
+				,(NOW()::DATE - T.lastjobday) AS daynojobs
+				FROM (SELECT 
+				 COALESCE((SELECT MAX(x.jobdate::DATE) FROM fina_jobs x WHERE x.saleid = c.salesid AND x.customerid = c.id AND x.isdelete = false and x.isclose = false),c.inputtime)::DATE AS lastjobday
+				,c.code,COALESCE(c.namec,c.namee)
+				FROM sys_corporation c
+				WHERE $qry$  AND isdelete = false) AS T
+				WHERE (NOW()::DATE - T.lastjobday) BETWEEN $qry3$
+				ORDER BY lastjobday
+			) AS Z
+	</select>
+	
+	<select id="servlet.web.ff.dayReportDepter" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+				SELECT 
+					distinct depter
+		 		FROM  oa_timesheet_day 
+				WHERE isdelete = FALSE	
+				$qry$	
+				ORDER BY depter	
+			) AS T
+	</select>
+	
+	<select id="servlet.web.ff.dayReportDay" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+				SELECT 
+					distinct logdate
+		 		FROM  oa_timesheet_day 
+				WHERE isdelete = FALSE
+				$qry$		
+				ORDER BY logdate
+			) AS T
+	</select>
+	
+	<select id="servlet.web.ff.getstatuse" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+				SELECT 
+					f_sys_getls('userid=$userid$;lskey='||statusc) AS statusdesc,statusc,statuse,isfinish,updater,substr(dealdate,0,17) AS dealdate
+		 		FROM  bus_goodstrack 
+				WHERE 
+				$qry$		
+				ORDER BY orderno  , dealdate , id
+			) AS T
+	</select>
+	
+	<select id="servlet.web.ff.getabbcodeInfo" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+		SELECT 
+			id , ischoose AS islink , userid ,(SELECT COALESCE(x.code,'') ||'/'|| COALESCE(x.abbr,'') FROM sys_corporation x where x.id = s.corpid) AS corper 
+		FROM sys_user_corplink s
+		WHERE $qry$	
+		ORDER BY id	
+		) AS T
+	</select>
+	
+	<select id="servlet.web.ff.getsales" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+		SELECT 
+			issales
+		FROM sys_user 
+		WHERE $qry$	
+		) AS T
+	</select>
+	
+	<select id="servlet.web.ff.getApplyInfo" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+		SELECT 
+			 namec
+			,TRIM(COALESCE(mobilephone, tel1) ||'/'|| COALESCE(tel1 , tel2),'/') AS tel
+			,(SELECT x.namec FROM sys_corporation x WHERE x.id = u.corpid) AS company
+		FROM sys_user u
+		WHERE $qry$	
+		) AS T
+	</select>
+	
+	<select id="servlet.web.ff.getsyscfg" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+		SELECT 
+			 key
+			,val 
+			FROM sys_config 
+		WHERE 1=1 $qry$	
+		) AS T
+	</select>
+	
+	<select id="servlet.web.ff.querymsg" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+		select 
+			 * 
+			,inputtime::DATE AS inputtime2 
+		FROM _sys_message t 
+		WHERE
+			(t.msgtype = 'G' OR (t.msgtype = 'P' AND EXISTS(SELECT 1 FROM sys_user x , sys_message_ref y where x.id = y.userid AND y.messageid = t.id AND x.id = $qry$))) 
+		AND	issystem = FALSE AND modulecode = 'OA'
+		ORDER BY inputtime desc, title
+	) AS T
+	</select>
+	
+	
+	<select id="servlet.web.ff.queryfaq" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+		select 
+		 	 *
+			,inputtime::DATE AS inputtime2 
+		FROM _sys_faq t 
+		WHERE 
+		isdelete = FALSE
+		ORDER BY inputtime DESC
+		) AS T
+	</select>
+	
+	<select id="servlet.web.ff.queryattach" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+		SELECT 
+			*
+				FROM  sys_attachment 
+				WHERE 
+				$qry$
+				AND isdelete =false	
+				ORDER BY inputtime DESC	
+		) AS T
+	</select>
+
+	<select id="servlet.web.ff.sopQueryAttach" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+			SELECT
+				 *
+			FROM sys_attachment t
+			WHERE 1=1
+				AND isdelete =false
+				AND linkid = $qry$
+				AND EXISTS(SELECT 1 FROM sys_role x where x.id = t.roleid and x.isdelete = false AND x.roletype = 'F' AND x.name = '企业证照')
+			ORDER BY inputtime DESC
+		) AS T
+	</select>
+
+	<select id="servlet.web.ff.getmessage" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+		SELECT 
+			*
+				FROM  f_sys_message_dashboard('$qry$') 
+		) AS T
+	</select>
+	
+	<select id="servlet.web.ff.getmsguser" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+		SELECT 
+			 distinct
+			(SELECT namec FROM sys_user x WHERE x.id = t.userid) AS username
+				FROM  sys_message_ref t
+				WHERE 
+				$qry$
+		) AS T
+	</select>
+	
+	
+	<select id="servlet.web.ff.dashboard.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+				SELECT * FROM f_task_to_be_treated('cuercode=$qry$') LIMIT 5
+			) AS T
+	</select>
+	<select id="servlet.web.ff.oa.anniversary.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+				SELECT namec,to_char(datein, 'yyyy年MM月dd日') AS datein
+				,(SELECT abbr FROM sys_corporation x,sys_user y WHERE a.uerid = y.id AND y.corpid = x.id) AS copernamec
+				,(CASE WHEN extract(day from (now()-datein))/365<1 THEN (extract(day from (now()-datein)))::TEXT||'天' ELSE ((extract(day from (now()-datein)))::INTEGER/365)::TEXT||'年' END) intervals
+				FROM oa_userinfo a 
+				WHERE 
+				$qry$
+			) AS T
+	 ]]>    
+	</select>
+	<select id="pages.module.analyse.analyse_profitBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM	
+	 	(SELECT title AS income,COALESCE(m1,0) AS ar_aps1,COALESCE(m2,0) AS ar_aps2,COALESCE(m3,0) AS ar_aps3,COALESCE(m4,0) AS ar_aps4,COALESCE(m5,0) AS ar_aps5,
+			 COALESCE(m6,0) AS ar_aps6,COALESCE(m7,0) AS ar_aps7,COALESCE(m8,0) AS ar_aps8,COALESCE(m9,0) AS ar_aps9,COALESCE(m10,0) AS ar_aps10,COALESCE(m11,0) AS ar_aps11,COALESCE(m12,0) AS ar_aps12 
+			,(msum) AS ar_aps1sum
+		FROM f_rpa_ar_ap_profit('year=$qry$;userid=$qry2$;currency=$qry3$')
+		) AS Q
+	 ]]>    
+	</select>
+	<select id="pages.module.analyse.lookattherisk.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM	
+	 	(SELECT *
+		FROM f_rpa_clients_ar_profit('$qry$') ORDER BY numbers
+		) AS Q
+	 ]]>    
+	</select>
+	<select id="pages.module.order.busorderfcl.currency.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM	
+	 	(SELECT code
+		FROM dat_currency d WHERE isdelete = FALSE $filter$
+		) AS Q
+	 ]]>    
+	</select>
+	<select id="pages.module.analyse.analyse_product.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM	
+	 	(SELECT *
+		FROM f_rpa_product_profits('$qry$') ORDER BY numbers
+		) AS Q
+	 ]]>    
+	</select>
+	<select id="pages.module.analyse.customerBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM	
+	 	(SELECT *
+		FROM f_rpa_customer_profit_loss('$qry$') ORDER BY numbersort
+		) AS Q
+	 ]]>    
+	</select>
+	<select id="pages.module.analyse.salesBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM	
+	 	(SELECT *
+		FROM f_rpa_seals_profit_loss('$qry$') ORDER BY numbersort
+		) AS Q
+	 ]]>    
+	</select>
+	<select id="pages.module.analyse.agentBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM	
+	 	(SELECT *
+		FROM f_rpa_agent_profit_loss('$qry$') ORDER BY numbersort
+		) AS Q
+	 ]]>    
+	</select>
+	<select id="pages.module.analyse.carrierBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM	
+	 	(SELECT *
+		FROM f_rpa_carrier_profit_loss('$qry$') ORDER BY numbersort
+		) AS Q
+	 ]]>    
+	</select>
+	<select id="pages.module.analyse.paymentBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM	
+	 	(SELECT *
+		FROM f_rpa_carrier_payment_loss('$qry$') ORDER BY numbers
+		) AS Q
+	 ]]>    
+	</select>
+	<select id="pages.module.analyse.salesmanBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM	
+	 	(SELECT *
+		FROM f_rpa_carrier_salesman_loss('$qry$') ORDER BY numbers
+		) AS Q
+	 ]]>    
+	</select>
+	<select id="pages.module.analyse.analyse_branchBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM	
+	 	(SELECT *
+		FROM f_rpa_performance_table('year=$qry$;userid=$qry2$;clienteleid=$qry3$') ORDER BY numbers
+		) AS Q
+	 ]]>    
+	</select>
+	<select id="pages.module.analyse.analyse_isextfeeBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM	
+	 	(SELECT *
+		FROM f_rpa_isextfee_table('year=$qry$;userid=$qry2$') ORDER BY numbers
+		) AS Q
+	 ]]>    
+	</select>
+	<select id="pages.main.showmoremsg.filedata.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM	
+	 	(SELECT code,namec,y.* FROM dat_filedata AS d,bus_goodstrack_temp y WHERE d.isleaf = TRUE AND d.isdelete = false AND d.fkcode = 180 AND y.tmptype = d.code order by d.code,d.orderno,y.orderno
+		) AS Q
+	 ]]>    
+	</select>
+	<select id="pages.main.showmoremsg.temp.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM	
+	 	(SELECT * FROM bus_goodstrack_temp WHERE tmptype = '$qry$' order by orderno
+		) AS Q
+	 ]]>    
+	</select>
+	<select id="pages.main.showmoremsg.tempnos.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM	
+	 	(SELECT id,(CASE WHEN nos is NULL OR nos = '' THEN '无' ELSE nos END) AS nos,isair,isshipping FROM fina_jobs t
+			WHERE t.isdelete = FALSE
+			AND t.isclose = false
+			AND EXISTS (SELECT 1 FROM bus_goodstrack x,bus_goodstrack_temp y WHERE x.linkid = y.id AND x.fkid = t.id AND x.isfinish = TRUE AND y.tmptype = '$qry$'
+				AND (SELECT linkid FROM bus_goodstrack where fkid = t.id AND isfinish = TRUE  ORDER BY orderno desc, dealdate DESC LIMIT 1) = '$qry2$')
+			AND ( t.saleid = '$qry3$'
+							OR (t.inputer ='demo')
+							OR (EXISTS(SELECT 1 where 1 = f_checkright('user_info_mgr_showall2this','$qry3$')) AND t.corpid <> t.corpidop AND t.corpidop = 100)
+							OR EXISTS
+										(SELECT 
+											1 
+										FROM sys_custlib x , sys_custlib_user y  
+										WHERE y.custlibid = x.id  
+											AND y.userid = '$qry3$'
+											AND x.libtype = 'S'  
+											AND EXISTS(SELECT 1 FROM sys_user z where z.code = x.code and z.id = t.saleid AND z.isdelete = false) )
+							OR EXISTS
+										(SELECT 
+											1 
+										FROM sys_custlib x , sys_custlib_role y  
+										WHERE y.custlibid = x.id  
+											AND EXISTS (SELECT 1 FROM sys_userinrole z WHERE z.userid = '$qry3$' AND z.roleid = y.roleid)
+											AND x.libtype = 'S'  
+											AND EXISTS(SELECT 1 FROM sys_user z where z.code = x.code  AND z.isdelete = false AND z.id = t.saleid) )
+							OR EXISTS(SELECT 1 FROM sys_user_assign  x, bus_shipping y WHERE x.linkid = y.id AND y.jobid = t.id AND x.isdelete = FALSE AND x.linktype = 'J' AND x.userid ='$qry3$')
+					)
+			AND (EXISTS(SELECT 1 FROM sys_user_corplink x WHERE (x.corpid = t.corpid OR x.corpid = t.corpidop) AND x.ischoose = TRUE AND userid ='$qry3$') 
+						OR t.saleid ='$qry3$')
+			LIMIT 10
+		) AS Q
+	 ]]>    
+	</select>
+	<select id="activemq.index.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM	
+	 	(SELECT 
+			id,code,namec,namee,(SELECT x.val FROM sys_configuser x WHERE x.userid = u.id AND x.isdelete = FALSE AND x.key = 'head') AS headimg 
+		FROM sys_user u 
+		WHERE isdelete = FALSE 
+			AND isinvalid = TRUE
+		) AS Q
+	 ]]>    
+	</select>
+	
+	<select id="servlet.web.ff.purview" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+		WITH RECURSIVE cte AS (
+					SELECT
+					DISTINCT m.*
+					FROM sys_module m
+					WHERE 1=1
+					AND m.isctrl = 'N'
+					AND m.pid = 0
+					AND m.isdelete = false
+			UNION ALL 
+					SELECT 
+						DISTINCT m.*
+					FROM sys_module m JOIN cte ON(m.pid = cte.id)
+					WHERE m.isctrl = 'N'
+					AND m.isdelete = false
+			)
+			
+			SELECT 
+			* 
+			,(SELECT x.name FROM sys_module x where x.id = cte.pid) pname
+			FROM cte
+			WHERE 
+			(CASE WHEN 'admin'='$qry2$' THEN id =  900000 WHEN 'demo'='$qry2$' THEN 1=1 ELSE 
+			EXISTS(SELECT 1 FROM sys_modinrole i, sys_role r, sys_userinrole o
+			WHERE cte.id = i.moduleid
+			AND i.roleid = r.id
+			AND r.id = o.roleid
+			AND cte.isctrl = 'N'
+			AND o.userid = $qry$
+			AND cte.isdelete = false) END)
+
+			AND (SELECT x.name FROM sys_module x where x.id = cte.pid) is null
+			ORDER BY pid, modorder
+		) AS T
+	</select>
+	
+	
+	<select id="servlet.web.ff.purviewleaf" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+		WITH RECURSIVE cte AS (
+					SELECT
+					DISTINCT m.*
+					FROM sys_module m
+					WHERE 1=1
+					AND m.isctrl = 'N'
+					AND m.pid = 0
+					AND m.isdelete = false
+			UNION ALL 
+					SELECT 
+						DISTINCT m.*
+					FROM sys_module m JOIN cte ON(m.pid = cte.id)
+					WHERE m.isctrl = 'N'
+					AND m.isdelete = false
+			)
+			
+			SELECT 
+			* 
+			,(SELECT x.name FROM sys_module x where x.id = cte.pid) pname
+			FROM cte
+			WHERE 
+			(CASE WHEN 'admin'='$qry2$' THEN id =  900000 WHEN 'demo'='$qry2$' THEN 1=1 ELSE 
+			EXISTS(SELECT 1 FROM sys_modinrole i, sys_role r, sys_userinrole o
+			WHERE cte.id = i.moduleid
+			AND i.roleid = r.id
+			AND r.id = o.roleid
+			AND cte.isctrl = 'N'
+			AND o.userid = $qry$
+			AND cte.isdelete = false) END)
+			AND isleaf = 'Y'
+			AND (SELECT x.name FROM sys_module x where x.id = cte.pid) is not null
+			ORDER BY pid, modorder
+		) AS T
+	</select>
+	
+	
+	<select id="servlet.web.ff.purviewleaf2" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+		WITH RECURSIVE cte AS (
+					SELECT
+					DISTINCT m.*
+					FROM sys_module m
+					WHERE 1=1
+					AND m.isctrl = 'N'
+					AND m.pid = 0
+					AND m.isdelete = false
+			UNION ALL 
+					SELECT 
+						DISTINCT m.*
+					FROM sys_module m JOIN cte ON(m.pid = cte.id)
+					WHERE m.isctrl = 'N'
+					AND m.isdelete = false
+			)
+			
+			SELECT 
+			* 
+			,(SELECT x.name FROM sys_module x where x.id = cte.pid) pname
+			FROM cte
+			WHERE 
+			(CASE WHEN 'admin'='$qry2$' THEN id =  900000 WHEN 'demo'='$qry2$' THEN 1=1 ELSE 
+			EXISTS(SELECT 1 FROM sys_modinrole i, sys_role r, sys_userinrole o
+			WHERE cte.id = i.moduleid
+			AND i.roleid = r.id
+			AND r.id = o.roleid
+			AND cte.isctrl = 'N'
+			AND o.userid = $qry$
+			AND cte.isdelete = false) END)
+			AND isleaf = 'N'
+			AND (SELECT x.name FROM sys_module x where x.id = cte.pid) is not null
+			ORDER BY pid, modorder
+		) AS T
+	</select>
+	
+	<select id="servlet.web.ff.getReport" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[ 
+		SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM	
+	 	(
+	 		SELECT 
+				COUNT(1) AS counts ,extract(MONTH from j.jobdate) AS month , extract(year from j.jobdate) As year
+			FROM fina_jobs j 
+			WHERE isdelete = FALSE 
+				AND j.isclose = FALSE
+				AND j.jobdate >= (((extract(year from NOW()::DATE))-1) || '-01' || '-01')::DATE
+				AND j.id = ANY( 
+								(SELECT x.id FROM fina_jobs x where x.saleid = $qry$ AND x.isdelete = false) 
+								UNION
+								(SELECT x.jobid FROM bus_shipping x , sys_user_assign y WHERE x.id = y.linkid AND y.isdelete = FALSE  AND y.userid = $qry$)
+							)
+			GROUP BY year , month
+			ORDER BY year , month
+	 	) AS Q
+		]]>  
+	</select>
+	
+	<select id="knowledgeBase.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 SELECT array_to_json (ARRAY_AGG(row_to_json(Q))) :: TEXT AS json FROM(
+	 			SELECT 
+	 				 (SELECT string_agg(context,'<br>') FROM sys_knowledgelib a WHERE linkid = x.customerid AND a.libtype = 'A' AND a.isdelete = FALSE AND a.linkid2 < 0) AS customerid
+					,(SELECT string_agg(a.context,'<br>') FROM sys_knowledgelib a,bus_shipping b WHERE b.jobid = x.id AND b.isdelete = FALSE AND b.carrierid = a.linkid AND a.libtype = 'C' AND a.isdelete = FALSE AND a.linkid2 < 0) AS carrierid
+					,(SELECT string_agg(a.context,'<br>') FROM sys_knowledgelib a,bus_shipping b WHERE b.jobid = x.id AND b.isdelete = FALSE AND b.polid  = a.linkid AND a.libtype = 'E' AND a.isdelete = FALSE AND a.linkid2 < 0) AS polid
+					,(SELECT string_agg(a.context,'<br>') FROM sys_knowledgelib a,bus_shipping b WHERE b.jobid = x.id AND b.isdelete = FALSE AND b.podid  = a.linkid AND a.libtype = 'E' AND a.isdelete = FALSE AND a.linkid2 < 0) AS podid
+					,(SELECT string_agg(a.context,'<br>') FROM sys_knowledgelib a,bus_shipping b WHERE b.jobid = x.id AND b.isdelete = FALSE AND b.pddid  = a.linkid AND a.libtype = 'E' AND a.isdelete = FALSE AND a.linkid2 < 0) AS pddid
+					,(SELECT string_agg(a.context,'<br>') FROM sys_knowledgelib a,bus_truck b WHERE b.jobid = x.id AND b.isdelete = FALSE AND b.truckid = a.linkid AND a.libtype = 'H' AND a.isdelete = FALSE) AS	truckid
+					,(SELECT string_agg(a.context,'<br>') FROM sys_knowledgelib a,bus_customs b WHERE b.jobid = x.id AND b.isdelete = FALSE AND b.customid = a.linkid AND a.libtype = 'G' AND a.isdelete = FALSE) AS customid
+					,(SELECT string_agg(a.context,'<br>') FROM sys_knowledgelib a,bus_shipping b WHERE b.jobid = x.id AND b.isdelete = FALSE AND b.agentid  = a.linkid AND a.libtype = 'B' AND a.isdelete = FALSE) AS agentid
+					,(SELECT string_agg(a.context,'<br>') FROM sys_knowledgelib a,bus_shipping b,dat_line c WHERE b.jobid = x.id AND c.code = b.routecode AND b.isdelete = FALSE AND c.id  = a.linkid AND a.isdelete = FALSE AND a.libtype = 'D' AND a.linkid2 < 0) AS datline
+					,(SELECT string_agg(a.context,'<br>') FROM sys_knowledgelib a,bus_shipping b WHERE b.jobid = x.id AND b.isdelete = FALSE AND b.agentdesid = a.linkid AND a.isdelete = FALSE AND a.libtype = 'I') AS agentdesid
+					,(SELECT string_agg(a.context,'<br>') FROM sys_knowledgelib a,bus_air b WHERE b.jobid = x.id AND b.isdelete = FALSE AND b.carrierid = a.linkid AND a.isdelete = FALSE AND a.libtype = 'F') AS airline
+					,(SELECT string_agg(a.context,'<br>') FROM sys_knowledgelib a,bus_air b WHERE b.jobid = x.id AND b.isdelete = FALSE AND b.agentdesid = a.linkid AND a.isdelete = FALSE AND a.libtype = 'I') AS airagentdesid
+					,(SELECT string_agg(a.context,'<br>') FROM sys_knowledgelib a,bus_air b WHERE b.jobid = x.id AND b.isdelete = FALSE AND b.polid  = a.linkid AND a.isdelete = FALSE) AS airpolid
+					,(SELECT string_agg(a.context,'<br>') FROM sys_knowledgelib a,bus_air b WHERE b.jobid = x.id AND b.isdelete = FALSE AND b.podid  = a.linkid AND a.isdelete = FALSE) AS airpodid
+					,(SELECT string_agg(a.context,'<br>') FROM sys_knowledgelib a,bus_shipping b,dat_line c WHERE b.jobid = x.id AND c.code = b.routecode AND b.isdelete = FALSE AND c.id  = a.linkid2 AND b.carrierid = a.linkid AND a.isdelete = FALSE) AS carrierdatline
+					,(SELECT string_agg(a.context,'<br>') FROM sys_knowledgelib a,bus_shipping b WHERE a.linkid = x.customerid AND b.jobid = x.id AND b.isdelete = FALSE AND b.polid  = a.linkid2 AND a.isdelete = FALSE) AS customerpolid
+					,(SELECT string_agg(a.context,'<br>') FROM sys_knowledgelib a,bus_shipping b WHERE a.linkid = x.customerid AND b.jobid = x.id AND b.isdelete = FALSE AND b.podid  = a.linkid2 AND a.isdelete = FALSE) AS customerpodid
+					,(SELECT string_agg(a.context,'<br>') FROM sys_knowledgelib a,bus_shipping b WHERE a.linkid = x.customerid AND b.jobid = x.id AND b.isdelete = FALSE AND b.pddid  = a.linkid2 AND a.isdelete = FALSE) AS customerpddid
+				FROM fina_jobs x
+				WHERE $qry$
+		) AS Q
+	 ]]>    
+	</select>
+	
+	
+	<select id="servlet.web.ff.dashboardbpm.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
+				select 	*
+				,f_sys_getls('userid=$qry2$;lskey='||taskname) AS tasknamedesc
+				,f_sys_getls('userid=$qry2$;lskey='||statedesc) AS statedescdesc
+				,f_sys_getls('userid=$qry2$;lskey='||displayname) AS displaynamedesc
+ 		FROM  _bpm_task t 
+ 		WHERE  t.actorid = '$qry$'
+	 		AND t.state != 9
+	 		AND t.state != 3
+	 		AND t.state != 8
+	 		ORDER BY procestartedtime desc LIMIT 5
+			) AS T
+	</select>
+	
+	<select id="servlet.web.bpm.showcomments" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[ 
+	 	SELECT f_bpm_task_getcheckinfos('processinstanceid=$qry$;taskname=$qry1$;userid=$qry2$;type=All') AS json;
+	 ]]>    
+	</select>
+	
+	<select id="servlet.web.main.indexBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM(
+			SELECT * FROM sys_faq WHERE moduleid = $qry$
+		) T
+	</select>
+	
+	<select id="servlet.web.main.getBusgps.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM(
+			SELECT DISTINCT * FROM bus_gps WHERE refno = ANY(
+					SELECT '$qry$' AS gpsidno 
+					UNION 
+					SELECT gpsidno FROM bus_gps_ref WHERE '$qry$' IN (jobno,hblno,mblno,sono,cntno,trainno)
+				) 
+			ORDER BY inputtime
+		) T
+	</select>
+	
+</sqlMap>

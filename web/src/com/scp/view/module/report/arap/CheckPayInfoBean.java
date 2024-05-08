@@ -1,0 +1,89 @@
+	package com.scp.view.module.report.arap;
+
+	import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.operamasks.faces.annotation.Action;
+import org.operamasks.faces.annotation.BeforeRender;
+import org.operamasks.faces.annotation.Bind;
+import org.operamasks.faces.annotation.ManagedBean;
+import org.operamasks.faces.annotation.ManagedBeanScope;
+import org.operamasks.faces.annotation.ManagedProperty;
+import org.operamasks.faces.annotation.SaveState;
+import org.operamasks.faces.component.grid.impl.UIDataGrid;
+import org.operamasks.faces.component.grid.provider.GridDataProvider;
+
+import com.scp.util.AppUtils;
+import com.scp.util.MessageUtils;
+import com.scp.util.StrUtils;
+import com.scp.view.comp.GridView;
+import com.scp.view.module.customer.CustomerChooseBean;
+
+	@ManagedBean(name = "pages.module.report.arap.checkpayinfoBean", scope = ManagedBeanScope.REQUEST)
+	public class CheckPayInfoBean extends GridView {
+
+		@Bind
+		public Date dateFrom;
+
+		@Bind
+		@SaveState
+		public Date dateTo;
+
+		@SaveState
+		public String customerids;
+
+		@Bind
+		@SaveState
+		public String condition;
+
+		@BeforeRender
+		public void beforeRender(boolean isPostback) {
+			if (!isPostback) {
+				customerService.setQrysqlforNull();
+				dateFrom = new Date();
+				dateTo = new Date();
+			}
+		}
+
+		@Bind
+		@SaveState
+		public UIDataGrid customerGrid;
+
+		@ManagedProperty("#{customerchooseBean}")
+		private CustomerChooseBean customerService;
+
+		@Bind(id = "customerGrid", attribute = "dataProvider")
+		public GridDataProvider getCustomersGridDataProvider() {
+			return customerService.getCustomersDataProvider();
+		}
+
+		@Action
+		public void refresh2() {
+			this.customerService.qry(condition, true);
+			this.customerGrid.reload();
+		}
+
+		@Action
+		public void report() {
+			String[] ids = this.customerGrid.getSelectedIds();
+			if ( ids ==null ||ids.length<=0) {
+				MessageUtils.alert("请至少选择一条数据!");
+				return;
+			}
+			this.customerids = StrUtils.array2List(ids);
+			String rpturl = AppUtils.getRptUrl();
+			String openUrl = rpturl
+					+ "/reportJsp/showReport.jsp?raq=/static/arap/FK_DZ_TZ.raq";
+			AppUtils.openWindow("_apAllCustomReport", openUrl + getArgs());
+		}
+
+		private String getArgs() {
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			String arg = "&datefm=" + df.format(dateFrom) + "&dateto="
+					+ df.format(dateTo) + "&customerid=" + customerids;
+			return arg;
+		}
+
+	}
+
+

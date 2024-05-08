@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.module.bus.optraceBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _bus_optrack t 
+		WHERE $qry$
+			$filter$
+		ORDER BY optime desc
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.bus.optraceBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _bus_optrack t 
+		WHERE $qry$
+			$filter$
+	</select>
+	
+	<select id="pages.module.bus.busdocdefBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _bus_docdef t 
+		WHERE $qry$
+		ORDER BY code
+	</select>
+	<select id="pages.module.bus.busdocdefBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _bus_docdef t 
+		WHERE $qry$ 
+	</select>
+	
+	<select id="pages.module.bus.busquotecheckBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _bus_quote t 
+		WHERE $qry$
+		AND isdelete = FALSE
+		AND isubmit = TRUE
+		ORDER BY checktime DESC
+	</select>
+	<select id="pages.module.bus.busquotecheckBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _bus_quote t 
+		WHERE $qry$ 
+		AND isdelete = FALSE
+		AND isubmit = TRUE
+	</select>
+	
+	
+	<select id="pages.module.bus.busquoteeditcheckBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _bus_quotefee t 
+		WHERE $qry$
+		AND isdelete = FALSE
+		ORDER BY orderno,unit
+	</select>
+	<select id="pages.module.bus.busquoteeditcheckBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _bus_quotefee t 
+		WHERE $qry$ 
+		AND isdelete = FALSE
+	</select>
+	
+	
+	<select id="pages.module.bus.buscustomsBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		 ,(select status from bus_customs where id=t.id) AS status
+		FROM  _bus_ship_container t 
+		WHERE $qry$
+		AND isdelete = false
+		AND parentid IS NULL
+		ORDER BY cntno,sealno,ldtype
+	</select>
+	
+	<select id="pages.module.bus.buscustomsBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  _bus_ship_container t 
+		WHERE $qry$ 
+		AND isdelete = false
+	</select>
+	
+	
+	<select id="pages.module.bus.bustruckBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		 ,(select isinsurance from bus_truck where id=t.id) AS isinsurance
+		 ,(select ischecknumber from bus_truck where id=t.id) AS ischecknumber
+		 ,(select iscls from bus_truck where id=t.id) AS iscls
+		 ,(select trucktype from bus_truck where id=t.id) AS trucktype
+		 ,EXISTS(select 1 FROM bus_truck_link x where x.containerid = t.id AND x.truckid = $truckid$) AS istruckselect
+		FROM  _bus_ship_container t 
+		WHERE $qry$
+			$filter$
+			AND isdelete = false
+			AND parentid IS NULL
+		ORDER BY id
+	</select>
+	
+	<select id="pages.module.bus.bustruckBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  _bus_ship_container t 
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = false
+			AND parentid IS NULL
+	</select>
+	<select id="pages.module.bus.foreignbustruckBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM  _bus_ship_container t 
+		WHERE $qry$
+			AND isdelete = false
+			AND parentid IS NULL
+		ORDER BY id
+	</select>
+	
+	<select id="pages.module.bus.foreignbustruckBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  _bus_ship_container t 
+		WHERE $qry$ 
+			AND isdelete = false
+			AND parentid IS NULL
+	</select>
+	<select id="pages.module.bus.foreignbuscustomsBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM  _bus_ship_container t 
+		WHERE $qry$
+			AND isdelete = false
+			AND parentid IS NULL	
+		ORDER BY id
+	</select>
+	
+	<select id="pages.module.bus.foreignbuscustomsBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  _bus_ship_container t 
+		WHERE $qry$ 
+			AND isdelete = false
+			AND parentid IS NULL
+	</select>
+	
+	<select id="pages.module.bus.foreignbuscustomsBean.grid.feepage" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT * FROM _fina_arap t
+		WHERE $qry$
+		AND isdelete = false
+		AND araptype = 'AR'
+		ORDER BY id
+	</select>
+	
+	<select id="pages.module.bus.foreignbuscustomsBean.grid.feecount" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _fina_arap t
+		WHERE $qry$ 
+		AND isdelete = false
+		AND araptype = 'AR'
+	</select>
+	
+	<select id="pages.module.bus.busgoodsBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,(SELECT code FROM dat_package WHERE id = t.packid AND isdelete = FALSE)AS packiddesc
+		FROM  bus_goods t 
+		WHERE $qry$
+		AND isdelete = false
+		ORDER BY id
+	</select>
+	
+	<select id="pages.module.bus.busgoodsBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  bus_goods t 
+		WHERE $qry$ 
+		AND isdelete = false
+	</select>
+
+	<select id="pages.module.bus.shipcostconfirmBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT 
+		 	*
+		FROM 
+		(
+			SELECT
+						 b.id AS jobid
+						,b.nos AS jobno
+						,b.sales AS jobseals
+						,(SELECT x.userprice FROM bus_ship_booking x , bus_order y WHERE x.isdelete=FALSE AND y.isdelete = FALSE AND y.jobid = b.id AND x.orderid=y.id LIMIT 1) AS userprices
+						,(select sc.abbr from sys_corporation sc, bus_shipping bs where sc.id=bs.agentid AND bs.jobid = b.id AND sc.isagent  = TRUE AND bs.isdelete = FALSE) AS agenter
+						,(SELECT x.abbr FROM sys_corporation x, bus_shipping y  WHERE x.isdelete = FALSE AND x.id = y.carrierid AND x.isdelete = FALSE AND y.jobid = b.id LIMIT 1) AS carrier
+						,s.vessel AS vessel
+						,s.voyage AS voyage
+						,s.pol AS pol
+						,s.pod AS pod
+						,(SELECT x.cls FROM bus_shipping AS x WHERE x.isdelete = FALSE AND x.jobid = b.id LIMIT 1) AS cls
+						,(SELECT x.etd FROM bus_shipping AS x WHERE x.isdelete = FALSE AND x.jobid = b.id LIMIT 1) AS etd
+						,COALESCE((SELECT x.ispecialprice FROM bus_shipping AS x WHERE x.isdelete = FALSE AND x.jobid = b.id LIMIT 1),'') AS ispecialprice
+						,s.poa AS poa
+						,s.bargecls AS bargecls
+						,s.bargeetd AS bargeetd
+						,s.linecode AS linecode
+						,COALESCE((SELECT y.namec FROM bus_shipping AS x,dat_line y WHERE x.isdelete = FALSE AND y.code = x.routecode AND x.jobid = b.id LIMIT 1)
+						,(SELECT x.routecode FROM bus_shipping AS x WHERE x.isdelete = FALSE AND x.jobid = b.id LIMIT 1)) AS routecode
+						,s.dategatein AS dategatein
+						,(select sum(amount) from fina_arap fa where fa.isdelete =false and fa.jobid=b.id and fa.araptype ='AP' AND fa.feeitemid = ANY(SELECT x.id FROM dat_feeitem x WHERE x.isdelete = FALSE AND x.code LIKE 'OCF%')) AS apamount 
+						,(select MAX(inputtime) from fina_arap fa where fa.isdelete =false and fa.jobid=b.id and fa.araptype ='AP' AND fa.feeitemid = ANY(SELECT x.id FROM dat_feeitem x WHERE x.isdelete = FALSE AND x.code LIKE 'OCF%')) AS ocfinputtime
+					FROM fina_jobs b , bus_shipping s
+					WHERE 1=1
+						$filter1$
+						AND	b.isdelete = FALSE
+						AND b.id = s.jobid
+						AND b.isclose = FALSE
+						AND b.ldtype = 'F'
+						AND b.jobtype = 'S'
+						AND b.jobdate > (NOW() + '-3 Month')::DATE
+						AND b.parentid IS NULL
+		) AS t
+		WHERE $qry$
+
+		LIMIT $limit$ OFFSET $start$
+	]]>
+	</select>
+	
+	<select id="pages.module.bus.shipcostconfirmBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT 
+		 	COUNT(*) AS counts
+		FROM(
+					SELECT
+						 b.id AS jobid
+						,b.nos AS jobno
+						,b.sales AS jobseals
+						,(SELECT x.userprice FROM bus_ship_booking x , bus_order y WHERE x.isdelete=FALSE AND y.isdelete = FALSE AND y.jobid = b.id AND x.orderid=y.id LIMIT 1) AS userprices
+						,(SELECT x.abbr FROM sys_corporation x, bus_shipping y  WHERE x.isdelete = FALSE AND x.id = y.carrierid AND x.isdelete = FALSE AND y.jobid = b.id LIMIT 1) AS carrier
+						,s.vessel AS vessel
+						,s.voyage AS voyage
+						,s.pol AS pol
+						,s.pod AS pod
+						,(SELECT x.cls FROM bus_shipping AS x WHERE x.isdelete = FALSE AND x.jobid = b.id LIMIT 1) AS cls
+						,(SELECT x.etd FROM bus_shipping AS x WHERE x.isdelete = FALSE AND x.jobid = b.id LIMIT 1) AS etd
+						,COALESCE((SELECT x.ispecialprice FROM bus_shipping AS x WHERE x.isdelete = FALSE AND x.jobid = b.id LIMIT 1),'') AS ispecialprice
+						,s.poa AS poa
+						,s.bargecls AS bargecls
+						,s.bargeetd AS bargeetd
+						,s.linecode AS linecode
+						,COALESCE((SELECT y.namec FROM bus_shipping AS x,dat_line y WHERE x.isdelete = FALSE AND y.code = x.routecode AND x.jobid = b.id LIMIT 1)
+						,(SELECT x.routecode FROM bus_shipping AS x WHERE x.isdelete = FALSE AND x.jobid = b.id LIMIT 1)) AS routecode
+						,s.dategatein AS dategatein
+						,(select sum(amount) from fina_arap fa where fa.isdelete =false and fa.jobid=b.id and fa.araptype ='AP' AND fa.feeitemid = ANY(SELECT x.id FROM dat_feeitem x WHERE x.isdelete = FALSE AND x.code LIKE 'OCF%')) AS apamount 
+						,(select MAX(inputtime) from fina_arap fa where fa.isdelete =false and fa.jobid=b.id and fa.araptype ='AP' AND fa.feeitemid = ANY(SELECT x.id FROM dat_feeitem x WHERE x.isdelete = FALSE AND x.code LIKE 'OCF%')) AS ocfinputtime 
+						
+					FROM fina_jobs b , bus_shipping s
+					WHERE 1=1
+						$filter1$
+						AND	b.isdelete = FALSE
+						AND b.id = s.jobid
+						AND b.isclose = FALSE
+						AND b.ldtype = 'F'
+						AND b.jobtype = 'S'
+						AND b.jobdate > (NOW() + '-3 Month')::DATE
+						AND b.parentid IS NULL
+			) AS T
+		WHERE $qry$
+	]]>
+	</select>
+	
+	<select id="pages.module.bus.busdocdefBean.expcorpGrid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			* 
+		FROM dat_filedata 
+		WHERE $qry$
+			isdelete = FALSE 
+		AND fkcode = 70 
+		AND isleaf = TRUE
+		ORDER BY orderno
+	</select>
+	
+	<select id="pages.module.bus.busdocdefBean.expcorpGrid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			COUNT(*) AS counts 
+		FROM dat_filedata 
+		WHERE $qry$
+			isdelete = FALSE 
+		AND fkcode = 70 
+		AND isleaf = TRUE
+	</select>
+	<select id="pages.module.bus.foreigndeliveryBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM  _bus_ship_container t 
+		WHERE $qry$
+			AND isdelete = false
+			AND parentid IS NULL
+		ORDER BY id
+	</select>
+	
+	<select id="pages.module.bus.foreigndeliveryBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  _bus_ship_container t 
+		WHERE $qry$ 
+			AND isdelete = false
+			AND parentid IS NULL
+	</select>
+	<select id="pages.module.bus.foreigndeliveryfindBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select 
+			(SELECT CASE WHEN t.storehousedate IS NOT NULL AND a.atd IS NOT NULL THEN t.storehousedate::DATE-a.atd::DATE-1 ELSE NULL END FROM bus_shipping a WHERE a.jobid = t.jobid LIMIT 1) AS clearancebqdays2,
+			(SELECT CASE WHEN t.storehousedate IS NOT NULL AND a.atd IS NOT NULL THEN t.storehousedate::DATE-a.atd::DATE-1-COALESCE((SELECT transday FROM dat_door2doorday aa WHERE EXISTS(SELECT 1 FROM bus_shipping WHERE isdelete = FALSE AND jobid = t.jobid AND goodstypeid = aa.googstypeid)AND EXISTS(SELECT 1 FROM bus_shipping x,dat_port y WHERE x.isdelete = FALSE AND x.jobid = t.jobid AND x.destinationcode=y.code AND y.id = aa.destinationid)AND EXISTS(SELECT 1 FROM bus_ship_container WHERE isdelete = FALSE AND jobid =  t.jobid AND cntypeid = aa.cntypeid)LIMIT 1),0) ELSE NULL END FROM bus_shipping a WHERE a.jobid = t.jobid  LIMIT 1) AS clearancedelays2,
+			(SELECT CASE WHEN t.storehousedate IS NOT NULL AND a.ata IS NOT NULL THEN t.storehousedate::DATE-a.ata::DATE-(f_date_weekends_number(a.ata::DATE,t.storehousedate::DATE)) ELSE NULL END FROM bus_shipping a WHERE a.jobid = t.jobid  LIMIT 1) AS clearancedays2,
+			(SELECT CASE WHEN t.storehousedate IS NOT NULL AND a.ata IS NOT NULL THEN t.storehousedate::DATE-a.ata::DATE-10-(f_date_weekends_number(a.ata::DATE,t.storehousedate::DATE)) ELSE NULL END FROM bus_shipping a WHERE a.jobid = t.jobid  LIMIT 1) AS clearancedelay2,
+			(SELECT isclc FROM fina_jobs WHERE id = t.jobid AND isdelete = FALSE) AS isclc,
+			(SELECT nos FROM fina_jobs WHERE id = t.jobid AND isdelete = FALSE) AS jobno,
+			(SELECT jobdate FROM fina_jobs WHERE id = t.jobid AND isdelete = FALSE) AS jobdate,
+			(SELECT abbr FROM sys_corporation WHERE id = t.clearancecusid AND isdelete = FALSE) AS clearancecusabbr,
+			(SELECT pod FROM bus_shipping WHERE t.jobid = jobid AND isdelete = FALSE) AS pod,
+			(SELECT destination FROM bus_shipping WHERE t.jobid = jobid AND isdelete = FALSE) AS destination,
+			(SELECT pol FROM bus_shipping WHERE t.jobid = jobid AND isdelete = FALSE) AS pol,
+			(SELECT atd FROM bus_shipping WHERE t.jobid = jobid AND isdelete = FALSE) AS etdv,
+			(SELECT vessel FROM bus_shipping WHERE t.jobid = jobid AND isdelete = FALSE) AS vessel,
+			(SELECT voyage FROM bus_shipping WHERE t.jobid = jobid AND isdelete = FALSE) AS voyage,
+			(SELECT SUM(piece) FROM bus_ship_container WHERE t.jobid = jobid AND isdelete = FALSE) AS piece,
+			(SELECT packagee FROM bus_ship_container WHERE t.jobid = jobid AND isdelete = FALSE limit 1) AS packer,
+			(SELECT SUM(grswgt) FROM bus_ship_container WHERE t.jobid = jobid AND isdelete = FALSE) AS grswgt,
+			(SELECT SUM(cbm) FROM bus_ship_container WHERE t.jobid = jobid AND isdelete = FALSE) AS cbm,		
+			(SELECT ata FROM bus_shipping WHERE t.jobid = jobid AND isdelete = FALSE) AS etav,
+			(SELECT loadtime FROM bus_truck WHERE t.jobid = jobid AND isdelete = FALSE LIMIT 1) AS loadtime,
+			(SELECT d.namec FROM bus_shipping b, dat_goodstype d WHERE t.jobid = b.jobid AND d.id = b.goodstypeid) AS goodstype,
+			(SELECT d.abbr FROM fina_jobs b, sys_corporation d WHERE t.jobid = b.id AND d.id = b.customerid) AS customerabbr,
+			(SELECT d.abbr FROM bus_shipping b, sys_corporation d WHERE t.jobid = b.jobid AND d.id = b.carrierid) AS customers,
+			(SELECT ispace FROM bus_ship_container WHERE t.jobid = jobid AND isdelete = FALSE limit 1) AS ispace,
+			(SELECT spacecbm FROM bus_ship_container WHERE t.jobid = jobid AND isdelete = FALSE limit 1) AS spacecbm,
+			(SELECT cntno FROM bus_ship_container WHERE t.jobid = jobid AND isdelete = FALSE limit 1) AS cntno,
+			(SELECT sealno FROM bus_ship_container WHERE t.jobid = jobid AND isdelete = FALSE limit 1) AS sealno,
+			(SELECT code from dat_cntype where id = (SELECT cntypeid FROM bus_ship_container WHERE t.jobid = jobid AND isdelete = FALSE limit 1)) AS  cntype,
+			(SELECT send_sealno FROM bus_ship_container WHERE t.jobid = jobid AND isdelete = FALSE limit 1) AS send_sealno,
+			(SELECT send_caiid FROM bus_ship_container WHERE t.jobid = jobid AND isdelete = FALSE limit 1) AS send_caiid,
+			(SELECT send_pws FROM bus_ship_container WHERE t.jobid = jobid limit 1) AS send_pws,
+			(select namec  from sys_user where id = (SELECT s.userid  FROM sys_user_assign s,bus_shipping b where s.roletype = 'O' AND linktype = 'J' AND s.linkid = b.id AND t.jobid = b.jobid  limit 1)) AS opname,
+			(SELECT s.namec FROM fina_jobs b, sys_user s WHERE b.id = t.jobid AND s.id = b.saleid AND b.isdelete = FALSE) AS saledesc,
+			(select namec from dat_filedata d WHERE d.isleaf = TRUE AND d.isdelete = false AND d.fkcode = 120 AND d.code = t.clearingstate) AS clearstate,
+		 * 
+		FROM  bus_customs t 
+		WHERE $qry$
+			  $findcustmer$
+		AND clstype = 'I' AND nos <> '' AND nos IS NOT NULL
+		AND isdelete = false
+		ORDER BY id
+		LIMIT $limit$ OFFSET $start$
+	]]>  
+	</select>
+	
+	<select id="pages.module.bus.foreigndeliveryfindBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select 
+		 count(*) AS counts 
+		FROM  bus_customs t 
+		WHERE $qry$
+			  $findcustmer$
+		AND clstype = 'I' AND clearancenos <> '' AND clearancenos IS NOT NULL
+		AND isdelete = false
+	]]>   
+	</select>
+	
+	<select id="pages.module.bus.bookingrptBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT row_number() OVER() AS row,* FROM(
+			select 
+			 t.* 
+			 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+			 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+			 ,(SELECT namec||'/'||namee FROM sys_user x WHERE id = t.saleid limit 1) sales
+			 ,(SELECT name FROM sys_department d WHERE d.id = t.deptid and  d.isdelete = false limit 1) AS dept
+			 ,(SELECT namee FROM dat_port p WHERE p.id = t.polid and p.ispol = true and p.isdelete = false limit 1) AS pol
+			 ,(SELECT namee FROM dat_port p WHERE p.id = t.podid and p.ispod = true and p.isdelete = false limit 1) AS pod
+			 ,(SELECT c.namee FROM sys_corporation c WHERE c.id = t.carrierid and c.isdelete = false and c.iscarrier = true limit 1) AS carrier
+			 ,(unit20gp*1 + unit40gp*2 + unit40hq*2 + unit45hq*2 + unitother) AS cnts
+			 ,(SELECT c.namec FROM sys_corporation c WHERE c.isdelete = false AND c.salesid = t.saleid limit 1) AS corporation
+			FROM  bus_bookingrpt t 
+			WHERE $qry$
+				  $filter$
+				AND isdelete = false
+		ORDER BY id) AS t
+	</select>
+	
+	<select id="pages.module.bus.bookingrptBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  bus_bookingrpt t 
+		WHERE $qry$
+			  $filter$
+			AND isdelete = false
+	</select>
+
+	<select id="pages.module.bus.shipcostchoosefclbyhandBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT *
+		 FROM f_rpa_qryfcl_table('$args$') WHERE $filter$ $ord$;
+	</select>
+	<select id="pages.module.bus.shipcostchoosefclbyhandBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+		 10000 AS counts;
+	</select>
+	
+</sqlMap>

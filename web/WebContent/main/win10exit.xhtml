@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+		<script src="#{constantBean.contextPath}/common/js/jquery-2.0.0.min.js" type="text/javascript"></script>
+	</w:head>
+
+	<w:page loadMask="true" loadMaskText="......" title="#{constantBean.headTitle}" >
+		
+
+	</w:page>
+	<ajax:submitAction id="exitAjax" jsvar="exitAjax" />
+	
+	<script>
+	 //<![CDATA[
+    	Ext.onReady(function(){
+			exitAjax.submit();
+		});
+	 //]]>
+	</script>
+</f:view>

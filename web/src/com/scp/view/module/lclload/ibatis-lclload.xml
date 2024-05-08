@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.module.lclload.shiplclBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		    
+			 select 
+			 * 
+			,(select sovol from wms_in where id=ANY(SELECT DISTINCT z.inid FROM  del_loadtl x , wms_outdtlref y , wms_indtl z WHERE x.loadid = p.id AND x.outdtlid = y.outdtlid AND y.indtlid = z.id AND x.isdelete = false limit 1)) as sovol
+			,(select sum(wgttotle::numeric) from wms_indtl where inid = any(SELECT DISTINCT z.inid FROM  del_loadtl x , wms_outdtlref y , wms_indtl z WHERE x.loadid = p.id AND x.outdtlid = y.outdtlid AND y.indtlid = z.id) and isdelete = false) AS gdswgts
+			,(select sum(cbmtotle::numeric) from wms_indtl where inid = any(SELECT DISTINCT z.inid FROM  del_loadtl x , wms_outdtlref y , wms_indtl z WHERE x.loadid = p.id AND x.outdtlid = y.outdtlid AND y.indtlid = z.id) and isdelete = false) AS gdscbm
+			,(select sum(piece) from wms_indtl where inid = any(SELECT DISTINCT z.inid FROM  del_loadtl x , wms_outdtlref y , wms_indtl z WHERE x.loadid = p.id AND x.outdtlid = y.outdtlid AND y.indtlid = z.id) and isdelete = false) AS pieceinboxs
+			,(SELECT string_agg(DISTINCT zz.cntid , ',') FROM  del_loadtl x , wms_outdtlref y , wms_indtl z , wms_in zz WHERE x.outdtlid = y.outdtlid AND y.indtlid = z.id AND x.loadid = p.id AND zz.id = z.inid) AS cntids
+			,(select customvotes from wms_in where id=ANY(SELECT DISTINCT z.inid FROM  del_loadtl x , wms_outdtlref y , wms_indtl z WHERE x.loadid = p.id AND x.outdtlid = y.outdtlid AND y.indtlid = z.id AND x.isdelete = false limit 1)) as customvotes
+		FROM _del_load p
+		WHERE $qry$ 
+			AND p.isdelete=false 
+			AND (p.loadtype = 'S' OR p.loadtype = 'T' OR p.loadtype = 'A' OR p.loadtype = 'H')
+		order by inputtime DESC 
+		LIMIT $limit$ OFFSET $start$
+	 
+		
+	</select>
+	<select id="pages.module.lclload.shiplclBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _del_load p 
+		WHERE $qry$ 
+		AND (p.loadtype = 'S' OR p.loadtype = 'T' OR p.loadtype = 'A' OR p.loadtype = 'H')
+		AND p.isdelete=false
+	</select>
+	
+	<select id="pages.module.lclload.shiplcldtlBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _del_loadtl p 
+		WHERE $qry$
+		AND p.isdelete=false 
+		order by outnos
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.lclload.shiplcldtlBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _del_loadtl p 
+		WHERE $qry$
+		AND p.isdelete=false 
+	</select>
+	
+	<select id="pages.module.lclload.shiplclcheckBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		,(select sovol from wms_in where id=ANY(SELECT DISTINCT z.inid FROM  del_loadtl x , wms_outdtlref y , wms_indtl z WHERE x.loadid = p.id AND x.outdtlid = y.outdtlid AND y.indtlid = z.id AND x.isdelete = false limit 1)) as sovol 
+		,(select sum(wgttotle::numeric) from wms_indtl where inid = any(SELECT DISTINCT z.inid FROM  del_loadtl x , wms_outdtlref y , wms_indtl z WHERE x.loadid = p.id AND x.outdtlid = y.outdtlid AND y.indtlid = z.id) and isdelete = false) AS gdswgts
+		,(select sum(cbmtotle::numeric) from wms_indtl where inid = any(SELECT DISTINCT z.inid FROM  del_loadtl x , wms_outdtlref y , wms_indtl z WHERE x.loadid = p.id AND x.outdtlid = y.outdtlid AND y.indtlid = z.id) and isdelete = false) AS gdscbm
+		,(select sum(piece) from wms_indtl where inid = any(SELECT DISTINCT z.inid FROM  del_loadtl x , wms_outdtlref y , wms_indtl z WHERE x.loadid = p.id AND x.outdtlid = y.outdtlid AND y.indtlid = z.id) and isdelete = false) AS pieceinboxs
+		,(SELECT string_agg(DISTINCT zz.cntid , ',') FROM  del_loadtl x , wms_outdtlref y , wms_indtl z , wms_in zz WHERE x.outdtlid = y.outdtlid AND y.indtlid = z.id AND x.loadid = p.id AND zz.id = z.inid) AS cntids
+		FROM _del_load p 
+		WHERE $qry$ 
+		AND p.isdelete=false
+		AND p.isubmit = TRUE
+		AND (p.loadtype = 'S' OR p.loadtype = 'T' OR p.loadtype = 'A' OR p.loadtype = 'H')
+		order by checktime DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.lclload.shiplclcheckBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _del_load p 
+		WHERE $qry$ 
+		AND p.isdelete=false
+		AND p.isubmit = TRUE
+		AND (p.loadtype = 'S' OR p.loadtype = 'T' OR p.loadtype = 'A' OR p.loadtype = 'H')
+	</select>
+	
+	<select id="pages.module.lclload.shiplcldtlcheckBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _del_loadtl p 
+		WHERE $qry$
+		AND p.isdelete=false 
+		order by outnos
+	</select>
+	<select id="pages.module.lclload.shiplcldtlcheckBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _del_loadtl p
+		WHERE $qry$ 
+		AND p.isdelete=false 
+	</select>
+	
+	<select id="pages.module.lclload.wmsstockchooserBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			(SELECT w.code||'/'||COALESCE(w.namee,'')FROM dat_warehouse w WHERE w.id= warehouseid)AS warehousedesc
+			,(SELECT COALESCE(c.abbr,'')||'/'||c.code FROM sys_corporation c WHERE c.id =customerid)AS customerabbr
+			,goodscode , customerid , goodsnamec , sum(piece) AS piecenum ,markno,goodssize ,goodscolor,warehouseid,pieceinbox
+			,CAST(sum(piece)/(CASE WHEN COALESCE(pieceinbox,0) = 0 THEN 1 ELSE pieceinbox END) AS NUMERIC(18,0)) as stockbox ,min(checktime) as intime,nos AS innos,MAX(inid) AS inid,linkid,jobnos,chnos
+			, COALESCE(MAX(remark),'') AS remarks
+			,consignee
+			,channel
+			,channelid
+		FROM _wms_stock
+		WHERE $qry$ 
+		GROUP BY nos,goodscode,customerid,goodsnamec,markno,goodssize,warehouseid,goodscolor ,pieceinbox,linkid,jobnos,consignee,chnos,channelid,channel
+		having sum(piece)>0
+		AND $qryIntime$ 
+		AND $qryinnos$
+		ORDER BY inid, warehouseid ,customerid,goodscode,channel
+		
+	</select>
+	
+	
+	<select id="pages.module.lclload.wmsstockchooserBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT COUNT(*) AS counts FROM(
+		SELECT 
+			MAX(1)
+		FROM _wms_stock
+		WHERE $qry$ 
+		GROUP BY nos,goodscode,customerid,goodsnamec,markno,goodssize,warehouseid,goodscolor ,pieceinbox,linkid,jobnos,chnos
+		having sum(piece)>0
+		AND $qryIntime$ 
+		AND $qryinnos$
+		ORDER BY goodscode ,goodsnamec) AS m
+		
+	</select>
+	<select id="pages.module.lclload.trainBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select row_number() OVER() AS row,* FROM(
+		select
+		  id 
+		 ,nos
+		 ,refno
+		 ,customerabbr
+		 ,warehouseid
+		 ,singtime
+		 ,isubmit
+		 ,submiter
+		 ,submitime,ischeck,checkter
+		 ,checktime,inputer,inputtime
+		 ,updater,updatetime
+		 ,(SELECT isconfirm_cc FROM fina_jobs WHERE isdelete = FALSE AND id = t.jobid) AS isconfirm_cc
+		 ,(SELECT confirm_cc_user FROM fina_jobs WHERE isdelete = FALSE AND id = t.jobid) AS confirm_cc_user
+		 ,(SELECT confirm_cc_time FROM fina_jobs WHERE isdelete = FALSE AND id = t.jobid) AS confirm_cc_time
+		 ,split_part(warehousedesc ,'/', 2) AS warehousedesc
+		 ,(SELECT COALESCE(w.namec,'')FROM dat_warehouse w WHERE w.id = t.polwarehouseid and w.isdelete = false)AS polwarehousedesc
+		 ,cntno
+		 ,customtitle
+		 ,sovol
+		 ,isreturn
+		 ,(SELECT COALESCE(x.cbmtotle,0) FROM _wms_indtl x WHERE x.inid = t.id AND x.isdelete = FALSE ORDER BY id LIMIT 1) AS cbmtotle
+		 ,intime
+		 ,(SELECT namec||'/'||namee||'/'||COALESCE((SELECT name FROM sys_department WHERE id = x.deptid),'') FROM sys_user x WHERE id = t.saleid) saleuser
+		 ,sodate
+		 ,agentname
+		 ,factory
+		 ,cntid
+		 ,ewd
+		 ,sono
+		 ,(SELECT namec FROM dat_port WHERE isdelete = false AND isbarge = TRUE and namee = t.poa limit 1) AS poa
+		 ,pol
+		 ,destination
+		 ,trainno
+		 ,(SELECT COALESCE(sum(piece),0) FROM wms_indtl WHERE inid = t.id AND isdelete = FALSE) AS piece
+		 ,(SELECT string_agg(DISTINCT packagee,f_newline()) FROM wms_indtl WHERE inid = t.id AND isdelete = FALSE) AS packagees
+		 ,(SELECT COALESCE(sum(wgttotle),0) FROM wms_indtl WHERE inid = t.id AND isdelete = FALSE) AS wgttotle
+		 ,(SELECT COALESCE(sum(cbmtotle),0) FROM wms_indtl WHERE inid = t.id AND isdelete = FALSE) AS cbmtotle
+		 ,(SELECT string_agg(DISTINCT goodsnamec,f_newline()) FROM wms_indtl WHERE inid = t.id AND isdelete = FALSE) AS goodsnamecs
+		 ,(SELECT string_agg(DISTINCT goodsnamee,f_newline()) FROM wms_indtl WHERE inid = t.id AND isdelete = FALSE) AS goodsnamees
+		 ,remark
+		  ,nationaldate
+		 ,lclwmsdate
+		 ,gdsintype
+		 ,agentcnt
+		 ,export
+		 ,traindate
+		 ,customerid
+		 ,saleid
+		 ,warehouseid
+		 ,polwarehouseid
+		 ,pdd
+		 ,destination
+		 ,(SELECT namec FROM dat_line WHERE isdelete = FALSE AND code = t.lines) AS lines
+		 ,remarkunusual
+		 ,COALESCE(loadgoodsrequire,'') AS loadgoodsrequire
+		 ,customerno
+		 ,customtype
+		 ,custominfo
+		 ,(select customvotes from wms_in where id =t.id) as customvotes
+		FROM _wms_in t 
+		WHERE $qry$ 
+			$dynamicClauseWhere$ 
+			AND isdelete = FALSE
+			AND isubmit = TRUE
+			AND ischeck = TRUE
+			
+			AND (wmstype = 'I' OR  wmstype = 'G' OR  wmstype = 'C' OR wmstype = 'P')
+			$ordersql$
+		LIMIT $limit$ OFFSET $start$) AS T
+	</select>
+	<select id="pages.module.lclload.trainBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _wms_in t 
+		WHERE $qry$ 
+			$dynamicClauseWhere$ 
+			AND (wmstype = 'I' OR  wmstype = 'G' OR  wmstype = 'C' OR wmstype = 'P')
+			AND isdelete = FALSE
+			AND isubmit = TRUE
+			AND ischeck = TRUE
+			AND isreturn = FALSE
+	</select>
+	
+	
+	<select id="pages.module.lclload.trainlcldtlBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,(select sum(wgttotle::numeric) from wms_indtl where inid = i.id and isdelete = false) AS gdswgts
+		 ,(select sum(cbmtotle::numeric) from wms_indtl where inid = i.id and isdelete = false) AS gdscbm
+		 ,(select sum(piece) from wms_indtl where inid = i.id) AS pieceinboxs
+		 ,(select packagee from wms_indtl where inid = i.id and isdelete = false limit 1) AS packagees
+		 ,(select string_agg(distinct goodsnamec,',') from wms_indtl where inid = i.id) AS goodsnamecs
+		 ,(select string_agg(distinct remark,',') from wms_indtl where inid = i.id) AS remarks
+		FROM _wms_in i 
+		WHERE $qry$
+			$filter$
+			AND i.isdelete=false 
+		order by nos
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.lclload.trainlcldtlBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _wms_in i 
+		WHERE $qry$
+		AND i.isdelete=false 
+	</select>
+	
+	<select id="pages.module.lclload.trainlcldtlcheckBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+	,(select sum(wgttotle::numeric) from wms_indtl where inid = i.id and isdelete = false) AS gdswgts
+		 ,(select sum(cbmtotle::numeric) from wms_indtl where inid = i.id and isdelete = false) AS gdscbm
+		 ,(select sum(piece) from wms_indtl where inid = i.id) AS pieceinboxs
+		 ,(select packagee from wms_indtl where inid = i.id and isdelete = false limit 1) AS packagees
+		 ,(select string_agg(distinct goodsnamec,',') from wms_indtl where inid = i.id) AS goodsnamecs
+		 ,(select string_agg(distinct remark,',') from wms_indtl where inid = i.id) AS remarks
+		FROM _wms_in i 
+		WHERE $qry$
+			$filter$
+			AND i.isdelete=false 
+		order by nos
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.lclload.trainlcldtlcheckBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _wms_in i 
+		WHERE $qry$
+		AND i.isdelete=false 
+	</select>
+	
+	<select id="pages.module.lclload.trainBean.gridExp.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select * FROM
+			(select DISTINCT(SELECT s.id FROM sys_corporation s where s.id = t.customerid) AS id
+			,(SELECT s.code FROM sys_corporation s where s.id = t.customerid) AS code
+			,(SELECT s.namec FROM sys_corporation s where s.id = t.customerid) AS namec
+			,(SELECT s.namee FROM sys_corporation s where s.id = t.customerid) AS namee
+			,(SELECT s.abbr FROM sys_corporation s where s.id = t.customerid) AS abbr
+			 FROM wms_in t
+			WHERE $qry$ 
+				$filter$
+				AND isdelete = FALSE) AS R
+		WHERE $qry1$
+			  $filter$
+		 	  $filter2$
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.lclload.trainBean.gridExp.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+			count(*) AS counts
+		from (select 
+				DISTINCT(SELECT s.id FROM sys_corporation s where s.id = t.customerid) AS id
+				,(SELECT s.code FROM sys_corporation s where s.id = t.customerid) AS code
+				,(SELECT s.namec FROM sys_corporation s where s.id = t.customerid) AS namec
+				,(SELECT s.namee FROM sys_corporation s where s.id = t.customerid) AS namee
+				,(SELECT s.abbr FROM sys_corporation s where s.id = t.customerid) AS abbr
+			  FROM wms_in t
+			  WHERE $qry$ 
+				$filter$
+				AND isdelete = FALSE) AS R
+		WHERE $qry1$
+			  $filter$
+			  $filter2$
+	</select>
+	
+
+</sqlMap>

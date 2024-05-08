@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+		<w:script src="/common/js/common.js?t=4"></w:script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+		<layout:panel id="gridPanel" jsvar="gridPanelJsvar" height="100%" hideBorders="true" width="100%"
+			fit="true">
+			<w:form>
+				<layout:panelGrid columns="2" style="padding: 20px;">
+				
+				
+					<h:outputLabel value="#{l.m['类别']}"></h:outputLabel>
+					<w:combo typeAhead="true" editable="false" forceSelection="true"
+						width="200" value="#{pages.sysmgr.init.impinitBean.type}" allowBlank="false"
+						>
+						<f:selectItem itemLabel="#{l.m['公司']}" itemValue="COMPANY" />
+						<f:selectItem itemLabel="#{l.m['费用项目']}" itemValue="FEEITEM" />
+						<f:selectItem itemLabel="#{l.m['港口']}" itemValue="PORT" />
+						<f:selectItem itemLabel="#{l.m['包装']}" itemValue="PACKAGE" />
+						<f:selectItem itemLabel="#{l.m['账号']}" itemValue="USER" />
+						<f:selectItem itemLabel="#{l.m['部门']}" itemValue="DEPT" />
+						<f:selectItem itemLabel="#{l.m['角色']}" itemValue="ROLE" />
+						<f:selectItem itemLabel="#{l.m['客户']}" itemValue="CUSTOMDER" />
+						<f:selectItem itemLabel="#{l.m['供应商']}" itemValue="SUPPLIER" />
+						<f:selectItem itemLabel="#{l.m['工厂']}" itemValue="FACTORY" />
+						<f:selectItem itemLabel="#{l.m['协助单位']}" itemValue="COOPER" />
+					</w:combo>
+					
+					<w:button id="importData" value="#{l.m['批量导入']}"
+						image="#{constantBean.contextPath}/pages/module/common/resources/images/excel.gif" />
+					<w:button value="#{l.m['下载模板']}" onclick="window.open('/scp/upload/init/imp_init.xls');"
+						image="#{constantBean.contextPath}/pages/module/common/resources/images/excel.gif" />
+				</layout:panelGrid>
+				
+				<layout:cell>
+					<ajax:status startStyle="color: red"
+						onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+						onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+						<f:facet name="start">
+							<f:verbatim>
+								<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 20px;">Loading...</img>
+							</f:verbatim>
+						</f:facet>
+					</ajax:status>
+				</layout:cell>
+			</w:form>
+		</layout:panel>
+	</w:page>
+
+
+	<layout:window id="importDataWindow" width="450" height="400" constrainHeader="true">
+
+		<layout:panel height="450" hideBorders="true" style="font-size:12px">
+			<w:form>
+				<layout:panelGrid columns="2">
+					<layout:cell>
+						<w:button id="importDataBatch" value="#{l.m['批量导入']}"
+							image="#{constantBean.contextPath}/images/save.png" />
+						<!--<w:button id="importDataBatchFromLocalFile" value="#{l.m['文件导入']}"
+							image="#{constantBean.contextPath}/images/save.png" />
+					--></layout:cell>
+					<layout:cell>
+						<ajax:status startStyle="color: red"
+							onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+							onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+							<f:facet name="start">
+								<f:verbatim>
+									<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 20px;">Loading...</img>
+								</f:verbatim>
+							</f:facet>
+						</ajax:status>
+					</layout:cell>
+				</layout:panelGrid>
+				<layout:cell>
+					<w:textArea id="importDataText" selectOnFocus="true" height="250" width="420" grow="false"></w:textArea>
+				</layout:cell>
+				<layout:cell>
+
+					<layout:panelGrid columns="1">
+						<h:outputLabel style="width: 450" value="#{l.m['格式说明  ']}" />
+						<h:outputLabel style="width: 450" value="#{l.m['请粘贴表头数据，一起复制进来，excel单元格中不能有回车换行符']}" />
+					</layout:panelGrid>
+				</layout:cell>
+				<div style="display: none"><w:textField selectOnFocus="true" id="refid" hidden="true"></w:textField>
+				</div>
+			</w:form>
+		</layout:panel>
+	</layout:window>
+
+
+	<script>
+	//<![CDATA[
+	
+		Ext.onReady(function(){
+			//resize();
+			Ext.EventManager.onWindowResize(function(){
+				//resize();
+			});
+		 });
+		 //]]>
+	</script>
+</f:view>

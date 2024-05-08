@@ -1,0 +1,785 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ajax="http://www.apusic.com/jsf/ajax" xmlns:om="http://www.apusic.com/jsf/misc"
+	renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+		<w:script src="/common/js/common.js?t=4"></w:script>
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+		
+		<script type="text/javascript" src="/scp/common/js/savemodel2.js?t=5"></script>
+		<script type="text/javascript" src="/scp/common/js/jquery.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="/scp/common/css/jquery.flexbox.css" />
+		<script type="text/javascript" src="/scp/common/js/jquery.flexbox.js"></script>
+		
+		<style>
+			div.taba span.x-tab-strip-text {
+				width: 181px;
+				text-align: center;
+				text-shadow: gray;
+				font-size: 15px;
+				font-weight: bold;
+			}
+			
+			div.tabb span.x-tab-strip-text {
+				width: 77px;
+				text-align: center;
+			}
+			
+			.tabIconFCL {
+				background:
+					url("#{constantBean.contextPath}/images/refresh.png");
+			}
+			#pod .col1 {
+				float:left;
+				width:200px;
+			}
+						
+		</style>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="#{l.m['运价维护']} AIR">
+		<ajax:conversationActivator/>
+		<layout:panel fit="true" jsvar="gridPanelJsvar" id="gridPanel">
+			<w:form>
+				<layout:panelGrid columns="12">
+				
+					<h:outputLabel value="#{l.m['起运港']}" />
+					<layout:cell>
+						<div id="pol"></div>
+						<w:textField id="polcode" width="70" jsvar="polcodeJsVar" hidden="true"  alwaysSubmit="true"/>
+					</layout:cell>
+					<h:outputLabel value="#{l.m['目的港']}" />
+					<layout:cell>
+						<div id="pod"></div>
+						<w:textField id="podcode" width="70" jsvar="podcodeJsVar" hidden="true"  alwaysSubmit="true"/>
+					</layout:cell>
+					
+					<h:outputLabel value="#{l.m['创建人']}" />
+					<w:combo width="100" 
+						value="#{pages.module.price.mgrairBean.qryMap['inputer']}">
+						<f:selectItems value="#{pages.module.price.mgrairBean.qryInputer}" />
+					</w:combo>
+					
+					<h:outputLabel value="#{l.m['维护人']}" />
+					<w:combo width="100" 
+						value="#{pages.module.price.mgrairBean.qryMap['updater']}">
+						<f:selectItems value="#{pages.module.price.mgrairBean.qryUpdater}" />
+					</w:combo>
+					
+					<h:outputLabel value="#{l.m['发布状态']}" />
+					<w:combo typeAhead="true" width="75"
+							value="#{pages.module.price.mgrairBean.qryMap['isrelease$']}">
+							<f:selectItem itemLabel="#{l.m['已发布']}" itemValue="true" />
+							<f:selectItem itemLabel="#{l.m['未发布']}" itemValue="false" />
+					</w:combo>
+					
+					<h:outputLabel value="#{l.m['航线']}" />
+					<w:combo width="120"
+						value="#{pages.module.price.mgrairBean.qryMap['line']}" forceSelection="true"
+						listWidth="160">
+						<f:selectItems value="#{comboxBean.lineAir}" />
+					</w:combo>
+					
+					<h:outputLabel value="#{l.m['有效日期起']}" />
+					<w:dateField selectOnFocus="true" width="90"
+							value="#{pages.module.price.mgrairBean.qryMap['datefm']}" />
+						
+					<h:outputLabel value="#{l.m['有效日期止']}" />
+					<w:dateField selectOnFocus="true" width="90"
+						value="#{pages.module.price.mgrairBean.qryMap['dateto']}" />
+					
+					<w:button id="qryRefresh" value="#{l.m['查询']}"
+						image="#{constantBean.contextPath}/images/query-small.png" />
+					<w:button id="clearQryKey" jsvar="clearQryKeyJsVar" label="#{l.m['清空条件']}" width="25"
+							image="#{constantBean.contextPath}/images/clear.png" />
+					</layout:panelGrid>
+				
+				<layout:panelGrid columns="18">
+					<w:button id="refreshForm" value="#{l.m['刷新']}"
+							image="#{constantBean.contextPath}/images/refresh.png" />
+					<w:button id="addcopy" value="#{l.m['复制新增']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+							
+					<w:button id="addForm" value="#{l.m['新增']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+							
+					<w:button id="save" value="#{l.m['保存']}" image="#{constantBean.contextPath}/images/save.png" />
+					
+					<w:button id="del" label="#{l.m['删除']}" onclick="return confirm('#{l.m['确定要删除吗?']}');"
+							image="#{constantBean.contextPath}/images/delete.png" />
+				
+				<!-- <w:button id="editBatch" value="#{l.m['批量编辑']}" 
+							image="#{constantBean.contextPath}/pages/module/common/resources/images/excel.gif" />  -->
+							
+				<!--<w:combo id="editBatch" width="80" emptyText="#{l.m['批量修改']}" jsvar="editBatchJsvar" forceSelection="true" listWidth="200">
+					<f:selectItem itemLabel="#{l.m['成本价']}" itemValue="Cost" />
+					<f:selectItem itemLabel="#{l.m['附加费']}" itemValue="AddFee" />
+					<f:selectItem itemLabel="#{l.m['船期/航程/开航日']}" itemValue="VesVel" />
+					<f:selectItem itemLabel="#{l.m['有效期']}" itemValue="Data" />
+					<f:selectItem itemLabel="#{l.m['备注']}" itemValue="Remarks" />
+				</w:combo>
+					--><!--<w:button id="importFile" value="#{l.m['文件导入']}"
+							image="#{constantBean.contextPath}/pages/module/common/resources/images/excel.gif" />-->
+					<w:button value="#{l.m['下载模板']}"
+							onclick="window.open('#{constantBean.contextPath}/upload/quote/quote_airprice.xls');"
+							image="#{constantBean.contextPath}/pages/module/common/resources/images/excel.gif" />
+					
+					<w:button id="importData" value="#{l.m['批量导入']}"
+							image="#{constantBean.contextPath}/pages/module/common/resources/images/excel.gif" />
+							
+					<w:button id="release" value="#{l.m['发布']}"
+							image="#{constantBean.contextPath}/pages/module/common/resources/images/excel.gif" />
+							
+					<w:button id="exportBtn" value="#{l.m['导出']}" onclick="exportExcel();"
+							image="#{constantBean.contextPath}/pages/module/common/resources/images/excel.gif" />
+							
+					<layout:cell>
+						<ajax:status startStyle="color: red"
+							onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+							onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+							<f:facet name="start">
+								<f:verbatim>
+									<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 18px;"></img>
+								</f:verbatim>
+							</f:facet>
+						</ajax:status>
+					</layout:cell>
+				</layout:panelGrid>
+
+				<div style="height: 0px; display: none;">
+					<ajax:submitAction id="showSurExt" jsvar="showSurExt" />
+					<ajax:submitAction id="linkEdit" jsvar="linkEdit" />
+				</div>
+				
+				<ajax:submitAction id="export" jsvar="exportexl" />
+				<div style="height: 0px; display: none;"><w:button id="simulateExport"
+					jsvar="simulateExport" label="#{l.m['导出']}" title="#{l.m['下载']}" disabled="true" alwaysSubmit="true" />
+				<om:fileDownload id="doSimulateExport" for="simulateExport" savedName="quote-air.xls" />
+				</div>
+				
+				<w:editDataGrid height="560" paged="true" rows="100" id="editGrid" jsvar="gridJsvar" toolBarPosition="bottom" clicksToEdit="1"
+					idColumn="id" selectionModel="#{constantBean.checkBox}" moveEditorOnEnter="true" onafteredit="" onrowselect="return false" onrowdeselect="return false">
+					
+					<w:outputColumn id="id" header="id" hidden="true" />
+					<w:outputColumn header="#{l.m['编辑']}"  width="40" sortable="true"
+						clientFormatter="formatLinkEdit" />
+					<w:outputColumn header="#{l.m['起运港']}" id="pol" width="120" sortable="true"  clientFormatter="formateReleaseColor">
+						<!--<w:combo width="130" id="polEidt" forceSelection="true" listWidth="280">
+								<f:selectItems value="#{comboxBean.polAir}" />
+						</w:combo>
+					--></w:outputColumn>
+					<w:outputColumn header="#{l.m['目的港']}" id="pod" width="120" sortable="true"  clientFormatter="formateReleaseColor">
+						<!--<w:combo width="130" id="podEidt" forceSelection="true" listWidth="280">
+								<f:selectItems value="#{comboxBean.podAir}" />
+						</w:combo>
+					--></w:outputColumn>
+					<w:outputColumn header="#{l.m['航线']}" id="line" width="70" sortable="true"  align="center">
+						<!--<w:combo width="130" id="lineEidt" forceSelection="true" listWidth="280">
+							<f:selectItems value="#{comboxBean.lineAir}" />
+						</w:combo>
+					--></w:outputColumn> 
+					<w:outputColumn header="#{l.m['中转港']}" id="via" width="120" sortable="true"  align="center">
+						<!--<w:combo width="130" id="viaEidt" forceSelection="true" listWidth="280">
+								<f:selectItems value="#{comboxBean.pddAir}" />
+						</w:combo>
+					--></w:outputColumn> 
+					
+					
+					<w:outputColumn header="#{l.m['航空公司']}" id="carrier" width="120" sortable="true" align="left" hidden="false">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['航班']}" id="airflight" width="120" sortable="true" align="left" hidden="false">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['空运费(净价)']}" id="costair" width="220" sortable="true" align="left" wrap="true">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['客机(净价)']}" id="costkeji" width="120" sortable="true" align="left" hidden="true">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['货机(净价)']}" id="costhuoji" width="120" sortable="true" align="left" hidden="true">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['泡货(净价)']}" id="costpaohuo" width="120" sortable="true" align="left" hidden="true">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['标运(净价)']}" id="costbiaoyun" width="120" sortable="true" align="left" hidden="true">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['标运+净价']}" id="costbiaoyunp" width="120" sortable="true" align="left" hidden="true">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['快运(净价)']}" id="costkuaiyun" width="120" sortable="true" align="left" hidden="true">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['1:300重货净价']}" id="cost1300" width="120" sortable="true" align="left" hidden="true">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['1:500重货净价']}" id="cost1500" width="120" sortable="true" align="left" hidden="true">
+					</w:outputColumn>
+					<w:outputColumn header="M" id="m" width="60" sortable="true" align="center">
+					</w:outputColumn>
+					<w:outputColumn header="N" id="n" width="50" sortable="true" align="center">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['燃油']}" id="ry" width="50" sortable="true" align="center">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['战险']}" id="zx" width="50" sortable="true" align="center">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['过站费']}" id="gzf" width="50" sortable="true" align="center">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['补贴']}" id="bt" width="50" sortable="true" align="center">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['卡车']}" id="truck" width="50" sortable="true" align="center">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['文件费']}" id="doc" width="50" sortable="true" align="center">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['报关费']}" id="bgf" width="50" sortable="true" align="center">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['入仓费']}" id="rcf" width="50" sortable="true" align="center">
+					</w:outputColumn>
+					<w:outputColumn header="AMS/ENS" id="amsens" width="80" sortable="true" align="center">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['搬运费']}" id="byf" width="50" sortable="true" align="center">
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['其他']}" id="other" width="50" sortable="true" align="center">
+					
+					<w:outputColumn header="#{l.m['订舱代理']}" id="bkagent" width="120" sortable="true" align="right" hidden="false">
+					</w:outputColumn>
+					
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['有效日期起']}" id="datefm" width="90" sortable="true" clientFormatter="formateValid">
+						<f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+8" />
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['有效日期止']}" id="dateto" width="90" sortable="true" clientFormatter="formateValid">
+						<f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+8" />
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['发布状态']}" id="isrelease" width="70" sortable="true" clientFormatter="formateRelease"/>
+					<w:outputColumn header="#{l.m['发布时间']}" id="daterelease" width="90" sortable="true"  >
+						<f:convertDateTime pattern="yy/MM/dd" timeZone="GMT+8" />
+					</w:outputColumn> 
+					<w:outputColumn header="#{l.m['录入人']}" id="inputername" sortable="true" width="80" />
+					<w:outputColumn header="#{l.m['录入时间']}" id="inputtime" width="90" sortable="true">
+						<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" />
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['修改人']}" id="updatername" sortable="true" width="80"/>
+					<w:outputColumn header="#{l.m['修改时间']}" id="updatetime" width="90" sortable="true">
+						<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" />
+					</w:outputColumn>
+				</w:editDataGrid>
+				<w:pagingToolbar for="grid" target="grid" displayInfo="true"
+					displayMsg="{0}-{1}/{2}">
+				</w:pagingToolbar>
+				
+			</w:form>
+		</layout:panel>
+		
+	</w:page>
+	
+	
+	
+	<layout:window id="editWindow" width="1010" height="560" maximizable="true"
+		jsvar="showEditWindowJsVar" title="#{l.m['运价编辑']}" constrainHeader="true" border="false"
+		resizable="true">
+			<layout:panel id="editPanel">
+				<w:form>
+				<layout:panelGrid>
+					<!--<w:button id="setDetails" value="#{l.m['附件']}"></w:button>
+					--><w:button id="releaseThis" value="#{l.m['发布运价']}" image="#{constantBean.contextPath}/pages/module/common/resources/images/excel.gif"></w:button>
+					<w:button id="refreshForm" jsvar="refreshFormJsVar" value="#{l.m['刷新']}"
+						image="#{constantBean.contextPath}/images/refresh.png" />
+					<w:button id="saveForm" value="#{l.m['保存']}" image="#{constantBean.contextPath}/images/save.png" />
+					<w:button id="close" value="#{l.m['关闭']}" ></w:button>
+					<w:checkBox boxLabel="#{l.m['发布']}" value="#{pages.module.price.mgrairBean.selectedRowData.isrelease}" id="releaseCheck"/>
+					<w:dateField width="90" selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.daterelease}" readOnly="true"></w:dateField>
+					
+				</layout:panelGrid>
+				<layout:panelGrid>
+					<layout:cell align="center">
+						<layout:panelGrid columns="8">
+							<h:outputLabel value="#{l.m['航线']}" />
+							<w:combo width="130"
+								value="#{pages.module.price.mgrairBean.selectedRowData.line}" forceSelection="true"
+								listWidth="280">
+								<f:selectItems value="#{comboxBean.lineAir}" />
+							</w:combo>
+							
+							<h:outputLabel value="#{l.m['起运港']}" />
+							<layout:cell>
+								<div id="pol1"></div>
+								<w:textField value="#{pages.module.price.mgrairBean.selectedRowData.pol}" jsvar="pol1codeJsVar" hidden="true" />
+							</layout:cell>
+							
+							<h:outputLabel value="#{l.m['目的港']}" />
+							<layout:cell>
+								<div id="pod1"></div>
+								<w:textField value="#{pages.module.price.mgrairBean.selectedRowData.pod}" jsvar="pod1codeJsVar" hidden="true" />
+							</layout:cell>
+							
+							<h:outputLabel value="#{l.m['中转港']}" />
+							<layout:cell>
+								<div id="pdd"></div>
+								<w:textField value="#{pages.module.price.mgrairBean.selectedRowData.via}" jsvar="pddcodeJsVar" hidden="true" />
+							</layout:cell>
+							
+							<h:outputLabel value="#{l.m['航班']}" />
+							<w:textField  value="#{pages.module.price.mgrairBean.selectedRowData.airflight}"  width="120"/>
+							
+							<h:outputLabel value="#{l.m['有效日期']}" />
+							<w:dateField width="90" selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.datefm}"></w:dateField>
+							<h:outputLabel value="~" />
+							<w:dateField width="90" selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.dateto}"></w:dateField>
+							<h:outputLabel value="#{l.m['订舱代理']}"></h:outputLabel>
+								<w:combo value="#{pages.module.price.mgrairBean.selectedRowData.bkagentid}" width="120"
+									forceSelection="true" listWidth="300" id="agentid">
+									<f:selectItems value="#{comboxBean.shipagent}" />
+								</w:combo>
+							<h:outputLabel value="#{l.m['航空公司']}"></h:outputLabel>
+								<w:combo value="#{pages.module.price.mgrairBean.selectedRowData.carrierid}" width="120" id="carrierid">
+									<f:selectItems value="#{comboxBean.airline}" />
+								</w:combo>
+							
+						</layout:panelGrid>
+					</layout:cell>
+				</layout:panelGrid>
+				
+				<hr/>
+				
+				<layout:panelGrid columns="4" width="180">
+					<h:outputLabel value="#{l.m['客机净价']}" />
+					<h:outputLabel value="#{l.m['货机净价']}" />
+					<h:outputLabel value="#{l.m['泡货净价']}" />
+					<h:outputLabel value="#{l.m['1:300重货净价']}" />
+					
+					<w:textField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.costkeji}" style="text-align: left" width="160"/>
+					<w:textField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.costhuoji}" style="text-align: left" width="160"/>
+					<w:textField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.costpaohuo}" style="text-align: left" width="160"/>
+					<w:textField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.cost1300}" style="text-align: left" width="160"/>
+				</layout:panelGrid>
+				<layout:panelGrid columns="4" width="180">
+					<h:outputLabel value="#{l.m['标运净价']}" />
+					<h:outputLabel value="#{l.m['标运+净价']}" />
+					<h:outputLabel value="#{l.m['快运净价']}" />
+					<h:outputLabel value="#{l.m['1:500重货净价']}" />
+					
+					<w:textField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.costbiaoyun}" style="text-align: left" width="160"/>
+					<w:textField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.costbiaoyunp}" style="text-align: left" width="160"/>
+					<w:textField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.costkuaiyun}" style="text-align: left" width="160"/>
+					<w:textField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.cost1500}" style="text-align: left" width="160"/>
+				</layout:panelGrid>
+				
+				<layout:panelGrid columns="13" width="480">
+					<h:outputLabel value="M" />
+					<h:outputLabel value="N" />
+					<h:outputLabel value="#{l.m['燃油']}" />
+					<h:outputLabel value="#{l.m['战险']}" />
+					<h:outputLabel value="#{l.m['过站费']}" />
+					<h:outputLabel value="#{l.m['补贴']}" />
+					<h:outputLabel value="#{l.m['卡车']}" />
+					<h:outputLabel value="#{l.m['文件费']}" />
+					<h:outputLabel value="#{l.m['报关费']}" />
+					<h:outputLabel value="#{l.m['入仓费']}" />
+					<h:outputLabel value="#{l.m['AMS/ENS']}" />
+					<h:outputLabel value="#{l.m['搬运费']}" />
+					<h:outputLabel value="#{l.m['其他']}" />
+					
+					<w:numberField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.m}" width="40" allowNegative="false" style="text-align: right"/>
+					<w:numberField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.n}" width="40" allowNegative="false" style="text-align: right"/>
+					<w:numberField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.ry}" width="40" allowNegative="false" style="text-align: right"/>
+					<w:numberField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.zx}" width="40" allowNegative="false" style="text-align: right"/>
+					<w:numberField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.gzf}" width="60" allowNegative="false" style="text-align: right"/>
+					<w:numberField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.bt}" width="40" allowNegative="false" style="text-align: right"/>
+					<w:numberField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.truck}" width="40" allowNegative="false" style="text-align: right"/>
+					<w:numberField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.doc}" width="40" allowNegative="false" style="text-align: right"/>
+					<w:numberField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.bgf}" width="60" allowNegative="false" style="text-align: right"/>
+					<w:numberField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.rcf}" width="60" allowNegative="false" style="text-align: right"/>
+					<w:numberField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.amsens}" width="60" allowNegative="false" style="text-align: right"/>
+					<w:numberField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.byf}" width="60" allowNegative="false" style="text-align: right"/>
+					<w:numberField  selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.other}" width="40" allowNegative="false" style="text-align: right"/>
+				</layout:panelGrid>
+				
+				<hr/>
+				
+				<layout:panelGrid columns="2" width="760">
+					<h:outputLabel value="#{l.m['内部备注']}"/>
+					<h:outputLabel value="#{l.m['外部备注']}"/>
+					<w:textArea width="230" selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.remark_in}"  height="60"/>
+					<w:textArea width="230" selectOnFocus="true" value="#{pages.module.price.mgrairBean.selectedRowData.remark_out}"  height="60"/>
+				</layout:panelGrid>
+				
+				<w:textField selectOnFocus="true" id="pkVal" hidden="true" />
+				</w:form>
+			</layout:panel>
+	</layout:window>
+	
+	
+
+	<layout:window id="editBatchWindowCost" width="400" height="260" maximizable="true"
+		jsvar="editBatchWindowJsVar1" title="#{l.m['成本价']}" constrainHeader="true" border="false"
+		resizable="true">
+		<layout:panel id="j">
+				<w:form>
+				
+				<layout:panelGrid columns="4" width="180">
+					<h:outputLabel value="#{l.m['箱型']}" style="width: 140px;font-size: 12px;"/>
+					<h:outputLabel value="+-" style="font-size: 16px;"/>
+					<h:outputLabel value="#{l.m['成本价']}" style="width: 140px;font-size: 12px;"/>
+					<h:outputLabel value="#{l.m['更新价格']}" style="width: 140px;font-size: 12px;"/>
+					
+					<h:outputLabel value="20'GP" />
+					<w:combo width="50" value="+" id="c20gp">
+						<f:selectItem itemLabel="+" itemValue="+" />
+						<f:selectItem itemLabel="-" itemValue="-" />
+					</w:combo>
+					<w:numberField id="z20gp" selectOnFocus="true"  allowNegative="false" style="text-align: right" width="100"/>
+					<w:numberField id="z20gpv" selectOnFocus="true"  allowNegative="false" style="text-align: right" width="100"/>
+					
+					<h:outputLabel value="40'GP" />
+					<w:combo width="50" value="+" id="c40gp">
+						<f:selectItem itemLabel="+" itemValue="+" />
+						<f:selectItem itemLabel="-" itemValue="-" />
+					</w:combo>
+					<w:numberField id="z40gp" selectOnFocus="true"  allowNegative="false" style="text-align: right" width="100"/>
+					<w:numberField id="z40gpv" selectOnFocus="true"  allowNegative="false" style="text-align: right" width="100"/>
+					
+					<h:outputLabel value="40'HQ" />
+					<w:combo width="50" value="+" id="c40hq">
+						<f:selectItem itemLabel="+" itemValue="+" />
+						<f:selectItem itemLabel="-" itemValue="-" />
+					</w:combo>
+					<w:numberField id="z40hq" selectOnFocus="true"  allowNegative="false" style="text-align: right" width="100"/>
+					<w:numberField id="z40hqv" selectOnFocus="true"  allowNegative="false" style="text-align: right" width="100"/>
+					<h:outputLabel value="#{l.m['其他']}" />
+					<w:combo width="50" value="+" id="cother">
+						<f:selectItem itemLabel="+" itemValue="+" />
+						<f:selectItem itemLabel="-" itemValue="-" />
+					</w:combo>
+					<w:numberField id="zcntypeother" selectOnFocus="true"  allowNegative="false" style="text-align: right" width="100"/>
+					<w:numberField id="zcntypeotherv" selectOnFocus="true"  allowNegative="false" style="text-align: right" width="100"/>
+				</layout:panelGrid>
+				<layout:panelGrid>
+					<w:button id="saveBatchCost" value="#{l.m['保存']}" image="#{constantBean.contextPath}/images/save.png" />
+				</layout:panelGrid>
+				</w:form>
+			</layout:panel>	
+	</layout:window>
+	
+	<layout:window maximizable="true" id="feeAddWindows" jsvar="showFeeAddWindowsJsVar" width="920" height="550" header="false" title="附加费"
+		constrainHeader="true" modal="true" onclose="refreshFormJsVar.fireEvent('click');">
+		<w:iframe id="addFeeIframe" style="border: thin;width: 100%;height: 100%" border="0"
+			scrolling="false">
+		</w:iframe>
+	</layout:window>
+	
+	
+	<layout:window id="editBatchWindoVesVel" width="400" height="260" maximizable="true"
+		title="#{l.m['船期/航程/开航日']}" constrainHeader="true" border="false"
+		resizable="true">
+			<layout:panel>
+				<w:form>
+				<layout:panelGrid columns="2">
+					<h:outputLabel value="#{l.m['船期']}" />
+					<w:textField selectOnFocus="true"  style="text-align: right" id="batchSchedule"/>					
+					<h:outputLabel value="#{l.m['航程（天）']}" />
+					<w:textField selectOnFocus="true"  style="text-align: right" id="batchTT"/>
+					<h:outputLabel value="ETD" />
+					<w:dateField selectOnFocus="true" id="batchETD" ></w:dateField>
+				</layout:panelGrid>
+					<w:button id="saveBatchVesVel" value="#{l.m['确定']}" style="text-align: right" image="#{constantBean.contextPath}/images/save.png" />
+				</w:form>
+			</layout:panel>	
+	</layout:window>
+	<layout:window id="editBatchWindowRemarks" width="400" height="260" maximizable="true"
+		jsvar="editBatchWindowJsVar3" title="#{l.m['备注']}" constrainHeader="true" border="false"
+		resizable="true">
+			<layout:panel id="b">
+				<w:form>
+					<layout:panelGrid>
+						<h:outputLabel value="#{l.m['外部备注：']}"/>
+						<w:textArea selectOnFocus="false" height="40" width="130" id="batchRemarksInner"/>
+					</layout:panelGrid>
+					<layout:panelGrid>
+						<h:outputLabel value="#{l.m['内部备注：']}"/>
+						<w:textArea selectOnFocus="false" height="40" width="130" id="batchRemarksOuter"/>
+					</layout:panelGrid>
+					<layout:panelGrid>
+					
+						<w:button id="saveBatchRemarks" value="#{l.m['覆盖']}" style="text-align: right" image="#{constantBean.contextPath}/images/save.png" />
+				</layout:panelGrid>
+				</w:form>
+			</layout:panel>	
+	</layout:window>
+	<layout:window id="editBatchWindowData" width="400" height="260" maximizable="true"
+		jsvar="editBatchWindowJsVar6" title="#{l.m['修改有效期']}" constrainHeader="true" border="false"
+		resizable="true">
+		<layout:panel>
+			<w:form>
+				<layout:panelGrid columns="4">
+					<h:outputLabel value="#{l.m['有效期（开始）']}"/>
+					<w:dateField width="90" selectOnFocus="true" id="batchDateFr"></w:dateField>
+					<h:outputLabel value="#{l.m['有效期（结束）']}"/>
+					<w:dateField width="90" selectOnFocus="true" id="batchDateTo" ></w:dateField>
+				</layout:panelGrid>
+					
+				<w:button id="saveBatchData" value="#{l.m['确定']}" style="text-align: right" image="#{constantBean.contextPath}/images/save.png" />
+			</w:form>
+		</layout:panel>	
+	</layout:window>
+	
+	<layout:window id="importDataWindow" width="450" height="400" constrainHeader="true">
+		<layout:panel height="450" hideBorders="true" style="font-size:12px">
+			<w:form>
+				<layout:panelGrid columns="2">
+					<layout:cell>
+						<layout:panelGrid columns="3">
+							<w:button id="importDataBatch" value="#{l.m['批量导入']}"
+								image="#{constantBean.contextPath}/images/save.png" />
+							<h:outputLabel value="#{l.m['名称(必填)']}" />
+							<w:combo allowBlank="false" id="pricename" typeAhead="true" width="300">
+								<f:selectItems value="#{pages.module.price.mgrairBean.qryPricename}" />
+							</w:combo>
+						</layout:panelGrid>
+					</layout:cell>
+					<layout:cell>
+						<ajax:status startStyle="color: red"
+							onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+							onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+							<f:facet name="start">
+								<f:verbatim>
+									<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 20px;">Loading...</img>
+								</f:verbatim>
+							</f:facet>
+						</ajax:status>
+					</layout:cell>
+				</layout:panelGrid>
+				<layout:cell>
+					<w:textArea id="importDataText" height="250" width="420" grow="false"></w:textArea>
+				</layout:cell>
+				<layout:cell>
+					<layout:panelGrid columns="1">
+						<h:outputLabel style="width: 450" value="#{l.m['格式说明']}" />
+						<h:outputLabel style="width: 450" value="#{l.m['请从EXCEL的中文行开始粘贴']}" />
+					</layout:panelGrid>
+				</layout:cell>
+				<div style="display: none">
+				<w:textField selectOnFocus="true" id="refid" hidden="true"></w:textField></div>
+			</w:form>
+		</layout:panel>
+	</layout:window>
+	
+	<layout:window id="importFileWindow" width="450" height="300" constrainHeader="true">
+		<layout:panel height="300" hideBorders="true" style="font-size:12px">
+			<w:form id="myForm" enctype="multipart/form-data">
+				<layout:cell align="Center">
+					#{l.m['请选择已编辑好的Excel文件导入系统(最大20M)：']}
+				</layout:cell>
+				<layout:cell>
+					<w:fileUpload id="fileUpload1"
+						uploadListener="#{pages.module.price.mgrairBean.processUpload}" rich="false"
+						maxSize="20480k" />
+					<br/>
+					<w:button value="#{l.m['上传']}" />
+					<w:fileUploadProgress startMessage="#{l.m['开始上传']}"
+						uploadingMessage="#{l.m['正在上传，已经上传']}{readBytes}k/{total}k({percentage}%)"
+						completeMessage="#{l.m['上传结束，总共']}{total}k" errorMessage="#{l.m['上传错误']}：{error}" />
+				</layout:cell>
+				<layout:cell>
+					#{l.m['提示：上传完毕后点击更新即可，目前支持xls、xlsx两种格式,兼容Microsoft Office Excel 2003 and 2007。']}
+				</layout:cell>
+			</w:form>
+			<w:form>
+				<w:button id="startImport" value="#{l.m['更新']}" />
+			</w:form>
+		</layout:panel>
+	</layout:window>
+	
+
+	<script><!--
+		 //<![CDATA[
+		
+		$('#pol').flexbox('/scp/service?src=flexbox&action=pol&type=air', {		
+						resultTemplate: '<div class="col1">{name}</div><div class="col2">{namec}</div><div class="col3">{namee}</div>',
+						watermark: '',
+						width: 120,
+						position:'absolute',
+						top:'18px',
+						left:'0px',
+						onSelect: function() {
+						var str1 = $(this).next().next().children().children(".row.ffb-sel").children(".col1").html();
+							str1 = str1.replace('<span class="ffb-match">',"");
+							str1 = str1.replace("</span>","");
+							polcodeJsVar.setValue(str1);
+							$(this).val(str1);
+					}
+						
+		});
+		
+		$('#pod').flexbox('/scp/service?src=flexbox&action=pod&type=air', {		
+						resultTemplate: '<div class="col1">{name}</div><div class="col2">{namec}</div><div class="col3">{namee}</div>',
+						watermark: '',
+						width: 120,
+						position:'absolute',
+						top:'18px',
+						left:'0px',
+						onSelect: function() {
+						var str1 = $(this).next().next().children().children(".row.ffb-sel").children(".col1").html();
+							str1 = str1.replace('<span class="ffb-match">',"");
+							str1 = str1.replace("</span>","");
+							podcodeJsVar.setValue(str1);
+							$(this).val(str1);
+					}
+		});
+		
+		$('#pol1').flexbox('/scp/service?src=flexbox&action=pol&type=air', {		
+						resultTemplate: '<div class="col1">{name}</div><div class="col2">{namec}</div><div class="col3">{namee}</div>',
+						watermark: '',
+						width: 120,
+						//initialValue:'#{pages.module.price.mgrairBean.selectedRowData.pol}',
+						position:'absolute',
+						top:'18px',
+						left:'0px',
+						onSelect: function() {
+						var str1 = $(this).next().next().children().children(".row.ffb-sel").children(".col1").html();
+							str1 = str1.replace('<span class="ffb-match">',"");
+							str1 = str1.replace("</span>","");
+							pol1codeJsVar.setValue(str1);
+							$(this).val(str1);
+					}
+						
+		});
+		
+		$('#pod1').flexbox('/scp/service?src=flexbox&action=pod&type=air', {		
+						resultTemplate: '<div class="col1">{name}</div><div class="col2">{namec}</div><div class="col3">{namee}</div>',
+						watermark: '',
+						width: 120,
+						//initialValue:'#{pages.module.price.mgrairBean.selectedRowData.pod}',
+						position:'',
+						top:'18px',
+						left:'0px',
+						onSelect: function() {
+						var str1 = $(this).next().next().children().children(".row.ffb-sel").children(".col1").html();
+							str1 = str1.replace('<span class="ffb-match">',"");
+							str1 = str1.replace("</span>","");
+							pod1codeJsVar.setValue(str1);
+							$(this).val(str1);
+					}
+		});
+		
+		$('#pdd').flexbox('/scp/service?src=flexbox&action=pdd&type=air', {		
+						resultTemplate: '<div class="col1">{name}</div><div class="col2">{namec}</div><div class="col3">{namee}</div>',
+						watermark: '',
+						width: 120,
+						//initialValue:'#{pages.module.price.mgrairBean.selectedRowData.via}',
+						top:'18px',
+						left:'0px',
+						onSelect: function() {
+						var str1 = $(this).next().next().children().children(".row.ffb-sel").children(".col1").html();
+							str1 = str1.replace('<span class="ffb-match">',"");
+							str1 = str1.replace("</span>","");
+							pddcodeJsVar.setValue(str1);
+							$(this).val(str1);
+					}
+		});
+		
+		
+	    function exportExcel() {
+	    	var config = gridJsvar.getSelectionModel().grid.events.columnmove.obj.plugins[0].grid.colModel.config;
+	    	var key = "";
+	    	var value = "";
+	    	for(var i=1;i<config.length;i++) {
+	    		if(!config[i].hidden) {
+	    			key += config[i].dataIndex;
+	        		value += config[i].header;
+	        		if(i < config.length - 1) {
+	        			key += ",";
+	        			value += ",";
+	        		}
+	    		}
+	    	}
+	    	exportexl.addParam("key",key);
+	    	exportexl.addParam("value",value);
+	    	exportexl.submit();
+	    }  
+	    
+	    function formateRelease(v,m,r){
+	    	var isrelease = r.get('isrelease');
+			if(isrelease =='false'){
+				m.attr="style='color: red;'";
+				v = "#{l.m['未发布']}";
+			}else {
+				m.attr="style='color: GREEN;'";
+				v = "#{l.m['已发布']}";
+			}	
+	        return v;
+		}  
+		
+		function formateValid(v,m,r){
+	    	var isvalid = r.get('isvalid');
+			if(isvalid =='R'){
+				m.attr="style='color: GREEN;'";
+			}else if(isvalid =='A'){
+				m.attr="style='color: BLUE;'";
+			}else {
+				m.attr="style='color: GRAY;'";
+			}	
+	        return v;
+		}  
+		
+		
+		
+		function formateReleaseColor(v,m,r){
+	    	var isrelease = r.get('isrelease');
+			if(isrelease =='false'){
+				m.attr="style='color: red;'";
+			}else {
+				m.attr="style='color: GREEN;'";
+			}	
+	        return v;
+		}  
+		
+		
+		function formatLinkEdit(v,m,r) {
+	    	var pkid = r.get('id');
+	    	//linkEdit.addParam("id",id);
+	    	//linkEdit.submit();
+	    	
+	    	var temp = '<a style="color:#00F;" onclick="showEdit('+pkid+')">#{l.m['编辑']}</a>';
+            return temp;
+        }
+        
+        function showEdit(pkid) {
+        	linkEdit.addParam("pkid",pkid);
+	    	linkEdit.submit();
+        }
+
+		function resize(){
+			var newHeight = (gridPanelJsvar.getSize().height) - 85;
+			var newWidth = (gridPanelJsvar.getSize().width);
+	        gridJsvar.setHeight(newHeight);
+	        gridJsvar.setWidth(newWidth);
+			gridJsvar.render();
+		}
+		
+		function setpol(){
+			$('#pol1_input').val(pol1codeJsVar.getValue());
+			$('#pod1_input').val(pod1codeJsVar.getValue());
+			$('#pdd_input').val(pddcodeJsVar.getValue());
+		}
+		
+		
+		Ext.onReady(function(){
+			resize();
+			Ext.EventManager.onWindowResize(function(){
+				resize();
+			});
+			
+		$('#pol_input').bind("input propertychange", function(){
+		  	if($('#pol_input').val()==''){
+		  		polcodeJsVar.setValue('');
+		  	}
+		});
+		
+		$('#pod_input').bind("input propertychange", function(){
+		  	if($('#pod_input').val()==''){
+		  		podcodeJsVar.setValue('');
+		  	}
+		});
+		
+	     });
+	    
+	     	 //]]>
+--></script>
+</f:view>

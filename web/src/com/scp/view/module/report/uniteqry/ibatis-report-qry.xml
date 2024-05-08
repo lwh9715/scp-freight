@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.module.report.uniteqry.qry_arBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT row_number() OVER() AS row , * 
+			FROM (SELECT 
+					* 
+			FROM f_rpt_ar('currency=CNY:customerid=$customerid$:feeItemid=$feeItemid$:datetype=$datetype$:dateastart=$dateastart$:dateend=$dateend$:jobnos=$jobnos$:vessel=$vessel$:voyage=$voyage$:saleid=$saleid$:ifcommission=$ifcommission$:settled=$settled$:checkid=$checkid$')
+			WHERE $qry$
+				$ord$) AS T
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.uniteqry.qry_arBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM f_rpt_ar('currency=CNY:customerid=$customerid$:feeItemid=$feeItemid$:datetype=$datetype$:dateastart=$dateastart$:dateend=$dateend$:jobnos=$jobnos$:vessel=$vessel$:voyage=$voyage$:saleid=$saleid$:ifcommission=$ifcommission$:settled=$settled$:checkid=$checkid$')
+		WHERE $qry$
+	</select>
+	
+	<select id="pages.module.report.uniteqry.qry_apBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT row_number() OVER() AS row , * 
+			FROM (SELECT 
+					* 
+			FROM f_rpt_ap('currency=CNY:customerid=$customerid$:feeItemid=$feeItemid$:datetype=$datetype$:dateastart=$dateastart$:dateend=$dateend$:jobnos=$jobnos$:vessel=$vessel$:voyage=$voyage$:saleid=$saleid$:ifcommission=$ifcommission$:settled=$settled$:paymenttype=$paymenttype$:checkid=$checkid$')
+			WHERE $qry$
+				$ord$) AS T
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.uniteqry.qry_apBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM f_rpt_ap('currency=CNY:customerid=$customerid$:feeItemid=$feeItemid$:datetype=$datetype$:dateastart=$dateastart$:dateend=$dateend$:jobnos=$jobnos$:vessel=$vessel$:voyage=$voyage$:saleid=$saleid$:ifcommission=$ifcommission$:settled=$settled$:paymenttype=$paymenttype$:checkid=$checkid$')
+		WHERE $qry$
+	</select>
+	
+	<select id="pages.module.report.uniteqry.qry_porfitBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT row_number() OVER() AS row , * 
+			FROM (SELECT 
+					* 
+				FROM f_rpt_porfit('currency=$currency$:datetype=$datetype$:dateastart=$dateastart$:dateend=$dateend$:jobnos=$jobnos$:impexp=$impexp$:jobtype=$jobtype$:isclc=$isclc$:bigticket=$bigticket$:checkid=$checkid$:ourcomp=$ourcomp$:saleid=$saleid$:othercomp=$othercomp$:customerid=$customerid$')
+				WHERE $qry$
+					$ord$) AS T
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.report.uniteqry.qry_porfitBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM f_rpt_porfit('currency=$currency$:datetype=$datetype$:dateastart=$dateastart$:dateend=$dateend$:jobnos=$jobnos$:impexp=$impexp$:jobtype=$jobtype$:isclc=$isclc$:bigticket=$bigticket$:checkid=$checkid$:ourcomp=$ourcomp$:saleid=$saleid$:othercomp=$othercomp$:customerid=$customerid$')
+		WHERE $qry$
+	</select>
+</sqlMap>

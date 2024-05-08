@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.ff.apply.jobslinkBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT * FROM
+		(SELECT 
+			 date_ym
+			,customerid
+			,sales
+			,(customerid||'-'||date_ym||'-'||saleid) AS pkid
+			,arapcustomer
+			,arapcustomernc
+			,daysar
+			,SUM(T.amountcny-T.amtstl2cny) AS amountcny1
+			,SUM(T.amounthkd-T.amtstl2hkd) AS amounthkd1
+			,SUM(T.amountusd-T.amtstl2usd) AS amountusd1
+			,SUM(T.amountaed-T.amtstl2aed) AS amountaed1
+			,SUM(T.amountomr-T.amtstl2omr) AS amountomr1
+			,payremarks
+		 FROM 
+		
+						(SELECT 					 
+							 a.nos
+							,a.sales
+							,a.saleid
+							,b.customerid
+							,(SELECT x.code FROM sys_corporation x where x.id = b.customerid) AS arapcustomer
+							,(SELECT x.namec FROM sys_corporation x where x.id = b.customerid) AS arapcustomernc
+							,(SELECT x.daysar FROM sys_corporation x where x.id = b.customerid) AS daysar
+							$date_ym$
+							,(CASE WHEN b.currency = 'CNY' THEN COALESCE(b.amount,0)::NUMERIC(18,2) ELSE 0 END ) AS amountcny
+							,(CASE WHEN b.currency = 'HKD' THEN COALESCE(b.amount,0)::NUMERIC(18,2) ELSE 0 END ) AS amounthkd
+							,(CASE WHEN b.currency = 'USD' THEN COALESCE(b.amount,0)::NUMERIC(18,2) ELSE 0 END ) AS amountusd
+							,(CASE WHEN b.currency = 'AED' THEN COALESCE(b.amount,0)::NUMERIC(18,2) ELSE 0 END ) AS amountaed
+							,(CASE WHEN b.currency = 'OMR' THEN COALESCE(b.amount,0)::NUMERIC(18,2) ELSE 0 END ) AS amountomr
+							,COALESCE((SELECT (CASE WHEN b.currency = 'CNY' THEN SUM(COALESCE(amountwf,0))::NUMERIC(18,2) ELSE 0 END )::NUMERIC(18,2) FROM fina_actpayrecdtl d WHERE d.isdelete = FALSE AND d.arapid = b.id AND EXISTS(SELECT 1 FROM fina_actpayrec WHERE id = d.actpayrecid AND isdelete = FALSE AND rpdate > '2021-01-01')  GROUP BY d.arapid),0) as amtstl2cny
+							,COALESCE((SELECT (CASE WHEN b.currency = 'HKD' THEN SUM(COALESCE(amountwf,0))::NUMERIC(18,2) ELSE 0 END )::NUMERIC(18,2) FROM fina_actpayrecdtl d WHERE d.isdelete = FALSE AND d.arapid = b.id AND EXISTS(SELECT 1 FROM fina_actpayrec WHERE id = d.actpayrecid AND isdelete = FALSE AND rpdate > '2021-01-01')  GROUP BY d.arapid),0) as amtstl2hkd
+							,COALESCE((SELECT (CASE WHEN b.currency = 'USD' THEN SUM(COALESCE(amountwf,0))::NUMERIC(18,2) ELSE 0 END )::NUMERIC(18,2) FROM fina_actpayrecdtl d WHERE d.isdelete = FALSE AND d.arapid = b.id AND EXISTS(SELECT 1 FROM fina_actpayrec WHERE id = d.actpayrecid AND isdelete = FALSE AND rpdate > '2021-01-01')  GROUP BY d.arapid),0) as amtstl2usd
+							,COALESCE((SELECT (CASE WHEN b.currency = 'AED' THEN SUM(COALESCE(amountwf,0))::NUMERIC(18,2) ELSE 0 END )::NUMERIC(18,2) FROM fina_actpayrecdtl d WHERE d.isdelete = FALSE AND d.arapid = b.id AND EXISTS(SELECT 1 FROM fina_actpayrec WHERE id = d.actpayrecid AND isdelete = FALSE AND rpdate > '2021-01-01')  GROUP BY d.arapid),0) as amtstl2aed
+							,COALESCE((SELECT (CASE WHEN b.currency = 'OMR' THEN SUM(COALESCE(amountwf,0))::NUMERIC(18,2) ELSE 0 END )::NUMERIC(18,2) FROM fina_actpayrecdtl d WHERE d.isdelete = FALSE AND d.arapid = b.id AND EXISTS(SELECT 1 FROM fina_actpayrec WHERE id = d.actpayrecid AND isdelete = FALSE AND rpdate > '2021-01-01')  GROUP BY d.arapid),0) as amtstl2omr
+							,(CASE WHEN EXISTS(SELECT 1 FROM sys_user u WHERE isdelete = false AND isadmin = 'N' AND iscsuser = false AND isinvalid = true AND u.code = '$usercode$' AND EXISTS 
+(SELECT 1 FROM sys_userinrole x,sys_role t  WHERE x.isdelete = false AND x.roleid=t.id AND x.userid = u.id AND t.roletype = 'M' AND
+ (t.name = '放货组' OR t.name like '%财务%')  AND t.isdelete = false)) THEN (SELECT x.payremarks FROM sys_corporation x where x.id = b.customerid) ELSE '*******' END) AS payremarks
+							
+						FROM
+							fina_jobs a , fina_arap b
+						WHERE
+							a.isdelete = FALSE			
+							AND a.isclose = FALSE
+							AND a.customerid = $customerid$
+							AND a.saleid = $saleid$
+							AND b.customerid  not in  (SELECT id FROM sys_corporation WHERE isdelete =FALSE AND iscustomer = FALSE)
+							and b.isdelete = false and b.araptype='AR'
+							AND b.jobid = a.id 
+		
+						) AS T
+		GROUP BY date_ym ,saleid,sales, arapcustomer,customerid,arapcustomernc,daysar,payremarks
+		ORDER BY date_ym ,saleid,sales, arapcustomer) TT 
+		WHERE amountcny1+amounthkd1+amountusd1+amountaed1+amountomr1 != 0
+	
+	
+	<!--
+		SELECT 
+			 T.nos,T.ordno,T.id,T.sales,T.arapcustomer,T.paytypedesc,T.etd,T.pol,T.pod,T.cntdesc,T.cntnos,T.jobdate,T.arstatus
+			,SUM(T.amountcny) AS amountcny1
+			,SUM(T.amounthkd) AS amounthkd1
+			,SUM(T.amountusd) AS amountusd1
+			,SUM(T.amountaed) AS amountaed1
+ 		FROM (
+				SELECT 					 
+					 a.nos
+					,0 AS ordno
+					,a.id||'-'||b.customerid AS id
+					,a.sales
+					,(SELECT x.code FROM sys_corporation x where x.id = b.customerid) AS arapcustomer
+					,(SELECT paytypedesc FROM sys_corporation AS y WHERE y.id =a.customerid) AS paytypedesc
+					,(SELECT y.etd FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = a.id) AS etd
+					,(SELECT y.pol FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = a.id) AS pol
+					,(SELECT y.pod FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = a.id) AS pod
+					,(SELECT f_bus_shipping_cntdesc('shipid='||y.id||'') FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = a.id) AS cntdesc
+					,(SELECT string_agg(y.cntno,',') FROM bus_ship_container y WHERE y.isdelete = FALSE AND y.jobid = a.id) AS cntnos
+					,a.jobdate::DATE AS jobdate
+					,a.arstatus
+					,(CASE WHEN b.currency = 'CNY' THEN COALESCE((b.amount-b.amtstl2),0)::NUMERIC(18,2) ELSE 0 END ) AS amountcny
+					,(CASE WHEN b.currency = 'HKD' THEN COALESCE((b.amount-b.amtstl2),0)::NUMERIC(18,2) ELSE 0 END ) AS amounthkd
+					,(CASE WHEN b.currency = 'USD' THEN COALESCE((b.amount-b.amtstl2),0)::NUMERIC(18,2) ELSE 0 END ) AS amountusd
+					,(CASE WHEN b.currency = 'AED' THEN COALESCE((b.amount-b.amtstl2),0)::NUMERIC(18,2) ELSE 0 END ) AS amountaed
+					
+				FROM
+					fina_jobs a , fina_arap b
+				WHERE
+					a.isdelete = FALSE			
+					AND a.isclose = FALSE
+					AND a.customerid=$customerid$
+					AND b.customerid != a.corpid AND b.customerid != a.corpidop
+					and b.isdelete = false and b.araptype='AR'
+					AND b.jobid = a.id AND (b.amount-b.amtstl2)>0
+				UNION ALL
+				
+				SELECT 					 
+					 a.nos
+					,1 AS ordno
+					,a.id||'-'||b.customerid AS id
+					,a.sales
+					,(SELECT x.code FROM sys_corporation x where x.id = b.customerid) AS arapcustomer
+					,(SELECT paytypedesc FROM sys_corporation AS y WHERE y.id =a.customerid) AS paytypedesc
+					,(SELECT y.etd FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = a.id) AS etd
+					,(SELECT y.pol FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = a.id) AS pol
+					,(SELECT y.pod FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = a.id) AS pod
+					,(SELECT f_bus_shipping_cntdesc('shipid='||y.id||'') FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = a.id) AS cntdesc
+					,(SELECT string_agg(y.cntno,',') FROM bus_ship_container y WHERE y.isdelete = FALSE AND y.jobid = a.id) AS cntnos
+					,a.jobdate::DATE AS jobdate
+					,a.arstatus
+					,(CASE WHEN b.currency = 'CNY' THEN COALESCE((b.amount-b.amtstl2),0)::NUMERIC(18,2) ELSE 0 END ) AS amountcny
+					,(CASE WHEN b.currency = 'HKD' THEN COALESCE((b.amount-b.amtstl2),0)::NUMERIC(18,2) ELSE 0 END ) AS amounthkd
+					,(CASE WHEN b.currency = 'USD' THEN COALESCE((b.amount-b.amtstl2),0)::NUMERIC(18,2) ELSE 0 END ) AS amountusd
+					,(CASE WHEN b.currency = 'AED' THEN COALESCE((b.amount-b.amtstl2),0)::NUMERIC(18,2) ELSE 0 END ) AS amountaed
+					
+				FROM
+					fina_jobs a , fina_arap b
+				WHERE
+					a.isdelete = FALSE			
+					AND a.isclose = FALSE
+					AND a.customerid != $customerid$
+					AND b.customerid = $customerid$
+					and b.isdelete = false and b.araptype='AR'
+					AND b.jobid = a.id AND (b.amount-b.amtstl2)>0
+			) AS T
+			GROUP BY T.ordno,T.nos,T.id,T.sales,T.arapcustomer,T.paytypedesc,T.etd,T.pol,T.pod,T.cntdesc,T.cntnos,T.jobdate,T.arstatus
+			ORDER BY ordno , jobdate , nos , arapcustomer
+										
+	--></select>
+	<select id="pages.ff.apply.jobslinkBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			100000 AS counts 
+	</select>
+	
+	
+	<select id="pages.ff.apply.jobsapplyBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 					 
+			 j.id,j.nos,j.sales,(SELECT x.name FROM sys_department x , sys_user y where x.id = y.deptid and y.id = j.saleid and x.isdelete = false) AS salesdept
+			 ,j.isclose,j.jobdate,j.arstatus,COALESCE(r.state,'H') AS state,r.remarks
+			,(SELECT y.etd FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = j.id) AS etd
+			,(SELECT y.pol FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = j.id) AS pol
+			,(SELECT y.pod FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = j.id) AS pod
+			,(SELECT y.mblno FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = j.id) AS mblno
+			,(SELECT f_bus_shipping_cntdesc('shipid='||y.id||'') FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = j.id) AS cntdesc
+			,(SELECT string_agg(y.cntno,',') FROM bus_ship_container y WHERE y.isdelete = FALSE AND y.jobid = j.id) AS cntnos
+			,(SELECT x.abbr FROM sys_corporation x where x.iscustomer = false and x.id = j.corpid) AS corper
+			,(SELECT x.abbr FROM sys_corporation x where x.iscustomer = false and x.id = j.corpidop) AS corperop
+			
+			,COALESCE((select  SUM(COALESCE(b.amount,0)) - SUM(COALESCE(b.amtstl2,0)) from fina_arap b where b.isdelete = false and b.jobid = j.id AND b.araptype='AR' AND b.currency = 'CNY'),0) AS amountcny
+			,COALESCE((select  SUM(COALESCE(b.amount,0)) - SUM(COALESCE(b.amtstl2,0)) from fina_arap b where b.isdelete = false and b.jobid = j.id AND b.araptype='AR' AND b.currency = 'USD'),0) AS amountusd
+			,COALESCE((select  SUM(COALESCE(b.amount,0)) - SUM(COALESCE(b.amtstl2,0)) from fina_arap b where b.isdelete = false and b.jobid = j.id AND b.araptype='AR' AND b.currency = 'HKD'),0) AS amounthkd
+		FROM
+			fina_jobs j left join t_ff_process_ref r ON(j.id = r.refid)
+		WHERE j.isdelete = FALSE			
+			$clauseWhere$
+		ORDER BY j.jobdate , j.nos
+	</select>
+	<select id="pages.ff.apply.jobsapplyBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 					 
+			count(*) AS counts 
+		FROM
+			fina_jobs j left join t_ff_process_ref r ON(j.id = r.refid)
+		WHERE j.isdelete = FALSE			
+			$clauseWhere$
+	</select>
+	
+	<select id="pages.ff.apply.jobsnotputerBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT x.id,x.customerabbr,x.nos,y.etd,x.jobdate,y.isunder,y.undertime
+			 ,(SELECT string_agg(DISTINCT cntno,',') FROM bus_ship_container WHERE isdelete = FALSE AND jobid = x.id) AS cntnos
+			 ,f_fina_jobs_cntdesc('jobid='||x.id) AS cntcode
+			 ,(SELECT namec||'/'||namee||'/'||COALESCE((SELECT name FROM sys_department WHERE id = a.deptid),'') FROM sys_user a WHERE id = x.saleid AND isdelete =FALSE) saleuser
+			 ,(SELECT namec||'/'||namee||'/'||COALESCE((SELECT name FROM sys_department WHERE id = a.deptid),'') FROM sys_user a WHERE code = y.under AND isdelete =FALSE) under
+		FROM fina_jobs x,bus_shipping y
+		WHERE x.isdelete = FALSE AND y.isdelete = FALSE 
+		AND x.id = y.jobid
+		AND COALESCE(y.isput,false) = FALSE
+		AND x.jobdate > now() - interval '3 month'
+			$clauseWhere$
+		ORDER BY y.etd,x.jobdate DESC
+	</select>
+	<select id="pages.ff.apply.jobsnotputerBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			count(*) AS counts 
+		FROM fina_jobs x,bus_shipping y
+		WHERE x.isdelete = FALSE AND y.isdelete = FALSE 
+		AND x.id = y.jobid
+		AND y.isput = FALSE
+		AND x.jobdate > now() - interval '3 month'
+			$clauseWhere$
+			
+	</select>
+</sqlMap>

@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	
+	<select id="pages.module.oa.staffmgr.leaveappBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+		FROM _oa_leaveapplication t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.oa.staffmgr.leaveappBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM _oa_leaveapplication t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>	
+	
+	<select id="pages.module.oa.staffmgr.staffmsgBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+			,(select email from oa_userinfo where id=t.id) AS email
+		FROM _oa_userinfo t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+		ORDER BY jobnos
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.oa.staffmgr.staffmsgBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM _oa_userinfo t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>	
+	
+	<select id="pages.module.oa.staffmgr.departmentBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+			,(select namec from oa_userinfo where id=t.managerid) AS managername
+			,(select namec from sys_corporation where id=t.corpid) AS corpname
+		FROM sys_department t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+		ORDER BY corpid
+	</select>
+	<select id="pages.module.oa.staffmgr.departmentBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM sys_department t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>		
+	
+    <select id="pages.module.oa.staffmgr.contractBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+			,(SELECT jobno FROM oa_userinfo WHERE isdelete = FALSE AND t.userinfoid = id)AS jobnos
+		FROM oa_user_contract t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	<select id="pages.module.oa.staffmgr.contractBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM oa_user_contract t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	
+	    <select id="pages.module.oa.staffmgr.protocolBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+			,(SELECT jobno FROM oa_userinfo WHERE isdelete = FALSE AND t.userinfoid = id)AS jobnos
+		FROM oa_user_protocol t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	<select id="pages.module.oa.staffmgr.protocolBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM oa_user_protocol t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>	
+	
+	<select id="pages.module.oa.staffmgr.transferBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+			,(SELECT jobno FROM oa_userinfo WHERE isdelete = FALSE AND t.userinfoid = id)AS jobnos
+		FROM oa_user_transfer t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	<select id="pages.module.oa.staffmgr.transferBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM oa_user_transfer t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	
+		<select id="pages.module.oa.staffmgr.visaBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+		FROM _oa_user_visa t
+		WHERE $qry$
+	</select>
+	<select id="pages.module.oa.staffmgr.visaBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM _oa_user_visa t
+		WHERE $qry$
+	</select>	
+	
+	<select id="pages.module.oa.staffmgr.userlogBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+			,(SELECT jobno FROM oa_userinfo WHERE isdelete = FALSE AND t.userinfoid = id)AS jobnos
+		FROM oa_user_log_rp t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	<select id="pages.module.oa.staffmgr.userlogBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM oa_user_log_rp t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	
+		<select id="pages.module.oa.staffmgr.userlogevBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+			,(SELECT jobno FROM oa_userinfo WHERE isdelete = FALSE AND t.userinfoid = id)AS jobnos
+		FROM oa_user_log_evaluate t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	<select id="pages.module.oa.staffmgr.userlogevBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM oa_user_log_evaluate t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	
+		<select id="pages.module.oa.staffmgr.userlogchangeBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+		FROM _oa_user_log_change t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	<select id="pages.module.oa.staffmgr.userlogchangeBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM oa_user_log_change t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.oa.staffmgr.attendanceBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*			
+		FROM oa_timesheet t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.oa.staffmgr.attendanceBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM oa_timesheet t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.oa.staffmgr.transderchangeBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*			
+		FROM _oa_job_change t
+		WHERE $qry$
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.oa.staffmgr.transderchangeBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM _oa_job_change t
+		WHERE $qry$
+	</select>
+	
+	<select id="pages.module.oa.staffmgr.leavajobBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*			
+		FROM _oa_job_change t
+		WHERE $qry$
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.oa.staffmgr.leavajobBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM _oa_job_change t
+		WHERE $qry$
+	</select>
+	
+	<select id="pages.module.oa.staffmgr.apptravelBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*			
+		FROM _oa_apply_travel t
+		WHERE $qry$
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.oa.staffmgr.apptravelBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM _oa_apply_travel t
+		WHERE $qry$
+	</select>
+	<select id="pages.module.oa.staffmgr.jobnomgrBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+			,(SELECT namec FROM oa_userinfo WHERE id=t.userid)AS namec
+			,(SELECT namee FROM oa_userinfo WHERE id=t.userid)AS namee
+		FROM oa_jobno t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+		ORDER BY jobno
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.oa.staffmgr.jobnomgrBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM oa_jobno t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	<select id="pages.module.oa.staffmgr.userjoinmgerBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+			,(SELECT jobno FROM _oa_userinfo WHERE id=t.oauserid)AS jobno
+			,(SELECT namec FROM oa_userinfo WHERE id=t.oauserid)AS namec
+			,(SELECT namee FROM oa_userinfo WHERE id=t.oauserid)AS namee
+			,(SELECT code FROM sys_user WHERE id=t.erpuserid)AS usercode
+			,(SELECT namec FROM sys_user WHERE id=t.erpuserid)AS username
+		FROM oa_user_erp t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+		ORDER BY jobno
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.oa.staffmgr.userjoinmgerBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM oa_user_erp t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	
+	
+	<select id="pages.module.oa.staffmgr.datadictionaryBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM oa_dat_filedata t 
+		WHERE $qry$
+		AND isdelete = FALSE
+		AND isleaf = TRUE
+		ORDER BY orderno
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.oa.staffmgr.datadictionaryBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM oa_dat_filedata t 
+		WHERE $qry$
+		AND isdelete = FALSE 
+		AND isleaf = TRUE
+		
+	</select>
+	
+	<select id="pages.module.oa.staffmgr.datadictionaryBean.gridExp.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		*
+		FROM oa_dat_filedata t 
+		WHERE $qry$ 
+		AND isdelete = FALSE
+		AND isleaf = FALSE
+		ORDER BY selfid
+		 
+	</select>
+	<select id="pages.module.oa.staffmgr.datadictionaryBean.gridExp.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM oa_dat_filedata t 
+		WHERE $qry$
+		AND isleaf = FALSE
+		AND isdelete = FALSE 
+	</select>
+	
+	
+	<select id="pages.module.oa.staffmgr.attendance_dayBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*			
+		FROM oa_timesheet_day t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+		ORDER BY depter, logdate
+		LIMIT $limit$ OFFSET $start$	
+	</select>
+	<select id="pages.module.oa.staffmgr.attendance_dayBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM oa_timesheet_day t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	
+	
+</sqlMap>

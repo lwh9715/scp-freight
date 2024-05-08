@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<select id="pages.module.finance.rp.actpaycreatelinkBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			* FROM (SELECT 
+					*
+					,(CASE WHEN COALESCE(apcount,0) = COALESCE(arcountop,0) THEN 'OK' ELSE '数量不匹配' END) AS piecematch1 
+					,(CASE WHEN COALESCE(arcount,0) = COALESCE(apcountop,0) THEN 'OK' ELSE '数量不匹配' END) AS piecematch2 
+					
+					,(CASE WHEN COALESCE(apsum,0) = COALESCE(arsumop,0) THEN 'OK' ELSE '金额不匹配' END)AS amtmatch1
+					,(CASE WHEN COALESCE(arsum,0) = COALESCE(apsumop,0) THEN 'OK' ELSE '金额不匹配' END)AS amtmatch2
+					
+					,(CASE WHEN (COALESCE(apsum,0) = COALESCE(arsumop,0) AND COALESCE(arsum,0) = COALESCE(apsumop,0)) THEN 'OK' ELSE '不匹配' END)AS amtmatch
+
+					,(CASE WHEN COALESCE(apsumvch,0) = COALESCE(arsumopvch,0) THEN 'OK' ELSE '金额不匹配' END)AS amtmatch1vch
+					,(CASE WHEN COALESCE(arsumvch,0) = COALESCE(apsumopvch,0) THEN 'OK' ELSE '金额不匹配' END)AS amtmatch2vch
+					<!-- ,(CASE WHEN COALESCE(apsumcny,0) = COALESCE(arsumcnyop,0) THEN 'OK' ELSE 'CNY金额不匹配' END)AS amtmatchcny1
+					,(CASE WHEN COALESCE(arsumcny,0) = COALESCE(apsumcnyop,0) THEN 'OK' ELSE 'CNY金额不匹配' END)AS amtmatchcny2
+					
+					,(CASE WHEN COALESCE(apsumusd,0) = COALESCE(arsumusdop,0) THEN 'OK' ELSE 'USD金额不匹配' END)AS amtmatchusd1
+					,(CASE WHEN COALESCE(arsumusd,0) = COALESCE(apsumusdop,0) THEN 'OK' ELSE 'USD金额不匹配' END)AS amtmatchusd2
+
+					,(CASE WHEN COALESCE(apsumhkd,0) = COALESCE(arsumhkdop,0) THEN 'OK' ELSE 'HKD金额不匹配' END)AS amtmatchhkd1
+					,(CASE WHEN COALESCE(arsumhkd,0) = COALESCE(apsumhkdop,0) THEN 'OK' ELSE 'HKD金额不匹配' END)AS amtmatchhkd2
+
+					,(CASE WHEN COALESCE(apsumdhs,0) = COALESCE(arsumdhsop,0) THEN 'OK' ELSE 'DHS金额不匹配' END)AS amtmatchdhs1
+					,(CASE WHEN COALESCE(arsumdhs,0) = COALESCE(apsumdhsop,0) THEN 'OK' ELSE 'DHS金额不匹配' END)AS amtmatchdhs2 -->
+				FROM (SELECT 
+							 j.id
+							,j.nos 
+							,j.jobtype
+							,(SELECT x.abbcode FROM sys_corporation x where x.iscustomer = false and x.id = j.corpid) AS corp
+				  		,(SELECT x.abbcode FROM sys_corporation x where x.iscustomer = false and x.id = j.corpidop) AS corpop
+							,(SELECT COUNT(1) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpidop2$ AND x.araptype = 'AP' $corpid2$) AS apcount
+							,(SELECT COUNT(1) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpidop2$ AND x.araptype = 'AR' $corpid2$) AS arcount
+
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpidop2$ AND x.araptype = 'AP' $corpid2$)  AS apsum
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpidop2$ AND x.araptype = 'AR' $corpid2$)  AS arsum
+
+							,(SELECT COUNT(1) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpid$ AND x.araptype = 'AR' $corpidop$) AS arcountop
+							,(SELECT COUNT(1) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpid$ AND x.araptype = 'AP' $corpidop$) AS apcountop
+
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpid$ AND x.araptype = 'AR' $corpidop$) AS arsumop
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpid$ AND x.araptype = 'AP' $corpidop$) AS apsumop
+							
+							
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpidop2$ AND x.araptype = 'AP' $corpid2$	AND x.vchdtlid > 0)  AS apsumvch
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpidop2$ AND x.araptype = 'AR' $corpid2$	AND x.vchdtlid > 0)  AS arsumvch
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpid$ AND x.araptype = 'AR' $corpidop$	AND x.vchdtlid > 0) AS arsumopvch
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpid$ AND x.araptype = 'AP' $corpidop$	AND x.vchdtlid > 0) AS apsumopvch
+							<!-- ,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpid$ AND x.araptype = 'AR' $corpidop$ AND x.currency = 'CNY') AS arsumcnyop
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpid$ AND x.araptype = 'AR' $corpidop$ AND x.currency = 'USD') AS arsumusdop
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpid$ AND x.araptype = 'AR' $corpidop$ AND x.currency = 'HKD') AS arsumhkdop
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpid$ AND x.araptype = 'AR' $corpidop$ AND x.currency = 'DHS') AS arsumdhsop
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpid$ AND x.araptype = 'AP' $corpidop$ AND x.currency = 'CNY') AS apsumcnyop
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpid$ AND x.araptype = 'AP' $corpidop$ AND x.currency = 'USD') AS apsumusdop
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpid$ AND x.araptype = 'AP' $corpidop$ AND x.currency = 'HKD') AS apsumhkdop
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpid$ AND x.araptype = 'AP' $corpidop$ AND x.currency = 'DHS') AS apsumdhsop
+							
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpidop2$ AND x.araptype = 'AP' $corpid2$ AND x.currency = 'CNY') AS apsumcny
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpidop2$ AND x.araptype = 'AP' $corpid2$ AND x.currency = 'USD') AS apsumusd
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpidop2$ AND x.araptype = 'AP' $corpid2$ AND x.currency = 'HKD') AS apsumhkd
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpidop2$ AND x.araptype = 'AP' $corpid2$ AND x.currency = 'DHS') AS apsumdhs
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpidop2$ AND x.araptype = 'AR' $corpid2$ AND x.currency = 'CNY') AS arsumcny
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpidop2$ AND x.araptype = 'AR' $corpid2$ AND x.currency = 'USD') AS arsumusd
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpidop2$ AND x.araptype = 'AR' $corpid2$ AND x.currency = 'HKD') AS arsumhkd
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false $corpidop2$ AND x.araptype = 'AR' $corpid2$ AND x.currency = 'DHS') AS arsumdhs
+							 -->
+						FROM fina_jobs j 
+						where j.isdelete = FALSE
+							AND EXISTS (SELECT 1 FROM fina_arap x WHERE x.isdelete = FALSE AND j.id = x.jobid AND ((1=1 $corpidop$ $corpid$) OR (1=1 $corpid2$ $corpidop2$)))
+							$extClauseWhere$
+							$extClauseWhere1$
+							$extClauseWhere2$
+							$filterAmtstl$
+							$filter$
+							$corpfilter$
+							AND nos is not null 
+							AND nos != '') AS t
+					) AS T
+		WHERE $qry$
+		ORDER BY corpop,corp,nos
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.finance.rp.actpaycreatelinkBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			COUNT(*) AS counts FROM (SELECT 
+					*
+					,(CASE WHEN COALESCE(apcount,0) = COALESCE(arcount,0) THEN 'OK' ELSE '数量不匹配' END) AS piecematch 
+					,(CASE WHEN COALESCE(apsum,0) = COALESCE(arsum,0) THEN 'OK' ELSE '金额不匹配' END)AS amtmatch
+				FROM (SELECT 
+							 j.id
+							,j.nos 
+							,(SELECT x.abbcode FROM sys_corporation x where x.iscustomer = false and x.id = j.corpid) AS corp
+				  			,(SELECT x.abbcode FROM sys_corporation x where x.iscustomer = false and x.id = j.corpidop) AS corpop
+							,(SELECT COUNT(1) FROM fina_arap x where x.jobid = j.id and x.isdelete = false and x.customerid = j.corpidop AND x.araptype = 'AP' AND x.corpid = j.corpid) AS apcount
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false and x.customerid = j.corpidop AND x.araptype = 'AP' AND x.corpid = j.corpid)  AS apsum
+							,(SELECT COUNT(1) FROM fina_arap x where x.jobid = j.id and x.isdelete = false and x.customerid = j.corpid AND x.araptype = 'AR' AND x.corpid = j.corpidop) AS arcount
+							,(SELECT SUM(x.amount) FROM fina_arap x where x.jobid = j.id and x.isdelete = false and x.customerid = j.corpid AND x.araptype = 'AR' AND x.corpid = j.corpidop) AS arsum
+						FROM fina_jobs j 
+						where j.isdelete = FALSE
+							and j.corpid != j.corpidop
+							$extClauseWhere$
+							$filterAmtstl$
+							$filter$
+							$corpfilter$
+							AND nos is not null 
+							AND nos != '') AS t
+					) AS T
+		WHERE $qry$
+	</select>
+	
+</sqlMap>

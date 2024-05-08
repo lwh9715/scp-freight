@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.module.api.vgm.vgmlistBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT row_number() OVER() AS row,* FROM(
+				SELECT 
+					 (t.id || '-' || d.id) AS pkid
+					,t.carriercode
+					,t.vesselname
+					,t.voyno
+					,t.portcode
+					,t.masterbillno
+					,t.inputer AS vmginputer
+					,t.inputtime AS vmginputtime
+					,(SELECT nos FROM fina_jobs x where x.id = t.jobid LIMIT 1) AS jobno
+					,d.*
+				FROM api_vgmdtl d LEFT JOIN api_vgm t ON(t.id=d.vgmid and d.isdelete = FALSE)
+				WHERE 
+					$qry$
+					and d.isdelete = FALSE
+				ORDER BY vmginputtime DESC , COALESCE(d.status,'') DESC,d.sono,d.containerno
+		) AS T
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.api.vgm.vgmlistBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			count(*) AS counts
+		FROM api_vgmdtl d LEFT JOIN api_vgm t ON(t.id=d.vgmid and d.isdelete = FALSE)
+		WHERE 
+			$qry$
+			and d.isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.api.vgm.vgmeditBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT row_number() OVER() AS row,* FROM(
+				SELECT tl.*
+				 ,(SELECT x.namec FROM sys_user x where x.code = tl.inputer and x.isdelete = false limit 1) AS inputername
+				 ,(SELECT x.namec FROM sys_user x where x.code = tl.updater and x.isdelete = false limit 1) AS updatername
+				FROM api_vgmdtl tl
+				WHERE 
+					$qry$
+					AND tl.isdelete = FALSE
+					$filter$
+		) AS T
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.api.vgm.vgmeditBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			count(*) AS counts
+		FROM api_vgmdtl tl
+		WHERE
+			$qry$
+			AND tl.isdelete = FALSE
+			$filter$
+	</select>
+
+
+</sqlMap>

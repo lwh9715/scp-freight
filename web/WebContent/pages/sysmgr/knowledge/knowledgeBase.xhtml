@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:om="http://www.apusic.com/jsf/misc"
+	renderKitId="AJAX">
+	<w:head>
+		<meta name="renderer" content="webkit" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+		<script type="text/javascript" src="/scp/common/js/common.js?t=4"></script>
+		<script type="text/javascript" src="/scp/common/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/scp/common/js/jquery.cookie.js"></script>
+		<link rel="stylesheet" type="text/css" href="/scp/common/css/jquery.flexbox.css" />
+		<script type="text/javascript" src="/scp/common/js/jquery.flexbox.js"></script>
+		
+		<w:script type="text/javascript" src="/common/ckeditor/ckeditor.js"></w:script>
+		<w:script type="text/javascript" src="/common/ckeditor/extckeditor.js"></w:script>
+		
+		<script type="text/javascript">
+		//<![CDATA[
+        Ext.onReady(function() {
+          	editor1 = Ext.form.CKEditor.create("formedt:ckeditor");
+        });
+        function setValue() {
+        	editor1.setValue(contextJsvar.getValue());
+        	showlibtypeon();
+        	showlibtypeon2();
+        	resizeCKEdit();
+        	
+        }
+        /**
+         * 表单提交前的处理事件：将编辑器的值设置到源TextArea字段
+         */
+        function beforeSubmit() {
+        	saveAction.addParam('editor1',editor1.getValue());
+        	saveAction.addParam('libtype',libtypeJs.getValue());
+        	saveAction.addParam('abstracts',abstractsJsvar.getValue());
+        	saveAction.addParam('linkid',linkidJsvar.getValue());
+        	
+        	saveAction.addParam('libtype2',libtype2Js.getValue());
+        	saveAction.addParam('linkid2',linkid2Jsvar.getValue());
+        	saveAction.submit();
+        }
+        function selectImg(imgid) {
+        	alert(imgid);
+        }
+		//]]>
+		</script>
+		<w:stylesheet type="text/css">
+			.td-editor div.x-form-element {width: 100%;height:100%;}
+		</w:stylesheet>
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+		<ajax:submitAction id="saveAction" jsvar="saveAction" />
+		<layout:borderLayout fitToBody="true">
+			<layout:panel id="gridPanel" jsvar="gridPanelJsvar" height="100%" split="true" fit="true"
+				title=""  hideBorders="true" region="center">
+				<w:form>
+					
+					<w:toolBar>
+						<w:button id="qryRefresh" label="#{l.m['刷新']}"
+							image="#{constantBean.contextPath}/images/refresh.png" />
+						<w:button id="add" value="#{l.m['新增']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+						<w:button id="deleter" label="#{l.m['删除']}"
+							onclick="return confirm('#{l.m['确定要删除吗?']}');"
+							image="#{constantBean.contextPath}/images/delete.png" />
+					</w:toolBar>
+					<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+						<layout:cell style="width: 25px;"> <w:button id="clearQryKey" label="" width="25"
+							image="#{constantBean.contextPath}/images/clear.png" /> </layout:cell>
+						<w:combo value="#{pages.sysmgr.knowledge.knowledgeBaseBean.qryMap.libtype}" width="90">
+							<f:selectItem itemLabel="#{l.m['委托人']}" itemValue="A"/>
+							<f:selectItem itemLabel="#{l.m['订舱代理']}" itemValue="B"/>
+							<f:selectItem itemLabel="#{l.m['船公司']}" itemValue="C"/>
+							<f:selectItem itemLabel="#{l.m['航线']}" itemValue="D"/>
+							<f:selectItem itemLabel="#{l.m['港口']}" itemValue="E"/>
+							<f:selectItem itemLabel="#{l.m['航空公司']}" itemValue="F"/>
+							<f:selectItem itemLabel="#{l.m['报关行']}" itemValue="G"/>
+							<f:selectItem itemLabel="#{l.m['车行']}" itemValue="H"/>
+							<f:selectItem itemLabel="#{l.m['目的港代理']}" itemValue="I"/>
+						</w:combo>
+						<w:textField selectOnFocus="true" width="120" value="#{pages.sysmgr.knowledge.knowledgeBaseBean.qryMap['linknamec']}"/>
+						<w:textField selectOnFocus="true" width="280" value="#{pages.sysmgr.knowledge.knowledgeBaseBean.qryMap['abstracts']}"/>
+						<w:textField selectOnFocus="true" width="100" value="#{pages.sysmgr.knowledge.knowledgeBaseBean.qryMap['remarks']}"/>
+						<w:button id="refresh" value="#{l.m['查询']}"
+							image="#{constantBean.contextPath}/images/query-small.png" />
+							
+						<layout:cell>
+							<ajax:status startStyle="color: red"
+								onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+								onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+								<f:facet name="start">
+									<f:verbatim>
+										<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 20px;"></img>
+									</f:verbatim>
+								</f:facet>
+							</ajax:status>
+						</layout:cell>
+					</layout:panelGrid>
+				
+					<w:dataGrid height="700" paged="true" rows="100" id="grid" jsvar="gridJsvar"
+						toolBarPosition="bottom" idColumn="id" selectable="true">
+						<w:outputColumn id="id" header="ID" hidden="true" />
+						<w:outputColumn id="linkid" header="linkid" hidden="true" />
+						<w:outputColumn id="linkid2" header="linkid2" hidden="true" />
+						<w:outputColumn header="#{l.m['类型']}" id="linktblc" width="80" sortable="true"/>
+						<!--<w:outputColumn header="#{l.m['知识库内容']}" id="context" width="80" sortable="true" hidden="true"/>
+						-->
+						<w:outputColumn header="#{l.m['名称']}" id="linknamec" width="120" sortable="true"/>
+						<w:outputColumn header="#{l.m['摘要']}" id="abstracts" width="280" sortable="true"/>
+						<w:outputColumn header="#{l.m['关联表名']}" id="linktbl" width="80" sortable="true" hidden="true"/>
+						<w:outputColumn header="#{l.m['备注']}" id="remarks" width="100" sortable="true"/>
+						
+						<w:outputColumn header="#{l.m['录入人']}" id="inputername" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['录入时间']}" id="inputtime" width="90" sortable="true">
+							<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" /> 
+						</w:outputColumn>
+						<w:outputColumn header="#{l.m['修改人']}" id="updatername" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['修改时间']}" id="updatetime" width="90" sortable="true">
+							<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" /> 
+						</w:outputColumn>
+					</w:dataGrid>
+					<w:pagingToolbar for="grid" target="grid" displayInfo="true" displayMsg="{0}-{1}/{2}">
+		            </w:pagingToolbar>
+				</w:form>
+			</layout:panel>
+		</layout:borderLayout>
+	</w:page>
+	
+	<layout:window maximizable="true" id="editWindow" jsvar="editWindowJsVar" width="700" height="650" header="false"
+			resizable="true" constrainHeader="true" >
+			<layout:panel id="editPanel" height="100" hideBorders="true" style="font-size:12px" width="300" autoScroll="true" 
+				region="west">
+				<w:form id="formedt">
+					<w:toolBar>
+						<!--<w:button id="add" value="#{l.m['新增']}" image="#{constantBean.contextPath}/images/new.png" />
+						-->
+						<w:button id="del" label="#{l.m['删除']}"
+							onclick="return confirm('#{l.m['确定要删除吗?']}');"
+							image="#{constantBean.contextPath}/images/delete.png" />
+						<w:button id="save" value="#{l.m['保存']}" onclick="beforeSubmit()"
+							image="#{constantBean.contextPath}/images/save.png" />
+					</w:toolBar>
+					<layout:panelGrid columns="4" cellspacing="0" cellpadding="0" style="font-size:12px">
+						<h:outputLabel value="#{l.m['类型1']}:"/>
+						<w:combo id="libtype" width="100" jsvar="libtypeJs" onselect="showlibtypeon()">
+							<f:selectItem itemLabel="#{l.m['委托人']}" itemValue="A"/>
+							<f:selectItem itemLabel="#{l.m['订舱代理']}" itemValue="B"/>
+							<f:selectItem itemLabel="#{l.m['船公司']}" itemValue="C"/>
+							<f:selectItem itemLabel="#{l.m['航线']}" itemValue="D"/>
+							<f:selectItem itemLabel="#{l.m['港口']}" itemValue="E"/>
+							<f:selectItem itemLabel="#{l.m['航空公司']}" itemValue="F"/>
+							<f:selectItem itemLabel="#{l.m['报关行']}" itemValue="G"/>
+							<f:selectItem itemLabel="#{l.m['车行']}" itemValue="H"/>
+							<f:selectItem itemLabel="#{l.m['目的港代理']}" itemValue="I"/>
+						</w:combo>
+						<layout:cell colspan="2">
+							<div id="libtypeon"></div>
+							<w:textField id="linkid" width="100" jsvar="linkidJsvar" hidden="true"/>
+							<w:textField id="linknamec" width="100" jsvar="linknamecJsavr" hidden="true"/>
+						</layout:cell>
+						
+						
+						<h:outputLabel value="#{l.m['类型2']}:"/>
+						<w:combo id="libtype2" width="100" jsvar="libtype2Js" onselect="showlibtypeon2()">
+							<f:selectItem itemLabel="#{l.m['委托人']}" itemValue="A"/>
+							<f:selectItem itemLabel="#{l.m['订舱代理']}" itemValue="B"/>
+							<f:selectItem itemLabel="#{l.m['船公司']}" itemValue="C"/>
+							<f:selectItem itemLabel="#{l.m['航线']}" itemValue="D"/>
+							<f:selectItem itemLabel="#{l.m['港口']}" itemValue="E"/>
+							<f:selectItem itemLabel="#{l.m['航空公司']}" itemValue="F"/>
+							<f:selectItem itemLabel="#{l.m['报关行']}" itemValue="G"/>
+							<f:selectItem itemLabel="#{l.m['车行']}" itemValue="H"/>
+							<f:selectItem itemLabel="#{l.m['目的港代理']}" itemValue="I"/>
+						</w:combo>
+						<layout:cell colspan="2">
+							<div id="libtypeon2"></div>
+							<w:textField id="linkid2" width="100" jsvar="linkid2Jsvar" hidden="true"/>
+							<w:textField id="linknamec2" width="100" jsvar="linknamec2Jsavr" hidden="true"/>
+						</layout:cell>
+						
+						<layout:cell colspan="4">
+							<layout:panelGrid columns="2" cellspacing="0px" style="font-size:12px">
+								<h:outputLabel value="#{l.m['摘要']}:"/>
+								<w:textField selectOnFocus="true" id="abstracts" jsvar="abstractsJsvar" width="400"/>
+							</layout:panelGrid>
+						</layout:cell>
+						<!-- <h:outputLabel value="#{l.m['知识库内容']}"/> -->
+						<div style="display: none">
+							<w:textArea selectOnFocus="true" id="context" jsvar="contextJsvar" readOnly="true" hidden="true"/>
+						</div>
+						
+					</layout:panelGrid>
+					<layout:panelGrid columns="2" cellspacing="1px" style="font-size:12px">
+						<layout:cell colspan="2" styleClass="td-editor">
+							<h:outputText id="ckeditor" escape="false" style="width: 100%;height: 100%;"/>
+						</layout:cell>
+					</layout:panelGrid>
+					<w:textField selectOnFocus="true" id="pkVal" hidden="true"/>
+				</w:form>
+			</layout:panel>
+	</layout:window>
+
+	<script>
+	//<![CDATA[
+		var linkid = #{pages.sysmgr.knowledge.knowledgeBaseBean.linkid};
+		function showlibtypeon(){
+			if(linkid>0){
+				return;
+			}
+			if(libtypeJs.getValue()==''){
+				return;
+			}
+			$("#libtypeon").empty();
+			var showtype;
+			if(libtypeJs.getValue()=="A"){//委托人
+				showtype = "customer";
+			}else if(libtypeJs.getValue()=="B"){
+				showtype = "agenter";
+			}else if(libtypeJs.getValue()=="C"){
+				showtype = "carrier";
+			}else if(libtypeJs.getValue()=="D"){
+				showtype = "route";
+			}else if(libtypeJs.getValue()=="E"){
+				showtype = "port";
+			}else if(libtypeJs.getValue()=="F"){
+				showtype = "airline";
+			}else if(libtypeJs.getValue()=="G"){
+				showtype = "customer";
+			}else if(libtypeJs.getValue()=="H"){
+				showtype = "truckcompany";
+			}else if(libtypeJs.getValue()=="I"){
+				showtype = "agentdes";
+			}
+			$('#libtypeon').flexbox('/scp/service?src=flexbox&action='+showtype+'&userid=#{commonBean.userid}&type=ship', {
+				resultTemplate: '<div class="col1">{name}</div><div style="width: 225px;" class="col2">{namec}</div><div class="col3">{namee}</div>',
+				watermark: '',
+				initialValue: linknamecJsavr.getValue(),
+				width: 155,
+				onSelect: function() {
+					var id = $('input[name=libtypeon]').val();
+					linkidJsvar.setValue(id);
+					var col2 = $("div#"+id+" .col2").text();
+					$(this).val(col2);
+				}
+		 	});
+		}
+		
+	var linkid2 = #{pages.sysmgr.knowledge.knowledgeBaseBean.linkid2};
+		function showlibtypeon2(){
+			if(linkid2>0){
+				return;
+			}
+			if(libtype2Js.getValue()==''){
+				return;
+			}
+			$("#libtypeon2").empty();
+			var showtype;
+			if(libtype2Js.getValue()=="A"){//委托人
+				showtype = "customer";
+			}else if(libtype2Js.getValue()=="B"){
+				showtype = "agenter";
+			}else if(libtype2Js.getValue()=="C"){
+				showtype = "carrier";
+			}else if(libtype2Js.getValue()=="D"){
+				showtype = "route";
+			}else if(libtype2Js.getValue()=="E"){
+				showtype = "port";
+			}else if(libtype2Js.getValue()=="F"){
+				showtype = "airline";
+			}else if(libtype2Js.getValue()=="G"){
+				showtype = "customer";
+			}else if(libtype2Js.getValue()=="H"){
+				showtype = "truckcompany";
+			}else if(libtype2Js.getValue()=="I"){
+				showtype = "agentdes";
+			}
+			$('#libtypeon2').flexbox('/scp/service?src=flexbox&action='+showtype+'&userid=#{commonBean.userid}&type=ship', {
+				resultTemplate: '<div class="col1">{name}</div><div style="width: 225px;" class="col2">{namec}</div><div class="col3">{namee}</div>',
+				watermark: '',
+				initialValue: linknamec2Jsavr.getValue(),
+				width: 155,
+				onSelect: function() {
+					var id = $('input[name=libtypeon2]').val();
+					linkid2Jsvar.setValue(id);
+					var col2 = $("div#"+id+" .col2").text();
+					$(this).val(col2);
+				}
+		 	});
+		}
+		
+		function resize(){
+			var newHeight = (gridPanelJsvar.getSize().height) - 50;
+			var newWidth = (gridPanelJsvar.getSize().width);
+			gridJsvar.setHeight(newHeight);
+			gridJsvar.setWidth(newWidth);
+			gridJsvar.render();
+		}
+		
+		function resizeCKEdit() {
+        	$('.cke_contents').css("height",(editWindowJsVar.getHeight()-270)+"px");
+			$('span[id*=cke_formedt:ckeditor]').css("width",(editWindowJsVar.getWidth()-20)+"px");
+        }
+		
+		Ext.onReady(function(){
+			resize();
+			Ext.EventManager.onWindowResize(function(){
+				resize();
+			});
+			editWindowJsVar.on('resize',function(){
+				resizeCKEdit();
+			});
+		 });
+		 //]]>
+	</script>
+</f:view>

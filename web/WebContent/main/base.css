@@ -1,0 +1,16 @@
+/*菜单*/
+.nav-left,.nav-middle,.nav-right{float:left;height:35px;width:10px;overflow:hidden}
+.nav-middle{width:600px;padding:0;line-height:35px;/*position:relative*/}
+.nav-middle span{display:block;float:left;height:35px}
+.nav-right{float:right}
+.nav-middle div,.nav-middle div a,.nav-middle div a span,.nav-middle div a b{display:block;float:left}
+.nav-middle div{padding:0 5px;font-weight:bold}
+.nav-middle div a{height:35px;font-size:14px}
+.nav-middle div a b{height:35px;width:20px}
+.nav-middle div a span{height:35px;padding-right:20px;cursor:pointer}
+.on-01 .nav-01 a:link,.on-01 .nav-01 a:visited,.on-01 .nav-01 a:hover,.on-02 .nav-02 a:link,.on-02 .nav-02 a:visited,.on-02 .nav-02 a:hover,.on-03 .nav-03 a:link,.on-03 .nav-03 a:visited,.on-03 .nav-03 a:hover,.on-04 .nav-04 a:link,.on-04 .nav-04 a:visited,.on-04 .nav-04 a:hover,.on-05 .nav-05 a:link,.on-05 .nav-05 a:visited,.on-05 .nav-05 a:hover{text-decoration:none;cursor:pointer}
+.nav-middle a:link,.nav-middle a:visited,.nav-middle a:active{text-decoration:none}
+.nav-middle a:hover{text-decoration:none}
+#userSet{display:none;float:right}
+#userSet a:hover{text-decoration:underline;}
+#userSet a{font-size:12px;}

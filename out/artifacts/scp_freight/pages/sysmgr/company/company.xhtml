@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> <link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" /><link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+
+		<layout:borderLayout fitToBody="true">
+
+			<layout:panel id="gridPanel" height="100%" title="" split="true" region="center"
+				jsvar="gridPanelJsvar" hideBorders="true">
+				<w:form>
+				<w:toolBar>
+					
+					<w:button id="qryRefresh" label="#{l.m['刷新']}"
+						image="#{constantBean.contextPath}/images/refresh.png" />
+					<w:button id="add" label="#{l.m['新增']}" jsvar="addJsVar"
+						image="#{constantBean.contextPath}/images/new.png" />
+					<w:button id="autoBusno" label="#{l.m['生成编码规则']}"
+						image="#{constantBean.contextPath}/images/new.png" />
+				</w:toolBar>
+				
+				<div style="display: none">
+					<w:textField selectOnFocus="true" id="CSNO" hidden="true" jsvar="csnoJsVar"></w:textField>
+				</div>
+				
+				</w:form>
+				<w:dataGrid height="700" paged="true" rows="30" id="grid" jsvar="gridJsvar"
+					toolBarPosition="bottom" idColumn="id" selectable="true" selectionModel="#{constantBean.checkBox}">
+					<w:outputColumn id="id" header="ID" hidden="true" />
+					<w:outputColumn header="#{l.m['代码']}" id="code" sortable="true" />
+					<w:outputColumn header="#{l.m['中文名']}" id="namec" width="200" sortable="true" />
+					<w:outputColumn header="#{l.m['英文名']}" id="namee" width="200" sortable="true" />
+					<!--<w:outputColumn header="#{l.m['参与分成']}" id="ishare" width="90" sortable="true" type="check"/>
+					-->
+					<w:outputColumn header="#{l.m['代码缩写']}" id="abbcode" width="90" sortable="true" />
+					<w:outputColumn header="#{l.m['独立核算']}" id="isactset" width="90" sortable="true" type="check" align="center"/>
+					<w:outputColumn header="#{l.m['入账公司']}" id="corperlink" width="90" sortable="true"  align="center"/>
+					
+					<w:outputColumn header="#{l.m['录入人']}" id="inputername" sortable="true" width="80" />
+					<w:outputColumn header="#{l.m['录入时间']}" id="inputtime" width="90" sortable="true">
+						<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" />
+					</w:outputColumn>
+					<w:outputColumn header="#{l.m['修改人']}" id="updatername" sortable="true" width="80" />
+					<w:outputColumn header="#{l.m['修改时间']}" id="updatetime" width="90" sortable="true">
+						<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" />
+					</w:outputColumn>
+				</w:dataGrid>
+
+			</layout:panel>
+
+		</layout:borderLayout>
+	</w:page>
+
+
+	<script>
+	//<![CDATA[
+	Ext.onReady(function(){
+		var newHeight = (gridPanelJsvar.getSize().height) - 5;
+		var newWidth = (gridPanelJsvar.getSize().width);
+        //alert(newHeight);
+        //alert(newWidth);
+        gridJsvar.setHeight(newHeight);
+        gridJsvar.setWidth(newWidth);
+     });
+     //]]>
+</script>
+</f:view>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+			<layout:panel id="gridPanel" height="100%" split="true" jsvar="gridPanelJsvar" hideBorders="true"
+				fit="true">
+				<div style="height: 0px;"><ui:include src="/common/gridpage.xhtml" /></div>
+				<w:form>
+					<layout:panelGrid columns="20" cellspacing="1" cellpadding="0">
+						<w:toolBar style="width: 120px">
+							<w:button id="refresh" value="#{l.m['刷新']}" jsvar="refreshJsVar"
+								image="#{constantBean.contextPath}/images/query-small.png" />
+							<w:button id="saveUser" value="#{l.m['保存']}"
+								image="#{constantBean.contextPath}/images/save.png" />
+						</w:toolBar>
+						
+						<layout:cell>
+								<ajax:status startStyle="color: red"
+									onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+									onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+									<f:facet name="start">
+										<f:verbatim>
+											<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 20px;">Loading...</img>
+										</f:verbatim>
+									</f:facet>
+								</ajax:status>
+						</layout:cell>
+					</layout:panelGrid>
+					<layout:panelGrid columns="20" cellspacing="1" cellpadding="0">
+						<layout:cell style="width: 25px;">
+							<w:button id="clearQryKey" label="" width="25"
+								image="#{constantBean.contextPath}/images/clear.png" />
+						</layout:cell>
+						<w:textField selectOnFocus="true" width="80"
+							value="#{pages.sysmgr.message.getmsguserBean.qryMap['code']}" />
+						<w:textField selectOnFocus="true" width="60"
+							value="#{pages.sysmgr.message.getmsguserBean.qryMap['company']}" />
+						<w:textField selectOnFocus="true" width="100"
+							value="#{pages.sysmgr.message.getmsguserBean.qryMap['depter2']}" />
+						<w:textField selectOnFocus="true" width="120"
+							value="#{pages.sysmgr.message.getmsguserBean.qryMap['namec']}" />
+						<w:textField selectOnFocus="true" width="120"
+							value="#{pages.sysmgr.message.getmsguserBean.qryMap['namee']}" />
+						<w:button id="search" value="#{l.m['查询']}" onclick="refreshJsVar.fireEvent('click')"
+								image="#{constantBean.contextPath}/images/query-small.png" />
+					</layout:panelGrid>
+
+					<w:dataGrid height="700" paged="true" rows="50" id="grid" jsvar="gridJsvar"
+						onrowselect="return false" onrowdeselect="return false" toolBarPosition="bottom" idColumn="id" selectable="true"
+						selectionModel="#{constantBean.checkBox}">
+						<w:outputColumn id="id" header="ID" hidden="true" />
+						<w:outputColumn header="#{l.m['代码']}" id="code" width="80" sortable="true" />
+						<w:outputColumn header="#{l.m['公司']}" id="company" width="60" sortable="true" />
+						<w:outputColumn header="#{l.m['部门']}" id="depter2" width="100" sortable="true" />
+						<w:outputColumn header="#{l.m['中文名']}" id="namec" width="120" sortable="true" />
+						<w:outputColumn header="#{l.m['英文名']}" id="namee" width="120" sortable="true" />
+					</w:dataGrid>
+					
+					<w:textField id="messageid" hidden="true"></w:textField>
+				</w:form>
+			</layout:panel>
+	</w:page>
+
+	
+</f:view>

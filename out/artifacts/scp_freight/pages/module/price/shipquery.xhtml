@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+        xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:ajax="http://www.apusic.com/jsf/ajax" xmlns:om="http://www.apusic.com/jsf/misc"
+        renderKitId="AJAX">
+    <w:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <w:stylesheet src="/common/css/common.css"></w:stylesheet>
+        <link rel="stylesheet" id="cmsbg" type="text/css"/>
+        <w:script src="/common/js/common.js?t=4"></w:script>
+        <script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+        <script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+
+        <script type="text/javascript" src="/scp/common/js/savemodel2.js?t=5"></script>
+        <script type="text/javascript" src="/scp/common/js/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/scp/common/css/jquery.flexbox.css"/>
+        <script type="text/javascript" src="/scp/common/js/jquery.flexbox.js"></script>
+        <link rel="stylesheet" href="/scp/layui/css/layui.css"/>
+        <script src="/scp/layui/layui.js"></script>
+        <style>
+            div.taba span.x-tab-strip-text {
+                width: 181px;
+                text-align: center;
+                text-shadow: gray;
+                font-size: 15px;
+                font-weight: bold;
+            }
+
+            div.tabb span.x-tab-strip-text {
+                width: 77px;
+                text-align: center;
+            }
+
+            .tabIconFCL {
+                background: url("#{constantBean.contextPath}/images/refresh.png");
+            }
+        </style>
+
+        <script src="../../../common/js/chart.js"></script>
+        <script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+        <script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+    </w:head>
+    <w:page loadMask="true" loadMaskText="Loading..." title="#{l.m['船期查询']} FCL">
+        <ajax:conversationActivator/>
+        <layout:panel jsvar="gridPanelJsvar" id="gridPanel">
+            <w:form id="shipquerycfg">
+                <layout:panelGrid columns="6">
+                    <layout:cell colspan="2">
+                        <layout:panelGrid columns="16">
+                            <h:outputLabel value="#{l.m['起运港']}"/>
+                            <layout:cell>
+                                <div id="polDiv"></div>
+                                <w:textField width="120" selectOnFocus="true" id="polcode" jsvar="polcodejsvar" hidden="true"/>
+                            </layout:cell>
+
+                            <h:outputLabel value="#{l.m['目的港']}"/>
+                            <layout:cell>
+                                <div id="podDiv"></div>
+                                <w:textField width="120" selectOnFocus="true" id="podcode" jsvar="podcodejsvar" hidden="true"/>
+                            </layout:cell>
+
+                            <h:outputLabel value="ETD"/>
+                            <w:dateField width="120" selectOnFocus="true" id="etd"/>
+
+                            <h:outputLabel value="#{l.m['船公司']}"></h:outputLabel>
+                            <layout:cell colspan="2">
+                                <w:textField width="150" readOnly="true" selectOnFocus="true" id="shipcarrier" jsvar="shipcarrierJs" emptyText="#{l.m['双击修改']}" value="#{pages.module.price.shipqueryBean.shipcarrier}"/>
+                            </layout:cell>
+
+                            <w:combo forceSelection="true" width="60" emptyText="#{l.m['周']}" id="weeksOut"  value="#{pages.module.price.shipqueryBean.weeksOut}">
+                                <f:selectItem itemValue="1" itemLabel="#{l.m['1']}"/>
+                                <f:selectItem itemValue="2" itemLabel="#{l.m['2']}"/>
+                                <f:selectItem itemValue="3" itemLabel="#{l.m['3']}"/>
+                                <f:selectItem itemValue="4" itemLabel="#{l.m['4']}"/>
+                                <f:selectItem itemValue="5" itemLabel="#{l.m['5']}"/>
+                                <f:selectItem itemValue="6" itemLabel="#{l.m['6']}"/>
+                            </w:combo>
+
+                            <h:outputLabel value="#{l.m['直航']}"/>
+                            <w:checkBox tooltip="#{l.m['直航']}" value="#{pages.module.price.shipqueryBean.directOnly}"></w:checkBox>
+                            <h:outputLabel value="#{l.m['周边起运港']}"/>
+                            <w:checkBox tooltip="#{l.m['周边起运港']}" value="#{pages.module.price.shipqueryBean.includeNearbyOriginPorts}"></w:checkBox>
+                            <h:outputLabel value="#{l.m['周边目的港']}"/>
+                            <w:checkBox tooltip="#{l.m['周边目的港']}" value="#{pages.module.price.shipqueryBean.includeNearbyDestinationPorts}"></w:checkBox>
+                        </layout:panelGrid>
+                    </layout:cell>
+                    <layout:cell colspan="2">
+                        <layout:panelGrid columns="4">
+                            <w:button id="qrySchudule" value="#{l.m['查询']}" onclick="showSearchMessage()" image="#{constantBean.contextPath}/images/query-small.png"/>
+                            <w:button id="clearQryKey" jsvar="clearQryKeyJsVar" label="#{l.m['清空条件']}" width="25" image="#{constantBean.contextPath}/images/clear.png"/>
+                            <w:button id="exprtButton" value="#{l.m['导出']}" onclick="exportExcel();" image="#{constantBean.contextPath}/pages/module/common/resources/images/excel.gif" />
+                        </layout:panelGrid>
+                    </layout:cell>
+
+                    <layout:cell>
+                        <ajax:status startStyle="color: red"
+                                     onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+                                     onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+                            <f:facet name="start">
+                                <f:verbatim>
+                                    <img src="#{constantBean.contextPath}/images/waiting.gif"
+                                         style="height: 15px;width:20px;"></img>
+                                </f:verbatim>
+                            </f:facet>
+                        </ajax:status>
+                    </layout:cell>
+
+                    <layout:cell>
+                        <ajax:submitAction id="exportThistable" jsvar="exportexl" />
+                        <div style="height: 0px; display: none;">
+                            <w:button id="simulateExport" jsvar="simulateExport" label="#{l.m['导出']}" title="#{l.m['下载']}" disabled="true" alwaysSubmit="true" />
+                            <om:fileDownload id="doSimulateExport" for="simulateExport" savedName="shipquery.xls" />
+                        </div>
+                    </layout:cell>
+                </layout:panelGrid>
+
+
+                <div style="height: 0px; display: none;">
+                </div>
+
+                <w:dataGrid height="500" paged="false" rows="200" id="gridSchedule" jsvar="gridScheduleJsvar"
+                            toolBarPosition="bottom" merged="false"
+                            selectable="true" idColumn="id" loadMask="false" selectionModel="#{constantBean.checkBox}"
+                            onrowselect="return false" onrowdeselect="return false">
+                    <w:outputColumn id="id" header="id" hidden="true"/>
+                    <w:outputColumn header="船名" id="vesselName" width="120" sortable="true" align="center"/>
+                    <w:outputColumn header="航次" id="voyageNumber" width="120" sortable="true" align="center"/>
+                    <w:outputColumn header="#{l.m['起运港']}" id="originUnloc" width="120" sortable="true" align="center"/>
+                    <w:outputColumn header="#{l.m['目的港']}" id="destinationUnloc" width="120" sortable="true" align="center"/>
+                    <w:outputColumn header="#{l.m['船公司']}" id="carrierName" width="150" sortable="true" align="center"/>
+                    <w:outputColumn header="serviceName" id="serviceName" width="120" sortable="true" align="center"/>
+                    <w:outputColumn header="originDepartureDate" id="originDepartureDate" width="120" sortable="true" align="center"/>
+                    <w:outputColumn header="destinationArrivalDate" id="destinationArrivalDate" width="120" sortable="true" align="center"/>
+                    <w:outputColumn header="totalDuration" id="totalDuration" width="120" sortable="true" align="center"/>
+                    <w:outputColumn header="bkCutoff" id="bkCutoff" width="120" sortable="true" align="center"/>
+                    <w:outputColumn header="terminalCutoff" id="terminalCutoff" width="120" sortable="true" align="center"/>
+                    <w:outputColumn header="siCutoff" id="siCutoff" width="120" sortable="true" align="center"/>
+                    <w:outputColumn header="vgmCutoff" id="vgmCutoff" width="120" sortable="true" align="center"/>
+                    <w:outputColumn header="scac" id="scac" width="120" sortable="true" align="center"/>
+                    <w:outputColumn header="imoNumber" id="imoNumber" width="120" sortable="true" align="center"/>
+                </w:dataGrid>
+                <w:pagingToolbar for="gridSchedule" target="gridSchedule" displayInfo="true"
+                                 displayMsg="{0}-{1}/{2}">
+                </w:pagingToolbar>
+            </w:form>
+        </layout:panel>
+
+
+        <layout:window maximizable="true" width="510" height="530" id="shipcarrierWindow" jsvar="shipcarrierWindowJs"
+                       constrainHeader="true">
+            <layout:panel id="shipcarrierPanel" height="100%" hideBorders="true" width="100%" fit="true">
+                <w:form>
+                    <layout:panelGrid columns="10" cellspacing="0" cellpadding="0">
+                        <w:textField id="qryshipcarrierdesc" selectOnFocus="true" width="200" emptyText="#{l.m['中文名/辅助编码']}"/>
+                        <w:button id="qryshipcarrier" value="#{l.m['查询']}"  image="#{constantBean.contextPath}/images/query-small.png"/>
+                        <w:button id="confirm" value="#{l.m['确认']}" jsvar="confirmJsVar" image="#{constantBean.contextPath}/images/save.png"/>
+                        <w:button value="#{l.m['确认并关闭']}" allowReEnter="true" onclick='confirmJsVar.fireEvent("click");shipcarrierWindowJs.hide()'  image="#{constantBean.contextPath}/images/save.png"/>
+<!--                        <w:button id="empty" value="#{l.m['清空']}" image="#{constantBean.contextPath}/images/save.png"/>-->
+                    </layout:panelGrid>
+                    <w:dataGrid height="475" jsvar="gridShipcarrierJsvar" paged="true" rows="200" id="gridShipcarrier"  selectionModel="#{constantBean.checkBox}" toolBarPosition="bottom" idColumn="id"  selectable="true">
+                        <w:outputColumn id="id" header="ID" hidden="true"/>
+                        <w:outputColumn header="#{l.m['代码']}" id="code" sortable="true" width="110"/>
+                        <w:outputColumn header="#{l.m['中文名']}" id="namec" sortable="true" width="230"/>
+                        <w:outputColumn header="#{l.m['辅助编码']}" id="remarks" width="110" sortable="true"/>
+                    </w:dataGrid>
+                    <w:pagingToolbar for="gridShipcarrier" target="gridShipcarrier" displayInfo="true"  displayMsg="{0}-{1}/{2}">
+                    </w:pagingToolbar>
+                </w:form>
+            </layout:panel>
+        </layout:window>
+    </w:page>
+
+
+    <script>
+        //<![CDATA[
+        function resize() {
+            var newHeight = (gridPanelJsvar.getSize().height) - 40;
+            var newWidth = (gridPanelJsvar.getSize().width);
+            gridScheduleJsvar.setHeight(newHeight);
+            gridScheduleJsvar.setWidth(newWidth);
+            gridScheduleJsvar.render();
+        }
+
+        Ext.onReady(function () {
+            resize();
+            Ext.EventManager.onWindowResize(function () {
+                resize();
+            });
+            init();
+
+            var headTable = $($("#shipquerycfg").find('table').find('table')[0]);
+            headTable.find('td').eq(0).css("min-width", "46px");
+            headTable.find('td').find('#polDiv_input').css("width", "85px");
+
+            $("#shipquerycfg\\:shipcarrier").dblclick(function () {
+                shipcarrierWindowJs.show();
+            });
+
+
+            if ("#{pages.module.price.shipqueryBean.menuflag}" == 'xuanchuanqi') {
+                $("button:contains('查询')").click();
+            }
+
+        });
+
+
+        function init() {
+            $('#polDiv').flexbox('/scp/service?src=flexbox&action=polhistory&type=ship&userid=#{commonBean.userid}', {
+                resultTemplate: '<div class="col1">{name}</div><div class="col2">{namec}</div><div class="col3">{namee}</div>',
+                watermark: '',
+                width: 120,
+                initialValue: "#{pages.module.price.shipqueryBean.polcode}",
+                position: 'absolute',
+                top: '18px',
+                left: '0px',
+                onSelect: function () {
+                    var str1 = $(this).next().next().children().children(".row.ffb-sel").children(".col1").html();
+                    str1 = str1.replace('<span class="ffb-match">', "");
+                    str1 = str1.replace("</span>", "");
+                    polcodejsvar.setValue(str1);
+                    $(this).val(str1);
+                }
+            });
+
+            $('#podDiv').flexbox('/scp/service?src=flexbox&action=podhistory&type=ship&userid=#{commonBean.userid}', {
+                resultTemplate: '<div class="col1">{name}</div><div class="col2">{namec}</div><div class="col3">{namee}</div>',
+                watermark: '',
+                width: 120,
+                initialValue: "#{pages.module.price.shipqueryBean.podcode}",
+                position: 'absolute',
+                top: '18px',
+                left: '0px',
+                onSelect: function () {
+                    var str1 = $(this).next().next().children().children(".row.ffb-sel").children(".col1").html();
+                    str1 = str1.replace('<span class="ffb-match">', "");
+                    str1 = str1.replace("</span>", "");
+                    podcodejsvar.setValue(str1);
+                    $(this).val(str1);
+                }
+            });
+        }
+
+        function showSearchMessage(value) {
+            layer.msg('查询中',{shade: 0.4,time:false});
+        }
+
+        function exportExcel() {
+            var config = gridScheduleJsvar.getSelectionModel().grid.events.columnmove.obj.plugins[0].grid.colModel.config;
+            var key = "";
+            var value = "";
+            for(var i=1;i<config.length;i++) {
+                if(!config[i].hidden) {
+                    key += config[i].dataIndex;
+                    value += config[i].header;
+                    if(i < config.length - 1) {
+                        key += ",";
+                        value += ",";
+                    }
+                }
+            }
+            exportexl.addParam("key",key);
+            exportexl.addParam("value",value);
+            exportexl.submit();
+            layer.msg('导出中',{shade: 0.4,time:2000});
+        }
+
+        function setParentValue(xxx) {
+            setTimeout("setParentValue1('" + xxx + "')", "1000");
+        }
+
+        function setParentValue1(xxx) {
+            window.parent.getChilrenValue(xxx);
+        }
+
+        //]]>
+    </script>
+</f:view>

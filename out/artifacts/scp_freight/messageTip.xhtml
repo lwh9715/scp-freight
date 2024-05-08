@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> <link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" /><link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<script>
+        //<![CDATA[
+            function closeWin(){
+				//var r = window.close();
+            }
+        //]]>
+        </script>
+	</w:head>
+	<w:page title="Tips">
+		<w:form>
+			<layout:panel width="800" fit="true" height="600" title="" border="0">
+				<w:textArea selectOnFocus="true" id="message" width="780" height="580" readOnly="true" ></w:textArea>
+			</layout:panel>
+		</w:form>
+	</w:page>
+</f:view>

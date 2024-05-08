@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.sysmgr.user.myworkbenchBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _sys_memo t 
+		WHERE $qry$ 
+			AND isdelete = false
+			AND isvalid = true
+			AND (now() BETWEEN remindertimefm AND remindertimeend)
+			AND (ispublic = true OR UPPER(inputer) = UPPER('$user$'))
+		ORDER BY grade , name
+		LIMIT 10
+	</select>
+	
+	<select id="pages.sysmgr.user.myworkbenchBean.msg.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _sys_message t 
+		WHERE $qry$ 
+		AND msgtype = 'G'
+		ORDER BY inputtime desc , title
+		LIMIT 10
+	</select>
+	
+</sqlMap>

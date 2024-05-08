@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.sysmgr.rpt.rptMgrBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 *
+		FROM _sys_report x 
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = false
+		ORDER BY modcode,code
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.rpt.rptMgrBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		  count(*) AS counts 
+		FROM _sys_report x
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = false
+	</select>
+</sqlMap>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.sysmgr.message.msgBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,(SELECT namec||'/'||COALESCE((SELECT abbr FROM sys_corporation WHERE id = x.corpid),'')||'/'||COALESCE((SELECT name FROM sys_department WHERE id = x.deptid),'') FROM sys_user x WHERE code = t.inputer) AS inputeruser
+		 ,(SELECT namec||'/'||COALESCE((SELECT abbr FROM sys_corporation WHERE id = x.corpid),'')||'/'||COALESCE((SELECT name FROM sys_department WHERE id = x.deptid),'') FROM sys_user x WHERE code = t.updater) AS updateruser
+		FROM _sys_message t 
+		WHERE $qry$
+		$filter$ 
+		AND issystem = FALSE
+		ORDER BY inputtime desc, title
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.message.msgBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_message t
+		WHERE $qry$
+		$filter$ 
+		AND issystem = FALSE
+	</select>
+		<select id="pages.sysmgr.msgboard.favoritesBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		*
+		FROM sys_webfavorites t
+		WHERE $qry$
+		$filter$ 
+		AND isdelete = false 
+		LIMIT $limit$ OFFSET $start$
+		
+	</select>
+	
+	<select id="pages.sysmgr.msgboard.favoritesBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		count(*) AS counts
+		FROM sys_webfavorites t
+		WHERE $qry$
+		AND isdelete = false
+	</select>
+	
+	<select id="pages.sysmgr.message.getmsguserBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		*
+		FROM _sys_user t
+		WHERE $qry$
+		$filter$ 
+		AND isdelete = false AND isadmin = 'N' AND iscsuser = FALSE
+		ORDER BY isinvalid DESC, code
+	</select>
+	
+	
+	<select id="pages.sysmgr.message.getmsguserBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		count(*) AS counts
+		FROM _sys_user t
+		WHERE $qry$
+		AND isdelete = false AND isadmin = 'N' AND iscsuser
+		= FALSE
+	</select>
+	
+	
+	<select id="pages.sysmgr.message.msgmgrBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,(SELECT x.namec FROM sys_user x,sys_message_ref s WHERE x.id = s.userid AND t.id = s.messageid limit 1) AS msguser
+		 ,(SELECT namec||'/'||COALESCE((SELECT abbr FROM sys_corporation WHERE id = x.corpid),'')||'/'||COALESCE((SELECT name FROM sys_department WHERE id = x.deptid),'') FROM sys_user x WHERE x.isdelete = false and x.code = t.inputer) AS inputer2
+		FROM _sys_message t 
+		WHERE $qry$ 
+		$filter$ 
+		AND issystem = FALSE
+		ORDER BY title
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.message.msgmgrBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_message t 
+		WHERE $qry$
+		$filter$ 
+		AND issystem = FALSE
+	</select>
+	
+	<select id="pages.sysmgr.message.msgeditBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _sys_message t 
+		WHERE $qry$ 
+		AND issystem = FALSE
+		ORDER BY title
+	</select>
+	<select id="pages.sysmgr.message.msgeditBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_message t 
+		WHERE $qry$
+		AND issystem = FALSE
+	</select>
+	
+	
+	<select id="pages.sysmgr.message.msgshowBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _sys_message t 
+		WHERE $qry$ 
+		AND issystem = FALSE
+		ORDER BY title
+	</select>
+	<select id="pages.sysmgr.message.msgshowBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _sys_message t 
+		WHERE $qry$
+		AND issystem = FALSE
+	</select>
+	
+	<select id="pages.sysmgr.message.unsubscribeBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		 SELECT u.id, u.email, 
+			(CASE u.reason
+	 			WHEN 'r1' THEN 'I am not interested anymore'
+	 			WHEN 'r2' THEN 'I receive too many messages'
+	 			WHEN 'r3' THEN 'I can''t read the messages'
+	 			WHEN 'r4' THEN 'I never asked to subscribe'
+			 	WHEN 'rZ' THEN 'Other'
+	 			END
+			) AS reason ,u.date
+		FROM bus_unsubscribe u
+		WHERE $qry$
+	</select>
+	<select id="pages.sysmgr.message.unsubscribeBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		 count(*) AS counts
+		 FROM bus_unsubscribe u
+		 WHERE $qry$
+	</select>
+	
+	<select id="pages.sysmgr.message.jobnotesBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT row_number() OVER() AS row ,* from(
+			select 
+		 	* 
+			FROM sys_jobnotes t 
+			WHERE $qry$ order by updatetime desc,inputtime desc,groupname,namec
+			LIMIT $limit$ OFFSET $start$
+		) as T
+	</select>
+	<select id="pages.sysmgr.message.jobnotesBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_jobnotes t 
+		WHERE $qry$
+	</select>
+	
+</sqlMap>

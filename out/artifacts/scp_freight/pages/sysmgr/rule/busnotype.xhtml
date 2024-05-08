@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+		<layout:borderLayout fitToBody="true">
+			<layout:panel id="gridPanel" jsvar="gridPanelJsvar" height="100%" split="true" fit="true"
+				title="" hideBorders="true" region="center">
+				<div style="height: 0px;"><ui:include src="/common/gridpage.xhtml" /></div>
+				<w:form>
+					<div style="height: 0px;"></div>
+					<layout:panelGrid columns="5">
+					<w:toolBar>
+						<w:button id="qryRefresh" label="#{l.m['刷新']}" jsvar="qryRefreshJsVar"
+							image="#{constantBean.contextPath}/images/refresh.png" />
+						<w:button id="add" value="#{l.m['新增']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+						<w:button id="delGrid" label="#{l.m['删除']}"
+							onclick="return confirm('#{l.m['确定要删除吗?']}');"
+							image="#{constantBean.contextPath}/images/delete.png" />
+						<w:button id="save" value="#{l.m['保存']}"
+							image="#{constantBean.contextPath}/images/save.png" />
+					</w:toolBar>
+					<layout:cell>
+							<ajax:status startStyle="color: red"
+								onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+								onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+								<f:facet name="start">
+									<f:verbatim>
+										<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 20px;">Loading...</img>
+									</f:verbatim>
+								</f:facet>
+							</ajax:status>
+						</layout:cell>
+					</layout:panelGrid>
+					<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+						<layout:cell style="width: 25px;">
+							<w:button id="clearQryKey" label="" width="25"
+								image="#{constantBean.contextPath}/images/clear.png" />
+						</layout:cell>
+						<w:combo emptyText="Type" width="120" id="qryCorpid" jsvar="qryCorpJsVar"
+							value="#{pages.sysmgr.rule.busnotypeBean.qryMap['corpid$']}" listWidth="280">
+							<f:selectItems value="#{comboxBean.companyFilter}" />
+						</w:combo>
+
+						<w:textField selectOnFocus="true" width="120"
+							value="#{pages.sysmgr.rule.busnotypeBean.qryMap['code']}" />
+						<w:textField selectOnFocus="true" width="120"
+							value="#{pages.sysmgr.rule.busnotypeBean.qryMap['tblname']}" />
+
+						<w:button id="refresh" value="#{l.m['查询']}"
+							image="#{constantBean.contextPath}/images/query-small.png" />
+					</layout:panelGrid>
+					<w:dataGrid height="700" paged="true" rows="#{pages.sysmgr.rule.busnotypeBean.gridPageSize}" id="grid" jsvar="gridJsvar" onrowselect="return false" onrowdeselect="return false"
+						toolBarPosition="bottom" idColumn="id" selectable="true" selectionModel="#{constantBean.checkBox}">
+						<w:outputColumn id="id" header="ID" hidden="true" />
+						<w:outputColumn header="#{l.m['公司']}" id="corpiddesc" width="120" sortable="true"
+							clientFormatter="formatDefault" />
+						
+						<w:outputColumn header="code" id="code" width="120" sortable="true"
+							clientFormatter="formatDefault" />
+						<w:outputColumn header="tblname" id="tblname" width="120"  sortable="true"/>
+						<w:outputColumn header="nocol" id="nocol" width="80" sortable="true"/>
+						<w:outputColumn header="datecol" id="datecol" width="80"  sortable="true"/>
+						<w:outputColumn header="namec" id="namec" width="90"  sortable="true"/>
+						<w:outputColumn header="#{l.m['备注']}" id="remark" width="100"  sortable="true"/>
+						
+						<w:outputColumn header="#{l.m['录入人']}" id="inputername" width="80"  sortable="true"/>
+						<w:outputColumn header="#{l.m['录入时间']}" id="inputtime" width="90" sortable="true">
+							<f:convertDateTime pattern="yy/MM/dd " timeZone="GMT+8" />
+						</w:outputColumn>
+						<w:outputColumn header="#{l.m['修改人']}" id="updatername" width="80"  sortable="true"/>
+						<w:outputColumn header="#{l.m['修改时间']}" id="updatetime" width="90" sortable="true">
+							<f:convertDateTime pattern="yy/MM/dd " timeZone="GMT+8" />
+						</w:outputColumn>
+						<w:outputColumn header="timetype" id="timetype" width="110" sortable="true" hidden="true" />
+					</w:dataGrid>
+				</w:form>
+			</layout:panel>
+
+		</layout:borderLayout>
+	</w:page>
+
+
+
+	<layout:window id="editWindow" width="600" height="380">
+		<layout:panel id="editPanel" title="" height="380" hideBorders="true" style="font-size:12px"
+			region="west" width="600">
+			<w:form>
+				<w:toolBar>
+					<w:button id="add" value="#{l.m['新增']}"
+						image="#{constantBean.contextPath}/images/new.png" />
+					<w:button id="addCopy" value="#{l.m['复制新增']}"
+						image="#{constantBean.contextPath}/images/new.png" />
+					<w:button id="del" label="#{l.m['删除']}"
+						onclick="return confirm('#{l.m['确定要删除吗?']}');"
+						image="#{constantBean.contextPath}/images/delete.png" />
+					<w:button id="save" value="#{l.m['保存']}"
+						image="#{constantBean.contextPath}/images/save.png" />
+
+				</w:toolBar>
+				<layout:panelGrid columns="4" cellspacing="5px" width="580" style="font-size:12px">
+					<h:outputLabel value="code" />
+					<w:textField selectOnFocus="true"
+						value="#{pages.sysmgr.rule.busnotypeBean.selectedRowData.code}" width="160" />
+						
+					<h:outputLabel value="tblname" />
+					<w:textField selectOnFocus="true"
+						value="#{pages.sysmgr.rule.busnotypeBean.selectedRowData.tblname}" width="160" />
+						
+					<h:outputLabel value="nocol" />
+					<w:textField selectOnFocus="true"
+						value="#{pages.sysmgr.rule.busnotypeBean.selectedRowData.nocol}" width="160" />
+						
+					<h:outputLabel value="datecol" />
+					<w:textField selectOnFocus="true"
+						value="#{pages.sysmgr.rule.busnotypeBean.selectedRowData.datecol}" width="160" />
+					
+					<h:outputLabel value="namec" />
+					<w:textField selectOnFocus="true"
+						value="#{pages.sysmgr.rule.busnotypeBean.selectedRowData.namec}" width="160" />
+					
+					<h:outputLabel value="#{l.m['备注']}" />
+					<w:textArea value="#{pages.sysmgr.rule.busnotypeBean.selectedRowData.remark}" height="60"
+						style="text-align:left;" width="160" selectOnFocus="true" />
+				</layout:panelGrid>
+				<w:textField selectOnFocus="true" id="pkVal" hidden="true" />
+			</w:form>
+		</layout:panel>
+	</layout:window>
+
+
+	<script>
+    //<![CDATA[
+    
+    	function formatDefault(v,m,r) {
+	    	var timetype = r.get('timetype');
+			if(timetype =='A'){
+				m.attr="style='color:gray;'";
+			}
+            return v;
+    	}
+		
+		function resize(){
+			var newHeight = (gridPanelJsvar.getSize().height) - 55;
+			var newWidth = (gridPanelJsvar.getSize().width);
+			gridJsvar.setHeight(newHeight);
+			gridJsvar.setWidth(newWidth);
+			gridJsvar.render();
+		}
+	
+		Ext.onReady(function(){
+			resize();
+			Ext.EventManager.onWindowResize(function(){
+				resize();
+			});
+			if(qryCorpJsVar.store.getAt(0).data.value != undefined){
+				qryCorpJsVar.setValue(qryCorpJsVar.store.getAt(0).data.value);
+				qryRefreshJsVar.fireEvent('click');
+			}
+		 });
+	 //]]>
+     </script>
+</f:view>

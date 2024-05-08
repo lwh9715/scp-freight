@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	
+	
+	<select id="pages.module.elogistics.jobs.jobsBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+	 ,(SELECT string_agg(x.invoiceno,',') FROM  fina_invoice x , fina_arap y WHERE y.jobid = t.id AND x.isdelete = FALSE AND y.isdelete = FALSE AND y.invoiceid = x.id AND x.invoiceno IS NOT NULL) AS invoceno
+		 ,(SELECT y.abbr FROM bus_truck x,sys_corporation y WHERE x.isdelete = FALSE AND x.jobid = t.id AND x.truckid = y.id) AS truckabbr
+		 ,(SELECT truckcontact FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS truckcontact
+		 ,(SELECT factory FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS factory
+		 ,(SELECT loadtime FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS loadtime
+		 ,(SELECT loadcontact FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS loadcontact
+		 ,(SELECT contacttel FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS contacttel
+		 ,(SELECT loadaddress FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS loadaddress
+		 ,(SELECT unloadfactory FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS unloadfactory
+		 ,(SELECT unloadtime FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS unloadtime
+		 ,(SELECT unloadcontact FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS unloadcontact
+		 ,(SELECT unloadconttel FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS unloadconttel
+		 ,(SELECT unloadaddress FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS unloadaddress
+		 ,(SELECT loadplace FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS loadplace
+		 ,(SELECT cabinetlocation FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS cabinetlocation
+		 ,(SELECT returncabinet FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS returncabinet
+		 ,(SELECT driverno FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS driverno
+		 ,(SELECT string_agg(c.cntno,',') FROM bus_ship_container c WHERE c.jobid = t.id AND c.isdelete = FALSE AND c.cntno IS NOT NULL AND t.parentid is null) AS cntnos
+		 ,(SELECT string_agg(c.sealno,',') FROM bus_ship_container c WHERE c.jobid = t.id AND c.isdelete = FALSE AND c.sealno IS NOT NULL AND t.parentid is null) AS sealnos
+		 ,(SELECT string_agg(c.sono,',') FROM bus_ship_container c WHERE c.jobid = t.id AND c.isdelete = FALSE AND c.sono IS NOT NULL AND t.parentid is null) AS sonos
+		 ,(SELECT f_fina_jobs_cntdesc('jobid='::text || t.id)) AS cntdesc
+		 ,(SELECT remarks FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS remarks
+		 ,(SELECT special FROM bus_truck WHERE isdelete = FALSE AND jobid = t.id) AS special
+		 ,(SELECT string_agg(x.namec,',') FROM sys_user x , sys_user_assign y, bus_truck b WHERE b.jobid = t.id AND x.id =y.userid AND y.roletype = 'O' AND y.linkid = b.id AND  COALESCE(y.isdelete,false) = false)  AS opname
+		 ,(CASE jobstate WHEN 'I' THEN '未安排' WHEN 'S' THEN '已选舱' WHEN 'TI' THEN '安排拖车' WHEN 'TF' THEN '拖车完成' WHEN 'CI' THEN '安排报关' WHEN 'CF' THEN '报关完成' 
+			WHEN 'BI' THEN '做提单' WHEN 'BF' THEN '提单已打印' WHEN 'DI' THEN '出账单' WHEN 'DF' THEN '账单已打印' WHEN 'J' THEN '已并单' WHEN 'E' THEN '已寄单' WHEN 'QG' THEN '已清关' WHEN 'TG' THEN '已拖柜' WHEN 'F' THEN '完成' END) AS jobstatedesc
+		 ,(SELECT namec FROM sys_corporation WHERE id = t.customerid)AS customernamec
+		FROM bus_elogistics  a,_fina_jobs_base t
+		WHERE $qry$
+		    AND a.isdelete = FALSE
+			AND t.id=a.jobid
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.elogistics.jobs.jobsBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM bus_elogistics  t,_fina_jobs_base a
+		WHERE  $qry$
+		    AND  a.isdelete = FALSE
+			AND a.id=t.jobid
+	</select>
+	
+</sqlMap>
+

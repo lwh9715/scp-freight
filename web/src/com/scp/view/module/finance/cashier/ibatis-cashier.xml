@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	
+	<select id="pages.module.finance.cashier.daycashmgrBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _fs_cash t 
+		WHERE $qry$
+			$filter$ 
+			AND isdelete = FALSE
+		ORDER BY t.actcode , t.year , period , cashdate::DATE , cashno
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.finance.cashier.daycashmgrBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _fs_cash t 
+		WHERE $qry$ 
+			$filter$ 
+			AND isdelete = FALSE
+	</select>
+	
+	
+	<select id="pages.module.finance.cashier.daybankmgrBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _fs_bank t 
+		WHERE $qry$
+			$filter$ 
+			AND isdelete = FALSE
+		ORDER BY t.actcode , t.year , period , bankdate::DATE , serialno
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.finance.cashier.daybankmgrBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _fs_bank t 
+		WHERE $qry$ 
+			$filter$ 
+			AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.finance.cashier.bankbillmgrBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _fs_bank t 
+		WHERE $qry$
+			$filter$ 
+			AND isdelete = FALSE
+		ORDER BY t.actcode , t.year , period , bankdate::DATE , serialno
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.finance.cashier.bankbillmgrBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _fs_bank t 
+		WHERE $qry$ 
+			$filter$ 
+			AND isdelete = FALSE
+	</select>
+</sqlMap>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page title="">
+		<ajax:conversationActivator/>
+		<layout:borderLayout fitToBody="true">
+
+			<layout:panel id="gridPanel" jsvar="gridPanelJsvar" height="100%" split="true" fit="true"
+				width="250" title="" hideBorders="true" region="center">
+				<w:form>
+					<div style="height: 0px;">
+						<w:textField selectOnFocus="true" id="userid" hidden="true"></w:textField>
+					</div>
+					<layout:panelGrid columns="4">
+						<w:toolBar>
+							<w:button id="qryRefresh" label="#{l.m['刷新']}"
+								image="#{constantBean.contextPath}/images/refresh.png" />
+							<w:button id="save" value="#{l.m['保存']}" allowReEnter="false"
+								image="#{constantBean.contextPath}/images/save.png" />
+						</w:toolBar>
+						<layout:cell>
+							<ajax:status startStyle="color: red"
+								onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+								onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+								<f:facet name="start">
+									<f:verbatim>
+										<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 20px;">Loading...</img>
+									</f:verbatim>
+								</f:facet>
+							</ajax:status>
+						</layout:cell>
+					</layout:panelGrid>
+
+					<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+						<layout:cell style="width: 25px;">
+							<w:button id="clearQryKey" label="" width="25"
+								image="#{constantBean.contextPath}/images/clear.png" />
+						</layout:cell>
+						<w:textField selectOnFocus="true" width="115"
+							value="#{pages.sysmgr.user.linksalesBean.qryMap['corper1']}" />
+						<w:textField selectOnFocus="true" width="80"
+							value="#{pages.sysmgr.user.linksalesBean.qryMap['depter1']}" />
+						<w:textField selectOnFocus="true" width="82"
+							value="#{pages.sysmgr.user.linksalesBean.qryMap['jobdesc']}" />
+						<w:textField selectOnFocus="true" width="100"
+							value="#{pages.sysmgr.user.linksalesBean.qryMap['code']}" />
+						<w:textField selectOnFocus="true" width="100"
+							value="#{pages.sysmgr.user.linksalesBean.qryMap['namec']}" />
+						<w:button id="refresh" value="#{l.m['查询']}"
+							image="#{constantBean.contextPath}/images/query-small.png" />
+					</layout:panelGrid>
+
+					<w:dataGrid height="630" paged="false" rows="1000" id="grid" jsvar="gridJsvar" idColumn="id"
+						selectable="true" selectionModel="#{constantBean.checkBox}" toolBarPosition="bottom" multiSelectOnClick="true" 
+						selections="#{pages.sysmgr.user.linksalesBean.gridSelIds}" onrowselect="return false" onrowdeselect="return false">
+						<w:outputColumn id="id" header="ID" hidden="true" />
+						<w:outputColumn header="" id="islink" width="30" type="check"/>
+						<w:outputColumn header="#{l.m['公司']}" id="corper1" width="80" />
+						<w:outputColumn header="#{l.m['部门']}" id="depter1" width="80" />
+						<w:outputColumn header="#{l.m['岗位']}" id="jobdesc" width="80" />
+						<w:outputColumn header="#{l.m['代码']}" id="code" width="100" />
+						<w:outputColumn header="#{l.m['名称']}" id="namec" width="100" />
+						<w:outputColumn header="#{l.m['客户数']}" id="custcount" width="80" align="right"  clientFormatter="formatcustomer"/>
+						<w:outputColumn header="#{l.m['用户数']}" id="usercount" width="80" align="right"  clientFormatter="formatuser"/>
+					</w:dataGrid>
+					<w:pagingToolbar for="grid" target="grid" displayInfo="true" displayMsg="{0}-{1}/{2}">
+	            </w:pagingToolbar>
+				</w:form>
+			</layout:panel>
+		</layout:borderLayout>
+	</w:page>
+
+	<script>
+	//<![CDATA[
+	
+		function formatuser(v,m,r) {
+		 	var id = r.get('id');
+		 	var tips = r.get('corper') +'/'+  r.get('depter') +'/'+ r.get('jobdesc') +'/'+ r.get('code') +'/'+ r.get('namec') ;
+		  	var temp = '<a target="_blank" href="../../module/customer/custlibuser.aspx?libid='+id+'&tips='+tips+'"><font color="#00BFFF">'+v+'</font></a>';	    		
+            return temp;
+        }
+        
+        function formatcustomer(v,m,r) {
+		 	var id = r.get('id');
+		 	var tips = r.get('corper') +'/'+  r.get('depter') +'/'+ r.get('jobdesc') +'/'+ r.get('code') +'/'+ r.get('namec') ;
+		  	var temp = '<a target="_blank" href="../../module/customer/custlibcust.aspx?libid='+id+'&tips='+tips+'"><font color="#00BFFF">'+v+'</font></a>';	    		
+            return temp;
+        }
+	
+		function resize(){
+			var newHeight = (gridPanelJsvar.getSize().height) - 55;
+			var newWidth = (gridPanelJsvar.getSize().width);
+			gridJsvar.setHeight(newHeight);
+			gridJsvar.setWidth(newWidth);
+			gridJsvar.render();
+			
+			newHeight = (userPanelJsvar.getSize().height) - 25;
+			newWidth = (userPanelJsvar.getSize().width);
+			userGridJsvar.setHeight(newHeight);
+			userGridJsvar.setWidth(newWidth);
+			userGridJsvar.render();
+		}
+	
+		Ext.onReady(function(){
+			resize();
+			Ext.EventManager.onWindowResize(function(){
+				resize();
+			});
+		 });
+		 //]]>
+	</script>
+</f:view>

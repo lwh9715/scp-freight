@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:om="http://www.apusic.com/jsf/misc"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/common/css/common.css" />
+		<script type="text/javascript" src="/scp/common/js/jquery.min.js"></script>
+		<w:script src="/common/js/common.js?t=4"></w:script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+			<layout:panel fit="true" id="editPanel" jsvar="gridPanelJsvar" hideBorders="true" split="true"> 
+				<w:form>
+					<w:toolBar>
+						<w:button allowReEnter="true" id="isfresh" value="#{l.m['刷新']}"
+							image="#{constantBean.contextPath}/images/refresh.png" />
+						<w:button allowReEnter="true" id="removeuser" value="#{l.m['下线']}"
+							image="#{constantBean.contextPath}/images/refresh.png" />
+					</w:toolBar>
+					<layout:panelGrid columns="2" style="font-size:12px" cellspacing="0" cellpadding="0">
+						<h:outputLabel  value="User count:" />
+						<w:textField id="sysuser" width="50" readOnly="true"> </w:textField>
+						<h:outputLabel  value="On line user count:" />
+						<w:textField id="onlinenumber" width="50" readOnly="true"> </w:textField>
+						<!--<h:outputLabel  value="On line user:" />
+						<w:textArea id="online" width="400" height="30" readOnly="true"></w:textArea>
+					--></layout:panelGrid>
+				</w:form>	
+				
+				<w:dataGrid paged="true"  rows="#{login_new.useronlineBean.gridPageSize}" id="grid" jsvar="gridJsvar" idColumn="id" 
+					toolBarPosition="bottom" selectionModel="#{constantBean.checkBox}"  selectable="true" singleSelect="false"
+					onrowselect="return false" onrowdeselect="return false" loadMask="true"> 
+						<w:outputColumn id="id" header="ID" hidden="true" />
+						<w:outputColumn id="sessionid" header="SESSIONID" hidden="true" />
+						<w:outputColumn id="userid" header="UserID" hidden="true" />
+						<w:outputColumn header="#{l.m['代码']}" id="code" width="110" sortable="true" />
+						<w:outputColumn header="#{l.m['姓名']}" id="namec" sortable="true" width="80" />
+				</w:dataGrid>
+		</layout:panel>
+	</w:page>
+
+	<script>
+	//<![CDATA[
+	function resize(){
+        var newHeight2 = (gridPanelJsvar.getSize().height)-30;
+        gridJsvar.setHeight(newHeight2);
+        var newWidth2 = (gridPanelJsvar.getSize().width);
+        gridJsvar.setWidth(newWidth2);
+        gridJsvar.render();
+	}
+	
+		Ext.onReady(function(){
+			resize();
+			Ext.EventManager.onWindowResize(function(){
+			resize();
+			});
+		 });
+		 //]]>
+	</script>
+
+</f:view>

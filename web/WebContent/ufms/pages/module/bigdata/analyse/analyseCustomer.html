@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!-- 引入echarts文件 -->
+<script src="/so/res/static/js/echarts.min.js"></script>
+	
+<link rel="stylesheet" href="/so/res/static/css/index.css?t=31">
+<link rel="stylesheet" href="/so/res/layui/css/layui.css">
+<link rel="stylesheet" href="/so/res/layui/layui-formSelects/formSelects-v4.css">
+<script src="/so/res/static/js/jquery.min.js"></script>
+<script src="/so/res/layui/layui.js"></script>
+<script src="/so/res/static/js/jquery.cookie.js?t=1"></script>
+<script src="/so/admin/js/ufms.common.js?t=13" ></script>
+<script src="/so/res/static/js/index.js?t=14"></script>
+<script src="/so/res/static/js/xm-select.js?t=1"></script>
+<script src="/so/admin/js/jquery.i18n.properties-min-1.0.9.js"></script>
+
+<title>货运分析</title>
+<style>
+	html, body { height: 100%; margin: 0; }
+	.chart_box {
+		height: 32%; 
+		width: 100%;
+		position: relative;
+	}
+	.top_right_box{
+		height: 32%; 
+		width: 23.75%;
+		float:right;
+	}
+	#split_line{
+		height: 2%; 
+		width: 100%;
+		background-color: #08c2ec;
+		text-align:center;
+	    font-weight: bolder;
+	    font-size: larger;
+	    color: white;
+	}
+	#title_line{
+		height: 2%; 
+		width: 100%;
+		background-color: #c1e2bf;
+		text-align:center;
+	    font-weight: bolder;
+	    font-size: larger;
+	    color: white;
+	}
+	.title_line2{
+		height: 2%;
+		width: 100%;
+		background-color: #08c2ec;
+		text-align:center;
+	    font-weight: bolder;
+	    font-size: larger;
+	    color: white;
+	    border:1px solid #f1eaea;
+	}
+	select{
+	    height: 38px;
+	    width: 134px;
+	    background-color: #f9f6f6e8;
+	    padding-left: 11px;
+	}
+	.layui-input-block{
+		margin-left: 80px;
+	}
+	.layui-form-label{
+		text-align: center;
+		width: 60px;
+		border-radius: 12px;
+	}
+	.layui-form-item{
+		border-radius: 2px;
+	}
+	.layui-tab-item {
+		width: 226px;
+	}
+	.fl{
+		position: relative;
+		text-align:center;
+	}
+	.cl{
+		text-align:center;
+	}
+	.sl{
+		border-color: #adb2c1;
+	}
+	.bl{
+		font-weight:bold;
+	}
+</style>
+</head>
+<body>
+	<div id="title_line">volume by cargo</div>
+	<div class="chart_box" id ="top_box">
+		<div id ="mainOption3" style="width: 900px; height: 300px;float:left;margin-left: 3px;">
+			<h1 style="text-align:center;" id>current Week: 38</h1>
+			<div style="background-color:#08c2ec;font-weight: bold;"><h2 style="text-align:center;color: white;">colume by Cargo Source</h2></div>
+			<table id="top_left_table">
+				<tr style="background-color: #f9f6f6e8;">
+					
+					<td class="fl" colspan=1;>Cargo Source</td>
+					<td class="fl" colspan=1;>Last Week</td>
+					<td class="fl" colspan=1;>This Week</td>
+					<td class="fl" colspan=1;>Next Week</td>
+				</tr>
+				<tr>
+					<td class="fl">同行</td>
+					<td class="fl">22</td>
+					<td class="fl">33</td>
+					<td class="fl">44</td>
+				</tr>
+				<tr style="background-color: #f9f6f6e8;">
+					<td class="fl">直客</td>
+					<td class="fl">22</td>
+					<td class="fl">22</td>
+					<td class="fl">33</td>
+				</tr>
+				<tr>
+					<td class="fl">代理</td>
+					<td class="fl">11</td>
+					<td class="fl">22</td>
+					<td class="fl">33</td>
+				</tr>
+				<tr style="background-color: #f9f6f6e8;">
+					<td class="fl bl">总和</td>
+					<td class="fl bl">55</td>
+					<td class="fl bl">77</td>
+					<td class="fl bl">110</td>
+				</tr>
+				<tr style="height: 10px;">
+					<td class="fl"></td>
+					<td class="fl"></td>
+					<td class="fl"></td>
+					<td class="fl"></td>
+				</tr>
+				<tr>
+					<td class="fl">sail of cs</td>
+					<td class="fl">Branch area</td>
+					<td class="fl">CP_Branch</td>
+					<td class="fl">Carrier</td>
+				</tr>
+				<tr>
+					<td class="fl"><select class="sl"><option>Cpe</option></select></td>
+					<td class="fl"><select class="sl"><option>(全部)</option></select></td>
+					<td class="fl"><select class="sl"><option>(全部)</option></select></td>
+					<td class="fl"><select class="sl"><option>(全部)</option></select></td>
+				</tr>
+			</table>
+			<table style="margin-top: 10px;">
+				<tr>
+					<td class="cl">Trade</td>
+					<td class="cl">Trade a</td>
+					<td class="cl">Dese</td>
+				</tr>
+				<tr>
+					<td class="cl"><select class="sl"><option>(全部)</option></select></td>
+					<td class="cl"><select class="sl"><option>(全部)</option></select></td>
+					<td class="cl"><select class="sl"><option>(全部)</option></select></td>
+				</tr>
+			</table>
+		</div>
+		<div id="chart_box6" class="top_right_box">
+			<div class="title_line2"  id="mainOption6_line">Next Week</div>
+			<div id ="mainOption6" style="width: 900px; height: 300px;float:left;"></div>
+		</div>
+		<div id="chart_box5" class="top_right_box">
+			<div class="title_line2" id="mainOption5_line">This Week</div>
+			<div id ="mainOption5" style="width: 900px; height: 300px;float:left;"></div>
+		</div>
+		<div id="chart_box4" class="top_right_box">
+			<div class="title_line2" id="mainOption4_line">Last Week</div>
+			<div id ="mainOption4" style="width: 900px; height: 300px;float:left;"></div>
+		</div>
+	</div>
+	<div id="split_line">volume by cargo</div>
+	<div class="chart_box" id="chart_box">
+	    <div id="mainOption" style="width: 900px; height: 300px; float: right;"></div>
+	    <div id = "c_select"  style="width: 300px; float:right;">
+			<div class="layui-tab-item layui-show" >
+				    <!-- <div class="layui-form-item" id = "show_month_t_volume" style="display:none;">
+				    	<button onclick="show_month_charts()" id = "b_show_month" type="button"  class="layui-btn layui-btn-normal layui-btn-fluid" lay-submit="" lay-filter="queryfcl">切换月T量对比图(点击切换)</button>
+				    </div>
+				    <div class="layui-form-item" id = "show_week_t_volume">
+				    	<button onclick="show_week_charts()" id = "b_show_week" type="button" class="layui-btn layui-btn-normal layui-btn-fluid" lay-submit="" lay-filter="queryfcl">切换周T量对比图(点击切换)</button>
+				    </div> -->
+			    	<div class="layui-form-item" id="fun_div" style="border: #666666 1px solid; margin-top: 5px;">
+					    <label id = "l_freight_choose" class="layui-form-label">年份</label>
+					    <div class="layui-input-block" d = "d_freight_choose">
+					      <select id = "year_choose" onchange="change()">
+					         <option value="2019" selected>2019</option>
+					         <option value="2020">2020</option>
+					      </select>
+					    </div>
+				    </div>
+				    <div class="layui-form-item" id="fun_div" style="border: #666666 1px solid; margin-top: 5px;">
+					    <label id = "l_company_choose" class="layui-form-label"><span class="translate">分公司</span></label>
+					    <div class="layui-input-block">
+					      <select id = "company_choose" onchange="change()">
+					         <option value="0">所有分公司</option>
+					         <option value="0">宁波分公司</option>
+					         <option value="0">宁波分公司</option>
+					      </select>
+					    </div>
+				    </div>
+			    </div>
+		</div>
+	</div>
+	<div class="chart_box" id="chart_box2">
+		<div id="mainOption2" style="width: 900px; height: 300px;float: right;"></div>
+	</div>
+<script type="text/javascript">
+var myChart;
+var myChart2;
+var myChart4;
+var myChart5;
+var myChart6;
+
+var data = {
+   title: ['一月','二月','三月','四月','五月','六三月','七月','八月','九月','十月','十一月','十二月'],
+   freight_forwarder: 	[500,300,490,333,346,777,888,864,789, 765,500,500],
+   straight_customer: 	[300,400,500,300,400,500,300,400,500, 500,500,500],
+   colleagues: 			[60, 80, 90, 60, 70, 80, 90, 60, 70,  90, 500,500]
+};
+
+var year = '2019';
+var company_id = '0';
+layui.use('layer', function(){
+   var layer = layui.layer;
+}); 
+window.onload=function(){
+	$('#c_select').css('display',"none");
+	//$('#top_box').css('display',"none");
+	var loading = layer.load(0, {
+	    shade: false,
+	    time: 2*1000
+	});
+	//初始化饼图需要数据
+	year = $("#year_choose").val();
+	company_id = $('#company_choose').val();
+	actionGet('/analyse_customer','get_customer_data', 'key='+year+';'+company_id,function(res){
+		if('' == res || null == res){
+		    return false;
+		}
+		res = eval('(' + res + ')');
+		
+		var selectValue =  new Array();//legend Data
+		if(null != res['selectValue'] && '' != res['selectValue']){
+			selectValue = eval('(' + res['selectValue'] + ')');
+    	}
+		//年份下拉框初始化
+		select_init(selectValue, '#year_choose', null, null);
+		
+		var selectValue2 =  new Array();//legend Data
+		if(null != res['selectValue2'] && '' != res['selectValue2']){
+			selectValue2 = eval('(' + res['selectValue2'] + ')');
+    	}
+		//分公司下拉框初始化
+		select_init(selectValue2, '#company_choose', '--全部分公司--', '0');
+    	
+		chartssize();
+		
+		//初始化周表数据
+		init_option(res);
+	   	//初始化月表数据
+	   	init_option2(res);
+	   	
+	   	init_grid3(res);
+	   	init_option4(res);
+	   	init_option5(res);
+	   	init_option6(res);
+		
+	 	// 使用刚指定的配置项和数据显示图表。
+	 	myChart.setOption(option);
+	    myChart2.setOption(option2);
+	    myChart4.setOption(option4);
+	    myChart5.setOption(option5);
+	    myChart6.setOption(option6);
+	    
+	    $('#c_select').css('display',"block");
+		//$('#top_box').css('display',"block");
+	    loading.close(loading);
+  	});
+};
+
+
+const chart_box = document.getElementById('chart_box');
+const mainOption = document.getElementById('mainOption');
+
+const chart_box2 = document.getElementById('chart_box2');
+const mainOption2 = document.getElementById('mainOption2');
+
+const top_box = document.getElementById('top_box');
+const mainOption3 = document.getElementById('mainOption3');
+
+const chart_box4 = document.getElementById('chart_box4');
+const mainOption4 = document.getElementById('mainOption4');
+const mainOption4_line = document.getElementById('mainOption4_line');
+
+const chart_box5 = document.getElementById('chart_box5');
+const mainOption5 = document.getElementById('mainOption5');
+const mainOption5_line = document.getElementById('mainOption5_line');
+
+const chart_box6 = document.getElementById('chart_box6');
+const mainOption6 = document.getElementById('mainOption6');
+const mainOption6_line = document.getElementById('mainOption6_line');
+
+const split_line = document.getElementById('split_line');//分割线
+const c_select = document.getElementById('c_select');
+//参数container为图表盒子节点.charts为图表节点  
+function chartssize() {
+    function getStyle(el, name) {
+       if (window.getComputedStyle) {
+         return window.getComputedStyle(el, null);　　
+       } else {　　　
+         return el.currentStyle;　　
+       }　
+    }
+    var wi = getStyle(chart_box, 'width').width;
+    var hi = getStyle(chart_box, 'height').height;
+    mainOption.style.width = parseInt(wi.split('px')) * 0.85 + "px";
+    mainOption.style.height = hi;
+	c_select.style.width = parseInt(wi.split('px')) * 0.12 + "px";
+    
+    var wi2 = getStyle(chart_box2, 'width').width;
+    var hi2 = getStyle(chart_box2, 'height').height;
+    mainOption2.style.width = parseInt(wi2.split('px')) * 0.85 + "px";
+    mainOption2.style.height = hi2;
+    
+    var wi3 = getStyle(top_box, 'width').width;
+    var hi3 = getStyle(top_box, 'height').height;
+    mainOption3.style.width = parseInt(wi3.split('px')) * 0.281 + "px";
+    mainOption3.style.height = hi3;
+    
+    mainOption4.style.width = parseInt(wi3.split('px')) * 0.2375 + "px";
+    mainOption4.style.height = parseInt(hi3.split('px')) * 0.92 + "px";
+    mainOption4_line.style.width = parseInt(wi3.split('px')) * 0.2375 + "px";
+    mainOption4_line.style.height = parseInt(hi3.split('px')) * 0.08 + "px";
+    chart_box4.style.height = hi3;
+    
+    mainOption5.style.width = parseInt(wi3.split('px')) * 0.2375 + "px";
+    mainOption5.style.height = parseInt(hi3.split('px')) * 0.92 + "px";
+    mainOption5_line.style.width = parseInt(wi3.split('px')) * 0.2375 + "px";
+    mainOption5_line.style.height = parseInt(hi3.split('px')) * 0.08 + "px";
+    chart_box5.style.height = hi3;
+    
+    mainOption6.style.width = parseInt(wi3.split('px')) * 0.2375 + "px";
+    mainOption6.style.height = parseInt(hi3.split('px')) * 0.92 + "px";
+    mainOption6_line.style.width = parseInt(wi3.split('px')) * 0.2375 + "px";
+    mainOption6_line.style.height = parseInt(hi3.split('px')) * 0.08 + "px";
+    chart_box6.style.height = hi3;
+    
+    var a = parseInt(wi3.split('px')) * 0.25 + "px";
+    top_left_table.style.width = a;
+    top_left_table.height = hi3;
+    
+    //charts.style.width = parseInt(wi.split('px')) * 0.12 + "px";
+}
+
+	var option = {
+	   color: ['#AAFFEE', '#FFBB66', '#CCFF99'],
+	   title: [{
+	       text: '周货运对比图',
+	       //bottom: 40, //控制表格Y轴方向
+	       //top : 10,
+	       left: 50,
+	       textStyle: {
+	           lineHeight: 30,
+	           fontSize: 30,
+	           //fontWeight: 'normal',
+	           formatter: function(value) {
+	               return '{table|' + value + '}';
+	           },
+	           rich: {
+	               table: {
+	                   align: 'left'
+	               }
+	           }
+	       }
+	   }],
+	   tooltip: {
+   		   textStyle: {
+			   fontWight: 300,
+			   fontSize: 30
+           },
+	       trigger: 'axis',
+	       axisPointer: {
+	           type: 'cross',
+	           label: {
+	               backgroundColor: '#283b56'
+	           }
+	       }
+	   },
+	   legend: {
+		   //type:"scroll",//可翻页
+		   //orient: 'vertical',//上下排列
+		   align:'left',
+		   left:'center',
+   		   textStyle: {
+			   fontWight: 300,
+			   fontSize: 30
+           },
+	       data: data.title
+	   },
+	   grid: {
+	       left: 150,
+	       right: 80
+	   },
+	   xAxis: [{
+	       type: 'category',
+	       boundaryGap: true,
+	       data: data.title
+	   }],
+	   yAxis: [{
+		   axisLabel: {
+    		   fontSize: 14
+           },
+	       type: 'value',
+	       scale: true,
+	       minInterval: 1,
+	       //name: '数量',
+	       axisLine: {
+	           show: true
+	       },
+	       splitLine: {
+	           show: true,
+	           color:'#333'
+	       }
+	   }],
+	   series: [{
+	       name: '货代',
+	       stack:'aa',
+	       type: 'bar',
+	       barWidth: '40px',
+	       label: {
+	           show: true,
+	           position: 'top'
+	       },
+	       yAxisIndex: 0,
+	       data: data.freight_forwarder
+	   }, {
+	       name: '直客',
+	       stack:'aa',
+	       type: 'bar',
+	       label: {
+	           show: true,
+	           position: 'top'
+	       },
+	       yAxisIndex: 0,
+	       data: data.straight_customer
+	   }, {
+	       name: '同行',
+	       stack:'aa',
+	       type: 'bar',
+	       label: {
+	           show: true,
+	           position: 'top',
+	           
+	       },
+	       yAxisIndex: 0,
+	       data: data.colleagues
+	   }]
+	};
+
+	
+	var option2 = {
+	   color: ['#AAFFEE', '#FFBB66', '#CCFF99'],
+	   title: [{
+	       text: '月货运对比图',
+	       //bottom: 40, //控制表格Y轴方向
+	       //top : 10,
+	       left: 50,
+	       textStyle: {
+	           lineHeight: 30,
+	           fontSize: 30,
+	           //fontWeight: 'normal',
+	           formatter: function(value) {
+	               return '{table|' + value + '}';
+	           },
+	           rich: {
+	               table: {
+	                   align: 'center'
+	               }
+	           }
+	       }
+	   }],
+	   tooltip: {
+   		   textStyle: {
+			   fontWight: 300,
+			   fontSize: 30
+           },
+	       trigger: 'axis',
+	       axisPointer: {
+	           type: 'cross',
+	           label: {
+	               backgroundColor: '#283b56'
+	           }
+	       }
+	   },
+	   legend: {
+		   //type:"scroll",//左右排列
+		   //type:"vertical",//上下排列
+		   //orient: 'vertical',
+		   left:'center',
+   		   textStyle: {
+			   fontWight: 300,
+			   fontSize: 30
+           },
+	       data: data.title
+	   },
+	   grid: {
+	       left: 150,
+	       right: 80
+	   },
+	   xAxis: [{
+	       type: 'category',
+	       boundaryGap: true,
+	       data: data.title
+	   }],
+	   yAxis: [{
+		   axisLabel: {
+    		   fontSize: 14
+           },
+	       type: 'value',
+	       scale: true,
+	       minInterval: 1,
+	       //name: '数量',
+	       axisLine: {
+	           show: true
+	       },
+	       splitLine: {
+	           show: true,
+	           color:'#333'
+	       }
+	   }],
+	   series: [{
+	       name: '货代',
+	       stack:'aa',
+	       type: 'bar',
+	       barWidth: '40px',
+	       label: {
+	           show: true,
+	           position: 'top'
+	       },
+	       yAxisIndex: 0,
+	       data: data.freight_forwarder
+	   }, {
+	       name: '直客',
+	       stack:'aa',
+	       type: 'bar',
+	       label: {
+	           show: true,
+	           position: 'top'
+	       },
+	       yAxisIndex: 0,
+	       data: data.straight_customer
+	   }, {
+	       name: '同行',
+	       stack:'aa',
+	       type: 'bar',
+	       label: {
+	           show: true,
+	           position: 'top',
+	           
+	       },
+	       yAxisIndex: 0,
+	       data: data.colleagues
+	   }]
+	};
+	
+	var valueData = [{value:1,name:"test1"},{value:2,name:"test2"},{value:2,name:"test3"}];
+	option4 = {
+		title: [{
+	       text: '上周对比',
+	       //bottom: 40, //控制表格Y轴方向
+	       //top : 10,
+	       left: 50,
+	       textStyle: {
+	           lineHeight: 30,
+	           fontSize: 30,
+	           //fontWeight: 'normal',
+	           formatter: function(value) {
+	               return '{table|' + value + '}';
+	           },
+	           rich: {
+	               table: {
+	                   align: 'center'
+	               }
+	           }
+	       }
+	    }],
+	    color: ['#BBFF00','#FFDDAA', '#99FFFF'],
+	    tooltip : {
+	        trigger: 'item',
+	        textStyle: {
+				fontWight: 300,
+    			fontSize: 30
+            },
+	        formatter: "{a} <br/>{b} : {c} ({d}%)"
+	    },
+	    toolbox: {
+	        show : true
+	    },
+	    series : [
+	    	{
+		    	name:'航线分析',
+	            type:'pie',
+	            radius : [0, 100],
+	            center: ['50%', '50%'],
+	            label: {
+		            textStyle: {
+	            		//fontWight: 300,
+		    			fontSize: 15,
+		                color: '#555'
+		            }
+		        },
+	            data: valueData
+		    }
+	    ]
+	};
+	option5 = {
+		title: [{
+	       text: '本周对比',
+	       //bottom: 40, //控制表格Y轴方向
+	       //top : 10,
+	       left: 50,
+	       textStyle: {
+	           lineHeight: 30,
+	           fontSize: 30,
+	           //fontWeight: 'normal',
+	           formatter: function(value) {
+	               return '{table|' + value + '}';
+	           },
+	           rich: {
+	               table: {
+	                   align: 'center'
+	               }
+	           }
+	       }
+	    }],
+	    color: ['#BBFF00','#FFDDAA', '#99FFFF'],
+	    tooltip : {
+	        trigger: 'item',
+	        textStyle: {
+				fontWight: 300,
+    			fontSize: 30
+            },
+	        formatter: "{a} <br/>{b} : {c} ({d}%)"
+	    },
+	    toolbox: {
+	        show : true
+	    },
+	    series : [
+	    	{
+		    	name:'航线分析',
+	            type:'pie',
+	            radius : [0, 100],
+	            center: ['50%', '50%'],
+	            label: {
+		            textStyle: {
+	            		//fontWight: 300,
+		    			fontSize: 15,
+		                color: '#555'
+		            }
+		        },
+	            data: valueData
+		    }
+	    ]
+	};
+	option6 = {
+		title: [{
+	       text: '下周对比',
+	       //bottom: 40, //控制表格Y轴方向
+	       //top : 10,
+	       left: 50,
+	       textStyle: {
+	           lineHeight: 30,
+	           fontSize: 30,
+	           //fontWeight: 'normal',
+	           formatter: function(value) {
+	               return '{table|' + value + '}';
+	           },
+	           rich: {
+	               table: {
+	                   align: 'center'
+	               }
+	           }
+	       }
+	    }],
+		color: ['#BBFF00','#FFDDAA', '#99FFFF'],
+	    tooltip : {
+	        trigger: 'item',
+	        textStyle: {
+				fontWight: 300,
+    			fontSize: 30
+            },
+	        formatter: "{a} <br/>{b} : {c} ({d}%)"
+	    },
+	    toolbox: {
+	        show : true
+	    },
+	    series : [
+	    	{
+		    	name:'航线分析',
+	            type:'pie',
+	            radius : [0, 100],
+	            center: ['50%', '50%'],
+	            label: {
+		            textStyle: {
+	            		//fontWight: 300,
+		    			fontSize: 15,
+		                color: '#555'
+		            }
+		        },
+	            data: valueData
+		    }
+	    ]
+	};
+	
+	var series = [];
+	function pushSeries2(name, series_data){
+		series = [];
+	    var color = ['#4472c4','#ed7d31', '#ffc000'];
+        for (var i = 0; i < series_data.length; i++) {
+        	series.push({
+	   		       name: name[i],
+	   		       stack:'aa',
+	   		       type: 'bar',
+	   		       barWidth: '80px',
+	   		       label: {
+		        	   textStyle: {
+		    			  fontSize: 24
+		               },
+	   		           show: false,
+	   		           position: 'top'
+	   		       },
+	   		       yAxisIndex: 0,
+	   		       data: series_data[i]
+	   		   }
+        	);
+		}
+        option2.series = series;
+	}
+	function pushSeries(name, series_data){
+		series = [];
+	    var color = ['#AAFFEE', '#FFBB66', '#CCFF99'];
+        for (var i = 0; i < series_data.length; i++) {
+        	series.push({
+	   		       name: name[i],
+	   		       stack:'aa',
+	   		       type: 'bar',
+	   		       barWidth: '10px',
+	   		       label: {
+		        	   textStyle: {
+		    			  fontSize: 24
+		               },
+	   		           show: false,
+	   		           position: 'top'
+	   		       },
+	   		       yAxisIndex: 0,
+	   		       data: series_data[i]
+	   		   }
+        	);
+		}
+        option.series = series;
+	}
+	function change(){
+		year = $("#year_choose").val()
+		var company_id = $("#company_choose").val();
+		actionGet('/analyse_customer','get_customer_data', 'key='+year+';'+company_id,function(res){
+			if('' == res || null == res){
+			    return false;
+			}
+			res = eval('(' + res + ')');
+			
+			//初始化周表数据
+			init_option(res);
+		   	//初始化月表数据
+		   	init_option2(res);
+    	    
+    	    myChart.setOption(option);
+	     	myChart2.setOption(option2);
+	        //myChart2.setOption(option2);
+	        //myChart3.setOption(option3);
+	  	});
+	}
+	
+	var newDate = new Array(); //data二维数组
+	function init_option(res){
+		var yData =  new Array();//legend Data
+		if(null != res['yData'] && '' != res['yData']){
+			yData = eval('(' + res['yData'] + ')');
+    	}
+		//按月比较
+		var name = ['直客', '同行', '代理'];
+		var til = [year+'01', year+'02', year+'03', year+'04', year+'05', year+'06', year+'07', year+'08', year+'09', year+'10', year+'11', year+'12'];
+		
+ 	    for(var k=0;k < name.length; k++){ //一维长度为i,i为变量，可以根据实际情况改变
+ 	    	newDate[k] = new Array(); //声明二维，每一个一维数组里面的一个元素都是一个数组；
+    	    for(var j=0; j< til.length ; j++){ // 一维数组里面每个元素数组可以包含的数量p，p也是一个变量；
+	    	    newDate[k][j]= 0; //这里将变量初始化，我这边统一初始化为空，后面在用所需的值覆盖里面的值
+    	    }
+ 	    }
+ 	    for (var i = 0; i < til.length; i++) {
+ 	    	for (var j = 0; j < yData.length; j++) {
+    	    	if(yData[j].name == til[i]){
+    	    		switch (yData[j].customertype) {
+						case 'isdirect':
+							newDate[0][i] = yData[j].value;
+							break;
+						case 'istogether':
+							newDate[1][i] = yData[j].value;
+							break;
+						case 'isagent':
+							newDate[2][i] = yData[j].value;
+							break;
+						default:
+							break;
+					}
+    	    	}
+			}
+		}
+ 	    
+ 	    option2.legend.data = name;
+	   	//option2.xAxis[0].data = til;
+	   	pushSeries2(name, newDate);
+	   	
+	   	myChart = echarts.init(mainOption);
+	}
+	
+	function init_option2(res){
+		var name = ['直客', '同行', '代理'];
+		
+		var yweekData =  new Array();//legend Data
+		if(null != res['yweekData'] && '' != res['yweekData']){
+			yweekData = eval('(' + res['yweekData'] + ')');
+    	}
+	   	var xweek = new Array();//作为与数据库比较数据
+    	for (var i = 0; i < 54; i++) {
+    		if(i<9){
+    			xweek[i] = '0'+(i+1);
+    		}else{
+    			xweek[i] = ''+(i+1);
+    		}
+		}
+	   	
+    	newDate = new Array(); //data二维数组
+ 	    for(var k=0;k < name.length; k++){ //一维长度为i,i为变量，可以根据实际情况改变
+ 	    	newDate[k] = new Array(); //声明二维，每一个一维数组里面的一个元素都是一个数组；
+    	    for(var j=0; j< xweek.length ; j++){ // 一维数组里面每个元素数组可以包含的数量p，p也是一个变量；
+	    	    newDate[k][j]= 0; //这里将变量初始化，我这边统一初始化为空，后面在用所需的值覆盖里面的值
+    	    }
+ 	    }
+ 	    for (var i = 0; i < xweek.length; i++) {
+ 	    	for (var j = 0; j < yweekData.length; j++) {
+    	    	if(yweekData[j].name == xweek[i]){
+    	    		switch (yweekData[j].customertype) {
+						case 'isdirect':
+							newDate[0][i] = yweekData[j].value;
+							break;
+						case 'istogether':
+							newDate[1][i] = yweekData[j].value;
+							break;
+						case 'isagent':
+							newDate[2][i] = yweekData[j].value;
+							break;
+						default:
+							break;
+					}
+    	    	}
+			}
+		}
+ 	    
+ 	    option.legend.data = name;
+	   	option.xAxis[0].data = xweek;
+	   	pushSeries(name, newDate);
+	   	
+	    myChart2 = echarts.init(mainOption2);
+	}
+	
+	function init_grid3(res){
+		
+	}
+	
+	var date = new Date();
+	var now_year = date.getFullYear();
+	var now_month = date.getMonth()+1;
+	var now_day = date.getDate();
+	function init_option4(res){
+		var week = get_week(now_year, now_month, now_day);
+		var a = newDate;
+		if(week > 1){
+			valueData = [{value:newDate[0][week-1],name:'直客'},{value:newDate[1][week-1],name:'同行'},{value:newDate[2][week-1],name:'代理'}];
+			myChart4 = echarts.init(mainOption4);
+		}
+	}
+	
+	function init_option5(res){
+		myChart5 = echarts.init(mainOption5);
+	}
+	
+	function init_option6(res){
+		myChart6 = echarts.init(mainOption6);
+	}
+	
+	function select_init(selectValue, id, name, value){
+		//下拉框处理
+    	var select_option = '';
+    	if(null != name && null != value){
+    		select_option += '<option value="'+value+'">'+name+'</option>';
+    	}
+    	$(id).html("");
+    	for (var i = 0; i < selectValue.length; i++) {
+			if (null == selectValue[i].name || null == selectValue[i].value){
+				continue;
+			}
+			select_option += '<option value="'+selectValue[i].value+'">'+selectValue[i].name+'</option>';
+			/* if('2020' == selectValue[i].year){
+				select_option += '<option selected value="'+selectValue[i].year+'">'+selectValue[i].year+'</option>';
+			}else{
+				select_option += '<option value="'+selectValue[i].year+'">'+selectValue[i].year+'</option>';
+			} */
+		}
+    	$(id).html(select_option);
+		
+	}
+	
+	function get_week(a, b, c){
+		 var date1 = new Date(a, parseInt(b) - 1, c),
+		 date2 = new Date(a, 0, 1),
+		 d = Math.round((date1.valueOf() - date2.valueOf()) / 86400000);
+		 return Math.ceil((d + ((date2.getDay() + 1) - 1)) / 7);
+	}
+	
+
+	window.onresize = function(){
+	 
+		chartssize();
+	}
+</script>
+</body>
+</html>

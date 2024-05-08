@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.module.api.maersk.pricesubBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+			SELECT 
+				 (SELECT ocfamt FROM f_priceqry_json_to_recordset(offersjson) WHERE vessel = T.vessel AND voyage = T.voyage LIMIT 1) AS ocfamt
+				,(SELECT poldesc FROM f_priceqry_json_to_recordset(offersjson) WHERE vessel = T.vessel AND voyage = T.voyage LIMIT 1) AS poldesc
+				,(SELECT poddesc FROM f_priceqry_json_to_recordset(offersjson) WHERE vessel = T.vessel AND voyage = T.voyage LIMIT 1) AS poddesc
+				,(SELECT etd FROM f_priceqry_json_to_recordset(offersjson) WHERE vessel = T.vessel AND voyage = T.voyage LIMIT 1) AS etd
+				,(SELECT eta FROM f_priceqry_json_to_recordset(offersjson) WHERE vessel = T.vessel AND voyage = T.voyage LIMIT 1) AS eta
+				,(SELECT ocfamt FROM f_priceqry_json_to_recordset(offersjson) WHERE vessel = T.vessel AND voyage = T.voyage LIMIT 1) AS amountlast
+				,(SELECT ocfamt FROM f_priceqry_json_to_recordset(offersjson1) WHERE vessel = T.vessel AND voyage = T.voyage LIMIT 1) AS amount
+				,T.*
+			FROM
+					(SELECT 
+						 (vessel || '/' ||voyage) AS vesvoy
+						,(SELECT inputtime FROM api_maersk_pricesubdtl x WHERE x.subid = s.id ORDER BY inputtime DESC LIMIT 1) AS lastinputtime
+						,(SELECT COUNT(1) FROM api_maersk_pricesubdtl x WHERE x.subid = s.id ) AS refreshcount
+						,(SELECT offersjson FROM api_maersk_pricesubdtl x WHERE x.subid = s.id ORDER BY inputtime DESC LIMIT 1) AS offersjson
+						,(SELECT offersjson FROM api_maersk_pricesubdtl x WHERE x.subid = s.id ORDER BY inputtime DESC LIMIT 1 OFFSET 1) AS offersjson1
+						,s.*
+					FROM api_maersk_pricesub s 
+					WHERE $qry$
+					ORDER BY s.inputtime
+			) AS T
+			
+	</select>
+	<select id="pages.module.api.maersk.pricesubBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM api_maersk_pricesub s
+		WHERE $qry$
+	</select>
+	
+	<select id="pages.module.api.maersk.maerskportBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT * 
+		 ,(SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1) AS inputername
+		 ,(SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1) AS updatername
+		FROM api_maersk_port t
+		WHERE $qry$
+			AND isdelete = FALSE
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	
+	<select id="pages.module.api.maersk.maerskportBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM api_maersk_port s
+		WHERE $qry$
+			AND isdelete = FALSE
+	</select>
+	
+</sqlMap>

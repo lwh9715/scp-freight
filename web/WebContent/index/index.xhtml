@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+    xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+    xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+    <w:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+        <w:stylesheet src="/pages/module/common/css/tabPanelIcon.css" />
+    </w:head>
+    <w:page title="">
+        <layout:borderLayout fitToBody="true" border="false">
+            <layout:panel region="north" border="false" height="40">
+                <ui:include src="header.xhtml" />
+            </layout:panel>
+
+            <layout:panel region="center" fit="true">
+                <layout:tabLayout id="centerPanel" border="false" fit="true" tabPosition="bottom" />
+            </layout:panel>
+
+            <layout:panel region="south" border="false" autoHeight="true">
+                <ui:include src="footer.xhtml" />
+            </layout:panel>
+        </layout:borderLayout>
+        <w:toolBar id="toolBar" target="centerPanel" />
+    </w:page>
+</f:view>

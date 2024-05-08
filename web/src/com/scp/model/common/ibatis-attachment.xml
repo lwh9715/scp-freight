@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.module.common.attachmentBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		WITH rc_attachment AS(
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,(SELECT (CASE WHEN EXISTS (SELECT 1 FROM _wf_jobs_fcl WHERE refid = t.linkid AND isdelete = FALSE) THEN '流程中的附件' ELSE '' END)) AS type
+		 ,(SELECT x.name FROM sys_role x where x.id = t.roleid and x.isdelete = false AND x.roletype = 'F' limit 1) AS rolegroup
+		 ,(filesize/1024)::NUMERIC(18,2) as filesizeb
+		FROM sys_attachment t 
+		WHERE $qry$
+			 AND( 
+				linkid = ANY( 
+							SELECT $linkid$ 
+							$bpmlinkid$ 
+							UNION SELECT $linkid2$
+							UNION SELECT DISTINCT rpreqid FROM fina_rpreqdtl WHERE arapid = ANY(SELECT id FROM fina_arap WHERE jobid = $linkid$ AND isdelete = FALSE)
+							UNION SELECT DISTINCT actpayrecid FROM fina_actpayrecdtl WHERE arapid = ANY(SELECT id FROM fina_arap WHERE jobid = $linkid$ AND isdelete = FALSE)
+							UNION ALL SELECT $refid$
+							UNION ALL SELECT $refid2$
+							$customssql$
+							$bankbill$
+				) 
+			)
+			AND isdelete =false
+			$filter$
+		)
+		SELECT * FROM rc_attachment q
+		WHERE EXISTS(SELECT 1 FROM sys_role r WHERE r.name = '船公司账单' AND r.id = q.roleid)
+			$shippersql$
+		UNION ALL
+		SELECT * FROM rc_attachment q
+		WHERE NOT EXISTS(SELECT 1 FROM sys_role r WHERE r.name = '船公司账单' AND r.id = q.roleid)
+		ORDER BY inputtime DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.common.attachmentBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM (WITH rc_attachment AS(
+		select 
+		 * 
+		FROM sys_attachment t 
+		WHERE $qry$
+			 AND( 
+				linkid = ANY( 
+							SELECT $linkid$ 
+							$bpmlinkid$ 
+							UNION ALL SELECT $refid$
+							$customssql$
+							$bankbill$
+				) 
+			)
+			AND isdelete =false
+			$filter$
+		)
+		SELECT 1 FROM rc_attachment q
+		WHERE EXISTS(SELECT 1 FROM sys_role r WHERE r.name = '船公司账单' AND r.id = q.roleid)
+			$shippersql$
+		UNION ALL
+		SELECT 1 FROM rc_attachment q
+		WHERE NOT EXISTS(SELECT 1 FROM sys_role r WHERE r.name = '船公司账单' AND r.id = q.roleid)) w
+	</select>
+	
+	<select id="common.ckeditor.filebrowerBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_attachment t 
+		WHERE $qry$ 
+		ORDER BY inputtime DESC
+	</select>
+	<select id="common.ckeditor.filebrowerBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_attachment t 
+		WHERE $qry$ 
+	</select>
+	
+	
+	
+	<select id="pages.module.common.attachshowBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_attachment t 
+		WHERE $qry$ 
+		AND isdelete =false
+		ORDER BY inputtime DESC
+	</select>
+	<select id="pages.module.common.attachshowBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_attachment t 
+		WHERE $qry$ 
+		AND isdelete =false
+	</select>
+	
+	
+	<select id="pages.module.common.goodstracktemplateBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		  * 
+		  ,f_sys_getls('userid=$userid$;lskey='||statusc)  AS statusdese
+		  ,f_sys_getls('userid=$userid$;lskey='||tmptypedesc)  AS tmptypedesctrans
+		  ,(SELECT x.namec FROM sys_user x where x.id = t.assignuserid) AS assignusernamec
+		FROM _bus_goodstrack_temp t 
+		WHERE $qry$ 
+			  ORDER BY tmptype , orderno
+	</select>
+	<select id="pages.module.common.goodstracktemplateBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+		 COUNT(*) AS counts 
+		FROM _bus_goodstrack_temp t 
+		WHERE $qry$
+	</select>
+	
+	
+	<select id="pages.module.common.goodstrackBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+		    ,'edit' AS editRow
+		    ,substr(dealdate,0,17) AS dealdatedesc
+		    ,f_sys_getls('userid=$userid$;lskey='||statusc)  AS statusdese
+		    ,(CASE WHEN '$lang$' = 'ch' THEN (SELECT x.namec FROM sys_user x where x.code = t.updater) ELSE (SELECT x.namee FROM sys_user x where x.code = t.updater) END)  AS updaterer
+		    ,(CASE WHEN '$lang$' = 'ch' THEN (SELECT x.namec FROM sys_user x where x.id = t.assignuserid) ELSE (SELECT x.namee FROM sys_user x where x.id = t.assignuserid) END)  AS assignusernamec
+		    ,(CASE WHEN '$lang$' = 'ch' THEN (SELECT x.namec FROM dat_filedata x WHERE x.fkcode = 160 AND x.isdelete = false and x.code = t.assigntype LIMIT 1) ELSE (SELECT x.namee FROM dat_filedata x WHERE x.fkcode = 160 AND x.isdelete = false and x.code = t.assigntype LIMIT 1) END)  AS assigndescs
+		FROM _bus_goodstrack t 
+		WHERE $qry$
+			ORDER BY orderno ,dealdate , id
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.common.goodstrackBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			COUNT(t.*) AS counts 
+		FROM _bus_goodstrack t
+		WHERE $qry$
+	</select>
+</sqlMap>

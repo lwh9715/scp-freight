@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.sysmgr.company.companyBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		 ,(SELECT x.abbcode FROM sys_corporation x where x.id = t.corpidlink and x.isdelete = false) AS corperlink 
+		FROM sys_corporation t 
+		WHERE $qry$ 
+			AND iscustomer = false
+		ORDER BY parentid desc , code
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.company.companyBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_corporation t 
+		WHERE $qry$ 
+			AND iscustomer = false
+	</select>
+</sqlMap>

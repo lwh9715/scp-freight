@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<select id="pages.module.oa.salaryBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+		FROM oa_salarybill t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	<select id="pages.module.oa.salaryBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM oa_salarybill t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.oa.salarydtlBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+		FROM oa_salarybill t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	<select id="pages.module.oa.salarydtlBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM oa_salarybill t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>	
+	
+	<select id="pages.module.oa.salaryloadBean.grid.page"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+			,f_decrypt(pay_base)::NUMERIC(18,2)  AS pay_base_decrypt
+			,f_decrypt(pay_add_ft)::NUMERIC(18,2)  AS pay_add_ft_decrypt
+			,f_decrypt(pay_add_ovt)::NUMERIC(18,2)  AS pay_add_ovt_decrypt
+			,f_decrypt(pay_add_oth)::NUMERIC(18,2)  AS pay_add_oth_decrypt
+			,f_decrypt(pay_cut_leave)::NUMERIC(18,2)  AS pay_cut_leave_decrypt
+			,f_decrypt(pay_cut_late)::NUMERIC(18,2)  AS pay_cut_late_decrypt
+			,f_decrypt(pay_cut_fund)::NUMERIC(18,2)  AS pay_cut_fund_decrypt
+			,f_decrypt(pay_cut_security)::NUMERIC(18,2)  AS pay_cut_security_decrypt
+			,f_decrypt(pay_cut_tax)::NUMERIC(18,2)  AS pay_cut_tax_decrypt
+			,f_decrypt(pay_cut_oth)::NUMERIC(18,2)  AS pay_cut_oth_decrypt
+			,f_decrypt(amt)::NUMERIC(18,2)  AS amt_decrypt
+			,f_decrypt(amtadjust)::NUMERIC(18,2)  AS amtadjust_decrypt
+			,f_decrypt(overseasadd)::NUMERIC(18,2)  AS overseasadd_decrypt
+		FROM oa_salarybill t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>
+	<select id="pages.module.oa.salaryloadBean.grid.count"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM oa_salarybill t
+		WHERE $qry$
+		AND t.isdelete = FALSE
+	</select>	
+	
+</sqlMap>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:om="http://www.apusic.com/jsf/misc"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+		<ajax:submitAction id="linkEdit" jsvar="linkEdit" />
+		<layout:borderLayout fitToBody="true">
+			<layout:panel id="gridPanel" height="100%" split="true" jsvar="gridPanelJsvar" hideBorders="true"
+				region="center">
+				<w:form>
+					<div style="height: 0px;">
+					<ui:include src="/common/qrygridpage.xhtml" />
+					</div>
+					<w:toolBar>
+						<w:button id="qryRefresh" label="#{l.m['刷新']}" onclick="filterJsVar.setValue('');"
+							image="#{constantBean.contextPath}/images/refresh.png" />
+						<w:button id="add" value="#{l.m['新增']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+						<w:button id="batchedit" jsvar="batcheditJsvar" label="#{l.m['批量翻译']}"
+							image="#{constantBean.contextPath}/pages/module/common/resources/images/editcut.png" />
+						<w:button id="filterNoEn" label="#{l.m['过滤']}"
+							image="#{constantBean.contextPath}/images/refresh.png" />
+						<w:button id="exportBtn" value="#{l.m['导出']}" onclick="exportExcel();"
+							image="#{constantBean.contextPath}/pages/module/common/resources/images/excel.gif" />
+						<w:button id="del" label="#{l.m['删除']}" onclick="return confirm('#{l.m['确定要删除吗?']}');"
+								image="#{constantBean.contextPath}/images/delete.png" />
+					</w:toolBar>
+					<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+						<layout:cell style="width: 25px;">
+							<w:button id="clearQryKey" label="" width="25"
+								image="#{constantBean.contextPath}/images/clear.png" />
+						</layout:cell>
+						<w:textField selectOnFocus="true" width="80"
+							value="#{pages.sysmgr.cfg.lsmgrBean.qryMap['id$']}" />
+						<w:textField selectOnFocus="true" width="450"
+							value="#{pages.sysmgr.cfg.lsmgrBean.qryMap['ch']}" />
+						<w:textField selectOnFocus="true" width="550"
+							value="#{pages.sysmgr.cfg.lsmgrBean.qryMap['en']}" />
+					</layout:panelGrid>
+					<ajax:submitAction id="export" jsvar="exportexl" />
+					<div style="height: 0px; display: none;">
+						<w:button id="simulateExport" jsvar="simulateExport" label="#{l.m['导出']}" title="#{l.m['下载']}" disabled="true" alwaysSubmit="true" />
+						<om:fileDownload id="doSimulateExport" for="simulateExport" savedName="lsmgr.xls" />
+					</div>
+					<w:dataGrid height="700" paged="true" rows="1000" id="grid" jsvar="gridJsvar" onrowselect="return false" onrowdeselect="return false"
+						toolBarPosition="bottom" idColumn="id" selectable="true" selectionModel="#{constantBean.checkBox}">
+						<w:outputColumn id="id" header="ID" hidden="false" width="80" />
+						<w:outputColumn header="#{l.m['中文']}" id="ch" width="450" sortable="true" />
+						<w:outputColumn header="#{l.m['英文']}" id="en" width="550" sortable="true" clientFormatter="setone"/>
+					</w:dataGrid>
+					
+					<w:textField selectOnFocus="true" width="450" hidden="true" id="filter" jsvar="filterJsVar"/>
+				</w:form>
+			</layout:panel>
+		</layout:borderLayout>
+	</w:page>
+
+
+	<layout:window maximizable="true" width="700" height="300" id="editWindow">
+		<layout:borderLayout fit="true">
+
+			<layout:panel id="editPanel" height="150" hideBorders="true" style="font-size:12px"
+				region="center" split="true">
+				<w:form>
+					<w:toolBar>
+						<w:button id="save" value="#{l.m['保存']}"
+							image="#{constantBean.contextPath}/images/save.png" />
+					</w:toolBar>
+					<layout:panelGrid columns="2" cellspacing="5px" width="250" style="font-size:12px">
+						<h:outputLabel value="ID" />
+						<w:textField selectOnFocus="true" value="#{pages.sysmgr.cfg.lsmgrBean.data.id}"
+							width="140" maxLength="50" cls="under_line" focusClass="surround" />
+						<h:outputLabel value="#{l.m['中文']}" />
+						<w:textField selectOnFocus="true" value="#{pages.sysmgr.cfg.lsmgrBean.data.ch}"
+							width="680" maxLength="50" cls="under_line" focusClass="surround" />
+						<h:outputLabel value="#{l.m['英文']}" />
+						<w:textField selectOnFocus="true" value="#{pages.sysmgr.cfg.lsmgrBean.data.en}" width="680"/>
+					</layout:panelGrid>
+					
+					<div style="height: 0px; display: none">
+					<w:textField selectOnFocus="true" id="pkVal" hidden="false" />
+					</div>
+				</w:form>
+			</layout:panel>
+
+			
+		</layout:borderLayout>
+	</layout:window>
+	<layout:window maximizable="true" width="850" height="400" id="setallWindow">
+		<layout:borderLayout fit="true">
+			<layout:panel id="alleditPanel2" hideBorders="true" style="font-size:12px" region="center"
+				split="true" fit="true">
+				<w:form>
+					<w:toolBar>
+						<w:button id="initBatch" value="Init ls"
+							image="#{constantBean.contextPath}/images/save.png" />
+						<w:button id="saveBatch" value="#{l.m['保存']}"
+							image="#{constantBean.contextPath}/images/save.png" />
+					</w:toolBar>
+					<layout:panelGrid columns="8" cellspacing="5px" width="250" style="font-size:12px">
+						<w:textArea selectOnFocus="true" id="ids" readOnly="true"
+							height="300" width="200" cls="under_line" focusClass="surround" />
+						<w:textArea selectOnFocus="true" id="cns" readOnly="true"
+							height="300" width="300" cls="under_line" focusClass="surround" />
+						<w:textArea selectOnFocus="true" id="ens" 
+							height="300" width="350" cls="under_line" focusClass="surround" />
+					</layout:panelGrid>
+
+				</w:form>
+			</layout:panel>
+		</layout:borderLayout>
+	</layout:window>
+
+	<script>
+	//<![CDATA[
+	function setone(v,m,r){
+		var pkid = r.get('id');
+		var en = r.get('en');
+		var temp = '<a href="#" onclick="showEdit('+pkid+')">'+en+'</a>';
+        return temp;
+	}
+	function showEdit(pkid) {		
+       	linkEdit.addParam("pkid",pkid);
+    	linkEdit.submit();
+    }
+    
+    function exportExcel() {
+    	var config = gridJsvar.getSelectionModel().grid.events.columnmove.obj.plugins[0].grid.colModel.config;
+    	var key = "";
+    	var value = "";
+    	for(var i=1;i<config.length;i++) {
+    		if(!config[i].hidden) {
+    			key += config[i].dataIndex;
+        		value += config[i].header;
+        		if(i < config.length - 1) {
+        			key += ",";
+        			value += ",";
+        		}
+    		}
+    	}
+    	exportexl.addParam("key",key);
+    	exportexl.addParam("value",value);
+    	exportexl.submit();
+    }
+		
+	Ext.onReady(function(){
+		var newHeight = (gridPanelJsvar.getSize().height) - 55;
+		var newWidth = (gridPanelJsvar.getSize().width);
+        //alert(newHeight);
+        //alert(newWidth);
+        gridJsvar.setHeight(newHeight);
+        gridJsvar.setWidth(newWidth);
+     });
+     //]]>
+</script>
+</f:view>

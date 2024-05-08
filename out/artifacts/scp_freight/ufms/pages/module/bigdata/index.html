@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>大数据看板</title>
+    <link rel="stylesheet" href="./css/index.css?t=3">
+    <link rel="stylesheet" href="./fonts/icomoon.css">
+    <style>
+        .container-header .nowTime {
+            position: absolute;
+            left: 0px;
+            top: 41px;
+            font-size: 0;
+        }
+
+        .container-header .nowTime li {
+            display: inline-block;
+            width: 94px;
+            height: 20px;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .nowTime li {
+            margin-bottom: 5px;
+            display: inline-block;
+            /*float: left;
+		    font-weight: 800;*/
+            background-image: -webkit-gradient(linear, 0 0, 0 bottom, from(#fff), to(#5ec0d2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nowTime li div {
+            background-image: -webkit-gradient(linear, 0 0, 0 bottom, from(#fff), to(#5ec0d2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 8px;
+            text-align: left;
+        }
+
+        .nowTime li p {
+            background-image: -webkit-gradient(linear, 0 0, 0 bottom, from(#fff), to(#5ec0d2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 4px;
+        }
+    </style>
+</head>
+
+<body>
+<div>
+    <ul class="nowTime">
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+<div class="viewport">
+    <div class="column">
+        <div class="dateView date">1
+            <label for="meeting" class="icon-dot" style="color: #006cff;">分公司：</label>
+            <select style="width: 4.883rem; height: 1.03rem; padding-bottom: 0.033rem;margin-left: -0.273rem;"
+                    id="company">
+                <option value="0">所有分公司</option>
+            </select>
+            <label for="meeting" class="icon-dot" style="color: #006cff;">年度：</label>
+            <select style="width: 4.883rem; height: 1.03rem; margin-left: -0.273rem;" id="anayear">
+                <option value="2021;2022">2021/2022</option>
+                <option value="2020;2021">2020/2021</option>
+                <option value="2019;2020">2019/2020</option>
+                <option value="2018;2019">2018/2019</option>
+            </select>
+            <button
+                    style="width: 2.583rem;height: 1.03rem; background-color:#3ed4ff;border-color: #3ed4ff;border-radius: 2px;border-top-width: 1px;"
+                    onclick="index_init()">分析
+            </button>
+        </div>
+        <!--概览-->
+        <div class="overview panel">
+            <div class="inner">
+                <div class="item">
+                    <h4 id="yearcnts">2,190</h4>
+                    <span>
+                            <i class="icon-dot" style="color: #006cff"></i>
+                            年T量
+                        </span>
+                </div>
+                <div class="item">
+                    <h4 id="quarcnts">190</h4>
+                    <span>
+                            <i class="icon-dot" style="color: #6acca3"></i>
+                            季T量
+                        </span>
+                </div>
+                <div class="item">
+                    <h4 id="monthcnts">3,001</h4>
+                    <span>
+                            <i class="icon-dot" style="color: #6acca3"></i>
+                            月T量
+                        </span>
+                </div>
+                <div class="item">
+                    <h4 id="weekcnts">108</h4>
+                    <span>
+                            <i class="icon-dot" style="color: #ed3f35"></i>
+                            周T量
+                        </span>
+                </div>
+            </div>
+        </div>
+        <!--监控-->
+        <div class="monitor panel">
+            <div class="inner" style="padding: 1rem 1.5rem;">
+                <h3 id="countcnts">今天订仓量</h3>
+                <div class="chart">
+                    <div class="booking"></div>
+                    <div class="booking1"></div>
+                </div>
+            </div>
+        </div>
+        <!--点位-->
+        <div class="point panel">
+            <div class="inner" style="padding: 1rem 1.5rem;">
+                <h3>航线T量分析</h3>
+                <div class="chart">
+                    <div class="pie"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <!-- 地图 -->
+        <div class="map">
+            <h3 id="linemap">
+                <span class="icon-cube"></span>
+                航线地图
+            </h3>
+            <div class="chart">
+                <div class="geo" id="geo"></div>
+            </div>
+        </div>
+
+        <!-- 用户 -->
+        <div class="users panel">
+            <div class="inner">
+                <h3>船公司T量分析</h3>
+                <div class="chart">
+                    <div class="bar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <!-- 订单 -->
+        <div class="order panel">
+            <div class="inner">
+                <!-- 筛选 -->
+                <div class="filter" id="compa">
+                    <h3>T量对比</h3>
+                    <a href="javascript:;" data-key="day365" class="active">年</a>
+                    <a href="javascript:;" data-key="day90">季</a>
+                    <a href="javascript:;" data-key="day30">月</a>
+                    <a href="javascript:;" data-key="day7">周</a>
+                </div>
+                <!-- 数据 -->
+                <div class="data">
+                    <div class="item">
+                        <h4></h4>
+                    </div>
+                    <div class="item">
+                        <h4></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- T量 -->
+        <div class="sales panel">
+            <div class="inner">
+                <div class="caption">
+                    <h3>T量对比</h3>
+                    <a href="javascript:;" data-type="year">年</a>
+                    <a href="javascript:;" data-type="quarter">季</a>
+                    <a href="javascript:;" class="active" data-type="month">月</a>
+                    <a href="javascript:;" data-type="week">周</a>
+                </div>
+                <div class="chart">
+                    <div class="label">单位:T</div>
+                    <div class="line" id='line_chart'></div>
+                </div>
+            </div>
+        </div>
+        <!-- 客户类型 -->
+        <div class="wrap">
+            <div class="channel panel">
+                <div class="inner" id="right3">
+                    <h3>客户类型分析</h3>
+                    <div class="data">
+                        <div class="pie2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 排行榜 -->
+        <div class="wrap" style="height: 12rem;">
+            <div class="channel panel" style="height: 12rem;">
+                <div class="inner" id="right4" style="height: 12rem;">
+                    <h3 id="compordept">分公司分析</h3>
+                    <div class="data">
+                        <div class="pie2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<link rel="stylesheet" href="/scp/layui/css/layui.css">
+<script src="./js/jquery-1.10.2.js"></script>
+<script src="/scp/layui/layui.js"></script>
+<script src="./js/echarts-4.2.1.min.js"></script>
+<script src="/scp/ufms/static/js/ufms.common.js?t=13"></script>
+<script src="/scp/common/js/world.js"></script>
+<script src="./js/index.js?t=2"></script>
+
+</html>

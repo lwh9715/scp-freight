@@ -1,0 +1,86 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>1.1 文挡介绍</title>
+<link rel="stylesheet" href="../../resource/css/template.css" type="text/css" />
+<link rel="stylesheet" href="../../resource/css/document.css" type="text/css" /></head>
+<link href="../../../reportEdit/file/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+.STYLE1 {font-family: "宋体"}
+-->
+img
+{
+	margin-left:50px;
+} 
+</style></head>
+
+<body>
+<div id="content-bg">
+	<div id="previous-next">
+		<!--  <div id="next"><a href="3.html">下一页</a></div>
+		<div id="previous"><a href="1.html">上一页</a></div>-->		
+	</div>
+	<div id="centent">
+	<div id="centent-title">
+	  <h2 style='margin-left:1.0cm;text-indent:-1.0cm;tab-stops:list 18.0pt 1.0cm'>
+	  <a name="_Toc230415866"></a>
+	  <a name="_Toc209513084"></a>
+	  <a name="_Toc209496263"></a>
+	  <a name="_Toc207683905"></a>
+	  <a name="_Toc181602145">
+	  <span style='mso-bookmark:_Toc207683905'>
+	  <span style='mso-bookmark:_Toc209496263'>
+	  <span style='mso-bookmark:_Toc209513084'>
+	  <span style='mso-bookmark:_Toc230415866'>
+	  <span lang=EN-US style='mso-fareast-font-family:Arial;mso-bidi-font-family:Arial'>
+	  <span style='mso-list:Ignore'>12.1<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
+</span></span></span><span style='font-family:&quot;黑体&quot;;mso-ascii-font-family: Arial'>EDI-PIL(Lorna Zhou版)</span></span></span></span></span></a></h2>
+	</div>
+	</div>
+	<div class="related-title"><div class="related-title-left"></div> PIL订舱补料流程:</div>
+		<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'><span style="color:Blue">1.1. 先生成订单号，如下图：（请注意如果是HQ柜，系统里要选HC）：</span><br/>
+		<p><img src="images/10.png" /></p>
+		<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'><span style="color:Blue">2.2.生成订单号后，点击生成工作单号，然后到下面这个界面，这个界面要填写很多信息</span><br/></p>
+		<p><img src="images/11.png" /></p>
+		<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'><span style="color:Blue">3.A.Shipper/CNEE/Notify  (一样的处理方式)<br>			
+***连接的内容，要货描那里补上			
+：</span><br/>
+	  	<p><img src="images/12.png" /></p>
+		<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'><span style="color:Blue">4.B)船名代码及船期，港口  -- ESI以订舱    EDI以委托							
+b1.- 船名代码：（PIL目前就两条船来回走，船名代码如下）<br/>							
+KOTA JASA -- KJAA	<br/>						
+KOTA JATI -- KJTT	<br/>						
+							
+b2--港口代码:(只能录5位代码，且只能按PIL的代码来录，如果不清楚代码，可以上PIL的网页去查)		<br/>					
+网页如下：https://www.pilship.com/en-carrier-detention-and-demurrage-pil-pacific-international-lines/124.html	<br/>						
+如果客人要求显示的港口很长，因对字符有限制，要用***来接接，在货描那里补上		<br/>					
+</p>
+	<p><img src="images/13.png" /></p>
+	<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'><span style="color:Blue">b3- ETD,ETA (下面这板块，所有要选的资料，我都圈出来了，必选，要不然导不出) </span><br/>
+	<p><img src="images/14.png" /></p>
+	<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'><span style="color:Blue">C：录柜封号及分柜数据+品名&唛头 （不能出现任何中文字符及符号）						
+柜量多于1个柜时，品名及唛头录在第一个柜里，且每个柜号都要录6个数的HS code	<br/>					
+如果要编辑品名及唛头的内容，就双击编辑，出现下图所示的对话框，然后就可以修改	<br/>					
+</span><br/>
+	<p><img src="images/15.png" /></p>
+	<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'><span style="color:Blue">D.录完分柜数据，品名/货描内容+唛头后，就按下面操作，打勾，点选择，系统就会默认导出 下面圈出来的，总件数，总毛重及总体积，以及提单要显示的货描内容	 </span><br/>
+	<p><img src="images/16.png" /></p>
+	<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'><span style="color:Blue">E: 对于货描内容的编辑</span><br/>
+	<p><img src="images/17.png" /></p>
+	<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'><span style="color:Blue">到这一步，差不多完成了，每一步都不要忘记保存，要不然做无用功，要重复好几次才能保存成功。	<br/>				
+F.录完所有这些信息，还不能成功导出E-SI，还有录现在这一板块	
+	<p><img src="images/18.png" /></p>	
+	<p class=MsoNormal  style='text-indent:17.95pt;mso-char-indent-count:1.71'><span style="color:red">完成所有上面的内容，才能导出E-SI， 各位亲，请注意，每一步都不要忘记保存! 切记!!!</span><br/>					
+</span><br/>
+	<div id="related">
+		<div class="related-title"><div class="related-title-left"></div>相关主题：</div>
+		<div class="related-list"><li><span style='font-family:宋体;mso-ascii-font-family:"Times New Roman";mso-hansi-font-family:"Times New Roman"'><a href="2.html">第12章 第1节  PIL(IT)</a></span></li>
+</div>
+	</div>
+	<div id="footer">	
+		<div class="copyright" align="center">版权信息 @ CopyRight 航迅科技 <a href="http://www.ufms.cn" target="_blank">UFMS货代系统</a></div>
+	</div>
+</div>
+</body>
+</html>

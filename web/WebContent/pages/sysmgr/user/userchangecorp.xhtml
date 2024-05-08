@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/pages/module/common/css/tabPanelIcon.css" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+		<w:script src="/common/js/common.js?t=4"></w:script>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page>
+		<ajax:conversationActivator/>
+
+		<layout:borderLayout fit="true" fitToBody="true">
+			<layout:panel id="gridPanel" jsvar="gridPanelJsvar" region="center" fit="true"
+				hideBorders="true" height="750" width="100%" split="true" minSize="450">
+				<w:form groupId="billForm">
+
+					<layout:panelGrid columns="6">
+						<w:toolBar>
+							<w:button id="save" value="#{l.m['选择']}"
+								image="#{constantBean.contextPath}/images/save.png" />
+							<w:button id="refresh" value="#{l.m['刷新']}"
+								image="#{constantBean.contextPath}/images/query-small.png" />	
+							<h:outputLabel value="#{l.m['双击切换到分公司']}" />
+						</w:toolBar>
+						<layout:cell>
+							<ajax:status startStyle="color: red"
+								onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+								onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+								<!-- <f:facet name="start">
+									<f:verbatim>
+										<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 20px;">...</img>
+									</f:verbatim> 
+								</f:facet>-->
+							</ajax:status>
+						</layout:cell>	
+					</layout:panelGrid>
+
+					<w:dataGrid height="552" paged="false" rows="10000" id="grid" jsvar="gridJsvar"
+						idColumn="id" selectionModel="#{constantBean.checkBox}" loadMask="flase"
+						toolBarPosition="bottom" 
+						selections="#{pages.sysmgr.user.userchangecorpBean.gridSelIds}">
+						<w:outputColumn id="id" header="id" hidden="true" />
+						<w:outputColumn header="" id="islink" width="30" type="check"/>
+						<w:outputColumn header="#{l.m['公司']}" id="corper" width="120" sortable="true" />
+					</w:dataGrid>
+				</w:form>
+			</layout:panel>
+
+		</layout:borderLayout>
+	</w:page>
+	<script>
+	//<![CDATA[
+	
+	function resize(){
+				var newHeight = (gridPanelJsvar.getSize().height) - 35;
+	            gridJsvar.setHeight(newHeight);
+				gridJsvar.render();
+	}
+	
+	Ext.onReady(function(){
+				resize();
+				Ext.EventManager.onWindowResize(function(){
+					resize();
+				});
+	});
+
+     function gridSelectAll(){
+     	//alert('1');
+      	var selMod = gridJsvar.getSelectionModel();
+      	//alert(selMod);
+      	selMod.selectAll();
+     }
+
+
+
+	        
+	 //]]>	
+</script>
+</f:view>

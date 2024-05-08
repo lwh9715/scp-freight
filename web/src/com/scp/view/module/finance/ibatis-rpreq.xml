@@ -1,0 +1,1221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<select id="pages.module.finance.payapplyBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			 zz.*
+			,t.nos
+			,t.singtime
+			,t.rpnos
+			,t.rpid
+			,t.notesdesc
+			,t.remark
+			,t.ischeck
+			,t.checktime
+			,t.inputtime
+			,t.actpayrecid
+			,t.updatetime
+			,t.arstatus
+			,t.ispay
+			,t.paytype
+			,t.invoiceno
+			,(SELECT x.namec FROM sys_corporation x WHERE x.id = t.customerid AND x.isdelete = FALSE LIMIT 1) AS customerabbr
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.checkter and x.isdelete = false LIMIT 1),t.checkter) AS checkternamec
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false LIMIT 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false LIMIT 1),t.updater) AS updatername
+		 	,t.isprint
+		 	,t.printcount
+		 	,(SELECT string_agg(DISTINCT(fr.jobno), ',') FROM _fina_rpreqdtl fr where fr.rpreqid = t.id) AS jobno
+		 	,(SELECT f.nos from bpm_processinstance f where f.refid = t.id::TEXT AND f.isdelete = FALSE ORDER BY id DESC  limit 1) AS bmpno
+		FROM (SELECT
+				(t.id || '.' || COALESCE(d.currency,'')) AS idalias
+				,t.id
+				,d.currency
+				,ABS(SUM(CASE WHEN d.araptype = 'AR' THEN  amtreq*-1 ELSE amtreq END)) AS amtreq
+				,SUM(amtstl2) AS amtstl
+			   FROM _fina_rpreq t LEFT JOIN _fina_rpreqdtl d ON (t.id = d.rpreqid $filter$)
+			  WHERE $qry$
+				AND t.isdelete = FALSE
+				AND t.reqtype = 'Q'
+				AND t.rptype = 'P'
+				$setDays$
+			GROUP BY t.id,t.nos,d.currency
+			ORDER BY t.id DESC,d.currency
+			LIMIT $limit$ OFFSET $start$
+			) AS zz,_fina_rpreq t
+		WHERE t.id = zz.id
+		  AND t.isdelete = FALSE
+		ORDER BY t.id DESC
+	</select>
+	<select id="pages.module.finance.payapplyBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM  (SELECT 
+				(t.id || '.' || COALESCE(d.currency,'')) AS idalias
+				,t.id
+				,d.currency
+				,ABS(SUM(CASE WHEN d.araptype = 'AR' THEN  amtreq*-1 ELSE amtreq END)) AS amtreq
+				,SUM(amtstl2) AS amtstl
+			FROM _fina_rpreq t LEFT JOIN _fina_rpreqdtl d ON (t.id = d.rpreqid $filter$)
+			WHERE $qry$
+				AND t.isdelete = FALSE
+				AND t.reqtype = 'Q'
+				AND t.rptype = 'P'
+				   $setDays$
+			GROUP BY t.id,t.nos,d.currency
+			) AS zz,_fina_rpreq t
+		WHERE t.id = zz.id
+		  AND t.isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.finance.payapplyarBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			 (t.id || '.' || COALESCE(d.currency,'')) AS idalias
+			,(SELECT x.code || '/' || x.abbr  FROM sys_corporation x WHERE x.id = t.customerid AND x.isdelete = FALSE) AS customerdesc
+			,d.araptype
+			,d.currency
+			,SUM(amtreq) AS amtreq
+			,t.nos
+			,t.singtime
+			,t.rpno
+			,t.rpid
+			,(SELECT x.abbr FROM sys_corporation x WHERE x.id = t.customerid AND x.isdelete = FALSE) AS customerabbr
+			,t.notesdesc
+			,t.remark
+			,t.ischeck
+			,t.checkter
+			,t.checktime
+			,t.inputer
+			,t.inputtime
+			,t.rpno1
+			,t.actpayrecid
+			,t.updater
+			,t.updatetime
+			,t.arstatus
+			,t.ispay
+			,t.paytype
+			,t.invoiceno
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.checkter and x.isdelete = false limit 1),t.checkter) AS checkternamec
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _fina_rpreq t LEFT JOIN _fina_rpreqdtl d ON (t.id = d.rpreqid $filter$)
+		WHERE $qry$
+			  $filter$
+			AND t.isdelete = FALSE
+			AND t.reqtype = 'Q'
+			AND t.rptype = 'R'
+		GROUP BY t.id,d.araptype,t.singtime,t.nos,t.rpid,t.rpno,t.notesdesc,t.remark,t.ischeck,t.checkter,t.checktime,t.inputer,t.inputtime,t.updater,t.updatetime,t.rpno1,t.actpayrecid,t.customerid,d.araptype ,d.currency ,t.arstatus,t.ispay,t.paytype,t.invoiceno
+
+		ORDER BY t.nos DESC,d.araptype , d.currency
+	</select>
+	<select id="pages.module.finance.payapplyarBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM _fina_rpreq t LEFT JOIN _fina_rpreqdtl d ON (t.id = d.rpreqid $filter$)
+		WHERE $qry$
+			  $filter$
+			AND t.isdelete = FALSE
+			AND t.reqtype = 'Q'
+			AND t.rptype = 'R'
+		GROUP BY t.id,d.araptype,t.singtime,t.nos,t.rpid,t.rpno,t.notesdesc,t.remark,t.ischeck,t.checkter,t.checktime,t.inputer,t.inputtime,t.updater,t.updatetime,t.customerid,d.araptype ,d.currency,t.arstatus,t.ispay,t.paytype,t.invoiceno
+			
+	</select>
+	
+	
+	<select id="pages.module.finance.checkbillBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			 (t.id || '.' || COALESCE(d.currency,'')|| '.' || COALESCE(d.araptype,'')) AS idalias
+			,(SELECT x.code || '/' || x.abbr  FROM sys_corporation x WHERE x.id = t.customerid AND x.isdelete = FALSE) AS customerdesc
+			,d.araptype
+			,d.currency
+			,SUM(amtreq) AS amtreq
+			,t.nos
+			,t.singtime
+			,t.rpno
+			,t.rpid
+			,t.notesdesc
+			,t.remark
+			,t.ischeck
+			,t.checkter
+			,t.checktime
+			,t.inputer
+			,t.inputtime
+			,t.updater
+			,t.updatetime
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _fina_rpreq t LEFT JOIN _fina_rpreqdtl d ON (t.id = d.rpreqid)
+		WHERE $qry$
+			$corpfilter$
+			AND t.isdelete = FALSE
+			AND t.reqtype = 'S'
+		GROUP BY t.id,d.araptype,t.singtime,t.nos,t.rpid,t.rpno,t.notesdesc,t.remark,t.ischeck,t.checkter,t.checktime,t.inputer,t.inputtime,t.updater,t.updatetime,t.customerid,d.araptype ,d.currency 
+		HAVING(SUM(amtreq)!=0 OR EXISTS(SELECT 1 FROM fina_rpreqdtl x where x.amtreq != 0 AND x.rpreqid = t.id AND x.isdelete = FALSE))
+		ORDER BY t.inputtime DESC nulls last,t.nos,d.araptype,d.currency
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.finance.checkbillBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT COUNT(*) AS counts FROM (
+			SELECT
+				   (t.id || '.' || COALESCE(d.currency,'')|| '.' || COALESCE(d.araptype,'')) AS idalias
+					,(SELECT x.code || '/' || x.abbr  FROM sys_corporation x WHERE x.id = t.customerid AND x.isdelete = FALSE) AS customerdesc
+					,d.araptype
+					,d.currency
+					,SUM(amtreq) AS amtreq
+					,t.nos
+					,t.singtime
+					,t.rpno
+					,t.rpid
+					,t.notesdesc
+					,t.remark
+					,t.ischeck
+					,t.checkter
+					,t.checktime
+					,t.inputer
+					,t.inputtime
+					,t.updater
+					,t.updatetime
+					,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+				 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+			FROM _fina_rpreq t LEFT JOIN _fina_rpreqdtl d ON (t.id = d.rpreqid)
+			WHERE $qry$
+				$corpfilter$
+				AND t.isdelete = FALSE
+				AND t.reqtype = 'S'
+			GROUP BY t.id,d.araptype,t.singtime,t.nos,t.rpid,t.rpno,t.notesdesc,t.remark,t.ischeck,t.checkter,t.checktime,t.inputer,t.inputtime,t.updater,t.updatetime,t.customerid,d.araptype ,d.currency
+			HAVING(SUM(amtreq)!=0 OR EXISTS(SELECT 1 FROM fina_rpreqdtl x where x.amtreq != 0 AND x.rpreqid = t.id AND x.isdelete = FALSE)))T
+	</select>
+	
+	
+	<select id="pages.module.finance.checkbilleditBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT t.*
+				,f_amtto(COALESCE((SELECT jobdate FROM fina_jobs WHERE id = t.jobid),CURRENT_DATE),currency,'CNY',amtreq) AS amtreqamtto
+		 FROM(
+			SELECT
+				  a.id AS pkid
+				 ,a.id AS arapid
+				 ,0 AS rpreqid
+				 ,a.customerid AS customerid
+				 ,0 AS rpreqdtlid
+				 ,0 AS amtreq	
+				 ,a.araptype 	
+				 ,a.jobno
+				 ,a.billno
+				 ,a.parentiddesc AS jobnoparent	
+				 ,a.invoiceno
+				 ,a.feeitemdec 	
+				 ,a.arapdate	
+				 ,a.currency	
+				 ,a.amount AS arapamt		
+				 ,CAST((a.amount-(SELECT COALESCE(SUM(COALESCE(d.amtreq,0)),0) FROM _fina_rpreqdtl d WHERE d.arapid = a.id AND d.isdelete = FALSE AND d.reqtype = 'S'))AS NUMERIC(18,2)) AS amount
+				  ,abs(amountremaind2) AS amountactrecpay   
+				 ,a.descinfo AS arapdesc
+				 ,a.remarks AS arapremarks
+				 ,a.arapbranch AS arapbranch
+				 ,a.ppcc
+				 ,a.jobdate
+				 ,a.piece
+				 ,a.price
+				 ,a.jobid
+				 ,a.corpid
+				 ,j.vessel AS ves
+				,j.voyage AS voy
+				,b.mblno
+				,b.atd
+				,j.sales
+				,j.ldtype
+				,a.isconfirm
+				,(CASE WHEN f_sys_config('rp2vch_no_rpdate_as_checkfee') = 'Y' THEN
+					COALESCE((SELECT SUM(yy.amountwf) FROM fina_actpayrec xx , fina_actpayrecdtl yy WHERE xx.id = yy.actpayrecid AND yy.arapid = a.id AND xx.isdelete = FALSE AND yy.isdelete = FALSE AND xx.rpdate IS NOT NULL),0)
+			  		ELSE a.amtstl2 END) AS amtstl3
+				,(SELECT name FROM sys_department WHERE id = j.deptid AND isdelete = FALSE LIMIT 1) AS dpt
+				,(SELECT d.abbr FROM sys_corporation AS d WHERE d.iscarrier = TRUE AND d.isdelete = FALSE AND d.id = b.carrierid) AS shipcarrier
+				,(SELECT d.namec FROM dat_line AS d WHERE d.isdelete = FALSE AND d.lintype = 'S' AND d.code = b.routecode) AS line
+				,COALESCE(j.busstatus,'F') AS busstatus
+				,(SELECT abbr FROM sys_corporation WHERE id = j.customerid AND isdelete = FALSE) AS customerabbr
+				,(SELECT string_agg(b.hblno,',') FROM bus_ship_bill b WHERE b.jobid = a.jobid AND b.isdelete = FALSE )AS bills
+				,a.customercode
+				,j.etd
+				,100 AS ordreno
+				,(SELECT f_fina_jobs_cntdesc('jobid='::text||j.id)) AS cntdescnew
+				,(CASE WHEN EXISTS (SELECT 1 FROM fina_jobs where id= a.jobid and jobtype='S') THEN (SELECT y.sono FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = a.jobid) ELSE (SELECT y.sono FROM bus_air as y WHERE y.isdelete = FALSE AND y.jobid = a.jobid) END) AS sono
+			FROM _fina_arap a LEFT JOIN _fina_jobs j ON (j.id = a.jobid AND j.isdelete = FALSE) LEFT JOIN bus_shipping b ON (b.jobid = a.jobid AND b.isdelete = FALSE)
+			WHERE a.isdelete = FALSE
+				$corpfilter$
+				AND a.rptype != 'S'
+				AND a.rptype != 'O'
+				AND isfinish2 =FALSE
+				AND abs(amountremaind2)!=0
+				AND (CASE WHEN -1 = $rpreqid$ THEN TRUE ELSE NOT EXISTS(SELECT 1 FROM _fina_rpreqdtl xx WHERE xx.rpreqid = $rpreqid$ AND xx.arapid = a.id AND xx.isdelete = FALSE AND xx.reqtype = 'S') END)
+				AND CAST((a.amount - (SELECT COALESCE(SUM(COALESCE(d.amtreq,0)),0) FROM _fina_rpreqdtl d WHERE d.arapid = a.id AND d.isdelete = FALSE AND d.reqtype = 'S')) AS NUMERIC(18,2)) != 0
+				AND (a.customerid = $customerid$ OR EXISTS(SELECT 1 FROM sys_corporation_join x WHERE x.idto = $customerid$ AND x.idfm = a.customerid))
+				$hideallarap$
+			UNION ALL
+			SELECT
+				  d.id AS pkid
+				 ,d.arapid AS arapid
+				 ,d.rpreqid AS rpreqid
+				 ,r.customerid AS customerid
+				 ,d.id AS rpreqdtlid
+				 ,d.amtreq AS amtreq
+				 ,d.araptype 	
+				 ,d.jobno
+				 ,(SELECT billno FROM _fina_arap WHERE id = d.arapid AND isdelete = FALSE )AS billno		
+				 ,d.jobnoparent AS jobnoparent
+				 ,d.invoiceno
+				 ,d.feeitemdec 	
+				 ,d.arapdate	
+				 ,d.currency	
+				 ,d.amount AS arapamt 
+				 ,CAST((COALESCE(d.amount,0)-(SELECT COALESCE(SUM(COALESCE(x.amtreq,0)),0) FROM _fina_rpreqdtl x WHERE x.arapid = d.arapid AND x.isdelete = FALSE AND x.reqtype = 'S')) AS NUMERIC(18,2)) AS amount	
+				  ,CAST((SELECT COALESCE(x.amount,0)-COALESCE(x.amtstl2,0) FROM fina_arap x WHERE x.id = d.arapid and x.isdelete = false)AS NUMERIC(18,2)) AS amountactrecpay    
+				 ,d.arapdesc AS arapdesc
+				 ,d.arapremarks AS arapremarks
+				 ,d.arapbranch AS arapbranch
+				 ,d.ppcc
+				 ,j.jobdate
+				 ,d.piece
+				 ,d.price
+				 ,d.jobid
+				 ,d.corpid
+				 ,j.vessel AS ves
+				 ,j.voyage AS voy
+				 ,b.mblno
+				 ,b.atd
+				 ,j.sales
+				 ,j.ldtype
+				 ,(SELECT isconfirm FROM _fina_arap WHERE id = d.arapid AND isdelete = FALSE )AS isconfirm
+				,(CASE WHEN f_sys_config('rp2vch_no_rpdate_as_checkfee') = 'Y' THEN
+					COALESCE((SELECT SUM(yy.amountwf) FROM fina_actpayrec xx , fina_actpayrecdtl yy WHERE xx.id = yy.actpayrecid AND yy.arapid = d.arapid AND xx.isdelete = FALSE AND yy.isdelete = FALSE AND xx.rpdate IS NOT NULL),0)
+			  		ELSE d.amtstl2 END) AS amtstl3
+				,(SELECT name FROM sys_department WHERE id = j.deptid AND isdelete = FALSE LIMIT 1) AS dpt
+				,(SELECT c.abbr FROM sys_corporation c WHERE c.iscarrier = TRUE AND c.isdelete = FALSE AND c.id = b.carrierid) AS shipcarrier
+				,(SELECT l.namec FROM dat_line l WHERE l.isdelete = FALSE AND l.lintype = 'S' AND l.code = b.routecode) AS line
+				,COALESCE(j.busstatus,'F') AS busstatus
+				,(SELECT abbr FROM sys_corporation WHERE id = j.customerid AND isdelete = FALSE) AS customerabbr
+				,(SELECT string_agg(b.hblno,',') FROM bus_ship_bill b WHERE b.jobid = d.jobid AND b.isdelete = FALSE )AS bills
+				,d.customercode
+				,j.etd
+				,10 AS ordreno
+				,(SELECT f_fina_jobs_cntdesc('jobid='::text||j.id)) AS cntdescnew
+				,(CASE WHEN EXISTS (SELECT 1 FROM fina_jobs where id= d.jobid and jobtype='S') THEN (SELECT y.sono FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = d.jobid) ELSE (SELECT y.sono FROM bus_air as y WHERE y.isdelete = FALSE AND y.jobid = d.jobid) END) AS sono
+			FROM fina_rpreq  r , _fina_rpreqdtl d LEFT JOIN _fina_jobs j ON (j.id = d.jobid AND j.isdelete = FALSE) LEFT JOIN bus_shipping b ON (b.jobid = d.jobid AND b.isdelete = FALSE)
+			WHERE r.id = d.rpreqid 
+				AND r.reqtype = 'S'
+				AND r.isdelete = FALSE
+				AND d.isdelete = FALSE
+				AND (CASE WHEN -1 = $rpreqid$ THEN FALSE ELSE (d.rpreqid = $rpreqid$) END)
+		) AS t
+		WHERE $qry$
+			$jobdate$
+			$jobnostr$
+			$sonostr$
+ 		ORDER BY ordreno,t.araptype DESC,t.jobno,t.arapid
+ 		LIMIT 10000 OFFSET 0
+	</select>
+	<select id="pages.module.finance.checkbilleditBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts FROM(
+			SELECT
+				  a.id AS pkid
+				 ,a.id AS arapid
+				 ,0 AS rpreqid
+				 ,a.customerid AS customerid
+				 ,0 AS rpreqdtlid
+				 ,0 AS amtreq	
+				 ,a.araptype 	
+				 ,a.jobno
+				 ,a.billno
+				 ,a.parentiddesc AS jobnoparent
+				 ,a.invoiceno		
+				 ,a.feeitemdec 	
+				 ,a.arapdate	
+				 ,a.currency	
+				 ,a.amount AS arapamt		
+				 ,(a.amount-(SELECT COALESCE(SUM(COALESCE(d.amtreq,0)),0) FROM _fina_rpreqdtl d WHERE d.arapid = a.id AND d.isdelete = FALSE AND d.reqtype = 'S')) AS amount 
+				 ,a.descinfo AS arapdesc
+				 ,a.remarks AS arapremarks
+				 ,a.arapbranch AS arapbranch
+				 ,a.ppcc
+				 ,a.jobdate
+				 ,a.piece
+				 ,a.price
+				 ,a.jobid
+				 ,j.vessel AS ves
+				,j.voyage AS voy
+				,b.mblno
+				,b.atd
+				,j.sales
+				,j.ldtype
+				,(CASE WHEN f_sys_config('rp2vch_no_rpdate_as_checkfee') = 'Y' THEN 
+					COALESCE((SELECT SUM(yy.amountwf) FROM fina_actpayrec xx , fina_actpayrecdtl yy WHERE xx.id = yy.actpayrecid AND yy.arapid = a.id AND xx.isdelete = FALSE AND yy.isdelete = FALSE AND xx.rpdate IS NOT NULL),0)
+			  		ELSE a.amtstl2 END) AS amtstl3
+				,(SELECT name FROM sys_department WHERE id = j.deptid AND isdelete = FALSE LIMIT 1) AS dpt
+				,(SELECT d.abbr FROM sys_corporation AS d WHERE d.iscarrier = TRUE AND d.isdelete = FALSE AND d.id = b.carrierid) AS shipcarrier
+				,(SELECT d.namec FROM dat_line AS d WHERE d.isdelete = FALSE AND d.lintype = 'S' AND d.code = b.routecode) AS line
+				,COALESCE(j.busstatus,'F') AS busstatus
+				,(SELECT abbr FROM sys_corporation WHERE id = j.customerid AND isdelete = FALSE) AS customerabbr
+				,(SELECT string_agg(b.hblno,',') FROM bus_ship_bill b WHERE b.jobid = a.jobid AND b.isdelete = FALSE )AS bills
+				,a.customercode
+			FROM _fina_arap a LEFT JOIN _fina_jobs j ON (j.id = a.jobid AND j.isdelete = FALSE) LEFT JOIN bus_shipping b ON (b.jobid = a.jobid AND b.isdelete = FALSE)
+			WHERE a.isdelete = FALSE
+				$corpfilter$
+				AND a.rptype != 'S'
+				AND a.rptype != 'O'
+				AND isfinish2 =FALSE
+				AND (CASE WHEN -1 = $rpreqid$  THEN TRUE ELSE FALSE END)
+				AND (a.amount - (SELECT COALESCE(SUM(COALESCE(d.amtreq,0)),0) FROM _fina_rpreqdtl d WHERE d.arapid = a.id AND d.isdelete = FALSE AND d.reqtype = 'S')) != 0
+				AND (a.customerid = $customerid$ OR EXISTS(SELECT 1 FROM sys_corporation_join x WHERE x.idto = $customerid$ AND x.idfm = a.customerid))
+			UNION ALL
+			SELECT
+				  d.id AS pkid
+				 ,d.arapid AS arapid
+				 ,d.rpreqid AS rpreqid
+				 ,r.customerid AS customerid
+				 ,d.id AS rpreqdtlid
+				 ,d.amtreq AS amtreq
+				 ,d.araptype 	
+				 ,d.jobno
+				 ,(SELECT billno FROM _fina_arap WHERE id = d.arapid AND isdelete = FALSE )AS billno			
+				 ,d.jobnoparent	
+				 ,d.invoiceno
+				 ,d.feeitemdec 	
+				 ,d.arapdate	
+				 ,d.currency	
+				 ,d.amount AS arapamt 
+				 ,(d.amount-(SELECT COALESCE(SUM(COALESCE(x.amtreq,0)),0) FROM _fina_rpreqdtl x WHERE x.arapid = d.arapid AND x.isdelete = FALSE AND x.reqtype = 'S')) AS amount	
+				 ,d.arapdesc AS arapdesc
+				 ,d.arapremarks AS arapremarks
+				 ,d.arapbranch AS arapbranch
+				 ,d.ppcc
+				 ,j.jobdate
+				 ,d.piece
+				 ,d.price
+				 ,d.jobid
+				 ,j.vessel AS ves
+				,j.voyage AS voy
+				,b.mblno
+				,b.atd
+				,j.sales
+				,j.ldtype
+				,(CASE WHEN f_sys_config('rp2vch_no_rpdate_as_checkfee') = 'Y' THEN 
+					COALESCE((SELECT SUM(yy.amountwf) FROM fina_actpayrec xx , fina_actpayrecdtl yy WHERE xx.id = yy.actpayrecid AND yy.arapid = d.arapid AND xx.isdelete = FALSE AND yy.isdelete = FALSE AND xx.rpdate IS NOT NULL),0)
+			  		ELSE d.amtstl2 END) AS amtstl3
+				,(SELECT name FROM sys_department WHERE id = j.deptid AND isdelete = FALSE LIMIT 1) AS dpt
+				,(SELECT c.abbr FROM sys_corporation c WHERE c.iscarrier = TRUE AND c.isdelete = FALSE AND c.id = b.carrierid) AS shipcarrier
+				,(SELECT l.namec FROM dat_line l WHERE l.isdelete = FALSE AND l.lintype = 'S' AND l.code = b.routecode) AS line
+				,COALESCE(j.busstatus,'F') AS busstatus
+				,(SELECT abbr FROM sys_corporation WHERE id = j.customerid AND isdelete = FALSE) AS customerabbr
+				,(SELECT string_agg(b.hblno,',') FROM bus_ship_bill b WHERE b.jobid = d.jobid AND b.isdelete = FALSE )AS bills
+				,d.customercode
+			FROM fina_rpreq  r , _fina_rpreqdtl d LEFT JOIN _fina_jobs j ON (j.id = d.jobid AND j.isdelete = FALSE) LEFT JOIN bus_shipping b ON (b.jobid = d.jobid AND b.isdelete = FALSE)
+			WHERE r.id = d.rpreqid 
+			AND r.reqtype = 'S'
+			AND d.isdelete = FALSE
+			AND (CASE WHEN -1 = $rpreqid$ THEN FALSE ELSE (d.rpreqid = $rpreqid$) END)
+		) AS t
+		WHERE $qry$
+			$jobdate$
+	</select>
+	
+	
+	<select id="pages.module.finance.payapplyeditBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 <![CDATA[
+		SELECT t.*
+				,f_amtto(COALESCE((SELECT jobdate FROM fina_jobs WHERE id = t.jobid),CURRENT_DATE),currency,'CNY',amtreq) AS amtreqamtto
+		 FROM(
+			SELECT
+				  a.id AS pkid
+				 ,a.id AS arapid
+				 ,0 AS rpreqid
+				 ,a.customerid AS customerid
+				 ,(SELECT sales FROM fina_jobs WHERE id = a.jobid LIMIT 1) AS sales
+				 ,0 AS rpreqdtlid
+				 ,0 AS amtreq	
+				 ,a.araptype 	
+				 ,a.jobno	
+				 ,(SELECT x.actpayrecno FROM fina_actpayrec x, fina_actpayrecdtl y WHERE x.id = y.actpayrecid AND x.isdelete = false AND y.arapid = a.id LIMIT 1) AS actpayrecno
+				 ,a.parentiddesc AS jobnoparent
+				 ,a.feeitemdec 	
+				 ,a.arapdate	
+				 ,a.currency
+				 ,(1-a.taxrate) as taxrate2
+				 ,a.amount AS arapamt		
+				 ,(a.amount-(SELECT COALESCE(SUM(COALESCE(d.amtreq,0)),0) FROM _fina_rpreqdtl d WHERE d.arapid = a.id AND d.isdelete = FALSE AND reqtype = 'Q')) AS amount 
+				 ,a.descinfo AS arapdesc
+				 ,a.remarks AS arapremarks
+				 ,a.arapbranch AS arapbranch
+				 ,a.ppcc
+				 ,a.jobdate
+				 ,a.piece
+				 ,a.price
+				 ,a.jobid
+				 ,(SELECT j.vessel FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE)AS ves
+				 ,(SELECT j.voyage FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE)AS voy
+				 ,(SELECT j.etd FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE) AS etd
+				 ,(SELECT j.eta FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE) AS eta
+				 ,(SELECT j.contractno FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE)AS contno
+				 ,(SELECT string_agg(b.hblno,',') FROM bus_ship_bill b WHERE b.jobid = a.jobid AND b.isdelete = FALSE )AS bills
+				 ,(CASE WHEN EXISTS(SELECT 1 FROM fina_jobs j WHERE j.parentid = a.jobid AND j.jobtype = 'D' AND j.isdelete = FALSE) THEN (CASE WHEN EXISTS(SELECT 1 FROM fina_jobs WHERE parentid = a.jobid AND isdelete = false AND arstatus in ('部分收款')) THEN '部分收款' WHEN EXISTS(SELECT 1 FROM fina_jobs WHERE parentid = a.jobid AND isdelete = false AND arstatus in ('未收款')) THEN '未收款' WHEN EXISTS(SELECT 1 FROM fina_jobs WHERE parentid = a.jobid AND isdelete = false AND (arstatus = '' OR arstatus ISNULL)) THEN '无应收' ELSE '已收款' END) ELSE (SELECT j.arstatus FROM fina_jobs j WHERE j.id = a.jobid AND j.isdelete = false) END) AS arstatus
+				 ,(SELECT j.apstatus FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE)AS apstatus
+				,a.customercode
+				,(SELECT j.customerabbr FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE)AS customerabbr
+				 ,(SELECT string_agg(x.cntno,',') FROM bus_ship_container x WHERE x.cntno IS NOT NULL AND x.cntno <> '' AND x.isdelete = FALSE AND x.jobid = a.jobid) AS cntno
+				 ,(CASE WHEN EXISTS (SELECT 1 FROM fina_jobs where id= a.jobid and jobtype='S') THEN (SELECT y.sono FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = a.jobid) ELSE (SELECT y.sono FROM bus_air as y WHERE y.isdelete = FALSE AND y.jobid = a.jobid) END) AS sono
+				 ,(CASE WHEN EXISTS (SELECT 1 FROM fina_jobs where id= a.jobid and jobtype='S') THEN (SELECT y.mblno FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = a.jobid) ELSE (SELECT y.mawbno FROM bus_air as y WHERE y.isdelete = FALSE AND y.jobid = a.jobid) END) AS mblno
+				 ,a.corpid
+				 ,a.isconfirm
+				 ,(SELECT jobtype FROM fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE)AS jobtype
+				 ,(SELECT  x.invoiceno FROM  fina_invoice x  WHERE x.isdelete = FALSE AND a.invoiceid = x.id limit 1) AS invoiceno
+				 ,(SELECT string_agg(nos, ',') FROM fina_rpreq x WHERE x.id = ANY (SELECT y.rpreqid FROM fina_rpreqdtl y WHERE y.arapid = a.id AND y.isdelete = false) AND x.isdelete = FALSE) AS rpreqnos
+				 ,(SELECT j.pod FROM bus_shipping j WHERE j.jobid = a.jobid AND j.isdelete = FALSE LIMIT 1) AS pod
+				 ,(SELECT string_agg(DISTINCT code,',') FROM bus_ship_container c,dat_cntype cnt WHERE cnt.isdelete = FALSE AND c.isdelete = FALSE AND cnt.id = c.cntypeid AND c.jobid = a.jobid GROUP BY c.jobid) AS cntstype
+				 ,90 AS orderno
+			FROM _fina_arap a
+			WHERE a.isdelete = FALSE
+				AND a.rptype != 'S'
+				AND a.rptype != 'O'
+				AND isfinish2 =FALSE
+				$araptype$
+				$hidearapdat$
+				AND (a.amount - (SELECT COALESCE(SUM(COALESCE(d.amtreq,0)),0) FROM _fina_rpreqdtl d WHERE d.arapid = a.id AND d.isdelete = FALSE AND d.reqtype = 'Q'))!=0
+				AND (a.customerid = $customerid$ OR EXISTS(SELECT 1 FROM sys_corporation_join x WHERE x.idto = $customerid$ AND x.idfm = a.customerid))
+				AND (CASE WHEN -1 = $rpreqid$ THEN TRUE ELSE NOT EXISTS(SELECT 1 FROM _fina_rpreqdtl xx WHERE xx.rpreqid = $rpreqid$ AND xx.arapid = a.id AND xx.isdelete = FALSE AND xx.reqtype = 'Q') END)
+				$hideallarap$
+			UNION ALL
+			SELECT
+				  d.id AS pkid
+				 ,d.arapid AS arapid
+				 ,d.rpreqid AS rpreqid
+				 ,r.customerid AS customerid
+				 ,(SELECT sales FROM fina_jobs WHERE id = d.jobid LIMIT 1) AS sales
+				 ,d.id AS rpreqdtlid
+				 ,d.amtreq AS amtreq
+				 ,d.araptype 	
+				 ,d.jobno
+				 ,(SELECT x.actpayrecno FROM fina_actpayrec x, fina_actpayrecdtl y WHERE x.id = y.actpayrecid AND x.isdelete = false AND y.arapid = d.arapid LIMIT 1) AS actpayrecno
+				 ,d.jobnoparent	
+				 ,d.feeitemdec 	
+				 ,d.arapdate	
+				 ,d.currency
+				 ,((SELECT (1 - taxrate) FROM fina_arap WHERE id = d.arapid AND isdelete = FALSE limit 1)) as taxrate2
+				 ,d.amount AS arapamt 
+				 ,(d.amount-(SELECT COALESCE(SUM(COALESCE(x.amtreq,0)),0) FROM _fina_rpreqdtl x WHERE x.arapid = d.arapid AND x.isdelete = FALSE AND x.reqtype = 'Q')) AS amount	
+				 ,d.arapdesc AS arapdesc
+				 ,d.arapremarks AS arapremarks
+				 ,d.arapbranch AS arapbranch
+				 ,d.ppcc
+				 ,(SELECT x.jobdate FROM fina_jobs x WHERE x.isdelete = FALSE AND x.id = d.jobid) AS jobdate
+				 ,d.piece
+				 ,d.price
+				 ,d.jobid
+				 ,(SELECT j.vessel FROM _fina_jobs j WHERE j.id = d.jobid AND j.isdelete = FALSE)AS ves
+				 ,(SELECT j.voyage FROM _fina_jobs j WHERE j.id = d.jobid AND j.isdelete = FALSE)AS voy
+				 ,(SELECT j.etd FROM _fina_jobs j WHERE j.id = d.jobid AND j.isdelete = FALSE) AS etd
+				 ,(SELECT j.eta FROM _fina_jobs j WHERE j.id = d.jobid AND j.isdelete = FALSE) AS eta
+				 ,(SELECT j.contractno FROM _fina_jobs j WHERE j.id = d.jobid AND j.isdelete = FALSE)AS contno
+				 ,(SELECT string_agg(b.hblno,',') FROM bus_ship_bill b WHERE b.jobid = d.jobid AND b.isdelete = FALSE )AS bills
+				 ,(CASE WHEN EXISTS(SELECT 1 FROM fina_jobs j WHERE j.parentid = d.jobid AND j.jobtype = 'D' AND j.isdelete = FALSE) THEN (CASE WHEN EXISTS(SELECT 1 FROM fina_jobs WHERE parentid = d.jobid AND isdelete = false AND arstatus in ('部分收款')) THEN '部分收款' WHEN EXISTS(SELECT 1 FROM fina_jobs WHERE parentid = d.jobid AND isdelete = false AND arstatus in ('未收款')) THEN '未收款' WHEN EXISTS(SELECT 1 FROM fina_jobs WHERE parentid = d.jobid AND isdelete = false AND (arstatus = '' OR arstatus ISNULL)) THEN '无应收' ELSE '已收款' END) ELSE (SELECT j.arstatus FROM fina_jobs j WHERE j.id = d.jobid AND j.isdelete = false) END) AS arstatus
+				 ,(SELECT j.apstatus FROM _fina_jobs j WHERE j.id = d.jobid AND j.isdelete = FALSE)AS apstatus
+				 ,d.customercode
+				 ,(SELECT j.customerabbr FROM _fina_jobs j WHERE j.id = d.jobid AND j.isdelete = FALSE)AS customerabbr
+				 ,(SELECT string_agg(x.cntno,',') FROM bus_ship_container x WHERE x.cntno IS NOT NULL AND x.cntno <> '' AND x.isdelete = FALSE AND x.jobid = d.jobid) AS cntno
+				 ,(CASE WHEN EXISTS (SELECT 1 FROM fina_jobs where id= d.jobid and jobtype='S') THEN (SELECT y.sono FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = d.jobid) ELSE (SELECT y.sono FROM bus_air as y WHERE y.isdelete = FALSE AND y.jobid = d.jobid) END) AS sono
+				 ,(CASE WHEN EXISTS (SELECT 1 FROM fina_jobs where id= d.jobid and jobtype='S') THEN (SELECT y.mblno FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = d.jobid) ELSE (SELECT y.mawbno FROM bus_air as y WHERE y.isdelete = FALSE AND y.jobid = d.jobid) END) AS mblno
+				 ,d.corpid
+				 ,(SELECT isconfirm FROM fina_arap WHERE id = d.arapid AND isdelete = FALSE limit 1 ) AS isconfirm
+				 ,(SELECT jobtype FROM fina_jobs j WHERE j.id = d.jobid AND j.isdelete = FALSE)AS jobtype
+				 ,(SELECT string_agg(DISTINCT x.invoiceno,',') FROM  fina_invoice x , fina_arap y WHERE y.id = d.arapid AND x.isdelete = FALSE AND y.isdelete = FALSE AND y.invoiceid = x.id AND x.invoiceno <> '') AS invoiceno
+				 ,(SELECT string_agg(nos, ',') FROM fina_rpreq x WHERE x.id = ANY (SELECT y.rpreqid FROM fina_rpreqdtl y WHERE y.arapid = d.rpreqid AND y.isdelete = false) AND x.isdelete = FALSE) AS rpreqnos
+				,(SELECT s.pod FROM bus_shipping s WHERE s.jobid = (SELECT id FROM fina_jobs WHERE nos = d.jobno AND isdelete = FALSE AND nos IS NOT NULL LIMIT 1) AND s.isdelete = FALSE LIMIT 1) AS pod
+				,(SELECT string_agg(DISTINCT code,',') FROM bus_ship_container c,dat_cntype cnt WHERE cnt.isdelete = FALSE AND c.isdelete = FALSE AND cnt.id = c.cntypeid AND c.jobid = (SELECT jobid FROM fina_arap WHERE id = d.arapid AND isdelete = FALSE) GROUP BY c.jobid) AS cntstype
+				,10 AS orderno
+			FROM fina_rpreq  r , _fina_rpreqdtl d 
+			WHERE r.id = d.rpreqid 
+				AND r.reqtype = 'Q'
+				AND d.isdelete = FALSE
+				$hidefinal$
+				$rptype$
+				AND (CASE WHEN -1 = $rpreqid$  THEN FALSE ELSE (d.rpreqid = $rpreqid$) END)
+		) AS t
+		WHERE $qry$
+		$jobdate$
+		$filter$
+		$jobnostr$
+		$sonostr$
+		$billsstr$
+		$mblstr$
+
+		AND (abs(amount) + abs(amtreq) != 0)
+ 		ORDER BY orderno , t.araptype,t.jobno,t.arapid
+ 		 ]]>
+	</select>
+	<select id="pages.module.finance.payapplyeditBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			COUNT(*) AS counts FROM(
+			
+			SELECT 
+				  a.id AS pkid
+				 ,a.id AS arapid
+				 ,0 AS rpreqid
+				 ,a.customerid AS customerid
+				 ,0 AS rpreqdtlid
+				 ,0 AS amtreq	
+				 ,a.araptype 	
+				 ,a.jobno	
+				 ,a.parentiddesc AS jobnoparent	
+				 ,a.feeitemdec 	
+				 ,a.arapdate	
+				 ,a.currency	
+				 ,a.amount AS arapamt		
+				 ,(a.amount-(SELECT COALESCE(SUM(COALESCE(d.amtreq,0)),0) FROM _fina_rpreqdtl d WHERE d.arapid = a.id AND d.isdelete = FALSE AND d.reqtype = 'Q')) AS amount 
+				 ,a.descinfo AS arapdesc
+				 ,a.remarks AS arapremarks
+				 ,a.arapbranch AS arapbranch
+				 ,a.ppcc
+				 ,a.jobdate
+				 ,a.piece
+				 ,a.price
+				 ,a.jobid
+				 ,(SELECT j.vessel FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE)AS ves
+				,(SELECT j.voyage FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE)AS voy
+				,(SELECT j.contractno FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE)AS contno
+				,(SELECT string_agg(b.hblno,',') FROM bus_ship_bill b WHERE b.jobid = a.jobid AND b.isdelete = FALSE )AS bills
+				,(SELECT j.arstatus FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE)AS arstatus
+				,(SELECT j.apstatus FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE)AS apstatus
+				,a.customercode
+				,(SELECT j.customerabbr FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE)AS customerabbr
+				 ,(SELECT string_agg(x.cntno,',') FROM bus_ship_container x WHERE x.cntno IS NOT NULL AND x.cntno <> '' AND x.isdelete = FALSE AND x.jobid = a.jobid) AS cntno
+				 ,(SELECT y.sono FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = a.jobid) AS sono
+				 ,a.corpid
+				 ,null AS isconfirm
+				 ,null AS confirmer
+				 ,null AS confirmdate
+				 ,(SELECT jobtype FROM fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE)AS jobtype
+				 ,(SELECT string_agg(invoiceno,',') FROM fina_invoice j WHERE j.jobid = a.jobid AND j.isdelete = FALSE) AS invoiceno
+				 ,(SELECT string_agg(nos, ',') FROM fina_rpreq x WHERE x.id = ANY (SELECT y.rpreqid FROM fina_rpreqdtl y WHERE y.arapid = a.id AND y.isdelete = false) AND x.isdelete = FALSE) AS rpreqnos
+			FROM _fina_arap a
+			WHERE a.isdelete = FALSE
+				AND a.rptype != 'S'
+				AND a.rptype != 'O'
+				AND isfinish2 =FALSE
+				$araptype$
+				$hidearapdat$
+				AND (CASE WHEN -1 = $rpreqid$  THEN TRUE ELSE FALSE END)
+				AND (a.amount - (SELECT COALESCE(SUM(COALESCE(d.amtreq,0)),0) FROM _fina_rpreqdtl d WHERE d.arapid = a.id AND d.isdelete = FALSE AND d.reqtype = 'Q'))>0
+				AND (a.customerid = $customerid$ OR EXISTS(SELECT 1 FROM sys_corporation_join x WHERE x.idto = $customerid$ AND x.idfm = a.customerid))
+			UNION ALL
+			
+			SELECT 
+				  d.id AS pkid
+				 ,d.arapid AS arapid
+				 ,d.rpreqid AS rpreqid
+				 ,r.customerid AS customerid
+				 ,d.id AS rpreqdtlid
+				 ,d.amtreq AS amtreq
+				 ,d.araptype 	
+				 ,d.jobno	
+				 ,d.jobnoparent		
+				 ,d.feeitemdec 	
+				 ,d.arapdate	
+				 ,d.currency	
+				 ,d.amount AS arapamt 
+				 ,(d.amount-(SELECT COALESCE(SUM(COALESCE(x.amtreq,0)),0) FROM _fina_rpreqdtl x WHERE x.arapid = d.arapid AND x.isdelete = FALSE AND x.reqtype = 'Q')) AS amount	
+				 ,d.arapdesc AS arapdesc
+				 ,d.arapremarks AS arapremarks
+				 ,d.arapbranch AS arapbranch
+				 ,d.ppcc
+				 ,(SELECT x.jobdate FROM fina_jobs x WHERE x.isdelete = FALSE AND x.id = d.jobid) AS jobdate
+				 ,d.piece
+				 ,d.price
+				 ,d.jobid
+				 ,(SELECT j.vessel FROM _fina_jobs j WHERE j.id = d.jobid AND j.isdelete = FALSE)AS ves
+				,(SELECT j.voyage FROM _fina_jobs j WHERE j.id = d.jobid AND j.isdelete = FALSE)AS voy
+				,(SELECT j.contractno FROM _fina_jobs j WHERE j.id = d.jobid AND j.isdelete = FALSE)AS contno
+				,(SELECT string_agg(b.hblno,',') FROM bus_ship_bill b WHERE b.jobid = d.jobid AND b.isdelete = FALSE )AS bills
+				,(SELECT j.arstatus FROM _fina_jobs j WHERE j.id = d.jobid AND j.isdelete = FALSE)AS arstatus
+				,(SELECT j.apstatus FROM _fina_jobs j WHERE j.id = d.jobid AND j.isdelete = FALSE)AS apstatus
+				,d.customercode
+				,(SELECT j.customerabbr FROM _fina_jobs j WHERE j.id = d.jobid AND j.isdelete = FALSE)AS customerabbr
+				 ,(SELECT string_agg(x.cntno,',') FROM bus_ship_container x WHERE x.cntno IS NOT NULL AND x.cntno <> '' AND x.isdelete = FALSE AND x.jobid = d.jobid) AS cntno
+				 ,(SELECT y.sono FROM bus_shipping as y WHERE y.isdelete = FALSE AND y.jobid = d.jobid) AS sono
+				 ,d.corpid
+				 ,d.isconfirm
+				 ,d.confirmer
+				 ,d.confirmdate
+				 ,(SELECT jobtype FROM fina_jobs j WHERE j.id = d.jobid AND j.isdelete = FALSE)AS jobtype
+				 ,(SELECT string_agg(invoiceno,',') FROM fina_invoice j WHERE j.jobid = d.jobid AND j.isdelete = FALSE) AS invoiceno
+				 ,(SELECT string_agg(nos, ',') FROM fina_rpreq x WHERE x.id = ANY (SELECT y.rpreqid FROM fina_rpreqdtl y WHERE y.arapid = d.rpreqid AND y.isdelete = false) AND x.isdelete = FALSE) AS rpreqnos
+			FROM fina_rpreq  r , _fina_rpreqdtl d 
+			WHERE r.id = d.rpreqid 
+			AND r.reqtype = 'Q'
+			AND d.isdelete = FALSE
+			$hidefinal$
+			$rptype$
+			AND (CASE WHEN -1 = $rpreqid$  THEN FALSE ELSE (d.rpreqid = $rpreqid$) END)
+		) AS t
+		WHERE $qry$
+		$jobdate$
+		$filter$
+		$jobnostr$
+		$sonostr$
+		$billsstr$
+		$mblstr$
+		AND (abs(amount) + abs(amtreq) != 0) 
+	 ]]>		
+	</select>
+	
+	
+	<select id="pages.module.finance.unlinkfeechooserBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT t.* FROM(
+			SELECT
+				 a.jobno 
+				,a.jobid
+				,a.id AS arapid
+				,(SELECT x.vessel FROM bus_shipping x where x.jobid = a.jobid AND x.isdelete = false LIMIT 1) AS vessel
+				,(SELECT x.voyage FROM bus_shipping x where x.jobid = a.jobid AND x.isdelete = false LIMIT 1) AS voyage
+				,(SELECT x.mblno FROM bus_shipping x where x.jobid = a.jobid AND x.isdelete = false LIMIT 1) AS mblno
+				,(SELECT x.sono FROM bus_shipping x where x.jobid =  a.jobid AND x.isdelete = false LIMIT 1) AS sono
+				,(SELECT x.sales FROM fina_jobs x where x.id =  a.jobid AND x.isdelete = false LIMIT 1) AS Ssales
+				,(SELECT (CASE WHEN x.jobtype = 'S' THEN '海运' WHEN x.jobtype = 'A' THEN '空运' WHEN x.jobtype = 'L' THEN '陆运' WHEN x.jobtype = 'H' THEN '铁运' END) FROM fina_jobs x WHERE x.id = a.jobid) AS jobtype
+				,(a.jobid || '.' || a.currency ) AS pkid
+				,a.currency 
+				,sum(CASE WHEN a.araptype = 'AR' THEN a.amount ELSE 0 END) AS arsum
+				,sum(CASE WHEN a.araptype = 'AP' THEN a.amount ELSE 0 END) AS apsum
+				,a.jobdate
+			FROM _fina_arap a
+			WHERE a.isdelete = FALSE
+				AND a.amount != 0
+				AND a.rptype = 'G'
+				AND isfinish2 =FALSE
+				AND (a.amount - (SELECT COALESCE(SUM(COALESCE(d.amtreq,0)),0) FROM _fina_rpreqdtl d WHERE d.arapid = a.id AND d.isdelete = FALSE AND d.reqtype = $reqtype$))!=0
+				AND (a.customerid = $customerid$ OR EXISTS(SELECT 1 FROM sys_corporation_join x WHERE x.idto = $customerid$ AND x.idfm = a.customerid))
+			GROUP BY a.id, a.jobid ,a.jobdate, a.jobno , a.currency
+			ORDER BY a.jobno , a.currency 
+		) AS t
+		WHERE $qry$
+		$filter$
+ 		ORDER BY jobno,currency
+ 		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.finance.unlinkfeechooserBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			10000 AS counts
+	</select>
+	
+	
+	
+	<select id="pages.module.finance.unlinkfeechooseractpayBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+			SELECT 
+				    a.id AS dtlid
+				    ,customerid
+				    ,araptype   
+				    ,jobno     
+				    ,feeitemdec 
+				    ,arapdate   
+				    ,currency   
+				    ,amount     
+				    ,abs(amountremaind2) AS amountactrecpay  
+				    ,NULL AS currencyto 
+				    ,0 AS xrate
+				    ,0 AS amountrp  
+				    ,NULL AS rpdate     
+				    ,0 AS amountwf  
+				    ,billno     
+				    ,abs(amountremaind2) AS amountremaindabs 
+				    ,a.descinfo AS arapdesc
+				    ,a.remarks AS arapremarks
+				    ,arapbranch
+				    ,ppcc
+				    ,piece
+				    ,price
+				    ,a.customercode
+				FROM _fina_arap a 
+				WHERE $qry$ 
+					AND a.rptype != 'S'
+					AND a.rptype != 'O'
+					AND abs(amountremaind2) >0
+					AND a.isfinish2 = FALSE
+					AND EXISTS (SELECT 1 FROM fina_actpayrec_clients c WHERE c.actpayrecid = $actpayrecid$ AND c.isdelete = FALSE AND (c.clientid = a.customerid 
+					OR EXISTS(SELECT 1 FROM sys_corporation_join x WHERE x.idto =c.clientid AND x.idfm = a.customerid))  )
+					$corpfilter$ 
+				ORDER BY customerid,jobno
+				LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.finance.unlinkfeechooseractpayBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			count(*) AS counts 
+			FROM _fina_arap a 
+				WHERE $qry$ 
+					AND a.rptype != 'S'
+					AND a.rptype != 'O'
+					AND abs(amountremaind2) >0
+					AND a.isfinish2 = FALSE
+					AND EXISTS (SELECT 1 FROM fina_actpayrec_clients c WHERE c.actpayrecid = $actpayrecid$ AND c.isdelete = FALSE AND (c.clientid = a.customerid 
+					OR EXISTS(SELECT 1 FROM sys_corporation_join x WHERE x.idto =c.clientid AND x.idfm = a.customerid))  )
+					$corpfilter$ 
+			
+	</select>
+	
+	
+		<select id="pages.module.finance.unlinkfeechooseractpayBean.gridFilter.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+			SELECT 
+				row_number() OVER() AS row,jobid , jobno , mblno , sono , invoiceno,cntnos,sales
+			FROM
+				(SELECT 
+			    	 a.jobid 
+					,j.nos AS jobno
+					,j.jobdate
+					,a.currency
+					,a.corpid AS arapcorpid
+					,(SELECT x.mblno FROM bus_shipping x where x.jobid = j.id AND x.isdelete = false LIMIT 1) AS mblno
+					,(SELECT x.sono FROM bus_shipping x where x.jobid = j.id AND x.isdelete = false LIMIT 1) AS sono
+					,(SELECT string_agg(DISTINCT x.invoiceno,',') FROM  fina_invoice x WHERE x.isdelete = FALSE AND a.invoiceid = x.id AND x.invoiceno IS NOT NULL AND x.invoiceno != '') AS invoiceno
+					,COALESCE(a.payplace,'') AS payplace
+					,(SELECT string_agg(cntno,',') FROM bus_ship_container WHERE jobid = j.id AND isdelete = FALSE AND parentid IS NULL AND COALESCE(cntno,'') != '') AS cntnos
+					,j.sales
+					,(SELECT string_agg(nos,',') FROM fina_rpreq x WHERE x.id = ANY(SELECT y.rpreqid FROM fina_rpreqdtl y WHERE y.arapid = a.id AND y.isdelete = false) AND x.isdelete = FALSE)  AS rpreqnos
+				FROM fina_arap a ,fina_jobs j
+				WHERE 
+					a.rptype != 'S'
+					AND a.jobid = j.id
+					AND a.rptype != 'O'
+					AND j.nos != '' 
+					AND j.nos IS NOT NULL
+					AND a.isfinish2 = FALSE
+					AND a.isdelete = FALSE
+					AND j.isdelete = FALSE
+					AND (CASE WHEN -1 = $actpayrecid$ THEN 
+								a.customerid = ANY(SELECT $customerid$ UNION (SELECT x.idfm FROM sys_corporation_join x WHERE x.idto = $customerid$))
+						ELSE 	
+							EXISTS (SELECT 1 FROM fina_actpayrec_clients c WHERE c.actpayrecid = $actpayrecid$ AND c.isdelete = FALSE
+										AND a.customerid = ANY(SELECT c.clientid UNION (SELECT x.idfm FROM sys_corporation_join x WHERE x.idto = c.clientid))
+									) 
+						END)			
+					$corpfilter$
+					$invoiceno$
+					$cbillnos$
+				) AS T
+			WHERE $qry$ 
+			GROUP By jobid , jobno , mblno , sono , invoiceno,cntnos,sales
+			ORDER BY jobno
+			
+	</select>
+	<select id="pages.module.finance.unlinkfeechooseractpayBean.gridFilter.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			10000 AS counts 
+	</select>
+	
+	<!--  
+	<select id="pages.module.finance.payapplyeditBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			* 
+		FROM _fina_rpreqdtlunion a 
+		WHERE $qry$
+			AND $clause$
+			AND (a.customerid = $customerid$ OR EXISTS(SELECT 1 FROM sys_corporation_join x WHERE x.idto = $customerid$ AND x.idfm = a.customerid))
+			AND a.araptype = 'AP'
+ 		ORDER BY jobno , arapdate
+	</select>
+	<select id="pages.module.finance.payapplyeditBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM _fina_rpreqdtlunion a 
+		WHERE $qry$
+			AND $clause$
+			AND (a.customerid = $customerid$ OR EXISTS(SELECT 1 FROM sys_corporation_join x WHERE x.idto = $customerid$ AND x.idfm = a.customerid))
+			AND a.araptype = 'AP'
+	</select>
+	-->
+	
+	<select id="pages.module.finance.checkbillyBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			*
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _fina_rpreq t
+		WHERE $qry$
+			AND t.isdelete = FALSE
+			AND t.reqtype = 'S'
+		ORDER BY ischeck  ,nos
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.finance.checkbillyBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM _fina_rpreq t
+		WHERE $qry$
+			AND t.isdelete = FALSE
+			AND t.reqtype = 'S'
+	</select>
+	<select id="pages.module.finance.checkbillydtlBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT t.* FROM(
+		SELECT 
+			* 
+			,(SELECT j.vessel FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE)AS ves
+			,(SELECT j.voyage FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE)AS voy
+			,(SELECT string_agg(b.hblno,',') FROM bus_ship_bill b WHERE b.jobid = a.jobid AND b.isdelete = FALSE )AS bills
+		FROM _fina_statementdtlunion a 
+		) AS t
+		WHERE $qry$
+		AND $clause$
+ 		ORDER BY t.araptype,t.jobno
+ 		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.finance.checkbillydtlBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts FROM 
+		(SELECT 
+			* 
+			,(SELECT j.vessel FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE)AS ves
+			,(SELECT j.voyage FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE)AS voy
+			,(SELECT string_agg(b.hblno,',') FROM bus_ship_bill b WHERE b.jobid = a.jobid AND b.isdelete = FALSE )AS bills
+		FROM _fina_statementdtlunion a 
+		) AS t
+		WHERE $qry$
+			AND $clause$
+	</select>
+	
+	
+	<select id="pages.module.finance.payapplycheckBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			zz.*
+			,t.nos
+			,t.singtime
+			,t.rpnos
+			,t.rpid
+			,t.customerabbr
+			,t.notesdesc
+			,t.remark
+			,t.ischeck
+			,t.checkter
+			,t.checktime
+			,t.inputer
+			,t.inputtime
+			,t.actpayrecid
+			,t.updater
+			,t.updatetime
+			,t.arstatus
+			,t.ispay
+			,t.paytype
+			,t.invoiceno
+			,(SELECT f.nos from bpm_processinstance f where f.refid = t.id::TEXT AND f.isdelete = FALSE ORDER BY id DESC limit 1) AS bmpno
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.checkter and x.isdelete = false limit 1),t.checkter) AS checkternamec
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM (SELECT 
+				(t.id || '.' || COALESCE(d.currency,'')) AS idalias
+				,t.id
+				,d.currency
+				,ABS(SUM(CASE WHEN d.araptype = 'AR' THEN  amtreq*-1 ELSE amtreq END)) AS amtreq
+				,SUM(amtstl2) AS amtstl
+			FROM _fina_rpreq t LEFT JOIN _fina_rpreqdtl d ON (t.id = d.rpreqid $filter$)
+			WHERE $qry$
+				AND t.isdelete = FALSE
+				AND t.reqtype = 'Q'
+				AND t.rptype = 'P'
+			GROUP BY t.id,t.nos,d.currency
+			ORDER BY t.nos DESC,d.currency
+			LIMIT $limit$ OFFSET $start$
+			) AS zz,_fina_rpreq t	
+		WHERE t.id = zz.id
+	</select>
+	<select id="pages.module.finance.payapplycheckBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM (SELECT 
+				(t.id || '.' || COALESCE(d.currency,'')) AS idalias
+				,t.id
+				,d.currency
+				,ABS(SUM(CASE WHEN d.araptype = 'AR' THEN  amtreq*-1 ELSE amtreq END)) AS amtreq
+				,SUM(amtstl2) AS amtstl
+			FROM _fina_rpreq t LEFT JOIN _fina_rpreqdtl d ON (t.id = d.rpreqid $filter$)
+			WHERE $qry$
+				AND t.isdelete = FALSE
+				AND t.reqtype = 'Q'
+				AND t.rptype = 'P'
+			GROUP BY t.id,t.nos,d.currency
+			) AS zz,_fina_rpreq t
+		WHERE t.id = zz.id
+	</select>
+	
+	<select id="pages.module.finance.payapplycheckarBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			 (t.id || '.' || COALESCE(d.currency,'')) AS idalias
+			,d.araptype
+			,d.currency
+			,SUM(amtreq) AS amtreq
+			,t.nos
+			,t.singtime
+			,t.rpno
+			,t.rpid
+			,t.customerabbr
+			,t.notesdesc
+			,t.remark
+			,t.ischeck
+			,t.checkter
+			,t.checktime
+			,t.inputer
+			,t.inputtime
+			,t.rpno1
+			,t.actpayrecid
+			,t.updater
+			,t.updatetime
+			,t.arstatus
+			,t.ispay
+			,t.paytype
+			,t.invoiceno
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.checkter and x.isdelete = false limit 1),t.checkter) AS checkternamec
+			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _fina_rpreq t LEFT JOIN _fina_rpreqdtl d ON (t.id = d.rpreqid)
+		WHERE $qry$
+			AND t.isdelete = FALSE
+			AND t.reqtype = 'Q'
+			AND t.rptype = 'R'
+		GROUP BY t.id,d.araptype,t.singtime,t.nos,t.rpid,t.rpno,t.customerabbr,t.notesdesc,t.remark,t.ischeck,t.checkter,t.checktime,t.inputer,t.inputtime,t.updater,t.updatetime,t.rpno1,t.actpayrecid,t.customerid,d.araptype ,d.currency,t.arstatus,t.ispay,t.paytype,t.invoiceno 
+		ORDER BY t.nos DESC,d.araptype , d.currency
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.finance.payapplycheckarBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM _fina_rpreq t LEFT JOIN _fina_rpreqdtl d ON (t.id = d.rpreqid)
+		WHERE $qry$
+			AND t.isdelete = FALSE
+			AND t.reqtype = 'Q'
+			AND t.rptype = 'R'
+		GROUP BY t.id,d.araptype,t.singtime,t.nos,t.rpid,t.rpno,t.customerabbr,t.notesdesc,t.remark,t.ischeck,t.checkter,t.checktime,t.inputer,t.inputtime,t.updater,t.updatetime,t.rpno1,t.actpayrecid,t.customerid,d.araptype ,d.currency,t.arstatus,t.ispay ,t.paytype,t.invoiceno
+	</select>
+	
+	
+	<select id="pages.module.finance.payapplydtlcheckBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			*
+			,(SELECT j.etd FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE) AS etd
+			,(SELECT j.eta FROM _fina_jobs j WHERE j.id = a.jobid AND j.isdelete = FALSE) AS eta 
+			,(SELECT isconfirm FROM fina_arap WHERE id = a.arapid AND isdelete =FALSE limit 1 ) AS arap_isconfirm
+		FROM _fina_rpreqdtlunion a 
+		WHERE $qry$
+			AND $clause$
+			 $araptype$
+ 		ORDER BY arapdate
+ 		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.finance.payapplydtlcheckBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			COUNT(*) AS counts
+		FROM _fina_rpreqdtlunion a 
+		WHERE $qry$
+			AND $clause$
+			 $araptype$
+	</select>
+	
+	<select id="pages.module.finance.rpreqsumBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			d.araptype , d.currency , SUM(amtreq) AS amtreq
+		FROM _fina_rpreqdtl d 
+		WHERE $qry$
+			AND d.isdelete = FALSE
+			AND d.rpreqid > 0
+			GROUP BY d.araptype ,d.currency 
+		ORDER BY d.araptype , d.currency
+	</select>
+	<select id="pages.module.finance.rpreqsumBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			100 AS counts
+	</select>
+	
+	<select id="pages.module.finance.actpaysumBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		
+		
+		SELECT
+			d.araptype , d.currency , SUM(amountwf) AS amtreq
+		FROM _fina_actpayrecdtl d 
+		WHERE  $qry$
+			AND d.isdelete = FALSE
+			GROUP BY d.araptype ,d.currency 
+		ORDER BY d.araptype , d.currency
+	</select>
+	<select id="pages.module.finance.actpaysumBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			100 AS counts
+	</select>
+	
+	<select id="pages.module.finance.modifylogsBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _bus_optrack t 
+		WHERE $qry$
+		ORDER BY optime desc
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.finance.modifylogsBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _bus_optrack t 
+		WHERE $qry$
+		
+	</select>
+	<select id="pages.module.finance.invoiceBean.invoicesGrid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			 a.id
+			,a.araptype
+			,a.arapdate
+			,(SELECT code||'/'||name FROM dat_feeitem x WHERE x.isdelete = FALSE AND x.id = a.feeitemid) AS feeitemname
+			,a.ppcc
+			,a.currency
+			,a.amount
+			,(SELECT x.nos FROM fina_jobs x WHERE x.isdelete = FALSE AND x.id = a.jobid) AS nos
+			,(SELECT x.jobdate FROM fina_jobs x WHERE x.isdelete = FALSE AND x.id = a.jobid) AS jobdate
+			,(SELECT x.mblno FROM bus_shipping x WHERE x.isdelete = FALSE AND x.jobid = a.jobid) AS mblno
+			,(CASE WHEN EXISTS(SELECT 1 FROM fina_jobs j WHERE j.id = a.jobid AND j.jobtype = 'S') THEN (SELECT x.sono FROM bus_shipping x WHERE x.isdelete = FALSE AND x.jobid = a.jobid) WHEN EXISTS(SELECT 1 FROM fina_jobs j WHERE j.id = a.jobid AND j.jobtype = 'L') THEN  (SELECT sono FROM bus_truck as y WHERE y.isdelete = FALSE AND y.jobid = a.jobid) ELSE '' END )AS sono
+			,a.amtstl2
+			,a.remarks
+		FROM fina_arap AS a
+		WHERE a.isdelete = FALSE
+			AND a.invoiceid IS NULL
+			AND EXISTS (SELECT 1 FROM fina_jobs x WHERE x.isdelete = FALSE AND x.id = a.jobid AND x.nos IS NOT NULL AND x.nos != '')
+			AND (FALSE $qry$ )
+			$filter$
+			$corpfilter$
+		ORDER BY a.araptype DESC,(SELECT x.jobdate FROM fina_jobs x WHERE x.isdelete = FALSE AND x.id = a.jobid),a.arapdate
+	</select>
+	
+	<select id="pages.module.finance.invoiceBean.invoicesGrid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			 COUNT(a.id) AS counts
+		FROM fina_arap AS a
+		WHERE a.isdelete = FALSE
+			AND a.invoiceid IS NULL
+			AND EXISTS (SELECT 1 FROM fina_jobs x WHERE x.isdelete = FALSE AND x.id = a.jobid AND x.nos IS NOT NULL AND x.nos != '')
+			AND (FALSE $qry$ )
+			$filter$
+			$corpfilter$
+	</select>
+	
+	
+	<select id="pages.module.finance.invoiceBean.invoicedtlGrid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			 a.id
+			,(CASE WHEN a.invoiceid is not null then true else false end) AS ischoose
+			,a.jobno
+			,a.jobdate
+			,a.araptype
+			,a.ppcc
+			,a.arapdate
+			,a.feeitemdec
+			,a.currency
+			,a.amount
+			,a.piece
+			,a.price
+			,a.invoicexrate
+			,a.invoicextype
+			,a.invoiceamountflag
+		FROM _fina_arap AS a
+		WHERE a.isdelete = FALSE
+			AND a.jobno IS NOT NULL
+			AND a.jobno != ''
+			AND (FALSE $qry$ )
+			$filter$
+		ORDER BY a.invoiceid,a.araptype DESC,a.jobdate,a.arapdate
+	</select>
+	
+	<select id="pages.module.finance.invoiceBean.invoicedtlGrid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			 COUNT(a.id) AS counts
+		FROM _fina_arap AS a
+		WHERE a.isdelete = FALSE
+			AND a.jobno IS NOT NULL
+			AND a.jobno != ''
+			AND (FALSE $qry$ )
+			$filter$
+			$search$
+	</select>
+	
+	<select id="pages.module.finance.bus.rate.grid" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			 x.id
+			,x.currencyfm
+			,x.currencyto
+			,x.rate
+			,x.xtype
+			,x.datafm
+			,x.datato
+		FROM _dat_exchangerate x
+		WHERE 
+			x.isdelete = FALSE
+			AND EXISTS (SELECT 1 FROM fina_arap a WHERE a.parentid is null AND a.isdelete = FALSE AND a.currency = x.currencyfm $qry$ )
+			AND $date$ BETWEEN x.datafm AND x.datato
+			 $filter$
+			 $search$
+		ORDER BY x.currencyfm,x.datafm DESC
+	</select>
+	
+	<select id="pages.module.finance.invoiceBean.grid.rate" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT
+			 x.id
+			,x.currencyfm
+			,x.currencyto
+			,x.rate
+			,x.xtype
+			,x.datafm
+			,x.datato
+		FROM _inv_exchangerate x
+		WHERE 
+			x.isdelete = FALSE
+			AND EXISTS (SELECT 1 FROM fina_arap a WHERE a.parentid is null AND a.isdelete = FALSE AND a.currency = x.currencyfm $qry$ )
+			AND $date$ BETWEEN x.datafm AND x.datato
+			 $filter$
+			 $search$
+		ORDER BY x.currencyfm,x.datafm DESC
+	</select>
+
+	<!--查询付款申請列表-->
+	<select id="pages.module.finance.newpayapply" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT array_to_json(ARRAY_AGG(row_to_json(result))) :: TEXT AS list
+		FROM (SELECT zz.*
+				   , t.nos
+				   , to_char(t.singtime,'yyyy-MM-dd') as singtime
+				   , t.rpnos
+				   , t.rpid
+				   , t.notesdesc
+				   , t.remark
+				   , (CASE WHEN t.ischeck THEN '是' ELSE '否' END) as ischeck
+				   , to_char(t.checktime,'yyyy-MM-dd') as checktime
+				   , to_char(t.inputtime,'yyyy-MM-dd') as inputtime
+				   , t.actpayrecid
+				   , to_char(t.updatetime,'yyyy-MM-dd') as updatetime
+				   , t.arstatus
+				   , (CASE WHEN t.ispay THEN '是' ELSE '否' END) as ispay
+				   , (CASE WHEN t.paytype = 'S' THEN '深圳付款' WHEN t.paytype = 'H' THEN '香港付款' WHEN t.paytype = 'C' THEN '现金付款' END) AS paytype
+				   , t.invoiceno
+				   , (SELECT x.namec FROM sys_corporation x WHERE x.id = t.customerid AND x.isdelete = FALSE LIMIT 1) AS customerabbr
+		   		   , COALESCE((SELECT x.namec FROM sys_user x where x.code = t.checkter and x.isdelete = false LIMIT 1),t.checkter) AS checkternamec
+		   		   , COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false LIMIT 1),t.inputer) AS inputername
+		   		   , COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false LIMIT 1),t.updater) AS updatername
+		   		   , (CASE WHEN t.isprint THEN '是' ELSE '否' END) as isprint
+		   		   , t.printcount
+		   		   , (SELECT string_agg(DISTINCT(fr.jobno), ',') FROM _fina_rpreqdtl fr where fr.rpreqid = t.id) AS jobno
+		   		   , (SELECT f.nos from bpm_processinstance f where f.refid = t.id::TEXT AND f.isdelete = FALSE ORDER BY id DESC limit 1) AS bmpno
+		   		    FROM (SELECT (t.id || '.' || COALESCE(d.currency,'')) AS idalias
+				   , t.id
+				   , d.currency
+				   , ABS(SUM(CASE WHEN d.araptype = 'AR' THEN amtreq*-1 ELSE amtreq END)) AS amtreq
+				   , SUM(amtstl2) AS amtstl
+			   FROM _fina_rpreq t LEFT JOIN _fina_rpreqdtl d ON (t.id = d.rpreqid)
+			WHERE t.isdelete = FALSE
+			AND t.reqtype = 'Q'
+			AND t.rptype = 'P' $qry$
+			GROUP BY t.id,t.nos,d.currency
+			ORDER BY t.id DESC,d.currency
+			LIMIT 500 OFFSET 0
+			) AS zz,_fina_rpreq t
+		WHERE t.id = zz.id
+		  AND t.isdelete = FALSE
+		ORDER BY t.id DESC) result
+	</select>
+</sqlMap>

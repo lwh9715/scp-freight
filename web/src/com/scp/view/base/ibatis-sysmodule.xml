@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="exp.tree.qry.admin.level1" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			DISTINCT m.*
+			,EXISTS(SELECT 1 FROM sys_module x WHERE x.isdelete = false AND x.isctrl = 'N' AND x.pid = m.id) AS haschild
+		FROM sys_module m
+		WHERE m.id =  $pid$
+		AND m.isdelete = false  
+		AND m.isctrl = 'N';
+	</select>
+	<select id="exp.tree.qry.level1" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			DISTINCT m.*
+			,EXISTS(SELECT 1 FROM sys_module x WHERE x.isdelete = false AND x.isctrl = 'N' AND x.pid = m.id) AS haschild
+		FROM sys_module m, sys_modinrole i, sys_role r, sys_userinrole o
+		WHERE m.id = i.moduleid
+			AND m.id =  $pid$ 
+			AND i.roleid = r.id
+			AND r.id = o.roleid
+			AND m.isctrl = 'N'
+			AND o.userid = $userid$ 
+			AND m.isdelete = false  
+			AND (CASE WHEN $userid$=81433600 THEN 1=1 ELSE m.id != 139000100 END)
+			AND $sysctrl$
+			ORDER BY modorder;
+	</select>
+	
+	<select id="exp.tree.qry.admin.levelother" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			DISTINCT m.*
+			,EXISTS(SELECT 1 FROM sys_module x WHERE x.isdelete = false AND x.isctrl = 'N' AND x.pid = m.id) AS haschild
+		FROM sys_module m
+		WHERE m.pid =  $pid$
+			AND m.isctrl = 'N'
+			AND m.isdelete = false  
+			ORDER BY modorder;
+	</select>
+	<select id="exp.tree.qry.levelother" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			DISTINCT m.*
+			,EXISTS(SELECT 1 FROM sys_module x WHERE x.isdelete = false AND x.isctrl = 'N' AND x.pid = m.id) AS haschild
+		FROM sys_module m, sys_modinrole i, sys_role r, sys_userinrole o
+		WHERE m.id = i.moduleid
+			AND m.pid =  $pid$
+			AND i.roleid = r.id
+			AND r.id = o.roleid
+			AND m.isctrl = 'N'
+			AND o.userid = $userid$ 
+			AND m.isdelete = false  
+			AND (CASE WHEN $userid$=81433600 THEN 1=1 ELSE m.id != 139000100 END)
+			AND $sysctrl$
+			ORDER BY modorder;
+	</select>
+	
+	
+	<select id="main.showmoremsgBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT row_number() OVER() AS row,
+			*
+			FROM  f_sys_message_showmoremsg('userid=$userid$;keyfee=$keyfee$;keyprofit=$keyprofit$') 
+			WHERE 
+			 orderno is not null
+			 AND $qry$
+	</select>
+	<select id="main.showmoremsgBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM  f_sys_message_showmoremsg('userid=$userid$;keyfee=$keyfee$;keyprofit=$keyprofit$') 
+		WHERE orderno is not null
+		AND $qry$
+	</select>
+</sqlMap>

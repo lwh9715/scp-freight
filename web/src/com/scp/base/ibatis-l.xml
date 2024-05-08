@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="base.language.init" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			 ch
+			,en
+			,tw
+			FROM sys_ml;
+	</select>
+	
+	<select id="base.combox.qry" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT $v$ AS value,$l$ AS lable FROM $t$ $w$ $o$;
+	</select>
+	
+	
+	<select id="base.combox.qry.json" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select array_to_json(array_agg(row_to_json(t))) As json
+    			from (
+						SELECT $c$ FROM $t$ $w$ $o$ 
+					) t
+	</select>
+</sqlMap>

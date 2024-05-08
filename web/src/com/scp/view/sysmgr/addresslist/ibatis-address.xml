@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.sysmgr.addresslist.addresslistBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select * from(
+			select 
+			 id,adrtype,code,namec,namee,tel1,tel2,email1,email2,qq,msn,mobilephone,skype,fax,company,depter2,customerabbr,jobtitle
+			FROM _addresslist t
+			UNION ALL
+			SELECT 
+				 g.id
+				,1 AS adrtype
+				,g.code 
+				,g.namec
+				,g.namee
+				,g.tel1
+				,g.tel2
+				,g.email1
+				,g.email2
+				,'' qq
+				,'' msn
+				,tel1 AS mobilephone
+				,'' skype
+				,g.fax1 AS fax
+				,(SELECT abbr FROM sys_corporation WHERE id=g.corpid) AS company
+				,'' AS depter2
+				,'' AS customerabbr
+				,'' AS jobtitle
+			FROM sys_corporation g
+			WHERE g.isdelete = FALSE
+				AND g.email1 IS NOT NULL 
+				AND g.email1 != ''
+			$filter$
+		) t
+		WHERE $qry$ 
+			$qryFilter$
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.sysmgr.addresslist.addresslistBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM (
+			select 
+			 id,adrtype,code,namec,namee,tel1,tel2,email1,email2,qq,msn,mobilephone,skype,fax,company,depter2,customerabbr,jobtitle
+			FROM _addresslist t
+			UNION ALL
+			SELECT 
+				  g.id
+				,1 AS adrtype
+				,g.code 
+				,g.namec
+				,g.namee
+				,g.tel1
+				,g.tel2
+				,g.email1
+				,g.email2
+				,'' qq
+				,'' msn
+				,tel1 AS mobilephone
+				,'' skype
+				,g.fax1 AS fax
+				,(SELECT abbr FROM sys_corporation WHERE id=g.corpid) AS company
+				,'' AS depter2
+				,'' AS customerabbr
+				,'' AS jobtitle
+			FROM sys_corporation g
+			WHERE g.isdelete = FALSE
+				AND g.email1 IS NOT NULL 
+				AND g.email1 != ''
+			$filter$
+		) t 
+		WHERE $qry$
+			$qryFilter$
+	</select>
+	
+	<select id="pages.sysmgr.addresslist.usraddressBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_addresslist t 
+		WHERE $qry$ 
+		AND isdelete = false
+		ORDER BY code
+	</select>
+	<select id="pages.sysmgr.addresslist.usraddressBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_addresslist t 
+		WHERE $qry$
+		AND isdelete = false
+	</select>
+	
+	<select id="pages.sysmgr.addresslist.templateBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_templet t 
+		WHERE $qry$ 
+		AND isdelete = false
+		ORDER BY inputtime DESC , abstract
+	</select>
+	<select id="pages.sysmgr.addresslist.templateBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_templet t 
+		WHERE $qry$
+		AND isdelete = false
+	</select>
+</sqlMap>
