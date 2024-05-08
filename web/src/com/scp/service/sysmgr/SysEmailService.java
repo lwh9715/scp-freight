@@ -62,7 +62,6 @@ import com.scp.util.EMailSendUtil;
 import com.scp.util.PDFUtil;
 import com.scp.util.StrUtils;
 import com.scp.util.ConfigUtils.UsrCfgKey;
-import com.scp.view.module.ship.BusShippingDefineBean;
 
 @Component
 public class SysEmailService{
@@ -193,7 +192,6 @@ public class SysEmailService{
 
 
 			String content = sysEmail.getContent();//内容
-			content = converContent(content);
 			String subject = sysEmail.getSubject();//主题
 			String acceptAddress = sysEmail.getAddressee();//收件人地址
 			String ccAddress = sysEmail.getCopys();//Copys地址
@@ -208,29 +206,6 @@ public class SysEmailService{
 			}
 			sysEmailDao.modify(sysEmail);
 		}
-	}
-
-	public static String converContent(String content) throws IOException {
-		if (content.contains("&key=$ApiKey")) {
-			BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(content.getBytes(Charset.forName("utf8"))), Charset.forName("utf8")));
-			String line;
-			StringBuffer strbuf = new StringBuffer();
-			while ((line = br.readLine()) != null) {
-				if (line.trim().contains("网上补料链接")) {
-					String nos = line.substring(line.indexOf("&nos=") + 5, line.indexOf("&tp="));
-					String tp = String.valueOf(System.currentTimeMillis());
-					line = line.replace("$currentTimeMillis", tp);
-					String key =  BusShippingDefineBean.apiKeyGenerate(tp+"",nos);
-					line = line.replace("$ApiKey", key);
-					strbuf.append(line);
-				} else {
-					strbuf.append(line);
-				}
-				strbuf.append("\r\n");
-			}
-			content = strbuf.toString();
-		}
-		return content;
 	}
 
 	/**

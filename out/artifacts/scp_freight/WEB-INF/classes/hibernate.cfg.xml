@@ -220,17 +220,6 @@
   	<mapping class="com.scp.model.order.BusOrder" />
   	<mapping class="com.scp.model.order.BusOrderdtl" />
   	
-  	<mapping class="com.scp.model.wms.WmsOutdtlref" />
-  	<mapping class="com.scp.model.wms.WmsOut" />
-  	<mapping class="com.scp.model.wms.WmsIn" />
-  	<mapping class="com.scp.model.wms.WmsInLocdtl" />
-  	<mapping class="com.scp.model.wms.WmsOutdtl" />
-  	<mapping class="com.scp.model.wms.WmsIndtl" />
-  	<mapping class="com.scp.model.wms.WmsPriceGroup" />
-  	<mapping class="com.scp.model.wms.WmsPrice" />
-  	<mapping class="com.scp.model.wms.WmsDispatch" />
-  	<mapping class="com.scp.model.wms.WmsDispatchdtl" />
-  	
   	<mapping class="com.scp.model.oa.OaWorkReport" />
   	<mapping class="com.scp.model.oa.SalaryBill" />
 	<mapping class="com.scp.model.oa.OaLeaveapplication" />
@@ -288,9 +277,7 @@
   	<mapping class="com.scp.model.website.WebMenu" />
   	<mapping class="com.scp.model.website.WebPages" />
   	<mapping class="com.scp.model.bus.BusTrainBill" />
-  	<mapping class="com.scp.model.wms.WmsTrans" />
-  	<mapping class="com.scp.model.wms.WmsTransdtl" />
-  	
+
   	<mapping class="com.scp.model.gps.BusGpsRef" />
   	<mapping class="com.scp.model.gps.BusGps" />
   	
@@ -327,8 +314,6 @@
   	<mapping class="com.scp.model.data.Ediinttraphrase" />
   	<mapping class="com.scp.model.data.Ediinttrareport" />
 
-  	<mapping class="com.scp.model.commerce.BusCommerce" />
-  	<mapping class="com.scp.model.commerce.BusCommerceCargo" />
   	<mapping class="com.scp.model.ship.Voyage" />
 
 	  <mapping class="com.scp.model.api.TarifasApi" />
