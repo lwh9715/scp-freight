@@ -19,7 +19,6 @@ import org.operamasks.faces.user.util.Browser;
 import com.scp.exception.NoRowException;
 import com.scp.model.bus.BusAir;
 import com.scp.model.bus.BusTrain;
-import com.scp.model.commerce.BusCommerce;
 import com.scp.model.order.BusOrder;
 import com.scp.model.ship.BusShipping;
 import com.scp.model.ship.BusTruck;
@@ -69,9 +68,6 @@ public class AssignedUserBean extends GridFormView{
 	
 	@SaveState
 	public String type = "";
-
-
-
 
 	@Bind
 	public UIButton refresh;
@@ -146,13 +142,6 @@ public class AssignedUserBean extends GridFormView{
 					busTruck = serviceContext.busTruckMgrService.busTruckDao.findById(linkid);
 					if(busTruck!=null){
 						jobid = busTruck.getJobid();
-					}
-				}
-				BusCommerce busCommerce = null;
-				if(busCommerce == null){
-					busCommerce = serviceContext.busCommerceService.busCommerceDao.findById(linkid);
-					if(busCommerce!=null){
-						jobid = busCommerce.getJobid();
 					}
 				}
 				this.jobid = jobid;
