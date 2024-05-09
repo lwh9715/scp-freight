@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="MyTask" basedir="." default="compress-css">
+	<echo message="${basedir}" />  
+	<property name="base.dir" value="${basedir}" />
+	<property name="web.dir" value="${basedir}/web/WebContent/common" />
+	<property name="another.lib" value="${basedir}/lib" />
+	<target name="compress-js">
+		<apply executable="java" parallel="false" failonerror="true"
+			dest="${web.dir}/js" append="false" force="true">
+			<fileset dir="${web.dir}/js/bak" includes="*.js">
+				<exclude name="**/*.min.js" />
+			</fileset>
+			<arg line="-jar" />
+			<arg path="${another.lib}/yuicompressor-2.4.7.jar" />
+			<arg line="--charset utf-8" />
+			<srcfile />
+			<arg line="-o" />
+			<mapper type="glob" from="*.js" to="*.js" />
+			<targetfile />
+			<arg line="--preserve-semi" />
+			<!--只压缩去掉空格，不混淆-->
+			<!--nomunge 只压缩, 不对局部变量进行混淆。 -->
+			<!--preserve-semi 保留所有的分号。 -->
+			<!--disable-optimizations 禁止优化。 -->
+			<!---->
+		</apply>
+	</target>
+	<target name="compress-css">
+		<echo message="Compress Code Begin" />  
+		<apply executable="java" parallel="false" failonerror="true"
+			dest="${web.dir}/css" append="false" force="true">
+			<fileset dir="${web.dir}/css/bak" includes="*.css" />
+			<arg line="-jar" />
+			<arg path="${another.lib}/yuicompressor-2.4.7.jar" />
+			<arg line="--charset utf-8" />
+			<srcfile />
+			<arg line="-o" />
+			<mapper type="glob" from="*.css" to="*.css" />
+			<targetfile />
+		</apply>
+		<echo message="Compress Code Finished" />  
+	</target>
+</project>

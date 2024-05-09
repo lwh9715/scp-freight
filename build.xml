@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="deploy-dev" name="build">
+	<property environment="env" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="junit.output.dir" value="JunitTestResult" />
+	<property name="java_compile_version" value="1.6" />
+	<property name="source" value="1.6" />
+	<property name="debug" value="true" />
+	<property name="lib.dir" value="${basedir}/web/WebContent/WEB-INF/lib" />
+	<property name="another.lib" value="${basedir}/lib" />
+	<!-- 一些额外的jar包   如项目中用到的jboss的jar包，但不在项目web-inf下的lib包中  需引入-->
+
+	<property name="emma.output.dir" value="EmmaCoverageResult" />
+	<!--指示 emma.jar 和emma_ant.jar 的路径-->
+	<path id="emma.lib">
+		<pathelement location="${another.lib}/emma.jar" />
+		<pathelement location="${another.lib}/emma_ant.jar" />
+	</path>
+
+	<!--允许emma-->
+	<property name="emma.enabled" value="true" />
+
+	<!--为ANT添加EMMA任务-->
+	<taskdef resource="emma_ant.properties" classpathref="emma.lib" />
+
+	<target name="emma" description="turns on EMMA's on-the-fly instrumentation mode">
+		<property name="emma.enabled" value="true" />
+		<property name="emma.filter" value="" />
+	</target>
+
+
+	<path id="junit.classpath">
+		<pathelement location="${another.lib}/junit-4.8.jar" />
+	</path>
+
+
+	<path id="build.classpath">
+		<pathelement location="${basedir}/build/WEB-INF/classes/" />
+		<pathelement location="${basedir}/web/src" />
+		<pathelement location="${basedir}/web/test" />
+	</path>
+
+
+
+	<path id="cover-test.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${another.lib}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+
+	<path id="test.run.classpath">
+		<path refid="junit.classpath" />
+		<path refid="cover-test.classpath" />
+		<path refid="build.classpath" />
+	</path>
+
+	<target name="javac">
+		<copy todir="${basedir}/build/WEB-INF/classes/">
+			<fileset dir="${basedir}/web/src">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+
+		<!--<javac srcdir="${basedir}/web/src" destdir="${basedir}/build/WEB-INF/classes/" encoding="UTF-8">
+			<src path="E://JavaWorkSpace-SCP/ufms-base/src" />
+			<classpath refid="test.run.classpath" />
+		</javac>
+		-->
+		<javac srcdir="${basedir}/web/test" destdir="${basedir}/build/WEB-INF/classes/" encoding="UTF-8">
+			<classpath refid="test.run.classpath" />
+		</javac>
+
+
+	</target>
+
+<!-- 
+	<target name="deploy-dev254">
+		<antcall target="build" />
+		<move file="${basedir}/target/scp-cimc.war" tofile="${basedir}/target/scp-cimc.zip" />
+	</target>
+
+	<target name="deploy">
+		<antcall target="deploy-wget" />
+		<antcall target="restrart" />
+	</target>
+-->
+	<target name="deploy-dev">
+		<antcall target="build" />
+		<move file="${basedir}/target/scp-cimc.war" tofile="${basedir}/target/scp-cimc.zip" />
+		<antcall target="copy-local" />
+	</target>
+<!--
+	<target name="deploy-wget">
+		<antcall target="deploy-dev254" />
+		<antcall target="ftp-wget" />
+		<antcall target="ssh-wget" />
+		<antcall target="ssh-restrart" />
+	</target>
+
+	<target name="restrart">
+		<antcall target="ssh-restrart" />
+	</target>
+-->
+
+	<target name="build">
+		<antcall target="clear" />
+		<!--<antcall target="junitTest" />
+		<antcall target="gen-report-coverage" />
+		<antcall target="junitreport" />-->
+
+		<!--<antcall target="war" />-->
+
+		<antcall target="zip" />
+
+		<delete dir="${basedir}/build" />
+
+		<!--<antcall target="clearsrc" />-->
+	</target>
+	
+
+	<target name="junitTest" depends="javac , instrument">
+		<delete dir="${junit.output.dir}" />
+		<mkdir dir="${junit.output.dir}" />
+		<junit fork="true" forkmode="once" printsummary="withOutAndErr" errorproperty="test.error" showoutput="on">
+			<formatter type="xml" />
+
+			<!--指明代码覆盖率的元数据的存放位置-->
+			<jvmarg value="-Demma.coverage.out.file=${emma.output.dir}/metadata.emma" />
+			<jvmarg value="-Demma.coverage.out.merge=true" />
+			<classpath refid="emma.lib" />
+
+			<classpath location="${basedir}/build/WEB-INF/classes/" />
+
+			<formatter type="xml" />
+			<!--执行所有以Test结尾的junit测试用例-->
+			<batchtest fork="yes" todir="${junit.output.dir}">
+				<fileset dir="${basedir}/web/test">
+					<include name="**/*Test.java" />
+					<exclude name="**/AllTests.java" />
+				</fileset>
+			</batchtest>
+
+			<classpath refid="test.run.classpath" />
+		</junit>
+	</target>
+
+	<target name="junitreport">
+		<junitreport todir="${junit.output.dir}">
+			<fileset dir="${junit.output.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.output.dir}" />
+		</junitreport>
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- 打war包-->
+	<!-- =================================================================== -->
+
+	<target name="war">
+		<delete dir="${basedir}/build/WEB-INF/classes/" />
+		<mkdir dir="${basedir}/build/WEB-INF/classes/" />
+
+		<antcall target="javac" />
+		<copy todir="${basedir}/build">
+			<fileset dir="${basedir}/web/WebContent/">
+				<exclude name="**/*.class" />
+			</fileset>
+		</copy>
+		<war warfile="${basedir}/target/scp-cimc.war" webxml="${basedir}/web/WebContent/WEB-INF/web.xml">
+			<fileset dir="${basedir}/build">
+			</fileset>
+		</war>
+	</target>
+	
+	<target name="copyConfig">
+		<copy todir="${basedir}/build/WEB-INF/classes/" overwrite="true">
+			<fileset dir="${basedir}/target/">
+				<include name="applicationContext.xml" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="zip">
+		<delete dir="${basedir}/build/WEB-INF/classes/" />
+		<mkdir dir="${basedir}/build/WEB-INF/classes/" />
+
+		<antcall target="javac" />
+		<copy todir="${basedir}/build" overwrite="true">
+			<fileset dir="${basedir}/web/WebContent/">
+				<exclude name="**/*.jar" />
+				<exclude name="**/*.raq" />
+			</fileset>
+		</copy>
+		
+		<copy todir="${basedir}/build" overwrite="true">
+			<fileset dir="${basedir}/web/WebContent/">
+				<include name="**/commons-base.jar" />
+				<include name="**/commons.jar" />
+				<include name="**/commons-net-3.3.jar" />
+				<include name="**/report4.jar" />
+				
+				<include name="**/ehcache-setting.xml" />
+			</fileset>
+		</copy>
+		
+		<antcall target="copyConfig" />
+			
+		<war warfile="${basedir}/target/scp-cimc.war" webxml="${basedir}/target/web.xml">
+			<fileset dir="${basedir}/build">
+				<!--<exclude name="**/*.jar" />-->
+				<exclude name="**/*.exe" />
+				<exclude name="**/*.zip" />
+				<exclude name="**/*.rar" />
+				<exclude name="**/logo.png" />
+				<exclude name="**/bak/*.js" />
+				<exclude name="**/*.bak" />
+				<exclude name="**/*.apk" />
+				<exclude name="**/*.sql" />
+				<exclude name="**/applicationContext-ds*" />
+				<exclude name="**/applicationContext-quartz.xml" />
+				<exclude name="**/applicationContext-activemq.xml" />
+				<exclude name="**/redis.properties" />
+				<exclude name="**/amq.properties" />
+				<exclude name="**/main_win/" />
+				<exclude name="**/main-layui/" />
+				<exclude name="**/reportConfig.xml" />
+				<!--<exclude name="**/web.xml" />-->
+				<!--
+				<exclude name="**/WebInitListener.class" />
+				<exclude name="**/web.xml" />
+				
+				<exclude name="**/applicationContext-ds*" />
+				<exclude name="**/applicationContext-aop*" />
+				<exclude name="**/applicationContext-ff*" />
+				
+				<exclude name="**/FireflowContext*" />
+				<exclude name="**/web.xml" />
+				<exclude name="**/faces-config.xml" />
+				<exclude name="**/operamasks.xml" />
+				<exclude name="**/runqianReport4.tld" />
+				<exclude name="**/hibernate.cfg.xml" />
+				<exclude name="**/log4j.properties" />
+				<exclude name="**/quieeWindowServer.lic" />
+				<exclude name="**/sql-map-all.xml" />
+				<exclude name="**/sql-map-config.xml" />
+				-->
+				<!-- 排除所有jar文件 -->
+				<exclude name="demo/" />
+				<!-- 排除根目录下整个文件夹 
+				<exclude name="**/conf/" />
+				<exclude name="**/help/" />
+				<exclude name="**/help/" />-->
+				<exclude name="**/back/" />
+				<!-- <exclude name="**/config/"/>
+				<exclude name="**/doc/"/>
+				 -->
+				<exclude name="**/help/" />
+				<!-- <exclude name="**/ckeditor/" />-->
+				<exclude name="**/jquery/" />
+				<!-- 排除test子目录本身及其子目录下的所有文件夹 -->
+			</fileset>
+		</war>
+		<!--  http://blog.csdn.net/gst6062825/article/details/7534072
+	            destfile    目标文件  
+	            duplicate   打包方式(一般使用preserve)  
+	            zipfileset  打包那些文件  
+	            prefix      增加前缀(使用最佳实践)  
+	        -->
+		<!--  <war destfile="${basedir}/target/scp-cimc.war" update="true" description="replace">
+					<zipfileset dir="${basedir}/target/" includes="web.xml" fullpath="WEB-INF/web.xml"/>
+				</war>
+		-->
+	</target>
+	
+	
+	<target name="copy-local" description="copy-local">
+		<!--<ftp server="192.168.0.188" port="21" userid="root" password="" binary="true">
+			<fileset dir="${basedir}/target">
+				<include name="scp-cimc.zip" />
+			</fileset>
+		</ftp>-->
+		<copy todir="E:/ftp/" overwrite="true">
+			<fileset dir="${basedir}/target/">
+				<include name="**/scp-cimc.zip" />
+			</fileset>
+		</copy>
+	</target>
+
+<!-- 
+	<target name="ssh-wget" description="122">
+		<sshexec host="120.77.83.0" username="root" password="" trust="true" port="22" command="/www/deploy-ant-zip">
+		</sshexec >
+	</target>
+
+	<target name="ssh-restrart" description="122">
+		<sshexec host="120.77.83.0" username="root" password="" trust="true" port="22" command="/www/deploy">
+		</sshexec >
+	</target>
+-->
+
+
+	<target name="clear">
+		<delete dir="${emma.output.dir}" />
+		<mkdir dir="${emma.output.dir}" />
+
+		<delete dir="${basedir}/build" />
+		<mkdir dir="${basedir}/build" />
+
+		<delete dir="${basedir}/build/WEB-INF/classes/" />
+		<mkdir dir="${basedir}/build/WEB-INF/classes/" />
+
+		<delete dir="${basedir}/JunitTestResult" />
+		<mkdir dir="${basedir}/JunitTestResult" />
+
+		<delete file="${basedir}/target/scp-cimc.zip" />
+	</target>
+
+	<target name="clearsrc">
+		<delete dir="${basedir}/web" />
+		<delete dir="${basedir}/lib" />
+		<delete dir="${basedir}/jocky" />
+	</target>
+
+	<!--对编译在路径bin.main.dir中的Java类注入字节码, 
+	并且把注入字节码的新Java类存放到路径bin.instrument.dir-->
+	<!--覆盖率的元数据存放在路径coverage.dir中-->
+	<target name="instrument">
+		<mkdir dir="${basedir}/build/WEB-INF/classes/" />
+		<mkdir dir="${basedir}/temp" />
+		<mkdir dir="${emma.output.dir}" />
+		<emma enabled="${emma.enabled}">
+			<instr instrpathref="" destdir="${basedir}/temp" metadatafile="${emma.output.dir}/metadata.emma" merge="true">
+			</instr>
+		</emma>
+		<copy todir="${basedir}/build/WEB-INF/classes/">
+			<fileset dir="${basedir}/temp/">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+		<delete dir="${basedir}/temp" />
+	</target>
+
+	<!--生成代码覆盖率报告-->
+	<target name="gen-report-coverage">
+		<!--如果属性emma.enabled的值是true，就生成代码覆盖率报告 -->
+		<emma enabled="${emma.enabled}">
+			<report sourcepath="${basedir}/web/src" sort="+block,+name,+method,+class" metrics="method:70,block:80,line:80,class:100">
+				<fileset dir="${emma.output.dir}">
+					<include name="*.emma" />
+				</fileset>
+				<html outfile="${emma.output.dir}/coverage.html" depth="method" columns="name,class,method,block,line" />
+				<xml outfile="${emma.output.dir}/coverage.xml" depth="method" columns="name,class,method,block,line" />
+			</report>
+		</emma>
+	</target>
+
+</project>
