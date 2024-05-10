@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="pages.module.data.accountBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _dat_account t 
+		WHERE $qry$ 
+		ORDER BY t.corpabbr,t.bankid
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.accountBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _dat_account t 
+		WHERE $qry$ 
+	</select>
+	
+	
+	<select id="pages.module.data.bankBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _dat_bank t 
+		WHERE $qry$ 
+		ORDER BY t.corpid,t.id
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.bankBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _dat_bank t 
+		WHERE $qry$ 
+	</select>
+	
+	
+	<select id="pages.module.data.countryBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _dat_country t 
+		WHERE $qry$ 
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.countryBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _dat_country t 
+		WHERE $qry$ 
+	</select>
+
+
+	<!--hscode-->
+	<select id="pages.module.data.hscodeBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		 *
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM dat_hscode t
+		WHERE $qry$
+			AND isdelete = FALSE
+			ORDER BY hscode
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.hscodeBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		 count(*) AS counts
+		FROM dat_hscode t
+		WHERE $qry$
+			AND isdelete = false
+	</select>
+	
+	
+	<select id="pages.module.data.portBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,(SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1) AS inputername
+		 ,(SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1) AS updatername
+		FROM dat_port t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+			ORDER BY COALESCE(orderno,10000)
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.portBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_port t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.data.currencyBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _dat_currency t 
+		WHERE $qry$
+			$filter$ 
+			AND isdelete = FALSE
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.currencyBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _dat_currency t 
+		WHERE $qry$ 
+			$filter$ 
+			AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.data.exchangerateBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM dat_exchangerate t 
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = FALSE
+			AND currencyfm != currencyto
+		ORDER BY currencyfm , currencyto , datafm , datato
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.exchangerateBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_exchangerate t 
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = FALSE
+			AND currencyfm != currencyto
+	</select>
+	
+	<select id="pages.module.data.feeitemBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _dat_feeitem t 
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = FALSE
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.feeitemBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _dat_feeitem t 
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.data.reviewedorBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 t.id
+		 ,(SELECT namec FROM bpm_process WHERE id = t.processid AND isdelete = FALSE LIMIT 1) AS processname
+		 ,t.assignname
+		 ,(SELECT abbr FROM sys_corporation WHERE id = t.corpid AND isdelete = FALSE LIMIT 1) AS corpabbr
+		 ,(SELECT namec FROM sys_user WHERE id = t.userid AND isdelete = FALSE LIMIT 1) AS username
+		FROM dat_reviewedor t 
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = FALSE
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.reviewedorBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_reviewedor t 
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = FALSE
+	</select>	
+	
+	<select id="pages.module.data.goodsBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 (SELECT abbr FROM sys_corporation WHERE id = t.customerid) AS customerabbr,
+		 (SELECT count(1) FROM sys_attachment WHERE linkid = t.id) AS attchcount,
+		 * 
+		FROM dat_goods t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.goodsBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_goods t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+	</select>
+
+	<select id="pages.module.data.productBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			*
+			 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+			 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM dat_product t
+		WHERE $qry$
+		  AND isdelete = FALSE
+		ORDER BY inputtime DESC
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.productBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			count(*) AS counts
+		FROM dat_product t
+		WHERE $qry$
+		  AND isdelete = FALSE
+	</select>
+
+	<select id="pages.module.data.addressBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			*
+			 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		FROM dat_address t
+		WHERE $qry$
+		  AND isdelete = FALSE
+			LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.addressBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			count(*) AS counts
+		FROM dat_address t
+		WHERE $qry$
+		  AND isdelete = FALSE
+	</select>
+
+
+	<select id="pages.module.data.goodstrackBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			*
+			 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		FROM dat_goodstrack t
+		WHERE $qry$
+		  AND isdelete = FALSE
+			LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.goodstrackBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			count(*) AS counts
+		FROM dat_goodstrack t
+		WHERE $qry$
+		  AND isdelete = FALSE
+	</select>
+
+
+	<select id="pages.module.data.goodstypeBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _dat_goodstype t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.goodstypeBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _dat_goodstype t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+	</select>
+	
+	
+	<select id="pages.module.data.unitBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _dat_unit t 
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = FALSE
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.unitBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _dat_unit t 
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = FALSE
+	</select>
+	
+	
+	<select id="pages.module.data.warehouseBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM _dat_warehouse t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.warehouseBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _dat_warehouse t 
+		WHERE $qry$ 
+			AND isdelete = FALSE
+	</select>
+	
+	
+	
+	<select id="pages.module.data.warehouseareaBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM dat_warehouse_area t 
+		WHERE $qry$ 
+		
+	</select>
+	<select id="pages.module.data.warehouseareaBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_warehouse_area t 
+		WHERE $qry$ 
+			
+	</select>
+	
+	
+	
+	<select id="pages.module.data.warehouselocBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM dat_warehouse_loc t 
+		WHERE $qry$ 
+			ORDER BY code
+			
+	</select>
+	<select id="pages.module.data.warehouselocBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_warehouse_loc t 
+		WHERE $qry$ 
+			
+	</select>
+	
+	<select id="pages.module.data.lineBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		 ,(CASE lintype WHEN 'S' THEN '海运' WHEN 'A' THEN '空运' WHEN 'T' THEN '铁运' END) AS lintypedesc
+		 ,(SELECT x.namec FROM dat_line x where x.id = t.parentid limit 1) AS parentnamec
+		 ,(SELECT x.namee FROM dat_line x where x.id = t.parentid limit 1) AS parentnamee
+		FROM dat_line t 
+		WHERE $qry$ 
+		    AND isdelete = false
+			ORDER BY isleaf,code
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.lineBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_line t 
+		WHERE $qry$ 
+			AND isdelete = false
+	</select>
+	
+	
+	
+	<select id="pages.module.data.cntypeBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM dat_cntype t 
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = FALSE
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.cntypeBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_cntype t 
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = FALSE
+	</select>
+	
+	
+	
+	<select id="pages.module.data.warehouselocaldtlBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT 
+			*
+			,d.piece AS pieces_desc
+			,d.piece/d.pieceinbox as stockbox
+		FROM  _wms_stock d 
+		WHERE $qry$  
+			AND d.piece >0
+			
+		UNION ALL
+		SELECT 
+			 s.*
+			,(d.pieces - COALESCE(d.pieceout,0)) AS pieces_desc
+			,CAST((d.pieces - COALESCE(d.pieceout,0))/s.pieceinbox AS NUMERIC(18,0)) as stockbox
+		FROM  _wms_stock s , wms_in_locdtl d 
+		WHERE $qry$  
+			AND s.locid IS NULL 
+			AND d.indtlid = s.indtlid 			
+			AND d.pieces >0
+			AND s.piece >0
+			AND d.iscompleted = false 
+		LIMIT $limit$ OFFSET $start$	
+	</select>
+	<select id="pages.module.data.warehouselocaldtlBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT COUNT(*) AS counts  FROM(
+		SELECT 
+			1
+		FROM  _wms_stock d 
+		WHERE $qry$  
+			AND d.piece >0
+			
+		UNION ALL
+		SELECT 
+			1
+		FROM  _wms_stock s , wms_in_locdtl d 
+		WHERE $qry$  
+			AND s.locid IS NULL 
+			AND d.indtlid = s.indtlid 			
+			AND d.pieces >0
+			AND s.piece >0
+			AND d.iscompleted = false 
+			)AS m
+	</select>
+	
+	<select id="pages.module.data.packageBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM dat_package t 
+		WHERE $qry$ 
+			$filter$ 
+			AND isdelete = FALSE
+		order by code
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.packageBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_package t 
+		WHERE $qry$ 
+			$filter$ 
+			AND isdelete = FALSE
+	</select>
+	
+	<select id="pages.module.data.filedataBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _dat_filedata t 
+		WHERE $qry$
+			$filter$
+			AND isleaf = TRUE
+			AND isdelete = FALSE
+		ORDER BY orderno , code
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.filedataBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _dat_filedata t 
+		WHERE $qry$
+			$filter$
+			AND isleaf = TRUE
+			AND isdelete = FALSE 
+		
+	</select>
+	
+	<select id="pages.module.data.filedataBean.gridExp.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+		*
+		FROM _dat_filedata t 
+		WHERE $qry$ 
+			$filter$
+			AND isdelete = FALSE
+			AND isleaf = FALSE
+		ORDER BY fkcode
+		 
+	</select>
+	<select id="pages.module.data.filedataBean.gridExp.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _dat_filedata t 
+		WHERE $qry$
+			$filter$
+			AND isleaf = FALSE
+			AND isdelete = FALSE 
+	</select>
+	
+	<select id="pages.module.data.userassignBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_user t 
+		WHERE $qry$ 
+		AND isadmin = 'N' 
+		AND isdelete = FALSE 
+		AND isinvalid = TRUE 
+		AND iscsuser = FALSE
+		ORDER BY code
+	</select>
+	<select id="pages.module.data.userassignBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_user t 
+		WHERE $qry$ 
+		AND isadmin = 'N' 
+		AND isdelete = FALSE 
+		AND isinvalid = TRUE 
+		AND iscsuser = FALSE
+	</select>
+	
+	<select id="pages.module.data.userassignBean.gridAssign.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM sys_user t 
+		WHERE $qry$ 
+		AND isadmin = 'N' 
+		AND isdelete = FALSE 
+		AND isinvalid = TRUE 
+		AND iscsuser = FALSE
+		ORDER BY code
+	</select>
+	<select id="pages.module.data.userassignBean.gridAssign.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM sys_user t 
+		WHERE $qry$ 
+		AND isadmin = 'N' 
+		AND isdelete = FALSE 
+		AND isinvalid = TRUE 
+		AND iscsuser = FALSE
+	</select>
+	<select id="pages.module.data.datdoor2doordayBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
+		 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
+		FROM _dat_door2doorday t 
+		WHERE $qry$ 
+			ORDER BY polid,cntypeid,googstypeid
+	</select>
+	<select id="pages.module.data.datdoor2doordayBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM _dat_door2doorday t 
+		WHERE $qry$ 
+	</select>
+	
+	
+	<select id="pages.module.data.linecodeBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM dat_linecode t 
+		WHERE $qry$ 
+			ORDER BY code
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.linecodeBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM dat_linecode t 
+		WHERE $qry$ 
+			
+	</select>
+	
+	<select id="pages.module.data.analyseBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 * 
+		FROM price_fcl_asking t 
+		WHERE $qry$ 
+		AND isdelete = FALSE 
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.data.analyseBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		 count(*) AS counts 
+		FROM price_fcl_asking t 
+		WHERE $qry$ 
+		AND isdelete = FALSE 
+	</select>
+</sqlMap>
