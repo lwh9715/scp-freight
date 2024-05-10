@@ -214,40 +214,7 @@ div.tabb span.x-tab-strip-text {
 						<om:fileDownload id="doSimulateExport" for="simulateExport" savedName="qryfcllist.xls" />
 					</div>
 
-				<!--<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
-					<layout:cell style="width: 27px;">
-						<w:button id="clearQry2" label="" width="27"
-							image="#{constantBean.contextPath}/images/clear.png" />
-					</layout:cell>
-					<w:textField selectOnFocus="true" width="40"/>
-					<w:textField selectOnFocus="true" width="100"
-						value="#{pages.module.price.qryfclBean.qryMap['pol']}" />
-					<w:textField selectOnFocus="true" width="100"
-						value="#{pages.module.price.qryfclBean.qryMap['pod']}" />
-					<w:textField selectOnFocus="true" width="70"
-						value="#{pages.module.price.qryfclBean.qryMap['shipping']}" />
-
-					<w:textField selectOnFocus="true" width="60"
-						value="#{pages.module.price.qryfclBean.qryMap['cost20$']}" />
-					<w:textField selectOnFocus="true" width="60"
-						value="#{pages.module.price.qryfclBean.qryMap['cost40gp$']}" />
-					<w:textField selectOnFocus="true" width="65"
-						value="#{pages.module.price.qryfclBean.qryMap['cost40hq$']}" />
-					<w:textField selectOnFocus="true" width="53"
-						value="#{pages.module.price.qryfclBean.qryMap['schedule']}" />
-					<w:textField selectOnFocus="true" width="70"
-						value="#{pages.module.price.qryfclBean.qryMap['tt']}" />
-					<w:textField selectOnFocus="true" width="70"
-						value="#{pages.module.price.qryfclBean.qryMap['via']}" />
-					<w:textField selectOnFocus="true" width="70"
-						value="#{pages.module.price.qryfclBean.qryMap['line']}" />
-					<w:textField selectOnFocus="true" width="75"
-						value="#{pages.module.price.qryfclBean.qryMap['country']}" />
-					<w:textField selectOnFocus="true" width="100"
-						value="#{pages.module.price.qryfclBean.qryMap['pricename']}" />
-				</layout:panelGrid>
-
-				--><w:dataGrid paged="false" id="grid" jsvar="gridJsvar" toolBarPosition="bottom" idColumn="uuid" selectable="true"
+				<w:dataGrid paged="false" id="grid" jsvar="gridJsvar" toolBarPosition="bottom" idColumn="uuid" selectable="true"
 						loadMask="true" onrowselect="return false" onrowdeselect="return false" summaryRowPosition="inner"
 						 rows="10000" multiSelectOnClick="false" remoteSort="true" >
 					<w:outputColumn id="id" header="ID" hidden="true" />

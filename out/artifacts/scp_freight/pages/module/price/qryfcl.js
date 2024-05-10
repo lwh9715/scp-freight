@@ -232,11 +232,11 @@ function init(){
 	
 }
 
-function initFlexBox(customerabbr , pol , pod, userid){
+function initFlexBox(pol , pod, userid){
 	$('#customer').flexbox('/scp/service?src=flexbox&action=customer&userid='+userid+'&type=ship', {
 		resultTemplate: '<div class="col1">{name}</div><div style="width: 225px;" class="col2">{namec}</div><div class="col3">{namee}</div>',
 		watermark: '',
-		initialValue: customerabbr,
+		initialValue: '中集世倡深圳',
 		width: 155,
 		onSelect: function() {
 			var id = $('input[name=customer]').val();
