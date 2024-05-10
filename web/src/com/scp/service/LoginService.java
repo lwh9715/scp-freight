@@ -108,24 +108,11 @@ public class LoginService{
 //				userSession.setCustomerid(sysUser.getCustomerid());
 				userSession.setCorpid(sysUser.getSysCorporation().getId());
 				userSession.setActsetid(sysUser.getActsetid());
-				try {
-					userSession.setActsetcode(AppUtils.getActsetcode());
-				} catch (FsActSetNoSelectException e) {
-					e.printStackTrace();
-				}
 				userSession.setBaseCurrency(sysUser.getSysCorporation().getBasecurrency());
 
 				HttpServletRequest request = AppUtils.getHttpServletRequest();
 				String ip = request.getRemoteAddr();
 				if(StrUtils.isNull(ip))ip="0.0.0.0";
-//				userSession.setIp(ip);
-//				userSession.setLogintime(new Date().toLocaleString());
-//				String useronliensql = 
-//					"INSERT INTO sys_useronline(id, userid, sessionid, logintime, ip, isonline) " +
-//					"\n\t\t\t\t			VALUES (getid(), %s, '%s', NOW(), '%s', 'Y');";
-//				useronliensql = String.format(useronliensql, (Long)map.get("id"),userSession.getSessionid(),ip);
-				//AppDaoUtil.execute(useronliensql);
-
 
 				this.onlinecount(sysUser);
 
@@ -145,17 +132,6 @@ public class LoginService{
 
 				initApplicationConf();
 				initUserConfig();
-//			}else{
-//				 long count = sysUser.getLogincount();
-//				count = count +1;
-//				String sql = "UPDATE sys_user SET logincount = "+count+" WHERE fmsid = "+uid+" AND  isinvalid = TRUE AND isdelete = FALSE";
-//				String sql2= "SELECT f_log('"+sysUser.getCode()+"','登录失败"+count+"',"+uid+");";
-//				sysUserDao.executeSQL(sql);
-//				sysUserDao.executeQuery(sql2);
-//				if(count<5){
-//					throw new LoginException("密码错误" + count + "次，还有"+(5-count)+"机会哦.(提示：如果密码连续输错5次，帐号将被锁定30分钟。请慎重输入!\n(Password error "+ count +", You have "+ (5 - count) +" opportunity oh. (hint: if the wrong password for two times, the account will be locked for 30 minutes. Please input!))");	
-//				}else{throw new LoginException("您密码输入错误5次,此帐号将被锁定30分钟,请30分钟以后输入!\n(Your password input error 5 times, this account will be locked for 30 minutes, please enter 30 minutes later)");}
-//			}
 		}else{
 			throw new LoginException("不存在用户:" + uid+ "(Not exists user)");
 		}
@@ -195,7 +171,6 @@ public class LoginService{
 				try {
 					userSession.setCorpid(sysUser.getSysCorporation().getId());
 					userSession.setActsetid(sysUser.getActsetid());
-					userSession.setActsetcode(AppUtils.getActsetcode());
 					userSession.setBaseCurrency(sysUser.getSysCorporation().getBasecurrency());
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -225,17 +200,7 @@ public class LoginService{
 
 				initApplicationConf();
 				initUserConfig();
-//			}else{
-//				 long count = sysUser.getLogincount();
-//				count = count +1;
-//				String sql = "UPDATE sys_user SET logincount = "+count+" WHERE fmsid = "+uid+" AND  isinvalid = TRUE AND isdelete = FALSE";
-//				String sql2= "SELECT f_log('"+sysUser.getCode()+"','登录失败"+count+"',"+uid+");";
-//				sysUserDao.executeSQL(sql);
-//				sysUserDao.executeQuery(sql2);
-//				if(count<5){
-//					throw new LoginException("密码错误" + count + "次，还有"+(5-count)+"机会哦.(提示：如果密码连续输错5次，帐号将被锁定30分钟。请慎重输入!\n(Password error "+ count +", You have "+ (5 - count) +" opportunity oh. (hint: if the wrong password for two times, the account will be locked for 30 minutes. Please input!))");	
-//				}else{throw new LoginException("您密码输入错误5次,此帐号将被锁定30分钟,请30分钟以后输入!\n(Your password input error 5 times, this account will be locked for 30 minutes, please enter 30 minutes later)");}
-//			}
+
 		}else{
 			throw new LoginException("不存在用户:" + uid+ "(Not exists user)");
 		}
@@ -278,11 +243,6 @@ public class LoginService{
 //				userSession.setCustomerid(sysUser.getCustomerid());
 				userSession.setCorpid(sysUser.getSysCorporation().getId());
 				userSession.setActsetid(sysUser.getActsetid());
-				try {
-					userSession.setActsetcode(AppUtils.getActsetcode());
-				} catch (FsActSetNoSelectException e) {
-					e.printStackTrace();
-				}
 				userSession.setBaseCurrency(sysUser.getSysCorporation().getBasecurrency());
 
 				HttpServletRequest request = AppUtils.getHttpServletRequest();
@@ -372,23 +332,11 @@ public class LoginService{
 //				userSession.setCustomerid(sysUser.getCustomerid());
 				userSession.setCorpid(sysUser.getSysCorporation().getId());
 				userSession.setActsetid(sysUser.getActsetid());
-				try {
-					userSession.setActsetcode(AppUtils.getActsetcode());
-				} catch (FsActSetNoSelectException e) {
-					e.printStackTrace();
-				}
 				userSession.setBaseCurrency(sysUser.getSysCorporation().getBasecurrency());
 
 				HttpServletRequest request = AppUtils.getHttpServletRequest();
 				String ip = request.getRemoteAddr();
 				if(StrUtils.isNull(ip))ip="0.0.0.0";
-//				userSession.setIp(ip);
-//				userSession.setLogintime(new Date().toLocaleString());
-//				String useronliensql = 
-//					"INSERT INTO sys_useronline(id, userid, sessionid, logintime, ip, isonline) " +
-//					"\n\t\t\t\t			VALUES (getid(), %s, '%s', NOW(), '%s', 'Y');";
-//				useronliensql = String.format(useronliensql, (Long)map.get("id"),userSession.getSessionid(),ip);
-				//AppDaoUtil.execute(useronliensql);
 
 				SysUseronline sysUseronline = new SysUseronline();
 				sysUseronline.setUserid(sysUser.getId());
@@ -458,25 +406,11 @@ public class LoginService{
 				userSession.setMlType(mlType);
 				userSession.setCorpid(sysUser.getSysCorporation().getId());
 				userSession.setActsetid(sysUser.getActsetid());
-				//userSession.setActsetcode(AppUtil.getActsetcode());
-				//userSession.setBaseCurrency(StrTools.getMapVal(map, "basecurrency"));
-
-//				HttpServletRequest request = AppUtil.getHttpServletRequest();
-//				String ip = request.getRemoteAddr();
-//				if(StrTools.isNull(ip))ip="0.0.0.0";
-//				userSession.setIp(ip);
-//				userSession.setLogintime(new Date().toLocaleString());
-//				String useronliensql = 
-//					"INSERT INTO sys_useronline(id, userid, sessionid, logintime, ip, isonline) " +
-//					"\n\t\t\t\t			VALUES (getid(), %s, '%s', NOW(), '%s', 'Y');";
-//				useronliensql = String.format(useronliensql, (Long)map.get("id"),userSession.getSessionid(),ip);
-				//AppDaoUtil.execute(useronliensql);
 
 				SysUseronline sysUseronline = new SysUseronline();
 				sysUseronline.setUserid(sysUser.getId());
 				sysUseronline.setIsonline("Y");
 				sysUseronline.setLogintime(new Date());
-	//			sysUseronline.setIp(ip);
 				sysUseronline.setSessionid(userSession.getSessionid());
 				sysUseronline.setIsvalid(true);
 				sysUseronlineDao.create(sysUseronline);
@@ -768,11 +702,6 @@ public class LoginService{
                 userSession.setMlType(mlType);
                 userSession.setCorpid(sysUser.getSysCorporation().getId());
                 userSession.setActsetid(sysUser.getActsetid());
-                try {
-                    userSession.setActsetcode(AppUtils.getActsetcode());
-                } catch (FsActSetNoSelectException e) {
-                    e.printStackTrace();
-                }
                 userSession.setBaseCurrency(sysUser.getSysCorporation().getBasecurrency());
                 HttpServletRequest request = AppUtils.getHttpServletRequest();
                 String ip = request.getRemoteAddr();

@@ -1,112 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:context="http://www.springframework.org/schema/context" 
-	xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:jee="http://www.springframework.org/schema/jee"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
 		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd"
-	default-lazy-init="true" default-autowire="byName">
+       default-lazy-init="true" default-autowire="byName">
 
-	<!-- 阿里Druid数据库连接池 -->
-	  <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
-	  
-	  <property name="url" value="jdbc:postgresql://dev.ufms.cn:5437/dev-cimc?application_name=scp中集世倡;serverTimezone=GMT%2B8" />
-	  <property name="connectionProperties" value="password=Cimc@2021@zjsc@*1lo0W@6" />
-	    
-	  <property name="username" value="admin" />
-	 	<property name="passwordCallback" ref="dbPasswordCallback"/>
-	   	<!-- 配置初始化大小、最小、最大 -->
-	    <property name="initialSize" value="1" />
-	    <property name="minIdle" value="5" /> 
-	    <property name="maxActive" value="10" />
-	
-	    <!-- 配置获取连接等待超时的时间 -->
-	    <property name="maxWait" value="3000" />
-	
-	    <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
-	    <property name="timeBetweenEvictionRunsMillis" value="30000" />
-	
-	    <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
-	    <property name="minEvictableIdleTimeMillis" value="60000" />
-	
-	    <property name="validationQuery" value="SELECT 'x'" />
-	    <property name="testWhileIdle" value="true" />
-	    <property name="testOnBorrow" value="false" />
-	    <property name="testOnReturn" value="false" />
-	    
-	   
-	
-	    <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
-	    <property name="poolPreparedStatements" value="true" />
-	    <property name="maxPoolPreparedStatementPerConnectionSize" value="20" />
-	
-	 	<!-- 配置监控统计拦截的filters 生成环境默认需要注释掉，会有可能浪费大量内存可能-->
-	    <property name="filters" value="stat"/><!-- value改成wall,stat可以打开sql防火墙 -->
-	    
-	    
-	    <!-- 打开removeAbandoned功能 -->
-		<property name="removeAbandoned" value="true" />
-		<!-- 1800秒，也就是30分钟 -->
-		<property name="removeAbandonedTimeout" value="1800" />
-		<!-- 关闭abanded连接时输出错误日志 -->
-		<property name="logAbandoned" value="true" />
-		
-		<!-- 配置监控统计拦截的filters 生产环境默认需要注释掉，会有可能浪费大量内存可能-->
-		<!-- value改成wall,stat可以打开sql防火墙 -->
-	    <!-- <property name="filters" value="stat"/> -->
-	    
-	    
-	  </bean>
-	  
-	  <!-- druid spring monitor setting -->
-	  <!-- 开启@AspectJ AOP代理
-    <bean id="druid-stat-interceptor" class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor"/>
-    <bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut" scope="prototype">
-        <property name="patterns">
-            <list>
-                <value>com.scp.dao.*</value>
-            </list>
-        </property>
+    <!-- 阿里Druid数据库连接池 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+
+        <property name="url" value="jdbc:postgresql://39.108.229.3:5432/dev-cimc?application_name=scp运价;serverTimezone=GMT%2B8"/>
+        <property name="connectionProperties" value="password=cimc@5432"/>
+
+        <property name="username" value="admin"/>
+        <property name="passwordCallback" ref="dbPasswordCallback"/>
+        <!-- 配置初始化大小、最小、最大 -->
+        <property name="initialSize" value="1"/>
+        <property name="minIdle" value="5"/>
+        <property name="maxActive" value="10"/>
+        <!-- 配置获取连接等待超时的时间 -->
+        <property name="maxWait" value="3000"/>
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="30000"/>
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="60000"/>
+        <property name="validationQuery" value="SELECT 'x'"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnBorrow" value="false"/>
+        <property name="testOnReturn" value="false"/>
+        <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+        <property name="poolPreparedStatements" value="true"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="20"/>
+        <!-- 配置监控统计拦截的filters 生成环境默认需要注释掉，会有可能浪费大量内存可能-->
+        <property name="filters" value="stat"/><!-- value改成wall,stat可以打开sql防火墙 -->
+        <!-- 打开removeAbandoned功能 -->
+        <property name="removeAbandoned" value="true"/>
+        <!-- 1800秒，也就是30分钟 -->
+        <property name="removeAbandonedTimeout" value="1800"/>
+        <!-- 关闭abanded连接时输出错误日志 -->
+        <property name="logAbandoned" value="true"/>
+        <!-- 配置监控统计拦截的filters 生产环境默认需要注释掉，会有可能浪费大量内存可能-->
+        <!-- value改成wall,stat可以打开sql防火墙 -->
+        <!-- <property name="filters" value="stat"/> -->
     </bean>
-    <aop:config proxy-target-class="true">
-        <aop:advisor advice-ref="druid-stat-interceptor" pointcut-ref="druid-stat-pointcut"/>
-    </aop:config>
-	 --><!--
-	 
-	 <bean id="dzzDataSource" destroy-method="close" class="com.scp.dao.CommonDataSource" lazy-init="true">
-		<property name="csno" value="8888" />
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://127.0.0.1:3306/yos?useUnicode=true&amp;characterEncoding=UTF-8" />
-        <property name="username" value="root" />
-        <property name="password" value="LwiDxlkbHpopTtQD8wdqzndSAdADXmfkWgqiVroYy28Em2rdQtb9rvO1M3lpmHDxmmH7BojGeQ95srTniZEVsPsDMCSQjVnbbvLI8QpmOGjq1D7069BFD7877D351C4257E0AC2A027AzEtBv9qdITqisCetdQVpgXoxHZoVWQhJcbyS6WkoRQhvOlGARuu8ea1cL7sLTkffZuykyxTK83wIckzPlRrfw2qdSQbesYjVximvjzjiotkgLab3eDLtbEE64h5kgfpopjma7hsqfhJgqxrUb88XUGWnIuUlsyq5dQBYHv9skYqPhlIJPqckGTZLJcrye8ATymLpgTqNYtJrukv1nJAyvGvkvplhdiceOBTrZvaT9JXGC5FDC8D1230A84479650DB526757E7FD6564E372DEFCFB9BFF978B736A4DD4AErnm6kasMlJAfsYfelWkRwj8rhmEQCCuhtgOH2VjjWBeRZMA8VvHJfM1lwruwPNwyFroxu1enluCerAeudh2NqyTMn5qlLUjyIBqphbFKgcraac8UeJdr9fdqoIvRSoBF9qTWpe42eHZxyCTuIsWUGwCHx5GddQetoLzmvXqLWYm6ZbTrZUquuFcHKZSdcuhDUsQWkyJcxtdnPdpuKwn2fv5Ja3drd3o5hwjbi6FrbYpNfkeuCn6rTmp8ut6vRTAVxUibDOifhfGLKmVdVhxdJ6V32KrpMlnYwWLsDrSubDoufeISxlXvwxwJ2omnvhcwBikhSiDHm9bm1bbSflM41DxbNpUEJIvt9B9BFGkag2qizjjblsafbtRtOkia644Gyhb2JfMhEk5vY3jfflQ4DNStvetcwAyMM2vyFqTExqsuSalSixkFed4uXcYjPof424zYlGyDnGTZh1Gx7jLuRzh8SxeTh4z6yYujlrpP3NItxgtqWSatZRBxp5DpxfXD2tJ75gyUfhAufxrusbuzJ8VgnYefwZxScGRsYofEus7rkbja9k9FGs2l2nmvhhctkexKhaShLRs5nsdMgGhOhrOxhyFaz2GyDYH2IIK0L7Bo0x1w338W8n" /><property name="initialSize" value="2"/>
-      	<property name="maxActive" value="100"/>   
-      	<property name="maxIdle" value="2"/>  
-      	<property name="minIdle" value="1"/>  	
-      	<property name="maxWait" value="3000" />  从池中取连接的最大等待时间，单位ms.  
-      	<property name="removeAbandonedTimeout" value="180"/>  	
-		<property name="removeAbandoned" value="true"/>  	
-      	<property name="timeBetweenEvictionRunsMillis" value="30000"/>     每30秒运行一次空闲连接回收器   
-      	<property name="minEvictableIdleTimeMillis" value="60000"/>  	 池中的连接空闲1分钟后被回收   http://elf8848.iteye.com/blog/1931778
-	</bean>
-	
-	--><bean id="dzzDataSource" destroy-method="close" class="com.scp.dao.CommonDataSource" lazy-init="true">
-		<property name="csno" value="8888" />
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://120.25.254.109:3306/sc?useUnicode=true&amp;characterEncoding=UTF-8" />
-        <property name="username" value="scuser" />
-        <property name="password" value="K%%3q7tj91" /><property name="initialSize" value="2"/>
-      	<property name="maxActive" value="100"/>   
-      	<property name="maxIdle" value="2"/>  
-      	<property name="minIdle" value="1"/>  	
-      	<property name="maxWait" value="3000" /> <!-- 从池中取连接的最大等待时间，单位ms. --> 
-      	<property name="removeAbandonedTimeout" value="180"/>  	
-		<property name="removeAbandoned" value="true"/>  	
-      	<property name="timeBetweenEvictionRunsMillis" value="30000"/>  <!--   每30秒运行一次空闲连接回收器   -->
-      	<property name="minEvictableIdleTimeMillis" value="60000"/>  	<!-- 池中的连接空闲1分钟后被回收   http://elf8848.iteye.com/blog/1931778-->
-	</bean>
+    <bean id="dzzDataSource" destroy-method="close" class="com.scp.dao.CommonDataSource" lazy-init="true">
+        <property name="csno" value="8888"/>
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://120.25.254.109:3306/sc?useUnicode=true&amp;characterEncoding=UTF-8"/>
+        <property name="username" value="scuser"/>
+        <property name="password" value="K%%3q7tj91"/>
+        <property name="initialSize" value="2"/>
+        <property name="maxActive" value="100"/>
+        <property name="maxIdle" value="2"/>
+        <property name="minIdle" value="1"/>
+        <property name="maxWait" value="3000"/> <!-- 从池中取连接的最大等待时间，单位ms. -->
+        <property name="removeAbandonedTimeout" value="180"/>
+        <property name="removeAbandoned" value="true"/>
+        <property name="timeBetweenEvictionRunsMillis" value="30000"/>  <!--   每30秒运行一次空闲连接回收器   -->
+        <property name="minEvictableIdleTimeMillis" value="60000"/>    <!-- 池中的连接空闲1分钟后被回收   http://elf8848.iteye.com/blog/1931778-->
+    </bean>
 </beans>
