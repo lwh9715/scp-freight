@@ -224,9 +224,6 @@ public class ServiceContext {
     public SysFaqService sysFaqService;
 
     @Resource
-    public SysTimeTaskService sysTimeTaskService;
-
-    @Resource
     public RegisterService registerService;
 
     @Resource
