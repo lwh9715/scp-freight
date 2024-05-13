@@ -2,6 +2,7 @@ package com.ufms.web.view.edi;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +16,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ufms.base.db.DaoUtil;
+import com.ufms.base.web.GridDataProvider;
+import com.ufms.base.web.base.UserSession;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -680,6 +684,75 @@ public class ApiBean extends BaseServlet {
             tip = e.getLocalizedMessage();
         }
         return tip;
+    }
+
+
+    @Action(method = "fcllist")
+    public String getFcllist(HttpServletRequest request) {
+        final String pol = request.getParameter("pol");
+        final String pod = request.getParameter("pod");
+        final String carrier = request.getParameter("crrier");
+        String linev = request.getParameter("line");
+        final String line = URLDecoder.decode(StrUtils.isNull(linev) ? "" : linev);
+        //2022-04-26 app端查询添加运价类型
+        final String pricetype = request.getParameter("pricetype");
+
+        if (StrUtils.isNull(pol) && StrUtils.isNull(pod) && StrUtils.isNull(carrier)) {
+            String returns = "{\"code\":0,\"msg\":\"\",\"count\":" + 0 + ",\"data\":\"\"}";
+            return returns;
+        }
+
+        String page = request.getParameter("page");
+        String limit = request.getParameter("limit");
+        final UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        String rtype = "B";
+        if (userSession != null) {
+            //内部登录后运价不加价
+            if (userSession.getSystemUser() == true) {
+                rtype = "S";
+            } else {
+                rtype = "T";
+            }
+        }
+        final String ruletype = rtype;
+        GridDataProvider gridDataProvider = new GridDataProvider(page, limit) {
+            @Override
+            public String getElements() {
+                StringBuilder sqlBuilder = new StringBuilder();
+                sqlBuilder.append("\n SELECT datefm::TEXT||'</br>'||dateto::TEXT AS datefromto");
+                sqlBuilder.append("\n ,(CASE WHEN x.cost20 IS NULL THEN 0 ELSE COALESCE(x.cost20,0)+COALESCE(x.barcost20,0) END) AS cost20sum");
+                sqlBuilder.append("\n ,(CASE WHEN x.cost40gp IS NULL THEN 0 ELSE COALESCE(x.cost40gp,0)+COALESCE(x.barcost40gp,0) END) AS cost40gpsum");
+                sqlBuilder.append("\n ,(CASE WHEN x.cost40hq IS NULL THEN 0 ELSE COALESCE(x.cost40hq,0)+COALESCE(x.barcost40hq,0) END) AS cost40hqsum");
+                sqlBuilder.append("\n ,(CASE WHEN COALESCE(TRIM(x.pollink),'') = '' THEN 0 ELSE 1 END) AS ispollink");
+
+                sqlBuilder.append("\n ,(CASE WHEN COALESCE(tt,'')='' THEN '-' ELSE COALESCE(tt,'') END)||'<br>'||COALESCE(via,'') AS ttvia,regexp_replace(route,'-->','<br>-->','g') AS routev");
+                sqlBuilder.append("\n ,COALESCE((SELECT shipping FROM price_fcl WHERE id = x.id),'')||'</br>'||COALESCE(line,'')||'</br>' AS shipingline,x.*");
+                sqlBuilder.append("\n FROM f_rpa_qryfcl_table('isqryPol=Y;isshipline=Y;pol=" + pol + ";pod=" + pod + ";carrier=;line=;ruletype=" + ruletype + ";corpid=" + (userSession != null ? userSession.getCorpid() : "") + "') x");
+                sqlBuilder.append("\n WHERE 1=1");
+                sqlBuilder.append((StrUtils.isNull(pricetype) ? "" : "\n AND pricetype IN (" + pricetype + ")"));
+                sqlBuilder.append((StrUtils.isNull(carrier) ? "" : "\n AND shipping ILIKE '" + carrier + "%'"));
+                sqlBuilder.append((StrUtils.isNull(line) ? "" : "\n AND line = '" + line + "'"));
+                sqlBuilder.append("\n LIMIT " + limit + " OFFSET " + offset);
+                String querySql = sqlBuilder.toString();
+                return DaoUtil.queryForJsonArray(querySql);
+            }
+
+            @Override
+            public String getTotalCount() {
+                String countsql = "SELECT COUNT(1)"
+                        + "\n FROM f_rpa_qryfcl_table('isqryPol=Y;isshipline=Y;pol=" + pol + ";pod=" + pod + ";carrier=;line=;ruletype=" + ruletype + ";corpid=" + (userSession != null ? userSession.getCorpid() : "") + "') x"
+                        + ("\n WHERE 1=1 ")
+                        + (StrUtils.isNull(carrier) ? "" : "\n AND shipping ILIKE '" + carrier + "%'")
+                        + (StrUtils.isNull(pricetype) ? "" : "\n AND pricetype IN (" + pricetype + ")")
+                        + (StrUtils.isNull(line) ? "" : "\n AND line ='" + line + "'");
+
+                Map m = daoIbatisTemplate.queryWithUserDefineSql4OnwRow(countsql);
+                return StrUtils.getMapVal(m, "count");
+            }
+        };
+        String ret = gridDataProvider.getGridJsonData();
+
+        return ret;
     }
 
 }
