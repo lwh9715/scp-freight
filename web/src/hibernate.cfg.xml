@@ -48,7 +48,6 @@
   	<mapping class="com.scp.model.sys.SysTemplet" />
   	<mapping class="com.scp.model.sys.SysAddresslist" />
   	<mapping class="com.scp.model.sys.Register" />
-  	<mapping class="com.scp.model.sys.CsUser" />
 
   	<mapping class="com.scp.model.sys.SysBusnorule" />
   	<mapping class="com.scp.model.sys.SysBusnodesc" />

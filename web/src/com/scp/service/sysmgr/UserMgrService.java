@@ -10,11 +10,9 @@ import org.springframework.stereotype.Component;
 import com.scp.base.LMapBase;
 import com.scp.base.LMapBase.MLType;
 import com.scp.dao.DaoIbatisTemplate;
-import com.scp.dao.sys.CsUserDao;
 import com.scp.dao.sys.SysCorporationDao;
 import com.scp.dao.sys.SysDepartmentDao;
 import com.scp.dao.sys.SysUserDao;
-import com.scp.model.sys.CsUser;
 import com.scp.model.sys.SysCorporation;
 import com.scp.model.sys.SysDepartment;
 import com.scp.model.sys.SysUser;
@@ -28,10 +26,7 @@ public class UserMgrService{
 	
 	@Resource
 	public SysUserDao sysUserDao;
-	
-	@Resource
-	public CsUserDao csUserDao;
-	
+
 	@Resource
 	public SysCorporationDao sysCorporationDao; 
 	
@@ -72,21 +67,9 @@ public class UserMgrService{
 		}else{
 			sysUserDao.modify(data);
 		}
-	} 
-	
-	public void saveCsUser(CsUser data) {
-		if(0 == data.getId()){
-			csUserDao.create(data);
-		}else{
-			csUserDao.modify(data);
-		}
-	} 
+	}
 	
 	public void rasCrypto(SysUser sysUser) throws Exception {
-//		String newPWD1 = "ufms@147963";
-//		Vector<String> retVector = baseUserMgrService.encrypt(newPWD1);
-//		sysUser.setSecretkey(retVector.get(0));
-//		sysUser.setCiphertext(retVector.get(1));
 		String newPWD1 = "ufms@22969686";
 		String salt = CommonUtil.getRandom(5);
 		sysUser.setCiphertext(EncoderHandler.encodeByMD5(EncoderHandler.encodeByMD5(newPWD1)+salt));
@@ -103,31 +86,13 @@ public class UserMgrService{
 		}else{
 			return false;
 		}
-		
-//		return baseUserMgrService.checkPwd(ciphertext, secretkey , oldPWD);
 	}
 
 	public void modifyPwd(String newPWD1, SysUser data) throws Exception {
-//		String ciphertext = data.getCiphertext();
-//		String secretkey = data.getSecretkey();
-		
-//		Vector<String> retVector = baseUserMgrService.encrypt(newPWD1);
-//		data.setSecretkey(retVector.get(0));
-//		data.setCiphertext(retVector.get(1));
-		
 		String salt = CommonUtil.getRandom(5);
 		data.setCiphertext(EncoderHandler.encodeByMD5(EncoderHandler.encodeByMD5(newPWD1)+salt));
 		data.setSecretkey(salt);
 		sysUserDao.modify(data);
-	}
-	
-	public void modifyPwd(String newPWD1, CsUser data) throws Exception {
-//		String ciphertext = data.getCiphertext();
-//		String secretkey = data.getSecretkey();
-		String salt = CommonUtil.getRandom(5);
-		data.setCiphertext(EncoderHandler.encodeByMD5(EncoderHandler.encodeByMD5(newPWD1)+salt));
-		data.setSecretkey(salt);
-		csUserDao.modify(data);
 	}
 
 	public void removeUserOnLineDate(String ids) {
@@ -163,14 +128,6 @@ public class UserMgrService{
 		sysUserDao.executeSQL(dmlSqlBefore);
 	}
 	
-	public void delCsUser(String ids) {
-		String dmlSqlBefore = 
-			"\nDELETE FROM cs_user WHERE " +
-			"\nid  IN( "
-				+ ids + ");";
-		csUserDao.executeSQL(dmlSqlBefore);
-	}
-
 	public void modifyUserSecurityLevel(String ids, int i) {
 		String dmlSqlBefore = 
 			"\nUPDATE sys_user SET securitylevel = "+i+" WHERE " +
@@ -195,15 +152,6 @@ public class UserMgrService{
 		return id;
 	}
 	
-	/**
-	 * 查询网上账号对应的客户信息
-	 * @return
-	 */
-	public String getCsUserInfo(Long id) {
-		String querySql = "SELECT f_sys_user_getcsinfo('userid="+id+"') AS info;";
-		Map map = daoIbatisTemplate.queryWithUserDefineSql4OnwRow(querySql);
-		return (String) map.get("info");
-	}
 	/**
 	 * 获取公司名
 	 * @param id
