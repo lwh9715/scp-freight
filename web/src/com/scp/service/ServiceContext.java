@@ -5,15 +5,11 @@ import com.scp.dao.DaoIbatisTemplateMySql;
 import com.scp.dao.cache.CommonDBCache;
 import com.scp.service.api.*;
 import com.scp.service.bus.*;
-import com.scp.service.carmgr.*;
 import com.scp.service.common.AttachmentService;
 import com.scp.service.customer.*;
 import com.scp.service.data.*;
 import com.scp.service.elogistics.data.ChannelService;
 import com.scp.service.elogistics.data.ElogisticsService;
-import com.scp.service.gps.BusGpsRefService;
-import com.scp.service.gps.BusGpsService;
-import com.scp.service.knowledge.SysKnowledgelibService;
 import com.scp.service.oa.*;
 import com.scp.service.price.*;
 import com.scp.service.salesmgr.BlackListService;
@@ -425,28 +421,10 @@ public class ServiceContext {
     // OA------end-------------------
 
     @Resource
-    public CarTypeMgrService carTypeMgrService;
-
-    @Resource
-    public CarMgrService carMgrService;
-
-    @Resource
-    public DriverMgrService driverMgrService;
-
-    @Resource
-    public CarOilRecordMgrService carOilRecordMgrService;
-
-    @Resource
-    public CarRepaireRecordMgrService carRepaireRecordMgrService;
-
-    @Resource
     public BusContainerMgrService busContainerMgrService;
 
     @Resource
     public SysEmailTemplateService sysEmailTemplateService;
-
-    @Resource
-    public SysKnowledgelibService sysKnowledgelibService;
 
     @Resource
     public LinecodeMgrService linecodeMgrService;
@@ -486,12 +464,6 @@ public class ServiceContext {
 
     @Resource
     public WebPagesService webPagesService;
-
-    @Resource
-    public BusGpsRefService busGpsRefService;
-
-    @Resource
-    public BusGpsService busGpsService;
 
     @Resource
     public BusTrainBillMgrService busTrainBillMgrService;
