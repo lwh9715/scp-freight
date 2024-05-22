@@ -47,23 +47,8 @@
 						<ajax:submitAction id="wxbindtimeraction" jsvar="wxbindtimeraction" />
 
 						<div style="width: 100%; height: 100%;" class="banner">
-						<div class="login-aside" style="left: 26%; width:750px; height:300px; margin-top: 150px;">
-							<table>
-							  <tr>
-							    <td width="1" valign="top"><div id="ad" style="position:absolute; width:750px; height:100px;font-size: 18px;color:black;font-weight: bolder;filter: Glow(Color=#6b8ec6, Strength=6) Shadow(Color=#6633ff, Direction=90) Blur(Add=#00CCFF Direction=270, Strength=10);">
-									<ul class="line" style="width: 100%;">
-									    <li style="margin-top: 0px; "><label id="table1">为货运代理公司量身定制，专业、易用、简单、高效</label></li>
-									    <li style="margin-top: 0px; "><label id="table2">功能模块:海运空运，结算管理，财务管理，统计分析等</label></li>
-									    <li style="margin-top: 0px; "><label id="table3">三位一体:网站，微信，内部管理</label></li>
-									    <li style="margin-top: 0px; "><label id="table4">服务平台:运价查询，在线订舱，补料，对账单，跟踪</label></li>
-									</ul>
-							    </div></td>
-							    </tr>
-							</table>
-						</div>
-
                             <div class="login-aside"
-                                 style="left: 70%;width: 360px;height: 450px">
+                                 style="left: 50%;width: 360px;height: 450px">
                                 <div id="o-box-up" style="width: 360px;height: 450px"></div>
                                 <div id="o-box-down" style="table-layout: fixed;padding: 30px 20px;">
                                     <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
@@ -162,33 +147,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <span style="display: block; margin-top: 54px; margin-left: -800px;">
-                                                <ul style="display: block; margin-top: 4px;">
-                                                    <b> <label id="versionLabel">版本号：</label> </b>
-                                                    <a href="javascript:void(0)"
-                                                       onclick="upglogsJsVar.setValue('');upgWindowJsVar.show();">#{login_new.loginBean.cfgDataMap['Cli_Version']}</a>
-                                                </ul>
-                                                <ul style="display: block; margin-top: 4px;">
-                                                    <b> <label id="serviceLabel">服务号：</label> </b>
-                                                    <a href="javascript:void(0)"
-                                                       onclick="upglogsJsVar.setValue('');upgWindowJsVar.show();">#{login_new.loginBean.cfgDataMap['CSNO']}</a>
-                                                </ul>
-                                                <ul style="display: block; margin-top: 4px;">
-                                                    <b> <label id="dateLabel">更新日期：</label> </b>
-                                                    <a href="javascript:void(0)"
-                                                       onclick="useronlineWindow.show();$('#useronlineFrame').attr('src','/scp/login_new/useronline.xhtml');">#{login_new.loginBean.cfgDataMap['Version']}</a>
-                                                </ul>
-                                                <ul style="display: block; margin-top: 4px;">
-                                                    <b> <label id="remoteLabel">远程协助：</label> </b>
-                                                    <a href="http://ufms.cn/AnyDesk.exe">AnyDesk</a>
-                                                </ul>
-						                    </span>
                                 </div>
                                 <div style="height: 95px; display: block; margin-left: -800px;">
-                                    <img alt="logo" id="logo" src="#{login_new.loginBean.logo}"
-                                         style="vertical-align:middle;"
-                                         height="200px"/>
-                                    <span id="companyName" style="">#{constantBean.headTitle}</span>
+                                    <span id="companyName" style=""></span>
                                 </div>
                             </div>
 
@@ -350,7 +311,7 @@
 			}
 			refreshWxbindcode();
 		});
-		
+
 		var cdn = 'http://res.ufms.cn:8989/scp/';
 
 		function startBg(){
