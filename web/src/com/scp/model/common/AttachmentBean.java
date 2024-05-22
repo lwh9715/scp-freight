@@ -31,7 +31,6 @@ import org.operamasks.org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.operamasks.org.apache.commons.fileupload.util.Streams;
 
 import com.scp.base.CommonComBoxBean;
-import com.scp.model.finance.FinaJobs;
 import com.scp.model.sys.SysAttachment;
 import com.scp.util.AppUtils;
 import com.scp.util.ConfigUtils;
@@ -235,21 +234,6 @@ public class AttachmentBean extends GridFormView {
 			m.put("bpmlinkid", bpmlinkid);
 		}
 		
-		FinaJobs finajob = null;
-		try{
-			finajob = serviceContext.jobsMgrService.finaJobsDao.findById(Long.parseLong(linkid));
-		}catch(Exception e){
-			finajob = null;
-		}
-		String customssql="";
-		if(finajob!=null){
-			if("S".equals(finajob.getJobtype())){
-				//neo 20210924 海运工作单能看到关联SO管理下面的SO附件
-				customssql = "\nUNION (SELECT b.id FROM bus_ship_booking b WHERE b.isdelete = FALSE AND b.isdelete = FALSE AND b.jobid = "+linkid + ")";
-			}
-			
-			m.put("customssql", customssql);
-		}
 		//neo 20190103 附件按组权限过滤
 		if("Y".equals(ConfigUtils.findSysCfgVal("attachment_filterby_role"))){
 			String filter = 

@@ -4,29 +4,17 @@ import com.scp.dao.DaoIbatisTemplate;
 import com.scp.dao.DaoIbatisTemplateMySql;
 import com.scp.dao.cache.CommonDBCache;
 import com.scp.service.api.*;
-import com.scp.service.bpm.*;
 import com.scp.service.bus.*;
 import com.scp.service.carmgr.*;
 import com.scp.service.common.AttachmentService;
 import com.scp.service.customer.*;
 import com.scp.service.data.*;
-import com.scp.service.del.DelLoadMgrService;
-import com.scp.service.del.DelLoaddtlMgrService;
-import com.scp.service.del.DeliveryMgrService;
-import com.scp.service.del.DeliverydtlMgrService;
 import com.scp.service.elogistics.data.ChannelService;
 import com.scp.service.elogistics.data.ElogisticsService;
-import com.scp.service.finance.*;
-import com.scp.service.finance.cash.FsBankMgrService;
-import com.scp.service.finance.cash.FsCashMgrService;
-import com.scp.service.finance.doc.VchMgrService;
-import com.scp.service.finance.doc.VchdtlMgrService;
-import com.scp.service.finance.initcfg.*;
 import com.scp.service.gps.BusGpsRefService;
 import com.scp.service.gps.BusGpsService;
 import com.scp.service.knowledge.SysKnowledgelibService;
 import com.scp.service.oa.*;
-import com.scp.service.order.BusOrderMgrService;
 import com.scp.service.price.*;
 import com.scp.service.salesmgr.BlackListService;
 import com.scp.service.ship.*;
@@ -62,10 +50,6 @@ public class ServiceContext {
     public DaoIbatisTemplateMySql daoIbatisTemplateMySql;
 
     // date------start-------------------
-
-    @Resource
-    public AcctRpMgrService acctRpMgrService;
-
     @Resource
     public LineMgrService lineMgrService;
 
@@ -97,54 +81,14 @@ public class ServiceContext {
     public UnitMgrService unitMgrService;
 
     @Resource
-    public WarehouseareaMgrService warehouseareaMgrService;
-
-    @Resource
-    public WarehouselocalMgrService warehouselocalMgrService;
-
-    @Resource
-    public WarehouseMgrService warehouseMgrService;
-
-    @Resource
     public FeeItemMgrService feeItemMgrService;
 
 
     @Resource
     public PackageMgrService packageMgrService;
 
-
     @Resource
     public FiledataMgrService filedataMgrService;
-
-
-    // bpm------start-------------------
-    @Resource
-    public BpmTaskService bpmTaskService;
-
-    @Resource
-    public BpmProcessinstanceService bpmProcessinstanceService;
-
-    @Resource
-    public BpmProcessService bpmProcessService;
-
-    @Resource
-    public BpmTraceService bpmTraceService;
-
-    @Resource
-    public BpmAssignService bpmAssignService;
-
-    @Resource
-    public BpmAssignRefService bpmAssignRefService;
-
-    @Resource
-    public BpmWorkItemService bpmWorkItemService;
-
-    @Resource
-    public BpmProcessinsVarService bpmProcessinsVarService;
-
-    @Resource
-    public BpmCommentsTempService bpmCommentsTempService;
-
 
     // bus------start-------------------
     @Resource
@@ -220,9 +164,6 @@ public class ServiceContext {
     public RegisterService registerService;
 
     @Resource
-    public SysEmailService sysEmailService;
-
-    @Resource
     public SysAttachmentService sysAttachmentService;
 
     @Resource
@@ -270,143 +211,18 @@ public class ServiceContext {
     @Resource
     public SysCorporationService sysCorporationService;
 
-
     @Resource
     public SysFormdefService sysFormdefService;
 
     @Resource
     public SysformcfgService sysformcfgService;
 
-    // finace------start-------------------
-    @Resource
-    public ArapMgrService arapMgrService;
-
-
-    @Resource
-    public AgenBillMgrService agenBillMgrService;
-
-    @Resource
-    public AgenBilldtlMgrService agenBilldtlMgrService;
-
-    @Resource
-    public ActPayRecService actPayRecService;
-
-    @Resource
-    public BillMgrService billMgrService;
-
-    @Resource
-    public InvoiceMgrService invoiceMgrService;
-
-
-    @Resource
-    public StatementMgrService statementMgrService;
-
-    @Resource
-    public RpReqMgrService reqMgrService;
-
-    @Resource
-    public VchtypeMgrService vchtypeMgrService;
-
-    @Resource
-    public VchdescMgrService vchdescMgrService;
-
     @Resource
     public AttachmentService attachmentService;
-
-
-    //--ff begin
-
-//	@Resource
-//	public RuntimeContext runtimeContext;
-//	
-//	//@Resource
-//	public ModelMgrService modelMgrService(){;
-//		return (ModelMgrService) AppUtils.getBeanFromSpringIoc("modelMgrService");
-//	}
-//	
-////	@Resource
-//	public TFfAssignService tFfAssignService(){;
-//		return (TFfAssignService) AppUtils.getBeanFromSpringIoc("tFfAssignService");
-//	}
-//	
-////	@Resource
-//	public TFfAssignTempService tFfAssignTempService(){;
-//		return (TFfAssignTempService) AppUtils.getBeanFromSpringIoc("tFfAssignTempService");
-//	}
-//	
-////	@Resource
-//	public TFfProcessRefService tFfProcessRefService(){;
-//		return (TFfProcessRefService) AppUtils.getBeanFromSpringIoc("tFfProcessRefService");
-//	}
-//	
-//	//@Resource
-//	public TFfRtTaskinstanceDescMgrService tFfRtTaskinstanceDescMgrService(){;
-//		return (TFfRtTaskinstanceDescMgrService) AppUtils.getBeanFromSpringIoc("tFfRtTaskinstanceDescMgrService");
-//	}
-//	
-    //--ff end
-
-
-    //--finance begin
-
-    @Resource
-    public SubjectMgrService subjectMgrService;
-    //--end
-
-    //finance fs begin
-    @Resource
-    public AccountSetMgrService accountsetMgrService;
-
-    @Resource
-    public AstMgrService astMgrService;
-
-    @Resource
-    public ArapSubjectMgrService arapSubjectMgrService;
-
-
-    @Resource
-    public ActperiodMgrService actperiodMgrService;
-
-    @Resource
-    public ActrateMgrService actrateMgrService;
-
-    @Resource
-    public VchMgrService vchMgrService;
-
-    @Resource
-    public VchdtlMgrService vchdtlMgrService;
-
-    @Resource
-    public FsAstMgrService fsAstMgrService;
-
-    @Resource
-    public FsCashMgrService fsCashMgrService;
-
-    @Resource
-    public FsBankMgrService fsBankMgrService;
-
-    @Resource
-    public FsAstrefMgrService fsAstrefMgrService;
-
-    @Resource
-    public PeriodXrateService periodXrateService;
-
-    @Resource
-    public JobsMgrService jobsMgrService;
-
-    @Resource
-    public FsConfigRpMgrService fsConfigRpMgrService;
-    @Resource
-    public FsConfigShareMgrService fsConfigShareMgrService;
-
 
     //ship
     @Resource
     public BusShipContainerMgrService busShipContainerMgrService;
-
-    @Resource
-    public BusShipBillMgrService busShipBillMgrService;
-
     @Resource
     public BusShippingMgrService busShippingMgrService;
 
@@ -441,17 +257,10 @@ public class ServiceContext {
     public BusBookingMgrService busBookingMgrService;
 
     @Resource
-    public FeeTemplateMgrService feeTemplateMgrService;
-
-    @Resource
     public BusShipCostdtlMgrService busShipCostdtlMgrService;
 
     @Resource
     public BusShipCostMgrService busShipCostMgrService;
-
-    @Resource
-    public CostMgrService costMgrService;
-
 
     @Resource
     public BusGoodstrackMgrService busGoodstrackMgrService;
@@ -492,15 +301,6 @@ public class ServiceContext {
 
     @Resource
     public PriceGroupService priceGroupService;
-
-    @Resource
-    public BusOrderMgrService busOrderMgrService;
-
-    @Resource
-    public FinaBillCntdtlMgrService finaBillCntdtlMgrService;
-
-    @Resource
-    public FinaPrepaidMgrService finaPrepaidMgrService;
 
     // OA------start-------------------
 //	@Resource
@@ -624,22 +424,6 @@ public class ServiceContext {
     }
     // OA------end-------------------
 
-
-    // del------begin-------------------
-    @Resource
-    public DelLoadMgrService delLoadMgrService;
-
-    @Resource
-    public DelLoaddtlMgrService delLoaddtlMgrService;
-
-
-    @Resource
-    public DeliveryMgrService deliveryMgrService;
-
-    @Resource
-    public DeliverydtlMgrService deliverydtlMgrService;
-    // del------end-------------------
-
     @Resource
     public CarTypeMgrService carTypeMgrService;
 
@@ -660,9 +444,6 @@ public class ServiceContext {
 
     @Resource
     public SysEmailTemplateService sysEmailTemplateService;
-
-    @Resource
-    public FinaConfigarapService finaConfigarapService;
 
     @Resource
     public SysKnowledgelibService sysKnowledgelibService;

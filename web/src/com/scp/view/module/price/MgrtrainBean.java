@@ -336,14 +336,7 @@ public class MgrtrainBean extends EditGridFormView{
 			}
 			this.pkVal = Long.parseLong(pkid);
 			doServiceFindData();
-			
-			if(this.selectedRowData.getWmsid() != null){
-				DatWarehouse datWarehouse = serviceContext.warehouseMgrService.datWarehouseDao.findById(this.selectedRowData.getWmsid());
-				if(datWarehouse != null){
-					this.warehouse = datWarehouse.getNamec();
-				}
-			}
-			
+
 			this.refreshForm();
 			Browser.execClientScript("initFlexVal()");
 			if(editWindow != null)editWindow.show();

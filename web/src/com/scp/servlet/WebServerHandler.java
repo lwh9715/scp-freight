@@ -43,10 +43,6 @@ import com.scp.dao.sys.SysLogDao;
 import com.scp.exception.CommonRuntimeException;
 import com.scp.exception.MoreThanOneRowException;
 import com.scp.exception.NoRowException;
-import com.scp.model.bpm.BpmAssign;
-import com.scp.model.bpm.BpmProcess;
-import com.scp.model.bpm.BpmTask;
-import com.scp.model.finance.FinaJobs;
 import com.scp.model.sys.SysAttachment;
 import com.scp.model.sys.SysCorporation;
 import com.scp.model.sys.SysLog;
@@ -63,8 +59,6 @@ import com.scp.util.SaasUtil;
 import com.scp.util.StrUtils;
 
 public class WebServerHandler {
-	
-//	protected transient RuntimeContext workflowRuntimeContext = null;
 	
 	@Resource
 	public DaoIbatisTemplate daoIbatisTemplate;
@@ -221,50 +215,7 @@ public class WebServerHandler {
 
 			
 		}else if("commonQueryByXmldash".equals(action)){
-//			daoIbatisTemplate = (DaoIbatisTemplate) AppUtils.getBeanFromSpringIoc("daoIbatisTemplate");
-//			String ret = "";
-//			String sqlId = request.getParameter("sqlId");
-//			String qry = request.getParameter("qry");
-//			Map parameter = new HashMap();
-//			parameter.put("qry", qry);
-//			List<Map> list = daoIbatisTemplate.getSqlMapClientTemplate().queryForList(sqlId, parameter);
-//			workflowRuntimeContext = (RuntimeContext) AppUtils.getBeanFromSpringIoc("runtimeContext");
-//			Map map = list.get(0);
-//			if(map != null && map.containsKey("json")&&map.get("json")!=null){
-//				ret = map.get("json").toString();
-//				try {
-//					//查找对应任务的URL
-//					List<Map> convertList = JSONUtil.convertList(ret);
-//					for(int i=0;i<convertList.size();i++){
-////						//System.out.println(convertList.get(i).get("id"));
-//						IWorkflowSession wflsession = workflowRuntimeContext.getWorkflowSession();
-//						IWorkItem wi = wflsession.findWorkItemById(convertList.get(i).get("id").toString());
-//						Task task = wi.getTaskInstance().getTask();
-//						if (task!=null&&wi != null && wi.getState() == IWorkItem.RUNNING) {
-//							// 如果是运行状态，返回编辑界面
-//							String formUri = ((FormTask) task).getEditForm().getUri();
-//							formUri = formUri.replace("faces", "xhtml");
-//							if (StrUtils.isMobileNO(formUri)) {
-//								// 这种一般是指 那中国批量完成,不需要人工手动参与的活动 ,不设置打开页面
-//							} else if (formUri.equals("none")) {
-//								
-//							} else {
-//								convertList.get(i).put("formUri", formUri);
-//							}
-//						} 
-//					}
-//					String str = convertList.toString();
-//					Gson gson = new Gson();
-//					ret = gson.toJson(convertList);
-//				} catch (UnsupportedEncodingException e) {
-//					e.printStackTrace();
-//				} catch (EngineException e) {
-//					e.printStackTrace();
-//				}
-//			}else {
-//				ret = "{\"label\": \"\"}";
-//			}
-//			return ret;
+
 		}else if("commonQueryByXmldashbpm".equals(action)){
 			daoIbatisTemplate = (DaoIbatisTemplate) AppUtils.getBeanFromSpringIoc("daoIbatisTemplate");
 			String ret = "";
@@ -279,36 +230,6 @@ public class WebServerHandler {
 			Map map = list.get(0);
 			if(map != null && map.containsKey("json")&&map.get("json")!=null){
 				ret = map.get("json").toString();
-				try {
-					//查找对应任务的URL
-					List<Map> convertList = JSONUtil.convertList(ret);
-					for(int i=0;i<convertList.size();i++){
-						String str = convertList.get(i).get("id").toString();
-						long taskid = new Double(Double.parseDouble(str)).longValue();
-						BpmTask bpmTask = serviceContext.bpmTaskService.bpmTaskDao.findById(taskid);
-						BpmProcess bpmProcess = serviceContext.bpmProcessService.bpmProcessDao.findById(bpmTask.getProcessid());
-						List<BpmAssign> lists = serviceContext.bpmAssignService.bpmAssignDao.findAllByClauseWhere("process_id = '"+bpmProcess.getId()+"' AND taskname = '"+bpmTask.getTaskname()+"'");
-						if(lists != null && lists.size() > 0){
-							String url = lists.get(0).getUrl();
-							if(!StrUtils.isNull(url)){
-								if(url.indexOf("?")>0){
-									convertList.get(i).put("formUri", url+"&p="+bpmTask.getProcessinstanceid());
-								}else{
-									convertList.get(i).put("formUri", url+"?p="+bpmTask.getProcessinstanceid());
-								}
-							}else{
-								convertList.get(i).put("formUri", "/scp/bpm/bpmtasktodoprocess.xhtml?m=bpm.bpmdesignerBean."+bpmProcess.getCode()+"&p="+bpmTask.getProcessinstanceid());
-							}
-						}else{
-							convertList.get(i).put("formUri", "/scp/bpm/bpmtasktodoprocess.xhtml?m=bpm.bpmdesignerBean."+bpmProcess.getCode()+"&p="+bpmTask.getProcessinstanceid());
-						}
-					} 
-					String str = convertList.toString();
-					Gson gson = new Gson();
-					ret = gson.toJson(convertList);
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
 			}else {
 				ret = "{\"label\": \"\"}";
 			}
@@ -626,121 +547,7 @@ public class WebServerHandler {
 				}
 			}
 		}
-
-		//PDFUtil.parsePdf(file2local,linkid,roleid);
-
-//	}else if("getHead".equals(action)){
-//		return getHead(request);
-	}else if("sameJobsUploadsByfilename".equals(action)){//多工作单批量上传
-			String userid2 = request.getParameter("userid");
-			File file2local = null;
-			ServletFileUpload upload = new ServletFileUpload();
-			InputStream stream = null;
-			BufferedInputStream bis = null;
-			BufferedOutputStream bos = null;
-			serviceContext = (ServiceContext) AppUtils.getBeanFromSpringIoc("serviceContext");
-			try {
-				if (ServletFileUpload.isMultipartContent(request)) {
-					FileItemIterator iter = upload.getItemIterator(request);
-					StringBuffer stringBuffer = new StringBuffer();
-					String originalFileName = "";
-					while (iter.hasNext()) {
-						FileItemStream item = iter.next();
-						stream = item.openStream();
-						if (!item.isFormField()) {
-							try {
-								// 上传文件
-								File file = new File(item.getName());
-								String orFileName = file.getName();
-								originalFileName = orFileName;
-								SysUser sysUser = serviceContext.userMgrService.sysUserDao.findById(Long.valueOf(userid2));
-								String serverName = request.getContextPath().replace("/", "");
-								String path = AppUtils.getWebApplicationPath() + File.separator + "upload";
-								FileOperationUtil.newFolder(path);
-
-								path += File.separator + serverName;
-								FileOperationUtil.newFolder(path);
-								path += File.separator + "attachfile" + File.separator;
-								FileOperationUtil.newFolder(path);
-
-								String filenamestr = orFileName.trim();
-								filenamestr = filenamestr.substring(0, filenamestr.lastIndexOf("."));
-								String thisnos = filenamestr.split("-")[0].trim();
-								FinaJobs finaJobs = serviceContext.jobsMgrService.finaJobsDao.findOneRowByClauseWhere("isdelete = false AND nos = '"+thisnos +"'");
-								String linkid = String.valueOf(finaJobs.getId());
-								String rolename = filenamestr.split("-")[1].trim();
-								String sql = "SELECT id FROM sys_role where name='"+rolename+"' AND isdelete = FALSE AND roletype = 'F' LIMIT 1";
-								Map map = serviceContext.daoIbatisTemplate.queryWithUserDefineSql4OnwRow(sql);
-								String roleid = StrUtils.getMapVal(map, "id");
-
-
-								// 复制文件到指定路径
-								String fileNameNew = linkid + originalFileName;
-								file2local = new File(path + fileNameNew);
-								bis = new BufferedInputStream(stream);
-								bos = new BufferedOutputStream(new FileOutputStream(file2local));
-								long fileSize = 0l;
-								fileSize = Streams.copy(bis, bos, true);
-
-
-								List<SysAttachment> oldlist = this.serviceContext.attachmentService.sysAttachmentDao.findAllByClauseWhere("isdelete = false and linkid = " + linkid + "AND filename = '" + originalFileName + "'");
-								SysAttachment sysAttachment = new SysAttachment();
-								if (oldlist == null || oldlist.size() == 0) {
-								} else {
-									sysAttachment.setId(oldlist.get(0).getId());
-								}
-								sysAttachment.setLinkid(Long.valueOf(linkid));
-								sysAttachment.setContenttype(item.getContentType());
-								sysAttachment.setFilename(originalFileName);
-								sysAttachment.setRoleid(Long.valueOf(roleid));
-								sysAttachment.setFilesize(new BigDecimal(fileSize));
-								sysAttachment.setIsdelete(false);
-								//系统设置中开启后，so上传按不同船公司格式提取数据更新到海运委托表中，主要是船名航次，so，etd cls等信息
-								if ("Y".equals(ConfigUtils.findSysCfgVal("sys_attachment_so_autogetdata"))) {
-									PDFUtil.parsePdf(file2local, linkid, roleid, sysAttachment, new SysLog());
-								}
-								this.serviceContext.attachmentService.saveData(sysAttachment);
-
-								String sql111 = "UPDATE sys_attachment set inputer = '" + sysUser.getCode() + "' ,inputtime=now()  WHERE id = " + sysAttachment.getId();
-								this.serviceContext.attachmentService.sysAttachmentDao.executeSQL(sql111);
-							} catch (Exception e) {
-								stringBuffer.append(originalFileName).append("   ");
-							}
-						}
-					}
-					if (stringBuffer.length() == 0) {
-						resp.getWriter().write("{\"code\":\"true\"}");
-					} else {
-						resp.getWriter().write("{\"code\":\"false\",\"message\":\"" + stringBuffer.toString() + "\"}");
-					}
-				}
-			} catch (FileUploadException e) {
-				result = "ERROR";
-				e.printStackTrace();
-			}catch (Exception e) {
-				result = "ERROR";
-				e.printStackTrace();
-			} finally {
-				if (stream != null) {
-					try {
-						stream.close();
-					} catch (Exception e) {
-					}
-				}
-				if (bis != null) {
-					try {
-						bis.close();
-					} catch (Exception e) {
-					}
-				}
-				if (bos != null) {
-					try {
-						bos.close();
-					} catch (Exception e) {
-					}
-				}
-			}
-		}else if("templateUploads".equals(action)){//上传提单图片
+	}else if("templateUploads".equals(action)){//上传提单图片
 			String filename = request.getParameter("filename");//文件名
 			File file2local = null;
 			ServletFileUpload upload = new ServletFileUpload();
@@ -1285,21 +1092,7 @@ public class WebServerHandler {
 			return msg;
 	    }
 	
-	
-	/*
-	 * sqlId 对应ibatis-servlet中的id
-	 * $.ajax({
-			type:'POST',
-			url:'/scp/service?src=webServer&action=commonQueryByXml&sqlId=servlet.web.ff.dayRrportInfo.grid.page',
-			data:{stratdate:stratdate,enddate:enddate},
-			contentType:'application/json',
-			success:function(data){
-				if(data == null || data == "")return;
-				if(typeof(data)==="string"){
-					data = JSON.parse(data);
-				}
-	 * 
-	 */
+
 	private String commonQueryByXml(HttpServletRequest request) {
 		daoIbatisTemplate = (DaoIbatisTemplate) AppUtils.getBeanFromSpringIoc("daoIbatisTemplate");
 		String ret = "";
@@ -1326,12 +1119,6 @@ public class WebServerHandler {
 		String corpidop2 = StrUtils.isNull(request.getParameter("corpidop2"))?null:request.getParameter("corpidop2");
 		String id = request.getParameter("id");
 		String sql = "UPDATE fina_jobs SET corpidop2 ="+corpidop2+" WHERE isdelete =FALSE AND id="+id;
-		try {
-			serviceContext.jobsMgrService.daoIbatisTemplate.updateWithUserDefineSql(sql);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "0";
-		}
 		return "1";
 	}
 
@@ -1515,14 +1302,6 @@ public class WebServerHandler {
 		String piece = "";
 		String xaingzisql = "";
 
-		FinaJobs finaJobs = serviceContext.jobsMgrService.finaJobsDao.findById(Long.valueOf(jobid));
-		if ("A".equals(finaJobs.getJobtype())) {
-			xaingzisql = "select sum(COALESCE(1,0)) as allpiece, sum(COALESCE(grswgt,0)) as allgrswgt, sum(COALESCE(cbm,0)) as allcbm, sum(COALESCE(chargeweight,0)) as allchargeweight" +
-					" from bus_goods where isdelete = false and linkid =(select id from bus_air where isdelete =false and jobid=" + jobid + ")";
-		} else {
-			xaingzisql = "select sum(COALESCE(1,0)) as allpiece, sum(COALESCE(grswgt,0)) as allgrswgt, sum(COALESCE(cbm,0)) as allcbm" +
-					" from bus_ship_container where isdelete = false and parentid is null and jobid =" + jobid;
-		}
 		Map<String, String> result1 = serviceContext.daoIbatisTemplate.queryWithUserDefineSql4OnwRow(xaingzisql.toString());
 		if ("箱".equals(unit)) {
 			piece = String.valueOf(result1.get("allpiece"));

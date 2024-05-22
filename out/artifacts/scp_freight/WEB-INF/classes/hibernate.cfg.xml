@@ -60,8 +60,7 @@
   	<mapping class="com.scp.model.sys.SysCorporationApplyMonth"/>
   	
   	<mapping class="com.scp.model.sys.SysCorpvisit" />
-  	<!-- <mapping class="com.scp.model.sys.SysBusinessunit" /> -->
-  	
+
 	<mapping class="com.scp.model.sys.SysUserAssign" />
 	<mapping class="com.scp.model.sys.SysUserCorplink" />
 	
@@ -89,8 +88,6 @@
 
 
   	<mapping class="com.scp.model.data.DatUnit" />
-  	<mapping class="com.scp.model.data.DatBank" />
-  	<mapping class="com.scp.model.data.DatWarehouse" />
   	<mapping class="com.scp.model.data.DatGoodstrack" />
   	<mapping class="com.scp.model.data.DatGoodstype" />
   	<mapping class="com.scp.model.data.DatProduct" />
@@ -101,9 +98,6 @@
   	<mapping class="com.scp.model.data.DatGoods" />
   	<mapping class="com.scp.model.data.DatCurrency" />
   	<mapping class="com.scp.model.data.DatExchangerate" />
-  	<mapping class="com.scp.model.data.DatAccount" />
-  	<mapping class="com.scp.model.data.DatWarehouseLoc" />
-  	<mapping class="com.scp.model.data.DatWarehouseArea" />
   	<mapping class="com.scp.model.data.DatPort" />
 
   	<mapping class="com.scp.model.data.DatCartype" />
@@ -118,33 +112,10 @@
   	<mapping class="com.scp.model.data.Hscode" />
   	
 
-  	<mapping class="com.scp.model.finance.FinaJobs" />
   	<mapping class="com.scp.model.finance.FinaActpayrecdtl" />
-  	<mapping class="com.scp.model.finance.FinaDocnum" />
-  	<mapping class="com.scp.model.finance.FinaArap" />
-  	
-  	<mapping class="com.scp.model.finance.FinaPrepaid" />
-  	<mapping class="com.scp.model.finance.FinaPrepaidLink" />
-  	<mapping class="com.scp.model.finance.FinaPrepaidSum" />
 
   	<mapping class="com.scp.model.finance.FinaActpayrec" />
   	<mapping class="com.scp.model.finance.FinaActpayrecSum" />
-  	<mapping class="com.scp.model.finance.FinaInvoice" />
-  	<mapping class="com.scp.model.finance.FinaInvoiceDtl" />
-  	<mapping class="com.scp.model.finance.FinaBill" />
-  	<mapping class="com.scp.model.finance.FinaDoc" />
-  	<mapping class="com.scp.model.finance.FinaDocdtl" />
-
-  	<mapping class="com.scp.model.finance.FinaStatement" />
-  	<mapping class="com.scp.model.finance.FinaRpreqdtl" />
-  	<mapping class="com.scp.model.finance.FinaRpreq" />
-  	
-  	<mapping class="com.scp.model.finance.FinaJobsLink" />
-  	<mapping class="com.scp.model.finance.FinaArapTemplet" />
-  	<mapping class="com.scp.model.finance.FinaArapTempdtl" />
-  	<mapping class="com.scp.model.finance.FinaAgenBill" />
-  	<mapping class="com.scp.model.finance.FinaAgenBilldtl" />
-  	<mapping class="com.scp.model.finance.FinaBillCntdtl" />
 
   	<mapping class="com.scp.model.finance.fs.FsAct" />
   	<mapping class="com.scp.model.finance.fs.FsPeriod" />
@@ -240,30 +211,13 @@
 	<mapping class="com.scp.model.oa.OaSalaryTable" />
 	<mapping class="com.scp.model.oa.OaSalaryDouble" />
 	<mapping class="com.scp.model.oa.OaSalaryWelfare" />
-	
-	<mapping class="com.scp.model.del.DelLoad" />
-  	<mapping class="com.scp.model.del.DelLoadtl" />
-  	<mapping class="com.scp.model.del.DelDelivery" />
-  	<mapping class="com.scp.model.del.DelDeliverydtl" />
   	
   	<mapping class="com.scp.model.car.CarRepaireRecord" />
   	<mapping class="com.scp.model.car.CarOliRecord" />
   	<mapping class="com.scp.model.ship.BusPacklist" />
   	<mapping class="com.scp.model.sys.SysEmailTemplate" />
-  	<mapping class="com.scp.model.finance.FinaConfigarap" />
   	<mapping class="com.scp.model.knowledge.SysKnowledgelib" />
-  	
-  	<mapping class="com.scp.model.bpm.BpmTask" />
-  	<mapping class="com.scp.model.bpm.BpmProcessinstance" />
-  	<mapping class="com.scp.model.bpm.BpmProcess" />
-  	<mapping class="com.scp.model.bpm.BpmTrace" />
-  	<mapping class="com.scp.model.bpm.BpmAssign" />
-  	<mapping class="com.scp.model.bpm.BpmAssignRef" />
-  	<mapping class="com.scp.model.bpm.BpmWorkItem" />
-  	<mapping class="com.scp.model.bpm.BpmProcessinsVar" />
-  	<mapping class="com.scp.model.bpm.BpmCommentsTemp" />
-  	
-  	
+
   	<mapping class="com.scp.model.ship.BusFreightCharge" />
   	
   	<mapping class="com.scp.model.website.WebNews" />

@@ -112,13 +112,6 @@ public class ModRoleBean extends GridSelectView {
 							" THEN (SELECT (SELECT id FROM sys_user WHERE code = sr.code LIMIT 1) FROM sys_role sr " +
 							" WHERE sr.id = " + roleid + " LIMIT 1) ELSE " + roleid + " END) as id;";
 					Map usermap = this.serviceContext.daoIbatisTemplate.queryWithUserDefineSql4OnwRow(srsql);
-
-					if (usermap.get("id") != null) {
-						String sql2 = "SELECT f_auto_optrace('jobid=" + usermap.get("id") + ";linkid=0;usr=" + AppUtils.getUserSession().getUsername() +
-								";tbl=sys_modinrole;col=moduleid;vnew=" + treeNode.getName() +
-								";remarks=新增授权：" + treeNode.getName() + "');";
-						serviceContext.jobsMgrService.finaJobsDao.executeQuery(sql2);
-					}
 				}
 			}
 		}

@@ -51,17 +51,6 @@ public class LockReportServerHandler {
 		if(!Boolean.parseBoolean(ConfigUtils.findUserCfgVal("bill_export_lock", Long.parseLong(userid)))){
 			return "''";
 		}
-		try {
-			String username = serviceContext.userMgrService.sysUserDao.findById(Long.parseLong(userid)).getNamec();
-			String sql = "UPDATE fina_bill SET isconfirm = TRUE,confirmer='"+username+"',confirmdate='"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime())+"' WHERE isdelete = FALSE AND id = "+StrUtils.getSqlFormat(reportid);
-			serviceContext.billMgrService.finaBillDao.executeSQL(sql);
-		} catch (NoRowException e) {
-			
-		} catch (NullPointerException e) {
-			
-		} catch (Exception e) {
-			
-		}
 		return "''";
 	}
 	

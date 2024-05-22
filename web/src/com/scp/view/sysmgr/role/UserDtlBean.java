@@ -72,13 +72,6 @@ public class UserDtlBean extends GridView {
 		for (String userid : ids) {
 			String atsql = "SELECT EXISTS(SELECT 1 FROM sys_userinrole WHERE userid = " + userid + " AND roleid = " + roleid + " AND isdelete = false) as auth";
 			Map map = this.serviceContext.daoIbatisTemplate.queryWithUserDefineSql4OnwRow(atsql);
-			if ("false".equals(map.get("auth").toString())) {
-				String atsql2 = "SELECT name FROM sys_role WHERE id = " + roleid + " AND isdelete = false LIMIT 1;";
-				Map map2 = this.serviceContext.daoIbatisTemplate.queryWithUserDefineSql4OnwRow(atsql2);
-				String sql2 = "SELECT f_auto_optrace('jobid=" + userid + ";linkid=0;usr=" + AppUtils.getUserSession().getUsername() +
-						";tbl=sys_userinrole;col=roleid;vnew=" + map2.get("name").toString() + ";remarks=新增授权：" + map2.get("name").toString() + "');";
-				serviceContext.jobsMgrService.finaJobsDao.executeQuery(sql2);
-			}
 		}
 
 		roleMgrService.saveRoleUserSelect(roleid , ids);
