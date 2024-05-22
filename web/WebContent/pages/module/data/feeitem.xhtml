@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading...">
+		<ajax:conversationActivator/>
+		<layout:borderLayout fitToBody="true">
+			<layout:panel id="gridPanel" jsvar="gridPanelJsvar" region="center" height="100%" split="true"
+				fit="true" hideBorders="true">
+				<div style="height: 0px;"><ui:include src="/common/gridpage.xhtml" /></div>
+				<ajax:submitAction id="checkRepeatAjaxSubmit" jsvar="checkRepeatAjaxSubmit" />
+				<w:form>
+					<div style="height: 0px;"></div>
+					<layout:panelGrid columns="2">
+						<w:toolBar>
+							<w:button id="qryRefresh" label="#{l.m['刷新']}"
+								image="#{constantBean.contextPath}/images/refresh.png" />
+							<w:button id="add" value="#{l.m['新增']}"
+								image="#{constantBean.contextPath}/images/new.png" />
+							<w:button id="join" value="#{l.m['合并']}"
+								onclick="return confirm('#{l.m['合并后将无法分离，确定要合并吗?']}');"
+								image="#{constantBean.contextPath}/images/refresh.png" />
+							<w:button id="deleter" label="#{l.m['删除']}"
+								onclick="return confirm('#{l.m['确定要删除吗?']}');"
+								image="#{constantBean.contextPath}/images/delete.png" />
+							<w:button id="isext" value="#{l.m['设为额外费用']}"
+								image="#{constantBean.contextPath}/images/save.png" />
+						</w:toolBar>
+						<layout:cell>
+							<ajax:status startStyle="color: red"
+								onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+								onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+								<f:facet name="start">
+									<f:verbatim>
+										<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 20px;">Loading...</img>
+									</f:verbatim>
+								</f:facet>
+							</ajax:status>
+						</layout:cell>
+					</layout:panelGrid>
+
+					<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+						<layout:cell style="width: 25px;">
+							<w:button id="clearQryKey" label="" width="25"
+								image="#{constantBean.contextPath}/images/clear.png" />
+						</layout:cell>
+						<w:textField selectOnFocus="true" width="120"
+							value="#{pages.module.data.feeitemBean.qryMap['code']}" />
+						<w:textField selectOnFocus="true" width="108"
+							value="#{pages.module.data.feeitemBean.qryMap['name']}" />
+						<w:textField selectOnFocus="true" width="101"
+							value="#{pages.module.data.feeitemBean.qryMap['namee']}" />
+						<w:combo width="80" forceSelection="true"
+							value="#{pages.module.data.feeitemBean.qryMap['ispublic$']}">
+							<f:selectItem itemValue="" itemLabel="Y/N" />
+							<f:selectItem itemValue="true" itemLabel="Y" />
+							<f:selectItem itemValue="false" itemLabel="N" />
+						</w:combo>
+						<w:combo width="80" forceSelection="true"
+							value="#{pages.module.data.feeitemBean.qryMap['isshipping$']}">
+							<f:selectItem itemValue="" itemLabel="Y/N" />
+							<f:selectItem itemValue="true" itemLabel="Y" />
+							<f:selectItem itemValue="false" itemLabel="N" />
+						</w:combo>
+						<w:combo width="80" forceSelection="true"
+							value="#{pages.module.data.feeitemBean.qryMap['isext$']}">
+							<f:selectItem itemValue="" itemLabel="Y/N" />
+							<f:selectItem itemValue="true" itemLabel="Y" />
+							<f:selectItem itemValue="false" itemLabel="N" />
+						</w:combo>
+						<!--<w:textField selectOnFocus="true" width="140"
+							value="#{pages.module.data.feeitemBean.qryMap['joiniddesc']}" />
+						--><w:button id="refresh" value="#{l.m['查询']}"
+							image="#{constantBean.contextPath}/images/query-small.png" />
+					</layout:panelGrid>
+
+					<w:dataGrid height="700" paged="true" rows="30" id="grid" jsvar="gridJsvar" onrowselect="return false" onrowdeselect ="return false"
+						toolBarPosition="bottom" idColumn="id" selectable="true" selectionModel="#{constantBean.checkBox}"
+						>
+						<w:outputColumn id="id" header="ID" hidden="true" />
+						<w:outputColumn id="jointype" header="jointype" hidden="true" />
+
+						<w:outputColumn header="#{l.m['代码']}" id="code" width="120" clientFormatter="formatcode" sortable="true"/>
+						<w:outputColumn header="#{l.m['名称']}(CN)" id="name" width="100" clientFormatter="formatcode" sortable="true"/>
+						<w:outputColumn header="#{l.m['名称']}(EN)" id="namee" width="100" clientFormatter="formatcode" sortable="true"/>
+						<w:outputColumn header="#{l.m['币制']}" id="currency" width="100" clientFormatter="formatcode" sortable="true"/>
+<!--						<w:outputColumn header="#{l.m['单位']}" id="unit" width="100" clientFormatter="formatcode" sortable="true"/>-->
+						<w:outputColumn header="#{l.m['BMS编码']}" id="feeitemcode" width="100" clientFormatter="formatcode" sortable="true"/>
+						<w:outputColumn header="#{l.m['BMS类型']}" id="feeitemtype" width="100" clientFormatter="formatcode" sortable="true"/>
+						<!--<w:outputColumn header="#{l.m['合并到']}" id="joiniddesc" width="140" />
+						-->
+						<w:outputColumn header="#{l.m['公共']}" id="ispublic" width="80" type="check" sortable="true" align="center" />
+						<!--<w:outputColumn header="#{l.m['仓储']}" id="iswarehouse" width="80" type="check" align="center" />
+						-->
+						<w:outputColumn header="#{l.m['海运']}" id="isshipping" width="80" type="check" sortable="true" align="center" />
+						<w:outputColumn header="#{l.m['空运']}" id="isair" width="80" type="check" sortable="true" align="center" />
+						<w:outputColumn header="#{l.m['额外费用']}" id="isext" width="80" type="check" sortable="true" align="center" />
+						<w:outputColumn header="#{l.m['隐藏费用']}" id="ishidden" width="80" type="check" sortable="true" align="center" />
+						<w:outputColumn header="#{l.m['录入人']}" id="inputername" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['录入时间']}" id="inputtime" width="90" sortable="true">
+							<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" />
+						</w:outputColumn>
+						<w:outputColumn header="#{l.m['修改人']}" id="updatername" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['修改时间']}" id="updatetime" width="90" sortable="true">
+							<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" />
+						</w:outputColumn>
+						<w:outputColumn id="corpid" header="corpid" hidden="true" />
+					</w:dataGrid>
+					
+				</w:form>
+			</layout:panel>
+		</layout:borderLayout>
+	</w:page>
+
+	<layout:window maximizable="true" id="editWindow" width="360" height="300" header="false"
+			resizable="true" constrainHeader="true">
+			<layout:panel id="editPanel" region="west" title="" height="180" hideBorders="true"
+				style="font-size:12px" width="300">
+				<w:form>
+					<w:toolBar>
+						<w:button id="add" value="#{l.m['新增']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+						<w:button id="del" label="#{l.m['删除']}" onclick="return confirm('#{l.m['确定要删除吗?']}');"
+							image="#{constantBean.contextPath}/images/delete.png" />
+						<w:button id="save" value="#{l.m['保存']}" onclick="return ifsave();"
+							image="#{constantBean.contextPath}/images/save.png" />
+
+					</w:toolBar>
+					<layout:panelGrid columns="2" cellspacing="5px" width="300" style="font-size:12px">
+						<h:outputLabel value="#{l.m['代码']}" />
+						<w:textField id="code" selectOnFocus="true" style="background-color: #FFFFC7;background-image:none;" jsvar="codejs"
+							value="#{pages.module.data.feeitemBean.selectedRowData.code}" width="200" maxLength="50"  onblur="repeat('code')"  />
+						<h:outputLabel value="#{l.m['名称']}(CN)" />
+						<w:textField selectOnFocus="true" style="background-color: #FFFFC7;background-image:none;" jsvar="namejs"
+							value="#{pages.module.data.feeitemBean.selectedRowData.name}" width="200" maxLength="50" />
+						<h:outputLabel value="#{l.m['名称']}(EN)" />
+						<w:textField selectOnFocus="true" style="background-color: #FFFFC7;background-image:none;" jsvar="nameejs"
+							value="#{pages.module.data.feeitemBean.selectedRowData.namee}" width="200" maxLength="50" />
+						<h:outputLabel value="#{l.m['币制']}" />
+						<w:combo value="#{pages.module.data.feeitemBean.selectedRowData.currency}" width="100" forceSelection="true">
+							<f:selectItems value="#{comboxBean.currency}" />
+						</w:combo>
+						<h:outputLabel value="#{l.m['单位']}" />
+						<w:combo value="#{pages.module.data.feeitemBean.selectedRowData.unit}" width="100" forceSelection="true">
+							<f:selectItems value="#{comboxBean.unit}" />
+						</w:combo>
+
+						<h:outputLabel value="#{l.m['BMS编码']}" />
+						<w:textField selectOnFocus="true" style="background-color: #FFFFC7;background-image:none;" 
+							value="#{pages.module.data.feeitemBean.selectedRowData.freightcode}" width="200" maxLength="50" />
+						<h:outputLabel value="#{l.m['BMS类型']}" />
+						<w:textField selectOnFocus="true" style="background-color: #FFFFC7;background-image:none;"
+							value="#{pages.module.data.feeitemBean.selectedRowData.freighttype}" width="200" maxLength="50" />
+						<layout:panelGrid columns="1">
+							<w:checkBox boxLabel="#{l.m['公共']}"
+								value="#{pages.module.data.feeitemBean.selectedRowData.ispublic}"></w:checkBox>
+							<!--<w:checkBox boxLabel="#{l.m['仓储']}"
+								value="#{pages.module.data.feeitemBean.selectedRowData.iswarehouse}"></w:checkBox>
+							--><w:checkBox boxLabel="#{l.m['海运']}"
+								value="#{pages.module.data.feeitemBean.selectedRowData.isshipping}"></w:checkBox>
+							<w:checkBox boxLabel="#{l.m['空运']}"
+								value="#{pages.module.data.feeitemBean.selectedRowData.isair}"></w:checkBox>
+							<w:checkBox boxLabel="#{l.m['额外费用']}"
+								value="#{pages.module.data.feeitemBean.selectedRowData.isext}"></w:checkBox>
+							<w:checkBox boxLabel="#{l.m['隐藏费用']}"
+								value="#{pages.module.data.feeitemBean.selectedRowData.ishidden}"></w:checkBox>
+						</layout:panelGrid>
+					</layout:panelGrid>
+					<w:textField selectOnFocus="true" id="pkVal" hidden="true" />
+				</w:form>
+			</layout:panel>
+	</layout:window>
+
+	<layout:window maximizable="false" id="join2Window" jsvar="join2Window" width="350" height="150"
+		header="false" resizable="true" constrainHeader="true">
+		<layout:panel id="panel" height="100%" hideBorders="true" width="100%" fit="true">
+			<w:form>
+				<w:toolBar>
+					<w:button id="joinConfirm" value="#{l.m['合并']}"
+						onclick="return confirm('#{l.m['合并后将无法分离，确定要合并吗?']}');"
+						image="#{constantBean.contextPath}/images/save.png" />
+					<w:button id="linkConfirm" value="#{l.m['关联']}"
+						image="#{constantBean.contextPath}/images/save.png" />
+				</w:toolBar>
+				<layout:panelGrid columns="2">
+					<h:outputLabel value="#{l.m['合并到']}" />
+					<w:combo typeAhead="true" width="200" listWidth="600" id="join2Feeitemid">
+						<f:selectItems value="#{pages.module.data.feeitemBean.join2Feeitem}" />
+					</w:combo>
+				</layout:panelGrid>
+				<h:outputLabel value="提示：合并后原记录不可选，关联的原记录不变" style="font-size: 18px;color: red;" />
+			</w:form>
+		</layout:panel>
+	</layout:window>
+
+
+	<script>
+	//<![CDATA[
+	
+		function formatcode(v,m,r) {
+		  	var jointype = r.get('jointype');
+			if(jointype == 'J') {
+	   			m.attr="style='text-decoration: line-through; color: #ff0000; font-size: 9pt;'";
+			}else if(jointype == 'L'){
+				m.attr="style='text-decoration:underline; color: #ff0000; font-size: 9pt;'";
+	   		}else{
+			}		
+	        return v;
+	    }
+    
+		function resize(){
+			var newHeight = (gridPanelJsvar.getSize().height) - 55;
+			var newWidth = (gridPanelJsvar.getSize().width);
+			gridJsvar.setHeight(newHeight);
+			gridJsvar.setWidth(newWidth);
+			gridJsvar.render();
+		}
+		
+		function ifsave(){
+			if(codejs.getValue() == "" || codejs.getValue() == null){
+				alert('#{l.m['代码必填']}')
+				return false;
+			}
+			if(namejs.getValue() == ""||namejs.getValue() == null){
+				alert('#{l.m['中文名必填']}')
+				return false;
+			}
+			
+			
+			if(nameejs.getValue() == ""||nameejs.getValue() == null){
+				alert('#{l.m['英文名必填']}')
+				return false;
+			}
+			return true;
+		}
+
+	function repeat(repeatType) {
+		var name;
+		var value;
+		if (repeatType == "code") {
+			var codevalue = codejs.getValue();
+			codevalue = codevalue.trim();
+			name = "code";
+			value = codevalue;
+			codejs.setValue(codevalue);
+			if (codevalue == "") return;
+		}
+		checkRepeatAjaxSubmit.addParam('value', value);
+		checkRepeatAjaxSubmit.addParam('name', name);
+		checkRepeatAjaxSubmit.submit();
+	}
+	
+		Ext.onReady(function(){
+			resize();
+			Ext.EventManager.onWindowResize(function(){
+				resize();
+			});
+		 });
+		 //]]>
+	</script>
+
+</f:view>

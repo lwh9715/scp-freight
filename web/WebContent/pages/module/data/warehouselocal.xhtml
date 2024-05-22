@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="#{l.m['储位管理']}">
+		<ajax:conversationActivator/>
+		<layout:borderLayout fitToBody="true" fit="true">
+			<layout:panel region="center" height="100%" split="true" fit="true" id="listPanel"
+				jsvar="listPanelJsvar">
+				<w:form id="local">
+					<div style="height: 0px; display: none;"><ajax:submitAction id="showLocalDtlAction"
+						jsvar="showLocalDtlAction" /></div>
+					<layout:panelGrid columns="2" style="font-size:12px">
+						<layout:panelGrid columns="6" style="font-size:12px">
+							<f:verbatim>仓库：</f:verbatim>
+							<w:combo id="wareHouseCombo" width="180" listWidth="180" emptyText="--#{l.m['请选择仓库']}--"
+								typeAhead="true" onselect="wareHouseChanged();" jsvar="wareHouseComboJsVar">
+								<f:selectItems value="#{comboxBean.warehouse}" />
+							</w:combo>
+
+							<h:outputLabel value="#{l.m['区域']}:" />
+							<w:combo immediate="true" id="wareHouseAreaCombo" width="180" listWidth="180"
+								emptyText="--#{l.m['区域']}--" editable="false" onselect="wareHouseAreaChanged()"
+								jsvar="wareHouseAreaComboJsVar">
+								<f:selectItems id="wareHouseAreaComboItems" />
+							</w:combo>
+							<w:button id="queryB" label="#{l.m['刷新']}" onclick="queryBtn.submit()" alwaysSubmit="false"
+								 image="#{constantBean.contextPath}/pages/common/resources/images/find.png" />
+						</layout:panelGrid>
+						<ajax:status startStyle="color: red" style="width:80px;font-size: 12px;"
+							onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+							onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+							<f:facet name="start">
+								<f:verbatim>
+									<img src="#{constantBean.contextPath}/pages/common/resources/images/indicator.gif" /> Loading...</f:verbatim>
+							</f:facet>
+						</ajax:status>
+					</layout:panelGrid>
+					
+					<w:textField id="areaId" hidden="true"/>
+					<w:textField id="warehouseid" hidden="true" jsvar="warehouseidJsvar"/>
+					<ajax:submitAction id="changeWareHouse" jsvar="changeWareHouse" />
+					<ajax:submitAction id="changeArea" jsvar="changeArea" />
+					<ajax:submitAction id="queryBtn" jsvar="queryBtn" />
+				</w:form>
+				<w:dataGrid id="grid" jsvar="gridJsvar" width="900" height="400">
+					</w:dataGrid>
+			</layout:panel>
+		</layout:borderLayout>
+
+		<layout:window title="#{l.m['储位明细']}" id="dtlDialog" width="650" height="410" resizable="false" y="20"
+			modal="false" constrainHeader="true">
+			<w:iframe style="width: 100%; height: 100%;" frameborder="no" id="dtlIFrame" name="dtlIFrame" />
+		</layout:window>
+
+
+	</w:page>
+	<script>
+                //<![CDATA[
+                function formatChange(v, m){
+	            	if(v==''){
+	            		return '';
+	            	}else{
+	            		var key = "'"+v+"'"; 
+	            		m.attr="style='background-color: skyblue;cursor:hand;text-decoration: underline;'";
+	            		var temp = '<a onclick="showLocalDtl(' + key + ' , 1);">' + v + '</a>';
+	            		return temp;   //查看
+	            	}
+	            }
+	            
+        
+		        function showLocalDtl(v , isShow) {
+		        	//alert(v);
+			    	showLocalDtlAction.addParam("code",v);
+       				showLocalDtlAction.addParam("isShow",isShow);
+	    			showLocalDtlAction.submit();
+			    }    
+	    
+                function wareHouseChanged() {
+                	var warehouseid = wareHouseComboJsVar.getValue();
+                	//alert(warehouseid);
+                	warehouseidJsvar.setValue(warehouseid);
+	                changeWareHouse.addParam('warehouseid', warehouseid);
+	                changeWareHouse.submit();
+            	}
+
+                function wareHouseAreaChanged() {
+                	changeArea.addParam('areaid', wareHouseAreaComboJsVar.getValue());
+	                changeArea.submit();
+            	}
+                function autoResizeGrid(){	 	   		
+		 		    var newHeight = listPanelJsvar.getSize().height - 20;            		
+	           	    gridJsvar.setHeight(parseInt(newHeight));
+	           		var newWidth = (listPanelJsvar.getSize().width); 
+					gridJsvar.setWidth(parseInt(newWidth)); 
+		 	    }
+	 	   
+			    Ext.onReady(function(){
+		 	   		autoResizeGrid();
+	           		Ext.EventManager.onWindowResize(function(){
+	           			autoResizeGrid();
+	           		});
+		        });                    
+            	
+            //]]>
+        </script>
+
+</f:view>

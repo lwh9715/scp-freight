@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading...">
+		<ajax:conversationActivator/>
+		<layout:borderLayout fitToBody="true">
+
+			<layout:panel id="gridPanel" jsvar="gridPanelJsvar" height="100%" split="true" fit="true"
+				title="" hideBorders="true" region="center">
+				<div style="height: 0px;"><ui:include src="/common/gridpage.xhtml" /></div>
+				<w:form>
+					<w:toolBar>
+						<w:button id="qryRefresh" label="#{l.m['刷新']}"
+							image="#{constantBean.contextPath}/images/refresh.png" />
+						<w:button id="add" value="#{l.m['新增']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+						<w:button value="#{l.m['关联']}" onclick="linkWindowJsVar.show()"
+							image="#{constantBean.contextPath}/images/new.png" />
+						<w:button id="deleter" label="#{l.m['删除']}"
+							onclick="return confirm('#{l.m['确定要删除吗?']}');"
+							image="#{constantBean.contextPath}/images/delete.png" />
+						<w:button id="showKnowledgeBase" value="#{l.m['知识库']}"
+									image="#{constantBean.contextPath}/main/img/qimochuli.png" />
+						<w:button id="batchModify" label="#{l.m['批量修改']}"
+								image="#{constantBean.contextPath}/pages/module/common/resources/images/editcut.png" />
+						
+					</w:toolBar>
+					<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+						<layout:cell style="width: 25px;">
+							<w:button id="clearQryKey" label="" width="25"
+								image="#{constantBean.contextPath}/images/clear.png" />
+						</layout:cell>
+						<w:textField selectOnFocus="true" width="60" emptyText="#{l.m['代码']}"
+							value="#{pages.module.data.portBean.qryMap['code']}" />
+						<w:textField selectOnFocus="true" width="80" emptyText="#{l.m['中文名']}"
+							value="#{pages.module.data.portBean.qryMap['namec']}" />
+						<w:textField selectOnFocus="true" width="80" emptyText="#{l.m['英文名']}"
+							value="#{pages.module.data.portBean.qryMap['namee']}" />
+						<w:textField selectOnFocus="true" width="80" emptyText="#{l.m['国家']}"
+							value="#{pages.module.data.portBean.qryMap['country']}" />
+						<w:textField selectOnFocus="true" width="80" emptyText="#{l.m['省份']}"
+							value="#{pages.module.data.portBean.qryMap['province']}" />
+						<w:textField selectOnFocus="true" width="80" emptyText="#{l.m['城市']}"
+							value="#{pages.module.data.portBean.qryMap['city']}" />
+						<w:textField selectOnFocus="true" width="80" emptyText="#{l.m['航线']}"
+							value="#{pages.module.data.portBean.qryMap['line']}" />
+						<w:textField selectOnFocus="true" width="80" emptyText="#{l.m['关联']}"
+							value="#{pages.module.data.portBean.qryMap['link']}" />
+						<w:checkBox id="isship" boxLabel="#{l.m['海港']}" />
+						<w:checkBox id="isair" boxLabel="#{l.m['空港']}" />
+						<w:checkBox id="ispol" boxLabel="#{l.m['起运港']}" />
+						<w:checkBox id="ispod" boxLabel="#{l.m['目的港']}" />
+						<w:checkBox id="isbarge" boxLabel="#{l.m['收货地(驳船港)']}" />
+						<w:checkBox id="istrain" boxLabel="#{l.m['铁运']}" />
+						
+							
+						<w:button id="refresh" value="#{l.m['查询']}"
+							image="#{constantBean.contextPath}/images/query-small.png" />
+						<layout:cell>
+							<ajax:status startStyle="color: red"
+								onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+								onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+								<f:facet name="start">
+									<f:verbatim>
+										<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 18px;"></img>
+									</f:verbatim>
+								</f:facet>
+							</ajax:status>
+						</layout:cell>
+					</layout:panelGrid>
+
+					<w:dataGrid height="700" paged="true" rows="#{pages.module.data.portBean.gridPageSize}" id="grid" jsvar="gridJsvar"
+						toolBarPosition="bottom" idColumn="id" selectable="true" selectionModel="#{constantBean.checkBox}" onrowselect="return false" onrowdeselect="return false">
+						<w:outputColumn id="id" header="ID" hidden="true" />
+						<w:outputColumn header="#{l.m['代码']}" id="code" width="60" sortable="true"/>
+						<w:outputColumn header="#{l.m['中文名']}" id="namec" width="80" sortable="true"/>
+						<w:outputColumn header="#{l.m['英文名']}" id="namee" width="80" sortable="true"/>
+						<w:outputColumn header="#{l.m['国家']}" id="country" width="80" sortable="true"/>
+						<w:outputColumn header="#{l.m['省份']}" id="province" width="80" sortable="true"/>
+						<w:outputColumn header="#{l.m['城市']}" id="city" width="80" sortable="true"/>
+						<w:outputColumn header="#{l.m['航线']}" id="line" width="80" sortable="true"/>
+						<w:outputColumn header="#{l.m['关联']}" id="link" width="80" sortable="true"/>
+						<w:outputColumn header="#{l.m['海港']}" id="isship" width="80" type="check" sortable="true"/>
+						<w:outputColumn header="#{l.m['空港']}" id="isair" width="80" type="check" sortable="true"/>
+						<w:outputColumn header="#{l.m['铁运']}" id="istrain" width="80" type="check" sortable="true"/>
+						<w:outputColumn header="#{l.m['起运港']}" id="ispol" width="80" type="check" sortable="true"/>
+						<w:outputColumn header="#{l.m['目的港']}" id="ispod" width="80" type="check" sortable="true"/>
+						<w:outputColumn header="#{l.m['卸货港']}" id="ispdd" width="80" type="check" sortable="true"/>
+						<w:outputColumn header="#{l.m['目的地']}" id="isdestination" width="80" type="check" sortable="true"/>
+						<w:outputColumn header="#{l.m['收货地(驳船港)']}" id="isbarge" width="100" type="check" sortable="true"/>
+						<w:outputColumn header="#{l.m['排序']}" id="orderno" width="80" sortable="true"/>
+						<w:outputColumn header="#{l.m['有效']}" id="isvalid" width="80" type="check" sortable="true"/>
+
+						<w:outputColumn header="#{l.m['录入人']}" id="inputername" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['录入时间']}" id="inputtime" width="90" sortable="true" >
+							<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" />
+						</w:outputColumn>
+						<w:outputColumn header="#{l.m['修改人']}" id="updatername" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['修改时间']}" id="updatetime" width="90" sortable="true">
+							<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" />
+						</w:outputColumn>
+					</w:dataGrid>
+				</w:form>
+			</layout:panel>
+		</layout:borderLayout>
+	</w:page>
+	
+	<layout:window maximizable="true" id="editWindow" width="580" height="700" header="false"
+			resizable="true" constrainHeader="true">
+				<layout:panel id="editPanel" height="700" region="north" hideBorders="true" style="font-size:12px"
+					width="560">
+					<w:form>
+						<w:toolBar>
+							<w:button id="add" value="#{l.m['新增']}"
+								image="#{constantBean.contextPath}/images/new.png" />
+							<w:button id="del" label="#{l.m['删除']}" onclick="return confirm('#{l.m['确定要删除吗?']}');"
+								image="#{constantBean.contextPath}/images/delete.png" />
+							<w:button id="save" value="#{l.m['保存']}" onclick="return ifsave();"
+								image="#{constantBean.contextPath}/images/save.png" />
+	
+						</w:toolBar>
+						<layout:panelGrid columns="4" cellspacing="5px" width="400" style="font-size:12px">
+							<h:outputLabel value="#{l.m['代码']}" />
+							<w:textField selectOnFocus="true" value="#{pages.module.data.portBean.selectedRowData.code}"
+								width="200" maxLength="50" style="background-color: #FFFFC7;background-image:none;" jsvar="codejs"/>
+							<h:outputLabel value="#{l.m['海港']}" />
+							<w:checkBox value="#{pages.module.data.portBean.selectedRowData.isship}"></w:checkBox>
+							<h:outputLabel value="#{l.m['中文名']}" />
+							<w:textField selectOnFocus="true" value="#{pages.module.data.portBean.selectedRowData.namec}"
+								width="200" maxLength="50" style="background-color: #FFFFC7;background-image:none;" jsvar="namecjs"/>
+							<h:outputLabel value="#{l.m['空港']}" />
+							<w:checkBox value="#{pages.module.data.portBean.selectedRowData.isair}"></w:checkBox>
+							<h:outputLabel value="#{l.m['英文名']}" />
+							<w:textField selectOnFocus="true" value="#{pages.module.data.portBean.selectedRowData.namee}"
+								width="200" maxLength="50" style="background-color: #FFFFC7;background-image:none;" jsvar="nameejs"/>
+							<h:outputLabel value="#{l.m['起运港']}" />
+							<w:checkBox value="#{pages.module.data.portBean.selectedRowData.ispol}"></w:checkBox>
+
+							<h:outputLabel value="#{l.m['国家']}" />
+							<w:combo selectOnFocus="true" forceSelection="true" value="#{pages.module.data.portBean.selectedRowData.country}"
+									 width="200" maxLength="50" jsvar="countryJsvar">
+								<f:selectItems value="#{comboxBean.countrync}" />
+							</w:combo>
+
+							<h:outputLabel value="#{l.m['目的港']}" />
+							<w:checkBox value="#{pages.module.data.portBean.selectedRowData.ispod}"></w:checkBox>
+							<h:outputLabel value="#{l.m['省份']}" />
+							<w:combo selectOnFocus="true" value="#{pages.module.data.portBean.selectedRowData.province}"
+								width="200" maxLength="50" jsvar="provinceJsvar">
+								<f:selectItem itemLabel="#{l.m['北京']}" itemValue="北京"/>
+								<f:selectItem itemLabel="#{l.m['上海']}" itemValue="上海"/>
+								<f:selectItem itemLabel="#{l.m['天津']}" itemValue="天津"/>
+								<f:selectItem itemLabel="#{l.m['重庆']}" itemValue="重庆"/>
+								<f:selectItem itemLabel="#{l.m['黑龙江']}" itemValue="黑龙江"/>
+								<f:selectItem itemLabel="#{l.m['吉林']}" itemValue="吉林"/>
+								<f:selectItem itemLabel="#{l.m['辽宁']}" itemValue="辽宁"/>
+								<f:selectItem itemLabel="#{l.m['内蒙古']}" itemValue="内蒙古"/>
+								<f:selectItem itemLabel="#{l.m['河北']}" itemValue="河北"/>
+								<f:selectItem itemLabel="#{l.m['河南']}" itemValue="河南"/>
+								<f:selectItem itemLabel="#{l.m['山东']}" itemValue="山东"/>
+								<f:selectItem itemLabel="#{l.m['山西']}" itemValue="山西"/>
+								<f:selectItem itemLabel="#{l.m['江苏']}" itemValue="江苏"/>
+								<f:selectItem itemLabel="#{l.m['安徽']}" itemValue="安徽"/>
+								<f:selectItem itemLabel="#{l.m['陕西']}" itemValue="陕西"/>
+								<f:selectItem itemLabel="#{l.m['宁夏']}" itemValue="宁夏"/>
+								<f:selectItem itemLabel="#{l.m['甘肃']}" itemValue="甘肃"/>
+								<f:selectItem itemLabel="#{l.m['青海']}" itemValue="青海"/>
+								<f:selectItem itemLabel="#{l.m['湖北']}" itemValue="湖北"/>
+								<f:selectItem itemLabel="#{l.m['湖南']}" itemValue="湖南"/>
+								<f:selectItem itemLabel="#{l.m['浙江']}" itemValue="浙江"/>
+								<f:selectItem itemLabel="#{l.m['江西']}" itemValue="江西"/>
+								<f:selectItem itemLabel="#{l.m['福建']}" itemValue="福建"/>
+								<f:selectItem itemLabel="#{l.m['贵州']}" itemValue="贵州"/>
+								<f:selectItem itemLabel="#{l.m['四川']}" itemValue="四川"/>
+								<f:selectItem itemLabel="#{l.m['广东']}" itemValue="广东"/>
+								<f:selectItem itemLabel="#{l.m['广西']}" itemValue="广西"/>
+								<f:selectItem itemLabel="#{l.m['云南']}" itemValue="云南"/>
+								<f:selectItem itemLabel="#{l.m['海南']}" itemValue="海南"/>
+								<f:selectItem itemLabel="#{l.m['新疆']}" itemValue="新疆"/>
+								<f:selectItem itemLabel="#{l.m['西藏']}" itemValue="西藏"/>
+								<f:selectItem itemLabel="#{l.m['香港']}" itemValue="香港"/>
+								<f:selectItem itemLabel="#{l.m['澳门']}" itemValue="澳门"/>
+								<f:selectItem itemLabel="#{l.m['台湾']}" itemValue="台湾"/>
+							</w:combo>
+							<h:outputLabel value="#{l.m['卸货港']}" />
+							<w:checkBox value="#{pages.module.data.portBean.selectedRowData.ispdd}"></w:checkBox>
+							<h:outputLabel value="#{l.m['城市']}" />
+							<w:textField selectOnFocus="true" value="#{pages.module.data.portBean.selectedRowData.city}"
+								width="200" maxLength="50" />
+							<h:outputLabel value="#{l.m['有效']}" />
+							<w:checkBox value="#{pages.module.data.portBean.selectedRowData.isvalid}"></w:checkBox>
+							<h:outputLabel value="#{l.m['航线']}" />
+							<w:combo selectOnFocus="true" forceSelection="true" value="#{pages.module.data.portBean.selectedRowData.line}"
+								width="200" maxLength="50" jsvar="lineJsvar">
+								<f:selectItems value="#{comboxBean.lineAll}" />
+							</w:combo>
+							<h:outputLabel value="#{l.m['目的地']}" />
+							<w:checkBox value="#{pages.module.data.portBean.selectedRowData.isdestination}"></w:checkBox>
+							<h:outputLabel value="#{l.m['二级航线']}" />
+							<w:combo selectOnFocus="true" forceSelection="true" value="#{pages.module.data.portBean.selectedRowData.line2}"
+								width="200" maxLength="50" jsvar="line2Jsvar">
+								<f:selectItems value="#{comboxBean.line}" />
+							</w:combo>
+							<h:outputLabel value="#{l.m['收货地(驳船港)']}" />
+							<w:checkBox value="#{pages.module.data.portBean.selectedRowData.isbarge}"></w:checkBox>
+							<h:outputLabel value="#{l.m['关联']}" />
+							<w:combo  width="200" listWidth="300"
+								value="#{pages.module.data.portBean.selectedRowData.link}">
+								<f:selectItems value="#{comboxBean.pol}" />
+							</w:combo>
+							<h:outputLabel value="#{l.m['铁运']}" />
+							<w:checkBox value="#{pages.module.data.portBean.selectedRowData.istrain}"></w:checkBox>
+							
+						</layout:panelGrid>
+						<layout:panelGrid columns="2">
+							<h:outputLabel value="#{l.m['排序']}" />
+							<w:numberField selectOnFocus="true"
+								value="#{pages.module.data.portBean.selectedRowData.orderno}" width="200" maxLength="50" />
+						</layout:panelGrid>
+						<w:textField selectOnFocus="true" id="pkVal" hidden="true" />
+						<h:outputLabel value="EDI-Mapping" style="font-weight: bold;" ></h:outputLabel>
+						<layout:panelGrid columns="1" border="0" frame="none" >
+							<w:iframe style="border: thin;" frameborder="yes"  width="557" height="402" id="edi_mapping" ></w:iframe>
+						</layout:panelGrid>
+					</w:form>
+				</layout:panel>
+	</layout:window>
+	
+	<layout:window maximizable="true" id="knowledgeBaseWindow" width="800" height="800" header="false"
+		resizable="true" constrainHeader="true">
+				<w:iframe id="knowledgeBaseIframe" style="border: thin;width: 100%;height: 100%" border="0">
+				</w:iframe>
+	</layout:window>
+	
+	<layout:window maximizable="true" id="linkWindow" jsvar="linkWindowJsVar" width="377" height="367" header="false"
+			resizable="true" constrainHeader="true">
+				<layout:panel id="linkPanel" hideBorders="true" style="font-size:12px">
+					<w:form>
+						<layout:panelGrid columns="4" cellspacing="5px" width="400" style="font-size:12px">
+							<h:outputLabel value="#{l.m['关联']}" />
+							<w:combo width="200" listWidth="300" id="linkBatch">
+								<f:selectItems value="#{comboxBean.pol}" />
+							</w:combo>
+						</layout:panelGrid>
+						
+						<w:button id="saveLink" value="#{l.m['保存']}" image="#{constantBean.contextPath}/images/save.png" />
+					</w:form>
+				</layout:panel>
+	</layout:window>
+	
+	
+	<layout:window maximizable="false" id="showbatchupdateWindow" width="280" height="410"
+		header="false" resizable="true" title="#{l.m['批量修改']}" constrainHeader="true" jsvar="showbatchupdateWindowJs">
+		<layout:panel id="" height="100%" hideBorders="true" width="100%" fit="true">
+			<w:form>
+				<w:toolBar>
+					<w:button id="portChanged" value="#{l.m['保存']}" allowReEnter="true"
+							image="#{constantBean.contextPath}/images/save.png"/>
+				</w:toolBar>
+				<layout:panelGrid columns="2" width="250" style="font-size:12px">
+
+					<h:outputLabel value="#{l.m['国家']}" />
+					<w:combo selectOnFocus="true" forceSelection="true"  width="100" maxLength="50"  id="country" jsvar="countryJs">
+						<f:selectItems value="#{comboxBean.countrync}" />
+					</w:combo>
+
+					<h:outputLabel value="#{l.m['省份']}" />
+						<w:combo selectOnFocus="true" id="province" width="120" maxLength="50">
+								<f:selectItem itemLabel="#{l.m['北京']}" itemValue="北京"/>
+								<f:selectItem itemLabel="#{l.m['上海']}" itemValue="上海"/>
+								<f:selectItem itemLabel="#{l.m['天津']}" itemValue="天津"/>
+								<f:selectItem itemLabel="#{l.m['重庆']}" itemValue="重庆"/>
+								<f:selectItem itemLabel="#{l.m['黑龙江']}" itemValue="黑龙江"/>
+								<f:selectItem itemLabel="#{l.m['吉林']}" itemValue="吉林"/>
+								<f:selectItem itemLabel="#{l.m['辽宁']}" itemValue="辽宁"/>
+								<f:selectItem itemLabel="#{l.m['内蒙古']}" itemValue="内蒙古"/>
+								<f:selectItem itemLabel="#{l.m['河北']}" itemValue="河北"/>
+								<f:selectItem itemLabel="#{l.m['河南']}" itemValue="河南"/>
+								<f:selectItem itemLabel="#{l.m['山东']}" itemValue="山东"/>
+								<f:selectItem itemLabel="#{l.m['山西']}" itemValue="山西"/>
+								<f:selectItem itemLabel="#{l.m['江苏']}" itemValue="江苏"/>
+								<f:selectItem itemLabel="#{l.m['安徽']}" itemValue="安徽"/>
+								<f:selectItem itemLabel="#{l.m['陕西']}" itemValue="陕西"/>
+								<f:selectItem itemLabel="#{l.m['宁夏']}" itemValue="宁夏"/>
+								<f:selectItem itemLabel="#{l.m['甘肃']}" itemValue="甘肃"/>
+								<f:selectItem itemLabel="#{l.m['青海']}" itemValue="青海"/>
+								<f:selectItem itemLabel="#{l.m['湖北']}" itemValue="湖北"/>
+								<f:selectItem itemLabel="#{l.m['湖南']}" itemValue="湖南"/>
+								<f:selectItem itemLabel="#{l.m['浙江']}" itemValue="浙江"/>
+								<f:selectItem itemLabel="#{l.m['江西']}" itemValue="江西"/>
+								<f:selectItem itemLabel="#{l.m['福建']}" itemValue="福建"/>
+								<f:selectItem itemLabel="#{l.m['贵州']}" itemValue="贵州"/>
+								<f:selectItem itemLabel="#{l.m['四川']}" itemValue="四川"/>
+								<f:selectItem itemLabel="#{l.m['广东']}" itemValue="广东"/>
+								<f:selectItem itemLabel="#{l.m['广西']}" itemValue="广西"/>
+								<f:selectItem itemLabel="#{l.m['云南']}" itemValue="云南"/>
+								<f:selectItem itemLabel="#{l.m['海南']}" itemValue="海南"/>
+								<f:selectItem itemLabel="#{l.m['新疆']}" itemValue="新疆"/>
+								<f:selectItem itemLabel="#{l.m['西藏']}" itemValue="西藏"/>
+								<f:selectItem itemLabel="#{l.m['香港']}" itemValue="香港"/>
+								<f:selectItem itemLabel="#{l.m['澳门']}" itemValue="澳门"/>
+								<f:selectItem itemLabel="#{l.m['台湾']}" itemValue="台湾"/>
+							</w:combo>
+					<h:outputLabel value="#{l.m['城市']}" />
+					<w:textField width="120" id="city" />
+					<h:outputLabel value="#{l.m['航线']}" />
+						<w:combo id="line" selectOnFocus="true" forceSelection="true"
+								width="120" maxLength="50">
+								<f:selectItems value="#{comboxBean.line}" />
+						</w:combo>
+					<w:checkBox id="isshipbatch" boxLabel="#{l.m['海港']}" />
+					<w:checkBox id="isairbatch" boxLabel="#{l.m['空港']}" />
+					<w:checkBox id="ispolbatch" boxLabel="#{l.m['起运港']}" />
+					<w:checkBox id="ispodbatch" boxLabel="#{l.m['目的港']}" />
+					<w:checkBox id="ispddbatch" boxLabel="#{l.m['卸货港']}" />
+					<w:checkBox id="isdestinationbatch" boxLabel="#{l.m['目的地']}" />
+					<w:checkBox id="isbargebatch" boxLabel="#{l.m['收货地(驳船港)']}" />
+				</layout:panelGrid>
+			</w:form>
+		</layout:panel>
+	</layout:window>
+	
+	
+
+
+	<script>
+	//<![CDATA[
+		function resize(){
+			var newHeight = (gridPanelJsvar.getSize().height) - 50;
+			var newWidth = (gridPanelJsvar.getSize().width);
+			gridJsvar.setHeight(newHeight);
+			gridJsvar.setWidth(newWidth);
+			gridJsvar.render();
+		}
+	
+		function ifsave(){
+			if(codejs.getValue() == "" || codejs.getValue() == null){
+				alert("#{l.m['代码必填']}");
+				return false;
+			}
+			if(namecjs.getValue() == ""||namecjs.getValue() == null){
+				alert("#{l.m['中文名必填']}");
+				return false;
+			}
+			
+			
+			if(nameejs.getValue() == ""||nameejs.getValue() == null){
+				alert("#{l.m['英文名必填']}");
+				return false;
+			}
+			
+			if(countryJsvar.getValue() == ""||countryJsvar.getValue() == null){
+				alert("#{l.m['国家必填']}");
+				return false;
+			}
+			
+			if(lineJsvar.getValue() == ""||lineJsvar.getValue() == null){
+				alert("#{l.m['航线必填']}");
+				return false;
+			}
+			return true;
+		}
+	
+		Ext.onReady(function(){
+			resize();
+			Ext.EventManager.onWindowResize(function(){
+				resize();
+			});
+		 });
+		 //]]>
+	</script>
+
+
+</f:view>

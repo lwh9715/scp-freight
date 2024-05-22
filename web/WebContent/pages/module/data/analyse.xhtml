@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<script type="text/javascript" src="/scp/common/js/jquery-2.0.0.min.js"></script>
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+		<link rel="stylesheet" type="text/css" href="/scp/common/css/jquery.flexbox.css" />
+		<script type="text/javascript" src="/scp/common/js/jquery.flexbox.js"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading...">
+		<ajax:conversationActivator/>
+		<layout:borderLayout fitToBody="true">
+
+			<layout:panel id="gridPanel" jsvar="gridPanelJsvar" height="100%" split="true" fit="true"
+				title="" hideBorders="true" region="center">
+				<div style="height: 0px;"><ui:include src="/common/gridpage.xhtml" /></div>
+				<w:form>
+					<w:toolBar>
+						<w:button id="qryRefresh" label="#{l.m['刷新']}"
+							image="#{constantBean.contextPath}/images/refresh.png" />
+						<w:button id="deleter" label="#{l.m['删除']}"
+							onclick="return confirm('#{l.m['确定要删除吗?']}');"
+							image="#{constantBean.contextPath}/images/delete.png" />
+						<w:button id="showCreateJobs" label="#{l.m['生成工作单']}" width="25" 
+									image="#{constantBean.contextPath}/images/new.png" />
+					</w:toolBar>
+					<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+						<layout:cell style="width: 25px;">
+							<w:button id="clearQryKey" label="" width="25"
+								image="#{constantBean.contextPath}/images/clear.png" />
+						</layout:cell>
+						<w:textField selectOnFocus="true" width="80" emptyText="#{l.m['船公司']}"
+							value="#{pages.module.data.analyseBean.qryMap['carrier']}" />
+						<w:textField selectOnFocus="true" width="80" emptyText="#{l.m['起运港']}"
+							value="#{pages.module.data.analyseBean.qryMap['pol']}" />
+						<w:textField selectOnFocus="true" width="80" emptyText="#{l.m['目的港']}"
+							value="#{pages.module.data.analyseBean.qryMap['pod']}" />
+						<w:textField selectOnFocus="true" width="80" emptyText="#{l.m['询盘人']}"
+							value="#{pages.module.data.analyseBean.qryMap['asker']}" />	
+						<w:button id="refresh" value="#{l.m['查询']}"
+							image="#{constantBean.contextPath}/images/query-small.png" />
+						<layout:cell>		
+							<ajax:status startStyle="color: red"
+								onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+								onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+								<f:facet name="start">
+									<f:verbatim>
+										<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 18px;"></img>
+									</f:verbatim>
+								</f:facet>
+							</ajax:status>
+						</layout:cell>
+					</layout:panelGrid>
+
+					<w:dataGrid height="700" paged="true" rows="#{pages.module.data.portBean.gridPageSize}" id="grid" jsvar="gridJsvar"
+						toolBarPosition="bottom" idColumn="id" selectable="true" selectionModel="#{constantBean.checkBox}" onrowselect="return false" onrowdeselect="return false">
+						<w:outputColumn id="id" header="ID" hidden="true" />
+						<w:outputColumn header="#{l.m['起运港']}" id="pol" width="60" sortable="true"/>
+						<w:outputColumn header="#{l.m['目的港']}" id="pod" width="80" sortable="true"/>
+						<w:outputColumn header="#{l.m['船公司']}" id="carrier" width="80" sortable="true"/>
+						<w:outputColumn header="#{l.m['截关日']}" id="cls" width="80" sortable="true"/>
+						<w:outputColumn header="#{l.m['询盘']}20GP" id="cost20" align="right" width="80" sortable="true"/>
+						<w:outputColumn header="#{l.m['询盘']}40GP" id="cost40gp" align="right" width="80" sortable="true"/>
+						<w:outputColumn header="#{l.m['询盘']}40HQ" id="cost40hq" align="right" width="80" sortable="true"/>
+						<w:outputColumn header="#{l.m['询盘']}45HQ" id="cost45hq" align="right" width="80"  sortable="true"/>
+						<w:outputColumn header="#{l.m['询盘人']}" id="asker" width="80"  sortable="true"/>
+						<w:outputColumn header="#{l.m['询盘时间']}" id="asktime" width="110"  sortable="true"/>
+						<w:outputColumn header="#{l.m['备注']}" id="remarks" width="100"  sortable="true"/>
+						<w:outputColumn header="#{l.m['复盘']}20GP" id="resp_cost20" align="right" width="80"  sortable="true"/>
+						<w:outputColumn header="#{l.m['复盘']}40GP" id="resp_cost40gp" align="right" width="80"  sortable="true"/>
+						<w:outputColumn header="#{l.m['复盘']}40HQ" id="resp_cost40hq" align="right" width="80"  sortable="true"/>
+						<w:outputColumn header="#{l.m['复盘']}45HQ" id="resp_cost45hq" align="right" width="80"  sortable="true"/>
+						<w:outputColumn header="#{l.m['复盘人']}" id="resper" width="100"  sortable="true"/>
+						<w:outputColumn header="#{l.m['复盘时间']}" id="resptime" width="80" sortable="true"/>
+						<w:outputColumn header="#{l.m['复盘备注']}" id="resp_remarks" width="100"  sortable="true"/>
+						<w:outputColumn header="#{l.m['录入人']}" id="inputername" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['录入时间']}" id="inputtime" width="90" sortable="true" >
+							<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" />
+						</w:outputColumn>
+						<w:outputColumn header="#{l.m['修改人']}" id="updatername" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['修改时间']}" id="updatetime" width="90" sortable="true">
+							<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" />
+						</w:outputColumn>
+					</w:dataGrid>
+				</w:form>
+			</layout:panel>
+		</layout:borderLayout>
+	</w:page>
+	
+	<layout:window maximizable="true" id="editWindow" width="580" height="300" header="false"
+			resizable="true" constrainHeader="true" title="#{l.m['复盘']}">
+				<layout:panel id="editPanel" height="700" region="north" hideBorders="true" style="font-size:12px"
+					width="560">
+					<w:form>
+						<w:toolBar>
+							<w:button id="del" label="#{l.m['删除']}" onclick="return confirm('#{l.m['确定要删除吗?']}');"
+								image="#{constantBean.contextPath}/images/delete.png" />
+							<w:button id="save" value="#{l.m['保存']}" 
+								image="#{constantBean.contextPath}/images/save.png" />
+						</w:toolBar>
+						<layout:panelGrid columns="4" cellspacing="5px" width="400" style="font-size:12px">
+						<h:outputLabel value="20GP" />
+							<w:numberField selectOnFocus="true" value="#{pages.module.data.analyseBean.selectedRowData.resp_cost20}"
+								width="200" maxLength="50" style="background-color: #FFFFC7;background-image:none;" />
+						
+						<h:outputLabel value="40GP" />
+							<w:numberField selectOnFocus="true" value="#{pages.module.data.analyseBean.selectedRowData.resp_cost40gp}"
+								width="200" maxLength="50" style="background-color: #FFFFC7;background-image:none;" />
+					
+						<h:outputLabel value="40HQ" />
+							<w:numberField selectOnFocus="true" value="#{pages.module.data.analyseBean.selectedRowData.resp_cost40hq}"
+								width="200" maxLength="50" style="background-color: #FFFFC7;background-image:none;" />
+						<h:outputLabel value="45HQ" />
+							<w:numberField selectOnFocus="true" value="#{pages.module.data.analyseBean.selectedRowData.resp_cost45hq}"
+								width="200" maxLength="50" style="background-color: #FFFFC7;background-image:none;" />
+						<h:outputLabel value="#{l.m['备注']}" />
+							<w:textArea  selectOnFocus="true" value="#{pages.module.data.analyseBean.selectedRowData.resp_remarks}"
+								width="200" height="100" style="background-color: #FFFFC7;background-image:none;" />		
+						</layout:panelGrid>
+						<w:textField selectOnFocus="true" id="pkVal" hidden="true" />
+						<layout:panelGrid columns="1" border="0" frame="none" >
+							<w:iframe style="border: thin;" frameborder="yes"  width="557" height="402" id="edi_mapping" ></w:iframe>
+						</layout:panelGrid>
+					</w:form>
+				</layout:panel>
+	</layout:window>
+	
+	<layout:window maximizable="true" id="knowledgeBaseWindow" width="800" height="800" header="false"
+		resizable="true" constrainHeader="true">
+				<w:iframe id="knowledgeBaseIframe" style="border: thin;width: 100%;height: 100%" border="0">
+				</w:iframe>
+	</layout:window>
+	
+	
+	<layout:window id="createJobsWindow" width="455" height="500" maximizable="true" minimizable="true"
+		jsvar="createJobsWindowJsVar" constrainHeader="true" border="false" modal="true"
+		resizable="true">
+			<layout:panel>
+				<w:form>
+				<layout:panelGrid columns="2">
+					<h:outputLabel value="#{l.m['委托人']}" ></h:outputLabel>
+					<layout:cell>
+						<div id="customer" style="background-color: #FFFFC7;background-image:none;"></div>
+						<w:textField width="70" id="customerid" jsvar="customeridJsVar" hidden="true"  alwaysSubmit="true" style="background-color: #FFFFC7;background-image:none;" />
+					</layout:cell>
+				
+					<h:outputLabel value="20'GP" style="width: 140px;font-size: 16px;"/>
+					<layout:cell>
+						<layout:panelGrid columns="3">
+							<w:button value="--" onclick="z20gpJsvar.setValue(z20gpJsvar.getValue()-1)"></w:button>
+							<w:numberField id="z20gp" jsvar="z20gpJsvar" selectOnFocus="true"  allowNegative="false" style="text-align: right;background-color: #FFFFC7;background-image:none;" width="50"/>
+							<w:button value="+" onclick="z20gpJsvar.setValue(z20gpJsvar.getValue()+1)"></w:button>
+						</layout:panelGrid>	
+					</layout:cell>
+					<h:outputLabel value="40'GP" style="width: 140px;font-size: 16px;"/>
+					<layout:cell>
+						<layout:panelGrid columns="3">
+							<w:button value="--" onclick="z40gpJsvar.setValue(z40gpJsvar.getValue()-1)"></w:button>
+							<w:numberField id="z40gp" jsvar="z40gpJsvar" selectOnFocus="true"  allowNegative="false" style="text-align: right;background-color: #FFFFC7;background-image:none;" width="50"/>
+							<w:button value="+" onclick="z40gpJsvar.setValue(z40gpJsvar.getValue()+1)"></w:button>
+						</layout:panelGrid>	
+					</layout:cell>
+					<h:outputLabel value="40'HQ" style="width: 140px;font-size: 16px;"/>
+					<layout:cell>
+						<layout:panelGrid columns="3">
+							<w:button value="--" onclick="z40hqJsvar.setValue(z40hqJsvar.getValue()-1)"></w:button>
+							<w:numberField id="z40hq" jsvar="z40hqJsvar" selectOnFocus="true"  allowNegative="false" style="text-align: right;background-color: #FFFFC7;background-image:none;" width="50"/>
+							<w:button value="+" onclick="z40hqJsvar.setValue(z40hqJsvar.getValue()+1)"></w:button>
+						</layout:panelGrid>	
+					</layout:cell>
+					<h:outputLabel value="45'HQ" style="width: 140px;font-size: 16px;"/>
+					<layout:cell>
+						<layout:panelGrid columns="3">
+							<w:button value="--" onclick="z45hqJsvar.setValue(z45hqJsvar.getValue()-1)"></w:button>
+							<w:numberField id="z45hq" jsvar="z45hqJsvar" selectOnFocus="true"  allowNegative="false" style="text-align: right;background-color: #FFFFC7;background-image:none;" width="50"/>
+							<w:button value="+" onclick="z45hqJsvar.setValue(z45hqJsvar.getValue()+1)"></w:button>
+						</layout:panelGrid>	
+					</layout:cell>
+					<w:combo typeAhead="true" forceSelection="true" width="55" id="cntypeothercodev" jsvar="cntypeothercodevJsvar" emptyText="#{l.m['其他']}"
+						focusClass="surround">
+						<f:selectItems value="#{comboxBean.cntype}" />
+					</w:combo>
+					<layout:cell>
+						<layout:panelGrid columns="3">
+							<w:button value="--" onclick="pieceotherJsvar.setValue(pieceotherJsvar.getValue()-1)"></w:button>
+							<w:numberField id="pieceother" jsvar="pieceotherJsvar" selectOnFocus="true"  allowNegative="false" style="text-align: right;background-color: #FFFFC7;background-image:none;" width="50"/>
+							<w:button value="+" onclick="pieceotherJsvar.setValue(pieceotherJsvar.getValue()+1)"></w:button>
+						</layout:panelGrid>	
+					</layout:cell>
+					<layout:panelGrid id="chooseJobsInfo" columns="2" >
+					<h:outputLabel value="#{l.m['接单公司']}" />
+					<w:combo id="corpid" jsvar="corpidJsVar" width="90" forceSelection="true" listWidth="130" editable="true">
+						<f:selectItems value="#{comboxBean.company}" />
+					</w:combo>
+					<h:outputLabel value="#{l.m['操作公司']}"/>
+					<w:combo id="corpidop" jsvar="corpidopJsVar" width="90" forceSelection="true" listWidth="130" editable="true">
+						<f:selectItems value="#{comboxBean.opCompany}" />
+					</w:combo>
+				</layout:panelGrid>
+				</layout:panelGrid>
+				
+				<w:button id="createJobs" jsvar="createJobsJs" label="#{l.m['生成工作单']}" width="25" image="#{constantBean.contextPath}/images/new.png" />
+				<w:textField id="polGridSelect" jsvar="polGridSelectJsVar" width="90" hidden="true"></w:textField>
+				</w:form>
+			</layout:panel>
+	</layout:window>
+	
+
+
+	<script>
+	//<![CDATA[
+		$('#customer').flexbox('/scp/service?src=flexbox&action=customer&userid=#{pages.module.data.analyseBean.userid}&type=ship', {
+		resultTemplate: '<div class="col1">{name}</div><div style="width: 225px;" class="col2">{namec}</div><div class="col3">{namee}</div>',
+		watermark: '',
+		initialValue: '#{pages.module.data.analyseBean.customerabbr}',
+		width: 155,
+		onSelect: function() {
+			var id = $('input[name=customer]').val();
+			customeridJsVar.setValue(id);
+		}
+	   });
+		function resize(){
+			var newHeight = (gridPanelJsvar.getSize().height) - 50;
+			var newWidth = (gridPanelJsvar.getSize().width);
+			gridJsvar.setHeight(newHeight);
+			gridJsvar.setWidth(newWidth);
+			gridJsvar.render();
+		}
+	
+		function checkBefore1(){
+			var polValue = polJsvar.getValue();
+			if(polValue == undefined || polValue == ''){
+				alert('POL is NULL!');
+				return false;
+			}
+			var podValue = podJsvar.getValue();
+			if(podValue == undefined || podValue == ''){
+				alert('POD is NULL!');
+				return false;
+			}
+			createJobsWindowJsVar.setTitle("#{l.m['生成工作单']}");
+			createPriceJobsJs.hide();
+			createJobsJs.show();
+			return true;
+		}
+		Ext.onReady(function(){
+			resize();
+			Ext.EventManager.onWindowResize(function(){
+				resize();
+			});
+		 });
+		
+		 //]]>
+	</script>
+
+
+</f:view>

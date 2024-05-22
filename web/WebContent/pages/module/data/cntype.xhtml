@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ajax="http://www.apusic.com/jsf/ajax"
+	xmlns:ui="http://java.sun.com/jsf/facelets" renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> <link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" /><link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." title="">
+		<ajax:conversationActivator/>
+		<layout:borderLayout fitToBody="true">
+			<layout:panel id="gridPanel" jsvar="gridPanelJsvar" height="100%" split="true" fit="true"
+				title=""  hideBorders="true" region="center">
+				<w:form>
+					<div style="height: 0px;">
+					</div>
+					<layout:panelGrid columns="2">
+					<w:toolBar>
+					<w:button id="qryRefresh" label="#{l.m['刷新']}"
+						image="#{constantBean.contextPath}/images/refresh.png" />
+					<w:button id="add" value="#{l.m['新增']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+					<w:button id="deleter" label="#{l.m['删除']}"
+							onclick="return confirm('#{l.m['确定要删除吗?']}');"
+							image="#{constantBean.contextPath}/images/delete.png" />
+					</w:toolBar>
+					<layout:cell>
+							<ajax:status startStyle="color: red"
+								onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+								onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+								<f:facet name="start">
+									<f:verbatim>
+										<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 20px;">Loading...</img>
+									</f:verbatim>
+								</f:facet>
+							</ajax:status>
+						</layout:cell>
+					</layout:panelGrid>
+					
+					<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
+						<layout:cell style="width: 25px;"> <w:button id="clearQryKey" label="" width="25"
+							image="#{constantBean.contextPath}/images/clear.png" /> </layout:cell>
+						<w:textField selectOnFocus="true" width="60" value="#{pages.module.data.cntypeBean.qryMap['code']}"/>
+						<w:textField selectOnFocus="true" width="90" value="#{pages.module.data.cntypeBean.qryMap['cbm']}"/>
+						<w:textField selectOnFocus="true" width="90" value="#{pages.module.data.cntypeBean.qryMap['ton']}"/>
+						<w:textField selectOnFocus="true" width="80" value="#{pages.module.data.cntypeBean.qryMap['qty']}"/>
+						<w:button id="refresh" value="#{l.m['查询']}"
+							image="#{constantBean.contextPath}/images/query-small.png" />
+					</layout:panelGrid>
+					
+					<w:dataGrid height="700" paged="true" rows="30" id="grid" jsvar="gridJsvar"
+						toolBarPosition="bottom" idColumn="id" selectable="true">
+						<w:outputColumn id="id" header="ID" hidden="true" />
+						<w:outputColumn header="#{l.m['箱型']}" id="code" width="60"  sortable="true"/>
+						<w:outputColumn header="#{l.m['容积']}(CBM)" id="cbm" width="90" align="right" sortable="true"/>
+						<w:outputColumn header="#{l.m['容重']}(T)" id="ton" width="90"  align="right" sortable="true"/>
+						
+						<w:outputColumn header="#{l.m['标箱量']}" id="qty" width="80"  align="right" sortable="true"/>
+						<w:outputColumn header="#{l.m['长']}(M)" id="l" width="80"  align="right" sortable="true"/>
+						<w:outputColumn header="#{l.m['宽']}(M)" id="w" width="80"  align="right" sortable="true"/>
+						<w:outputColumn header="#{l.m['高']}(M)" id="h" width="80"  align="right" sortable="true"/>
+						
+						<w:outputColumn header="#{l.m['停用']}" id="istop" width="80" type="check" sortable="true"/>
+						<w:outputColumn header="#{l.m['录入人']}" id="inputername" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['录入时间']}" id="inputtime" width="90" sortable="true">
+							<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" /> 
+						</w:outputColumn>
+						<w:outputColumn header="#{l.m['修改人']}" id="updatername" sortable="true" width="80" />
+						<w:outputColumn header="#{l.m['修改时间']}" id="updatetime" width="90" sortable="true">
+							<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" /> 
+						</w:outputColumn>
+						<w:outputColumn id="corpid" header="corpid" hidden="true" />
+					</w:dataGrid>
+        <w:pagingToolbar for="grid" target="grid" displayInfo="true" displayMsg="{0}-{1}/{2}">
+		</w:pagingToolbar>
+				</w:form>
+			</layout:panel>
+		</layout:borderLayout>
+	</w:page>
+	
+	
+	<layout:window maximizable="true" id="editWindow" width="700" height="570" header="false"
+			resizable="true" constrainHeader="true">
+			<layout:panel id="editPanel" title="" height="580" hideBorders="true" region="west"
+				style="font-size:12px" width="700">
+				<w:form>
+					<w:toolBar>
+						<w:button id="add" value="#{l.m['新增']}"
+							image="#{constantBean.contextPath}/images/new.png" />
+						<w:button id="del" label="#{l.m['删除']}"
+							onclick="return confirm('#{l.m['确定要删除吗?']}');"
+							image="#{constantBean.contextPath}/images/delete.png" />
+						<w:button id="save" value="#{l.m['保存']}"
+							image="#{constantBean.contextPath}/images/save.png" />
+					</w:toolBar>
+					
+					<layout:panelGrid columns="8" cellspacing="5px" width="700" style="font-size:12px">
+						<h:outputLabel value="#{l.m['代码']}"/>
+						<w:textField selectOnFocus="true" value="#{pages.module.data.cntypeBean.selectedRowData.code}" width="100"
+							maxLength="50" />
+
+						<h:outputLabel value="#{l.m['长']}(M)"/>
+						<w:numberField value="#{pages.module.data.cntypeBean.selectedRowData.l}" jsvar="l" id="l"
+							onchange="culV()" style="text-align:right;" width="100" cls="under_line" focusClass="surround" />
+						<h:outputLabel value="#{l.m['宽']}(M)"/>
+						<w:numberField value="#{pages.module.data.cntypeBean.selectedRowData.w}" jsvar="w" id="w"
+							onchange="culV()" style="text-align:right;" width="100" cls="under_line" focusClass="surround" />
+						<h:outputLabel value="#{l.m['高']}(M)"/>
+						<w:numberField value="#{pages.module.data.cntypeBean.selectedRowData.h}" jsvar="h" id="h"
+							onchange="culV()" style="text-align:right;" width="100" cls="under_line" focusClass="surround" />
+						<h:outputLabel value="#{l.m['体积']}(CBM)"/>
+						<w:numberField value="#{pages.module.data.cntypeBean.selectedRowData.cbm}" jsvar="v"
+							style="text-align:right;" width="100" cls="under_line" focusClass="surround" />
+						<h:outputLabel value="#{l.m['容重']}(T)"/>
+						<w:numberField value="#{pages.module.data.cntypeBean.selectedRowData.ton}"
+							style="text-align:right;" width="100" cls="under_line" focusClass="surround" />
+							<h:outputLabel value="#{l.m['标箱量']}"/>
+						<w:numberField value="#{pages.module.data.cntypeBean.selectedRowData.qty}"
+							style="text-align:right;" width="100" cls="under_line" focusClass="surround" />
+						<h:outputLabel value="#{l.m['停用']}"/>
+						<w:checkBox value="#{pages.module.data.cntypeBean.selectedRowData.istop}"></w:checkBox>
+						<layout:cell colspan="8">
+						<layout:panelGrid columns="1" border="0" >
+							<h:outputLabel value="EDI-Mapping" style="font-weight: bolder;" ></h:outputLabel>
+							<w:iframe style="border: thin;" frameborder="yes" id="edi_mapping" width="672" height="422" ></w:iframe>
+						</layout:panelGrid>
+						</layout:cell>
+					</layout:panelGrid>
+					
+					<w:textField selectOnFocus="true" id="pkVal" hidden="true"/>
+				</w:form>
+			</layout:panel>
+	</layout:window>
+
+	<script>
+    //<![CDATA[
+		function culV(){
+        	var lVal = l.getValue();
+        	var wVal = w.getValue();
+        	var hVal = h.getValue();
+        	if(lVal==null||lVal==''){
+        		lVal = 0;
+        	}
+        	if(wVal==null||wVal==''){
+        		wVal = 0;
+        	}
+        	if(hVal==null||hVal==''){
+        		hVal = 0;
+        	}
+        	var vVal = lVal*wVal*hVal;
+        	v.setValue(vVal);
+        }
+
+	
+		function resize(){
+			var newHeight = (gridPanelJsvar.getSize().height) - 55;
+			var newWidth = (gridPanelJsvar.getSize().width);
+			gridJsvar.setHeight(newHeight);
+			gridJsvar.setWidth(newWidth);
+			gridJsvar.render();
+		}
+	
+		Ext.onReady(function(){
+			resize();
+			Ext.EventManager.onWindowResize(function(){
+				resize();
+			});
+		 });
+	 //]]>
+     </script>
+</f:view>
