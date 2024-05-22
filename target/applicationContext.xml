@@ -76,12 +76,7 @@
 	
 	
 	<context:property-placeholder location="classpath:amq.properties,classpath:redis.properties" /> 
-	
-	<!--
-	<import resource="applicationContext-activemq.xml" />
-	<import resource="applicationContext-redis.xml" />
-	-->
-	
+
 	<import resource="applicationContext-ds-druid.xml" />
 	
 	<import resource="applicationContext-aop.xml" /> 
@@ -94,22 +89,5 @@
 		<property name="isUseDzz" value="false" />
 		<property name="isStartActiveMq" value="false" />
 	</bean>
-	
-	<!--<cache:annotation-driven cache-manager="cacheManager" key-generator="customKeyGenerator"/>
-    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">  
-        <property name="cacheManager" ref="ehcache"></property>  
-    </bean>  
-    <bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">  
-        <property name="configLocation" value="classpath:ehcache-setting.xml"></property>  
-    </bean>  
-    
-    -->
-   <!-- 初始化Scheduler -->
-    <bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" autowire="no" scope="singleton" >
-        <property name="overwriteExistingJobs" value="true"/>
-        <property name="startupDelay" value="120"/>
-    </bean>
-    <!-- 初始化job -->
-	<bean id="scheduleMgr" class="com.scp.schedule.ext.ScheduleMgr" init-method="init" lazy-init="true" scope="singleton"/>
-	
+
 </beans>

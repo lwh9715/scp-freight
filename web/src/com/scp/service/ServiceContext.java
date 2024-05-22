@@ -59,12 +59,6 @@ public class ServiceContext {
     public ExchangeRateMgrService exchangeRateMgrService;
 
     @Resource
-    public GoodsMgrService goodsMgrService;
-
-    @Resource
-    public GoodstypeMgrService goodstypeMgrService;
-
-    @Resource
     public PortyMgrService portyMgrService;
 
     @Resource
@@ -268,9 +262,6 @@ public class ServiceContext {
     public PriceFclAskService priceFclAskService;
 
     @Resource
-    public EdiinttrareportMgrService ediinttrareportMgrService;
-
-    @Resource
     public ApiVgmService apiVgmService;
 
     @Resource
@@ -278,12 +269,6 @@ public class ServiceContext {
 
     @Resource
     public ApiDataMgrService apiDataMgrService;
-
-    @Resource
-    public EdiesiService ediesiService;
-
-    @Resource
-    public EdiesiDtlCntService ediesiDtlCntService;
 
     @Resource
     public TarifasapiService tarifasapiService;

@@ -73,9 +73,6 @@
 	<mapping class="com.scp.model.api.ApiVgm" />
   	<mapping class="com.scp.model.api.ApiVgmdtl" />
 
-  	<mapping class="com.scp.model.data.Ediesi" />
-  	<mapping class="com.scp.model.data.EdiesiDtlCnt" />
-	
 	<mapping class="com.scp.model.sys.SysCorpinv" />
 	<mapping class="com.scp.model.sys.SysTimeTask" />
 	<mapping class="com.scp.model.sys.SysTimeTaskLog" />
@@ -83,20 +80,15 @@
 	<mapping class="com.scp.model.sys.Unsubscribe" />
 
   	<mapping class="com.scp.model.data.DatUnit" />
-  	<mapping class="com.scp.model.data.DatGoodstrack" />
-  	<mapping class="com.scp.model.data.DatGoodstype" />
   	<mapping class="com.scp.model.data.DatProduct" />
   	<mapping class="com.scp.model.data.DatAddress" />
   	<mapping class="com.scp.model.data.DatFeeitem" />
   	<mapping class="com.scp.model.data.DatCntype" />
   	<mapping class="com.scp.model.data.DatCountry" />
-  	<mapping class="com.scp.model.data.DatGoods" />
   	<mapping class="com.scp.model.data.DatCurrency" />
   	<mapping class="com.scp.model.data.DatExchangerate" />
   	<mapping class="com.scp.model.data.DatPort" />
 
-  	<mapping class="com.scp.model.data.DatDriver" />
-  	
   	<mapping class="com.scp.model.data.DatFiledata" />
   	<mapping class="com.scp.model.data.DatPackage" />
   	<mapping class="com.scp.model.data.DatLine" />
@@ -171,8 +163,6 @@
   	<mapping class="com.scp.model.api.ApiOoclBookData" />
   	<mapping class="com.scp.model.sys.PriceFclAsk" />
 
-  	<mapping class="com.scp.model.data.Ediinttraphrase" />
-  	<mapping class="com.scp.model.data.Ediinttrareport" />
 	  <mapping class="com.scp.model.api.TarifasApi" />
   </session-factory>
 </hibernate-configuration>

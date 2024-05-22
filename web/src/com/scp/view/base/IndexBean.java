@@ -617,31 +617,6 @@ public class IndexBean {
 			if (AppUtils.isLogin()) {
 				String sql = null;
 				String sysbpm = ConfigUtils.findSysCfgVal("sys_bpm");
-				if("BPM".equals(sysbpm)){
-					 sql = "select "
-						 + "\n			 	count(1) "
-						 + "\n			FROM  (select 	"
-						 + "\n					 t.actorid,state,instancestate"
-						 + "\n	 			FROM  _bpm_task t LEFT JOIN fina_jobs j ON(t.refid::BIGINT=j.id AND j.isdelete = false AND j.isclose = FALSE))  as T"
-						 + "\n			WHERE "
-						 + "\n				1=1" 
-						 + "\n	AND actorid ILIKE ('%'||'" + AppUtils.getUserSession().getUsercode() +"'||'%')AND ((CASE WHEN EXISTS(SELECT 1 FROM sys_config WHERE key = 'bpm_task_filterbyorg' AND val = 'Y') THEN"
-						 + "\n		t.actorid = ANY(ARRAY(WITH RECURSIVE rc AS ("
-						 + "\n			SELECT * FROM sys_user WHERE id = "+AppUtils.getUserSession().getUserid()
-						 + "\n			UNION "
-						 + "\n			SELECT a.* FROM sys_user a,rc WHERE  a.parentid = rc.id"
-						 + "\n		)"
-						 + "\n		SELECT code FROM rc ))"
-						 + "\n	ELSE 1=1 END)"
-						 + "\n	 OR EXISTS(SELECT 1 FROM sys_userinrole a,sys_role b WHERE a.roleid =  b.id AND a.userid = "+AppUtils.getUserSession().getUserid()+" AND b.code = 'admin_branch'))"
-						 + "\n			AND t.state != 9 AND t.instancestate != 9"
-						 + "\n				AND t.state != 3"
-						 + "\n				AND t.state != 8";
-				}else{
-					sql = "SELECT count(1) FROM _wf_payreq j WHERE j.workitemState IN (0,1) AND j.processId = 'PaymentRequest'"
-						+"\nAND (actor = '" + AppUtils.getUserSession().getUsercode() +"' " + ") AND suspended = FALSE";
-					//"OR processcreatorid = '"+AppUtils.getUserSession().getUsercode()+"')";
-				}
 				Map map = AppUtils.getServiceContext().daoIbatisTemplate.queryWithUserDefineSql4OnwRow(sql);
 				if(map.get("count").toString().equals("0")){
 					waitforrq = "" ;

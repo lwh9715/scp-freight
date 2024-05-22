@@ -933,27 +933,6 @@ public class WebServerHandler {
 			String processinstanceid = request.getParameter("processinstanceid");
 			String lable = java.net.URLDecoder.decode(request.getParameter("lable").toString());
 			serviceContext = (ServiceContext) AppUtils.getBeanFromSpringIoc("serviceContext");
-			try {
-				String sql = "SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM" +
-							"(SELECT f_sys_getls('userid="+userid+";lskey='||displayname) displayname" +
-							",f_sys_getls('userid="+userid+";lskey='||taskname) taskname" +
-							",COALESCE(to_char(taskcreatedtime,'yyyy-MM-dd HH24:MI'),'') taskcreatedtime" +
-							",COALESCE(to_char(taskstartedtime,'yyyy-MM-dd HH24:MI'),'') taskstartedtime," +
-							"COALESCE(to_char(taskendtime,'yyyy-MM-dd HH24:MI'),'') taskendtime,procecreateduser," +
-							"(SELECT namec||'/'||namee||'/'||'/'||COALESCE((SELECT name FROM sys_department WHERE id = x.deptid),'') " +
-							"FROM sys_user x WHERE code = t.procecreateduser) AS procecreatedusers,"+
-							"COALESCE(to_char(procestartedtime,'yyyy-MM-dd HH24:MI'),'') procestartedtime" +
-							",COALESCE(remarks,'') AS remarks" +
-							" FROM _bpm_task t WHERE state <> 3 AND processinstanceid = " + processinstanceid+
-							" and f_sys_getls('userid="+userid+";lskey='||taskname) = '"+lable+"') T";
-				Map m = serviceContext.daoIbatisTemplate.queryWithUserDefineSql4OnwRow(sql);
-				if(m!=null&&m.get("json")!=null){
-					return m.get("json").toString();
-				}
-			}catch (Exception e) {
-				result = "ERROR";
-				e.printStackTrace();
-			}
 		}else if("upladFile".equals(action)){
 			return upladFile(request);
 		}else if("getCurrencyType".equals(action)){

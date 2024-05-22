@@ -26,8 +26,6 @@
 	
 	<context:component-scan base-package="com.ufms.web" />
 	
-	  
-	
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
@@ -64,20 +62,7 @@
 		</property>
 	</bean>
 	
-	<!--
-	
-	<bean id="sqlMapClientMySql" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
-		scope="singleton">
-		<property name="configLocation" value="classpath:sql-map-config.xml" />
-		<property name="dataSource" ref="cimcMysqlDataSource" />
-		<property name="useTransactionAwareDataSource" value="true"></property>
-		<property name="mappingLocations" value="classpath:com/scp/**/ibatis-*.xml">
-		</property>
-	</bean>
-	
-	
-	
-	--><bean id="hibTtrMgr"
+<bean id="hibTtrMgr"
 		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" /> 
 	</bean>
@@ -91,8 +76,7 @@
         <!--ISOLATION_DEFAULT 表示由使用的数据库决定  -->  
         <property name="isolationLevelName" value="ISOLATION_DEFAULT"/>  
         <property name="propagationBehaviorName" value="PROPAGATION_REQUIRED"/>  
-        <!-- <property name="timeout" value="30"/> -->  
-    </bean>  
+    </bean>
     
 	<bean id="transactionTemplate"
 		class="org.springframework.transaction.support.TransactionTemplate">
@@ -100,49 +84,14 @@
 			<ref local="hibTtrMgr" /> 
 		</property>
 	</bean>
-	
-    <!--<tx:advice id="txAdvice1" transaction-manager="hibTtrMgr">  
-        <tx:attributes>  
-            <tx:method name="find*" read-only="true" />  
-            <tx:method name="get*" read-only="true" />  
-            <tx:method name="query*" read-only="true" />  
-            <tx:method name="load*" read-only="true" />  
-            <tx:method name="find*" read-only="true" propagation="REQUIRED"  
-                rollback-for="java.lang.Exception,java.lang.RuntimeException" /> 
-            <tx:method name="save*" propagation="REQUIRED"  
-                rollback-for="java.lang.Exception,java.lang.RuntimeException" /> 
-            <tx:method name="del*" propagation="REQUIRED"  
-                rollback-for="java.lang.Exception,java.lang.RuntimeException" /> 
-            <tx:method name="add*" propagation="REQUIRED"  
-                rollback-for="java.lang.Exception,java.lang.RuntimeException" /> 
-            <tx:method name="remove*" propagation="REQUIRED"  
-                rollback-for="java.lang.Exception,java.lang.RuntimeException" />
-        </tx:attributes>  
-    </tx:advice>  
-    
-    <aop:config proxy-target-class="false">  
-        <aop:pointcut id="servicePoint1"  
-            expression="(execution (* com.scp.1service.*.*(..)))"/>
-            expression="(execution (* com.scp.1service.*.*(..))) or (execution(* org.fireflow.engine.persistence.*.*(..)))"
-        <aop:advisor pointcut-ref="servicePoint1" id="txAdvisor1"  
-            advice-ref="txAdvice1" />  
-    </aop:config>  
-	-->
-	
+
 	<context:property-placeholder location="classpath:amq.properties,classpath:redis.properties" /> 
-	
-	<!--
-	<import resource="applicationContext-activemq.xml" />
-	<import resource="applicationContext-redis.xml" />
-	-->
-	
+
 	<import resource="applicationContext-ds-druid-cimc.xml" />
 	
 	<import resource="applicationContext-aop.xml" /> 
 	<import resource="applicationContext-rmi.xml"/>
-	<!--<import resource="applicationContext-dubbo.xml" />
-	-->
-	
+
 	<bean id="applicationConf" class="com.scp.base.ApplicationConf" lazy-init="false">
 		<property name="debug" value="true" />
 		<property name="autoFillLs" value="false" />
@@ -150,21 +99,5 @@
 		<property name="isUseDzz" value="false" />
 		<property name="isStartActiveMq" value="false" />
 	</bean>
-	
-	<!--<cache:annotation-driven cache-manager="cacheManager" key-generator="customKeyGenerator"/>
-    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">  
-        <property name="cacheManager" ref="ehcache"></property>  
-    </bean>  
-    <bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">  
-        <property name="configLocation" value="classpath:ehcache-setting.xml"></property>  
-    </bean>  
-   
-    
-    --><!-- 初始化Scheduler 
-    <bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" autowire="no" scope="singleton">
-        <property name="overwriteExistingJobs" value="true"/>
-    </bean>-->
-    <!-- 初始化job 
-	<bean id="scheduleMgr" class="com.scp.schedule.ext.ScheduleMgr" init-method="init" lazy-init="false" scope="singleton"/>
-    -->
+
 </beans>

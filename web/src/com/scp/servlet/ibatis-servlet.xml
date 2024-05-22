@@ -593,29 +593,7 @@
 		) AS Q
 	 ]]>    
 	</select>
-	
-	
-	<select id="servlet.web.ff.dashboardbpm.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
-		SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM (
-				select 	*
-				,f_sys_getls('userid=$qry2$;lskey='||taskname) AS tasknamedesc
-				,f_sys_getls('userid=$qry2$;lskey='||statedesc) AS statedescdesc
-				,f_sys_getls('userid=$qry2$;lskey='||displayname) AS displaynamedesc
- 		FROM  _bpm_task t 
- 		WHERE  t.actorid = '$qry$'
-	 		AND t.state != 9
-	 		AND t.state != 3
-	 		AND t.state != 8
-	 		ORDER BY procestartedtime desc LIMIT 5
-			) AS T
-	</select>
-	
-	<select id="servlet.web.bpm.showcomments" parameterClass="java.util.Map" resultClass="java.util.HashMap">
-	 <![CDATA[ 
-	 	SELECT f_bpm_task_getcheckinfos('processinstanceid=$qry$;taskname=$qry1$;userid=$qry2$;type=All') AS json;
-	 ]]>    
-	</select>
-	
+
 	<select id="servlet.web.main.indexBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
 		SELECT array_to_json (ARRAY_AGG(row_to_json(T))) :: TEXT AS json FROM(
 			SELECT * FROM sys_faq WHERE moduleid = $qry$
