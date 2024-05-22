@@ -89,15 +89,6 @@ public class UserChangeCorpBean extends GridSelectView {
 		for (String id : ids) {
 				sql += "\nUPDATE sys_user_corplink SET ischoose = TRUE WHERE id = " + id + ";";
 		}
-		if (!"".equals(sql)) {
-			try {
-				serviceContext.accountMgrService.datAccountDao.executeSQL(sql);
-			} catch (Exception e) {
-				MessageUtils.alert("操作异常!");
-				e.printStackTrace();
-				return;
-			}
-		}
 		this.grid.reload();
 		this.update.markUpdate(UpdateLevel.Data, "gridPanel");
 		//MessageUtils.alert("授权成功!");
@@ -108,15 +99,6 @@ public class UserChangeCorpBean extends GridSelectView {
 		long gridSelectId = this.getGridSelectId();
 		String sql = "\nUPDATE sys_user_corplink SET ischoose = FALSE WHERE userid = " + userid + ";";
 		sql += "\nUPDATE sys_user_corplink SET ischoose = TRUE WHERE id = " + gridSelectId + ";";
-		if (!"".equals(sql)) {
-			try {
-				serviceContext.accountMgrService.datAccountDao.executeSQL(sql);
-			} catch (Exception e) {
-				MessageUtils.showException(e);
-				e.printStackTrace();
-				return;
-			}
-		}
 		this.grid.reload();
 		this.update.markUpdate(UpdateLevel.Data, "gridPanel");
 	}

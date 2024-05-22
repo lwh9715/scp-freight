@@ -72,14 +72,6 @@ public class LogMgrBean extends GridView {
 	public void showlogmessage(){
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String sql = "SELECT logdesc,logtime,inputer FROM sys_log WHERE id ='" + this.getGridSelectId()+"'";
-		List<Object[]> info = serviceContext.accountMgrService.datAccountDao.executeQuery(sql);
-		if(info != null && info.size() > 0) {
-			  Object[] obj = info.get(0);
-			  String a =  obj[0].toString();
-			  this.logMessage = obj[0].toString();
-			  this.time = df.format(obj[1]);
-			  this.inputername =obj[2].toString();
-		}
 		this.update.markUpdate(UpdateLevel.Data, "logMessage");
 		this.update.markUpdate(UpdateLevel.Data, "time");
 		this.update.markUpdate(UpdateLevel.Data, "inputername");
@@ -96,7 +88,6 @@ public class LogMgrBean extends GridView {
 		for (int i = 0; i < ids.length; i++) {
 			sql.append("\ndelete from sys_log where id = '" +ids[i]+ "' AND isdelete = FALSE;");
 		}
-		serviceContext.accountMgrService.datAccountDao.executeSQL(sql.toString());
 		MessageUtils.alert("OK!");
 		this.refresh(); 
 	}

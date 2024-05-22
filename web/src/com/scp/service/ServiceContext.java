@@ -64,14 +64,7 @@ public class ServiceContext {
     // date------start-------------------
 
     @Resource
-    public AccountMgrService accountMgrService;
-
-    @Resource
     public AcctRpMgrService acctRpMgrService;
-
-    @Resource
-    public BankMgrService bankMgrService;
-
 
     @Resource
     public LineMgrService lineMgrService;

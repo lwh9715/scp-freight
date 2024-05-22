@@ -90,14 +90,7 @@ public class UserLinkCorpBean extends GridSelectView {
 	
 	@Action
 	protected void autoChoose() {
-		String sql = "UPDATE sys_user_corplink SET ischoose = true WHERE userid = "+userid;
-		try {
-			serviceContext.accountMgrService.datAccountDao.executeSQL(sql);
-			this.grid.reload();
-		} catch (Exception e) {
-			MessageUtils.alert("删除异常!");
-			e.printStackTrace();
-		}
+
 	}
 
 	@Override
@@ -115,15 +108,6 @@ public class UserLinkCorpBean extends GridSelectView {
 				sql += "\nINSERT INTO sys_user_corplink(id,userid,corpid)VALUES(getid(),"
 						+ userid + "," + id + ");";
 		}
-		if (!"".equals(sql)) {
-			try {
-				serviceContext.accountMgrService.datAccountDao.executeSQL(sql);
-			} catch (Exception e) {
-				MessageUtils.alert("操作异常!");
-				e.printStackTrace();
-				return;
-			}
-		}
 		this.grid.reload();
 		this.update.markUpdate(UpdateLevel.Data, "gridPanel");
 		//MessageUtils.alert("授权成功!");
@@ -133,12 +117,5 @@ public class UserLinkCorpBean extends GridSelectView {
 	 * 先将选中的用户所有权套删除，在重新添加上去.
 	 */
 	public void delAll(String userid){
-		String sql = "DELETE FROM sys_user_corplink WHERE userid = "+userid;
-		try {
-			serviceContext.accountMgrService.datAccountDao.executeSQL(sql);
-		} catch (Exception e) {
-			MessageUtils.alert("删除异常!");
-			e.printStackTrace();
-		}
 	}
 }

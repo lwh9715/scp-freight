@@ -109,15 +109,6 @@ public class UserLinkReportBean extends GridSelectView {
 				sql += "\nINSERT INTO sys_report_ctrl(id,linkid,reportid,linktype)VALUES(getid(),"
 						+ userid + "," + id + ",'U');";
 		}
-		if (!"".equals(sql)) {
-			try {
-				serviceContext.accountMgrService.datAccountDao.executeSQL(sql);
-			} catch (Exception e) {
-				MessageUtils.alert("操作异常!");
-				e.printStackTrace();
-				return;
-			}
-		}
 		this.grid.reload();
 		this.update.markUpdate(UpdateLevel.Data, "gridPanel");
 		//MessageUtils.alert("授权成功!");
@@ -127,12 +118,5 @@ public class UserLinkReportBean extends GridSelectView {
 	 * 先将选中的用户所有权套删除，在重新添加上去.
 	 */
 	public void delAll(String userid){
-		String sql = "DELETE FROM sys_report_ctrl a WHERE linkid = "+userid+" AND linktype = 'U' AND EXISTS (SELECT * FROM sys_report x WHERE x.isdelete = FALSE AND x.id = a.reportid AND x.modcode = '"+reportType+"')";
-		try {
-			serviceContext.accountMgrService.datAccountDao.executeSQL(sql);
-		} catch (Exception e) {
-			MessageUtils.alert("删除异常!");
-			e.printStackTrace();
-		}
 	}
 }

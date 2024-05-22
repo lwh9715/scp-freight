@@ -97,15 +97,6 @@ public class UserActSetBean extends GridSelectView {
 				sql += "\nINSERT INTO fs_actsetctrl(id,userid,actsetid)VALUES(getid(),"
 						+ userid + "," + id + ");";
 		}
-		if (!"".equals(sql)) {
-			try {
-				serviceContext.accountMgrService.datAccountDao.executeSQL(sql);
-			} catch (Exception e) {
-				MessageUtils.alert("操作异常!");
-				e.printStackTrace();
-				return;
-			}
-		}
 		this.grid.repaint();
 		this.update.markUpdate(UpdateLevel.Data, "gridPanel");
 		//MessageUtils.alert("授权成功!");
@@ -115,12 +106,6 @@ public class UserActSetBean extends GridSelectView {
 	 * 先将选中的用户所有权套删除，在重新添加上去.
 	 */
 	public void delAll(String userid){
-		  String sql = "DELETE FROM  fs_actsetctrl  WHERE  userid = "+userid;
-		try {
-			serviceContext.accountMgrService.datAccountDao.executeSQL(sql);
-		} catch (Exception e) {
-			MessageUtils.alert("删除异常!");
-			e.printStackTrace();
-		}
+
 	}
 }

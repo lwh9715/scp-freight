@@ -89,7 +89,6 @@
 
 
   	<mapping class="com.scp.model.data.DatUnit" />
-  	<mapping class="com.scp.model.data.DatBank" />
   	<mapping class="com.scp.model.data.DatWarehouse" />
   	<mapping class="com.scp.model.data.DatGoodstrack" />
   	<mapping class="com.scp.model.data.DatGoodstype" />
@@ -101,7 +100,6 @@
   	<mapping class="com.scp.model.data.DatGoods" />
   	<mapping class="com.scp.model.data.DatCurrency" />
   	<mapping class="com.scp.model.data.DatExchangerate" />
-  	<mapping class="com.scp.model.data.DatAccount" />
   	<mapping class="com.scp.model.data.DatWarehouseLoc" />
   	<mapping class="com.scp.model.data.DatWarehouseArea" />
   	<mapping class="com.scp.model.data.DatPort" />
