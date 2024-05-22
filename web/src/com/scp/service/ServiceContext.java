@@ -10,7 +10,6 @@ import com.scp.service.data.*;
 import com.scp.service.price.*;
 import com.scp.service.salesmgr.BlackListService;
 import com.scp.service.sysmgr.*;
-import com.scp.service.website.*;
 import com.scp.util.AppUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -230,22 +229,7 @@ public class ServiceContext {
     public PriceFclUseruleService priceFclUseruleService;
 
     @Resource
-    public WebRegisterService webRegisterService;
-
-    @Resource
-    public WebNewsService webNewsService;
-
-    @Resource
-    public WebConfigService webConfigService;
-
-    @Resource
-    public WebMenuService webMenuService;
-
-    @Resource
     public UnsubscribeService unsubscribeService;
-
-    @Resource
-    public WebPagesService webPagesService;
 
     @Resource
     public PriceTrainService priceTrainService;

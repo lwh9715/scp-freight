@@ -348,13 +348,13 @@ public class WebServerHandler {
 								String sql = "UPDATE sys_attachment set inputer = '"+sysUser.getCode()+"' WHERE id = " + sysAttachment.getId();
 								this.serviceContext.attachmentService.sysAttachmentDao.executeSQL(sql);
 								
-								if("0".equals(linkid)&&"0".equals(roleid)){//网站设置中banner图片
-									this.serviceContext.webConfigService.saveOnWebbanner(fileNameNew);
-								}
-								
-								if("1".equals(linkid)&&"1".equals(roleid)){//网站设置中新闻图片
-									this.serviceContext.webConfigService.saveOnWebnews(fileNameNew);
-								}
+//								if("0".equals(linkid)&&"0".equals(roleid)){//网站设置中banner图片
+//									this.serviceContext.webConfigService.saveOnWebbanner(fileNameNew);
+//								}
+//
+//								if("1".equals(linkid)&&"1".equals(roleid)){//网站设置中新闻图片
+//									this.serviceContext.webConfigService.saveOnWebnews(fileNameNew);
+//								}
 
 							}
 						}
@@ -508,13 +508,13 @@ public class WebServerHandler {
 								String sql = "UPDATE sys_attachment set inputer = '"+sysUser.getCode()+"' WHERE id = " + sysAttachment.getId();
 								this.serviceContext.attachmentService.sysAttachmentDao.executeSQL(sql);
 								
-								if("0".equals(linkid)&&"0".equals(roleid)){//网站设置中banner图片
-									this.serviceContext.webConfigService.saveOnWebbanner(fileNameNew);
-								}
-								
-								if("1".equals(linkid)&&"1".equals(roleid)){//网站设置中新闻图片
-									this.serviceContext.webConfigService.saveOnWebnews(fileNameNew);
-								}
+//								if("0".equals(linkid)&&"0".equals(roleid)){//网站设置中banner图片
+//									this.serviceContext.webConfigService.saveOnWebbanner(fileNameNew);
+//								}
+//
+//								if("1".equals(linkid)&&"1".equals(roleid)){//网站设置中新闻图片
+//									this.serviceContext.webConfigService.saveOnWebnews(fileNameNew);
+//								}
 
 							}
 						}
@@ -984,7 +984,6 @@ public class WebServerHandler {
 			   e.printStackTrace();
 			}
 			JSONObject jo = JSONObject.fromObject(sb.toString());
-//			System.out.print(jo.get("qry"));
 			String sql = "SELECT * FROM array_to_json(f_sys_corpinv_imp('"+jo.get("qry")+"',0)) AS json";
 			Map m = daoIbatisTemplate.queryWithUserDefineSql4OnwRow(sql);
 			if(m != null && m.containsKey("json")&&m.get("json")!=null){
@@ -996,22 +995,21 @@ public class WebServerHandler {
 		}else if("getWebBanner".equals(action)){
 			serviceContext = (ServiceContext) AppUtils.getBeanFromSpringIoc("serviceContext");
 			String key = request.getParameter("key");
-			return serviceContext.webConfigService.getWebBannerJson(key);
+//			return serviceContext.webConfigService.getWebBannerJson(key);
 		}else if("getWebBannernews".equals(action)){
 			serviceContext = (ServiceContext) AppUtils.getBeanFromSpringIoc("serviceContext");
 			String key = request.getParameter("key");
-			return serviceContext.webConfigService.getWebBannerJsonnews(key);
+//			return serviceContext.webConfigService.getWebBannerJsonnews(key);
 		}else if("saveWebBanner".equals(action)){
 			serviceContext = (ServiceContext) AppUtils.getBeanFromSpringIoc("serviceContext");
 			String key = request.getParameter("key");
 			String jsonvalue = request.getParameter("jsonvalue");
-			return serviceContext.webConfigService.saveWebBanner(key,jsonvalue);
+//			return serviceContext.webConfigService.saveWebBanner(key,jsonvalue);
 		}else if("deleteWebBanner".equals(action)){
 			serviceContext = (ServiceContext) AppUtils.getBeanFromSpringIoc("serviceContext");
 			String key = request.getParameter("key");
 			String filenames = request.getParameter("filenames");
-			
-			return serviceContext.webConfigService.deleteWebBanner(key, filenames);
+//			return serviceContext.webConfigService.deleteWebBanner(key, filenames);
 		}
 		return result;
 	}

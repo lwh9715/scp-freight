@@ -150,13 +150,6 @@
 
   	<mapping class="com.scp.model.sys.SysEmailTemplate" />
 
-  	<mapping class="com.scp.model.website.WebNews" />
-  	<mapping class="com.scp.model.website.WebRegister" />
-  	<mapping class="com.scp.model.website.WebConfig" />
-  	
-  	<mapping class="com.scp.model.website.WebMenu" />
-  	<mapping class="com.scp.model.website.WebPages" />
-
   	<mapping class="com.scp.model.price.PriceTrain" />
   	<mapping class="com.scp.model.price.PriceTruck" />
   	<mapping class="com.scp.model.sys.SysCorporationAgent" />
