@@ -86,40 +86,7 @@
 				<om:fileDownload id="doSimulateExport" for="simulateExport" savedName="logs.xls" />
 				</div>
 				
-				<!--<layout:panelGrid columns="20" cellspacing="0" cellpadding="0">
-						<layout:cell style="width: 27px;">
-							<w:button id="clearQry2" label="" width="27"
-								image="#{constantBean.contextPath}/images/clear.png" />
-						</layout:cell>
-						<w:textField selectOnFocus="true" width="40"/>
-						<w:textField selectOnFocus="true" width="100"
-							value="#{pages.module.price.mgrfclBean.qryMap['pol']}" />
-						<w:textField selectOnFocus="true" width="100" jsvar="podInputJsvar"
-							value="#{pages.module.price.mgrfclBean.qryMap['pod']}" />
-						<w:textField selectOnFocus="true" width="70"
-							value="#{pages.module.price.mgrfclBean.qryMap['shipping']}" />
-
-						
-						<w:textField selectOnFocus="true" width="60"
-							value="#{pages.module.price.mgrfclBean.qryMap['cost20$']}" />
-						<w:textField selectOnFocus="true" width="60"
-							value="#{pages.module.price.mgrfclBean.qryMap['cost40gp$']}" />
-						<w:textField selectOnFocus="true" width="60"
-							value="#{pages.module.price.mgrfclBean.qryMap['cost40hq$']}" />
-						<w:textField selectOnFocus="true" width="53"
-							value="#{pages.module.price.mgrfclBean.qryMap['schedule']}" />
-						
-						<w:textField selectOnFocus="true" width="70"
-							value="#{pages.module.price.mgrfclBean.qryMap['tt']}" />
-						<w:textField selectOnFocus="true" width="70"
-							value="#{pages.module.price.mgrfclBean.qryMap['via']}" />
-						<w:textField selectOnFocus="true" width="70"
-							value="#{pages.module.price.mgrfclBean.qryMap['line']}" />
-						<w:textField selectOnFocus="true" width="75"
-							value="#{pages.module.price.mgrfclBean.qryMap['country']}" />
-					</layout:panelGrid>
-
-				--><w:editDataGrid height="660" paged="true" rows="100" id="editGrid" jsvar="gridJsvar" toolBarPosition="bottom" clicksToEdit="1"
+				<w:editDataGrid height="660" paged="true" rows="100" id="editGrid" jsvar="gridJsvar" toolBarPosition="bottom" clicksToEdit="1"
 					idColumn="homepageid" selectionModel="#{constantBean.checkBox}" moveEditorOnEnter="true" onafteredit="" onrowselect="return false" onrowdeselect="return false">
 					
 					<w:outputColumn id="fclid" header="fclid" hidden="true" />
@@ -200,7 +167,7 @@
 		
 	</w:page>
 	
-	<layout:window id="editBatchWindoVesVel" width="1200" height="620" maximizable="true"
+	<layout:window id="editBatchWindoVesVel" width="1260" height="620" maximizable="true"
 		title="#{l.m['船期/航程/开航日']}" constrainHeader="true" border="false"
 		resizable="true">
 			<layout:panel>

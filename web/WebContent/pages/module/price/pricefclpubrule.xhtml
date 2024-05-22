@@ -110,7 +110,7 @@
 	
 	
 	
-	<layout:window maximizable="true" width="650" height="530" id="linesWindow" jsvar="linesWindowJs" y="10"
+	<layout:window maximizable="true" width="700" height="530" id="linesWindow" jsvar="linesWindowJs" y="10"
 		constrainHeader="true">
 		<layout:panel id="linesPanel" height="100%" hideBorders="true" width="100%" fit="true">
 			<w:form>
@@ -143,10 +143,10 @@
 					<w:outputColumn id="id" header="ID" hidden="true" />
 					<w:outputColumn header="#{l.m['代码']}" id="code" width="120"  sortable="true" clientFormatter="formatisleaf"/>
 					<w:outputColumn header="#{l.m['类型']}" id="lintypedesc" width="120"  sortable="true" clientFormatter="formatisleaf"/>
-					<w:outputColumn header="#{l.m['中文名']}" id="namec" width="180" sortable="true" clientFormatter="formatisleaf"/>
-					<w:outputColumn header="#{l.m['英文名']}" id="namee" width="120" sortable="true" clientFormatter="formatisleaf"/>
-					<w:outputColumn header="#{l.m['航线級別']}" id="isleaf" width="80" sortable="true" clientFormatter="formatisleafvalue"/>
-					<w:outputColumn header="#{l.m['父航线']}" id="parentnamec" width="80" sortable="true" clientFormatter="formatisleaf"/>
+					<w:outputColumn header="#{l.m['中文名']}" id="namec" width="150" sortable="true" clientFormatter="formatisleaf"/>
+					<w:outputColumn header="#{l.m['英文名']}" id="namee" width="150" sortable="true" clientFormatter="formatisleaf"/>
+					<w:outputColumn header="#{l.m['航线級別']}" id="isleaf" width="120" sortable="true" clientFormatter="formatisleafvalue"/>
+					<w:outputColumn header="#{l.m['父航线']}" id="parentnamec" width="120" sortable="true" clientFormatter="formatisleaf"/>
 					<w:outputColumn header="#{l.m['录入人']}" id="inputername" sortable="true" width="80"/>
 					<w:outputColumn header="#{l.m['录入时间']}" id="inputtime" width="90" sortable="true">
 						<f:convertDateTime pattern="yy/MM/dd HH:mm" timeZone="GMT+8" /> 
