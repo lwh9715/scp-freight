@@ -14,7 +14,6 @@
   	<property name="hibernate.connection.username">admin</property>
   	<property name="hibernate.connection.password">1234</property>
 
-
   	<property name="hibernate.jdbc.fetch_size">30</property>
   	<property name="hibernate.jdbc.batch_size">15</property>
 
@@ -82,10 +81,6 @@
 	<mapping class="com.scp.model.sys.SysTimeTaskLog" />
 	<mapping class="com.scp.model.sys.SysEmailFastext" />
 	<mapping class="com.scp.model.sys.Unsubscribe" />
-	
-	
-  	<mapping class="com.scp.model.bus.BusShipSchedule" />
-
 
   	<mapping class="com.scp.model.data.DatUnit" />
   	<mapping class="com.scp.model.data.DatGoodstrack" />
@@ -100,8 +95,6 @@
   	<mapping class="com.scp.model.data.DatExchangerate" />
   	<mapping class="com.scp.model.data.DatPort" />
 
-  	<mapping class="com.scp.model.data.DatCartype" />
-  	<mapping class="com.scp.model.data.DatCar" />
   	<mapping class="com.scp.model.data.DatDriver" />
   	
   	<mapping class="com.scp.model.data.DatFiledata" />
@@ -110,7 +103,6 @@
   	<mapping class="com.scp.model.data.Datdoor2doorday" />
   	<mapping class="com.scp.model.data.DatLinecode" />
   	<mapping class="com.scp.model.data.Hscode" />
-  	
 
   	<mapping class="com.scp.model.finance.FinaActpayrecdtl" />
 
@@ -136,40 +128,6 @@
   	<mapping class="com.scp.model.finance.fs.FsCash" />
   	<mapping class="com.scp.model.finance.fs.FsBank" />
   	
-
-  	<mapping class="com.scp.model.ship.BusShipContainer" />
-  	<mapping class="com.scp.model.ship.BusShipping" />
-  	<mapping class="com.scp.model.ship.BusShipBill" />
-  	<mapping class="com.scp.model.ship.BusShipjoinlink" />
-  	<mapping class="com.scp.model.ship.BusShipjoingoods" />
-  	<mapping class="com.scp.model.ship.BusShipjoin" />
-
-  	<mapping class="com.scp.model.ship.BusCustoms" />
-  	<mapping class="com.scp.model.ship.BusCustomsTaxret" />
-  	<mapping class="com.scp.model.ship.BusTruck" />
-  	<mapping class="com.scp.model.ship.BusShipBookdtl" />
-  	<mapping class="com.scp.model.ship.BusTruckLink" />
-  	<mapping class="com.scp.model.ship.BusCustomsLink" />
-  	<mapping class="com.scp.model.ship.BusShipBillreg" />
-  	<mapping class="com.scp.model.ship.BusGoodstrack" />
-  	<mapping class="com.scp.model.ship.BusShipBooking" />
-  	<mapping class="com.scp.model.ship.BusShipCost" />
-  	<mapping class="com.scp.model.ship.BusShipCostdtl" />
-  	<mapping class="com.scp.model.ship.BusShipHold" />
-  	<mapping class="com.scp.model.ship.EdiMap" />
-  	<mapping class="com.scp.model.ship.BusGoodstrackTemp" />
-  	<mapping class="com.scp.model.ship.BusShipAddres" />
-  	
-  	<mapping class="com.scp.model.bus.BusAir" />
-  	<mapping class="com.scp.model.bus.BusAirFlight" />
-  	<mapping class="com.scp.model.bus.BusOptrack" />
-  	<mapping class="com.scp.model.bus.BusDocexp" />
-  	<mapping class="com.scp.model.bus.BusDocexpLink" />
-  	<mapping class="com.scp.model.bus.BusDocdef" />
-  	<mapping class="com.scp.model.bus.BusGoods" />
-  	<mapping class="com.scp.model.bus.BusAirBill" />
-  	<mapping class="com.scp.model.bus.BusInsurance" />
-  	
   	<mapping class="com.scp.model.price.PriceFcl" />
   	<mapping class="com.scp.model.price.PriceFclFeeadd" />
   	<mapping class="com.scp.model.price.PriceHomepage" />
@@ -189,49 +147,16 @@
   	
   	<mapping class="com.scp.model.order.BusOrder" />
   	<mapping class="com.scp.model.order.BusOrderdtl" />
-  	
-  	<mapping class="com.scp.model.oa.OaWorkReport" />
-  	<mapping class="com.scp.model.oa.SalaryBill" />
-	<mapping class="com.scp.model.oa.OaLeaveapplication" />
-	<mapping class="com.scp.model.oa.OaUserinfo" />
-	<mapping class="com.scp.model.oa.OaUserProtocol" />
-	<mapping class="com.scp.model.oa.OaUserVisa" />
-	<mapping class="com.scp.model.oa.OaUserContract" />
-	<mapping class="com.scp.model.oa.OaUserTransfer" />
-	
-	<mapping class="com.scp.model.oa.OaUserLog" />
-	<mapping class="com.scp.model.oa.UserChange" />
-	<mapping class="com.scp.model.oa.UserEval" />
-	<mapping class="com.scp.model.oa.OaUserErp" />
-	<mapping class="com.scp.model.oa.OaTimeSheet" />
-	<mapping class="com.scp.model.oa.OaJobChange" />
-	<mapping class="com.scp.model.oa.AppTravel" />
-	<mapping class="com.scp.model.oa.OaFee" />
-	<mapping class="com.scp.model.oa.OaSalaryBaseinfo" />
-	<mapping class="com.scp.model.oa.OaSalaryTable" />
-	<mapping class="com.scp.model.oa.OaSalaryDouble" />
-	<mapping class="com.scp.model.oa.OaSalaryWelfare" />
-  	
-  	<mapping class="com.scp.model.car.CarRepaireRecord" />
-  	<mapping class="com.scp.model.car.CarOliRecord" />
-  	<mapping class="com.scp.model.ship.BusPacklist" />
-  	<mapping class="com.scp.model.sys.SysEmailTemplate" />
-  	<mapping class="com.scp.model.knowledge.SysKnowledgelib" />
 
-  	<mapping class="com.scp.model.ship.BusFreightCharge" />
-  	
+  	<mapping class="com.scp.model.sys.SysEmailTemplate" />
+
   	<mapping class="com.scp.model.website.WebNews" />
   	<mapping class="com.scp.model.website.WebRegister" />
   	<mapping class="com.scp.model.website.WebConfig" />
   	
-  	<mapping class="com.scp.model.bus.BusTrain" />
   	<mapping class="com.scp.model.website.WebMenu" />
   	<mapping class="com.scp.model.website.WebPages" />
-  	<mapping class="com.scp.model.bus.BusTrainBill" />
 
-  	<mapping class="com.scp.model.gps.BusGpsRef" />
-  	<mapping class="com.scp.model.gps.BusGps" />
-  	
   	<mapping class="com.scp.model.price.PriceTrain" />
   	<mapping class="com.scp.model.price.PriceTruck" />
   	<mapping class="com.scp.model.sys.SysCorporationAgent" />
@@ -245,16 +170,7 @@
   	<mapping class="com.scp.model.api.ApiRobotEsi" />
   	<mapping class="com.scp.model.api.ApiData" />
   	
-  	<mapping class="com.scp.model.ship.EdiTrans" />
-  	<mapping class="com.scp.model.ship.MgrTrainBooking" />
   	<mapping class="com.scp.model.salesmgr.BlackList" />
-  	<mapping class="com.scp.model.bus.BusBookingrpt" />
-  	<mapping class="com.scp.model.bus.BusBillnoMgr" />
-  	<mapping class="com.scp.model.bus.AirPlaneType" />
-  	<mapping class="com.scp.model.bus.BusAirExtfee" />
-  	<mapping class="com.scp.model.bus.AirBookcode" />
-  	<mapping class="com.scp.model.elogistics.data.Channel" />
-  	<mapping class="com.scp.model.elogistics.data.Elogistics" />
   	<mapping class="com.scp.model.sys.SysCorpext" />
   	<mapping class="com.scp.model.sys.SysContract" />
   	<mapping class="com.scp.model.sys.Favorites" />
@@ -264,9 +180,6 @@
 
   	<mapping class="com.scp.model.data.Ediinttraphrase" />
   	<mapping class="com.scp.model.data.Ediinttrareport" />
-
-  	<mapping class="com.scp.model.ship.Voyage" />
-
 	  <mapping class="com.scp.model.api.TarifasApi" />
   </session-factory>
 </hibernate-configuration>

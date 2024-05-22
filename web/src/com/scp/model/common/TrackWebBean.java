@@ -68,36 +68,9 @@ public class TrackWebBean extends FormView {
 			MessageUtils.showMsg("Please choose container no!");
 			return;
 		}
-		//OOLU9730326
-//		TrackService trackService = (TrackService)AppUtils.getBeanFromSpringIoc("trackService");
-//		String url = trackService.getContainerTrace(cntno);
-//		System.out.println(url);
-//		if(StrUtils.isNull(url) || !url.startsWith("http:")){
-//			MessageUtils.showMsg("The "+cntno+" Container Tracking Information Not found!");
-//			return;
-//		}
-//		AppUtils.openWindow("OOLU9730326", url);
 	}
 	
 	@Action
 	public void getTrackShipping(){
-//		TrackService trackService = (TrackService)AppUtils.getBeanFromSpringIoc("trackService");
-//		String json = trackService.getTraceShippingCompanys();
-//		//System.out.println(json);
-//		Gson gson = new Gson();
-//		JsonParser parser = new JsonParser();
-//		JsonElement el = parser.parse(json);
-//		JsonArray jsonArray = el.getAsJsonArray();
-//		StringBuilder stringBuilder = new StringBuilder();
-//		for (JsonElement jsonElement : jsonArray) {
-//			JsonObject jsonObject = (JsonObject)jsonElement;
-//			JsonElement jsonElement2 = jsonObject.get("Code");
-//			//System.out.println(jsonElement2.toString());
-//			stringBuilder.append(jsonElement2.toString().replaceAll("\"", " "));
-//		}
-//		trackShipp = stringBuilder.toString();
-//		System.out.println(trackShipp);
-//		update.markUpdate(UpdateLevel.Data, "trackShipp");
-		//alert(stringBuilder.toString());
 	}
 }

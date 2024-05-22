@@ -11,10 +11,8 @@ import org.springframework.stereotype.Component;
 
 import com.scp.base.ApplicationConf;
 import com.scp.dao.DaoIbatisTemplate;
-import com.scp.dao.ship.BusShippingDao;
 import com.scp.dao.sys.SysUserAssignDao;
 import com.scp.dao.sys.SysUserDao;
-import com.scp.model.ship.BusShipping;
 import com.scp.model.sys.SysUser;
 import com.scp.model.sys.SysUserAssign;
 import com.scp.util.AppUtils;
@@ -65,10 +63,7 @@ public class SysUserAssignMgrService{
 	
 	@Resource
 	public ApplicationConf applicationConf;
-	
-	@Resource
-	public BusShippingDao busShippingDao;
-	
+
 	public void saveData(SysUserAssign data) {
 		if(0 == data.getId()){
 			sysUserAssignDao.create(data);
@@ -238,20 +233,6 @@ public class SysUserAssignMgrService{
 	}
 
 	public void addsAgainsale(String roletype,Long saleid,String[] jobids){
-		for(String jobid:jobids){
-			BusShipping busShipping = busShippingDao.findOneRowByClauseWhere(" jobid="+Long.parseLong(jobid));
-			SysUserAssign selectedRowData = new SysUserAssign();
-			selectedRowData.setRolearea("SZ");
-			selectedRowData.setLinkid(busShipping.getId());
-			selectedRowData.setLinktype("J");
-			selectedRowData.setRoletype(roletype);
-			selectedRowData.setUserid(saleid);
-			try {
-				saveData(selectedRowData);
-			} catch (Exception e) {
-				MessageUtils.showException(e);
-			}
-		}
 	}
 	
 	public void coverAgainsale(String roletype,Long saleid,String[] jobids){
