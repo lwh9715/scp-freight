@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:w="http://www.apusic.com/jsf/widget" xmlns:layout="http://www.apusic.com/jsf/layout"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ajax="http://www.apusic.com/jsf/ajax" xmlns:om="http://www.apusic.com/jsf/misc"
+	renderKitId="AJAX">
+	<w:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="#{constantBean.contextPath}/favicon.ico" />
+		<link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico" />
+		<w:stylesheet src="/common/css/common.css"></w:stylesheet><link rel="stylesheet" id="cmsbg" type="text/css"/>
+	
+		<script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+		<script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
+	</w:head>
+	<w:page loadMask="true" loadMaskText="Loading..." >
+		<ajax:conversationActivator/>
+		<div style="height: 0px;">
+				<ajax:submitAction id="checkRepeatAjaxSubmit" jsvar="checkRepeatAjaxSubmit" /></div>
+		<layout:borderLayout fit="true" fitToBody="true">
+			<layout:panel id="masterEditPanel" height="270" region="north" fit="true" split="true">
+				<w:form>
+					<ajax:submitAction id="isddpAjaxSubmit" jsvar="isddpAjaxSubmit" />
+					<layout:panelGrid columns="4">
+						<w:toolBar>
+							<w:button id="addMaster" label="#{l.m['新增']}"
+								image="#{constantBean.contextPath}/images/new.png" />
+							<w:button id="delMaster" label="#{l.m['删除']}" onclick="return confirm('#{l.m['确定要删除吗?']}');"
+								image="#{constantBean.contextPath}/images/delete.png" />
+							<w:button id="saveMaster" label="#{l.m['保存']}" onclick="return check()"
+								image="#{constantBean.contextPath}/images/save.png" />
+						</w:toolBar>
+						<layout:cell>
+							<ajax:status startStyle="color: red"
+								onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
+								onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
+								<f:facet name="start">
+									<f:verbatim>
+										<img src="#{constantBean.contextPath}/images/waiting.gif" style="height: 20px;">Loading...</img>
+									</f:verbatim>
+								</f:facet>
+							</ajax:status>
+						</layout:cell>
+					</layout:panelGrid>
+
+					<layout:panelGrid columns="12" style="font-size:12px" cellspacing="0" cellpadding="0"
+						width="800">
+
+						<layout:cell colspan="4">
+							<fieldset style="height: 230px;">
+							<layout:panelGrid columns="4" cellspacing="0" cellpadding="0">
+								<h:outputLabel value="#{l.m['代码']}" style="color: red" />
+								<w:textField selectOnFocus="true" 
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.code}" width="100"
+									maxLength="50" 
+									onblur="repeat('code')" jsvar="codejsvar" style="color: red" />
+								<h:outputLabel value="#{l.m['简称']}" style="color: red" />
+								<w:textField selectOnFocus="true"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.abbr}" width="120"
+									msgTarget="under" maxLength="50" focusClass="surround" onblur="repeat('abbr')" jsvar="abbrjsvar"
+									style="color: red" />
+								<layout:cell colspan="1">
+								<h:outputLabel value="#{l.m['中文名']}" />
+								</layout:cell>
+								<layout:cell colspan="3">
+									<w:textField selectOnFocus="true" width="280"
+										value="#{pages.module.suppliermgr.boateditBean.selectedRowData.namec}" onblur="repeat('namec')"  jsvar="namecjsvar"
+										msgTarget="under" maxLength="100" focusClass="surround" />
+								</layout:cell>
+								
+								<h:outputLabel value="#{l.m['英文名']}" />
+								<layout:cell colspan="4">
+									<w:textField selectOnFocus="true"
+										value="#{pages.module.suppliermgr.boateditBean.selectedRowData.namee}" width="280"
+										maxLength="150" focusClass="surround" onblur="repeat('namee')" jsvar="nameejsvar"/>
+								</layout:cell>
+
+								<layout:cell colspan="1">
+									<h:outputLabel value="#{l.m['电话1']}" />
+								</layout:cell>
+
+								<layout:cell colspan="3">
+									<w:textField selectOnFocus="true"
+										value="#{pages.module.suppliermgr.boateditBean.selectedRowData.tel1}" width="280"
+										maxLength="50" focusClass="surround" />
+								</layout:cell>
+
+								<layout:cell colspan="1">
+									<h:outputLabel value="#{l.m['传真1']}" />
+								</layout:cell>
+
+								<layout:cell colspan="3">
+									<w:textField selectOnFocus="true"
+										value="#{pages.module.suppliermgr.boateditBean.selectedRowData.fax1}" width="280"
+										maxLength="50" focusClass="surround" />
+								</layout:cell>
+
+								<layout:cell colspan="1">
+									<h:outputLabel value="Email" />
+								</layout:cell>
+
+								<layout:cell colspan="3">
+									<w:textField selectOnFocus="true"
+										value="#{pages.module.suppliermgr.boateditBean.selectedRowData.email1}" width="280"
+										maxLength="50" focusClass="surround" />
+
+								</layout:cell>
+
+								<layout:cell colspan="1">
+									<h:outputLabel value="#{l.m['联系人']}" />
+								</layout:cell>
+
+								<layout:cell colspan="3">
+									<w:textField selectOnFocus="true"
+										value="#{pages.module.suppliermgr.boateditBean.selectedRowData.contact}" width="280" />
+								</layout:cell>
+
+								<layout:cell colspan="1">
+									<h:outputLabel value="#{l.m['主页']}" />
+								</layout:cell>
+
+								<layout:cell colspan="3">
+									<w:textField selectOnFocus="true"
+										value="#{pages.module.suppliermgr.boateditBean.selectedRowData.homepage}" width="280"
+										maxLength="50" focusClass="surround" />
+								</layout:cell>
+
+							</layout:panelGrid>
+							</fieldset>
+						</layout:cell>
+
+						<layout:cell colspan="5">
+							<fieldset style="height: 230px;">
+							<layout:panelGrid columns="5" cellspacing="0" cellpadding="0">
+
+								<!--<h:outputLabel value="#{l.m['结算方式']}" />
+								<w:combo emptyText="" typeAhead="true" width="60" forceSelection="true"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.paytype}"
+									focusClass="surround">
+									<f:selectItem itemLabel="#{l.m['票结']}" itemValue="B" />
+									<f:selectItem itemLabel="#{l.m['月结']}" itemValue="1" />
+									<f:selectItem itemLabel="#{l.m['双月结']}" itemValue="2" />
+									<f:selectItem itemLabel="#{l.m['三月结']}" itemValue="3" />
+								</w:combo>
+								--><!--<h:outputLabel value="#{l.m['等级']}" />
+								<w:combo emptyText="" typeAhead="true" width="90" forceSelection="true"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.level}"
+									focusClass="surround">
+									<f:selectItems value="#{comboxBean.level}" />
+								</w:combo>
+
+								--><!--<w:checkBox boxLabel="#{l.m['正式']}"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.isofficial}"></w:checkBox>
+								-->
+								<h:outputLabel value="#{l.m['地址(中文)']}" />
+								<layout:cell colspan="4">
+									<w:textArea selectOnFocus="true" jsvar="addresscJs"
+										value="#{pages.module.suppliermgr.boateditBean.selectedRowData.addressc}" width="280"
+										height="30" />
+								</layout:cell>
+
+								<h:outputLabel value="#{l.m['地址(英文)']}" />
+								<layout:cell colspan="4">
+									<w:textArea selectOnFocus="true" jsvar="addresseJs"
+										value="#{pages.module.suppliermgr.boateditBean.selectedRowData.addresse}" width="280"
+										height="30" />
+								</layout:cell>
+
+								<h:outputLabel value="#{l.m['电话2']}" />
+								<layout:cell colspan="4">
+									<w:textField selectOnFocus="true"
+										value="#{pages.module.suppliermgr.boateditBean.selectedRowData.tel2}" width="280"
+										maxLength="50" focusClass="surround" />
+								</layout:cell>
+
+								<h:outputLabel value="#{l.m['传真2']}" />
+								<layout:cell colspan="4">
+									<w:textField selectOnFocus="true"
+										value="#{pages.module.suppliermgr.boateditBean.selectedRowData.fax2}" width="280"
+										maxLength="50" focusClass="surround" />
+								</layout:cell>
+
+								<h:outputLabel value="Email2" />
+								<layout:cell colspan="4">
+									<w:textField selectOnFocus="true"
+										value="#{pages.module.suppliermgr.boateditBean.selectedRowData.email2}" width="280"
+										maxLength="50" focusClass="surround" />
+								</layout:cell>
+
+								<!--<layout:cell colspan="5">
+									<layout:panelGrid columns="5" cellspacing="0" cellpadding="0">
+										<h:outputLabel value="#{l.m['业务员']}" />
+										<layout:cell colspan="2">
+											<w:combo emptyText="" typeAhead="true" width="160" forceSelection="true"
+												value="#{pages.module.suppliermgr.boateditBean.selectedRowData.salesid}"
+												focusClass="surround">
+												<f:selectItems value="#{comboxBean.sales}" />
+											</w:combo>
+										</layout:cell>
+
+										<h:outputLabel value="#{l.m['欠款额度']}" />
+										<w:numberField value="#{pages.module.suppliermgr.boateditBean.selectedRowData.oweamount}"
+											width="80" maxLength="50" focusClass="surround" allowBlank="true" allowDecimals="true"
+											allowNegative="false" style="text-align: right" />
+
+									</layout:panelGrid>
+								</layout:cell>
+
+								--><h:outputLabel value="#{l.m['备注']}" />
+								<layout:cell colspan="4">
+									<w:textArea selectOnFocus="true"
+										value="#{pages.module.suppliermgr.boateditBean.selectedRowData.remarks}" width="280"
+										height="30" />
+								</layout:cell>
+							</layout:panelGrid>
+							</fieldset>
+						</layout:cell>
+						<!--<layout:cell colspan="2">
+							<fieldset style="height: 230px;">
+							<layout:panelGrid columns="2"  cellspacing="0" cellpadding="0" width="200" style="font-size:12px">
+								<w:checkBox boxLabel="#{l.m['应收']}"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.isar}"></w:checkBox>
+								<w:checkBox boxLabel="#{l.m['应付']}"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.isap}"></w:checkBox>
+								<w:checkBox boxLabel="#{l.m['客户']}"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.iscustomer}"></w:checkBox>
+								<w:checkBox boxLabel="#{l.m['供应商']}"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.issupplier}"></w:checkBox>
+								<w:checkBox boxLabel="#{l.m['仓储客户']}" id="iswarehouse" jsvar="iswarehouse"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.iswarehouse}"></w:checkBox>
+								<w:checkBox boxLabel="#{l.m['协作单位']}"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.iscooperative}"></w:checkBox>
+								--><w:checkBox boxLabel="#{l.m['船公司']}" readOnly="true"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.iscarrier}"></w:checkBox>
+								<!--<w:checkBox boxLabel="#{l.m['订舱代理 ']}"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.isagent}"></w:checkBox>
+								<w:checkBox boxLabel="#{l.m['拖车公司 ']}"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.istruck}"></w:checkBox>
+								<w:checkBox boxLabel="#{l.m['报关行 ']}"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.iscustom}"></w:checkBox>
+								<w:checkBox boxLabel="#{l.m['发货人 ']}"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.ishipper}"></w:checkBox>
+								<w:checkBox boxLabel="#{l.m['收货人']}"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.isconsignee}"></w:checkBox>
+								<w:checkBox boxLabel="#{l.m['海运整柜']}"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.isfcl}"></w:checkBox>
+								<w:checkBox boxLabel="#{l.m['全包散货']}" oncheck="isddpAjaxSubmit.submit();" jsvar="isddp"
+									id="isddp" value="#{pages.module.suppliermgr.boateditBean.selectedRowData.isddp}"></w:checkBox>
+								<w:checkBox boxLabel="#{l.m['正规散货']}"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.islcl}"></w:checkBox>
+								<w:checkBox boxLabel="#{l.m['空运']}"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.isair}"></w:checkBox>
+								<w:checkBox boxLabel="#{l.m['目的港代理']}"
+									value="#{pages.module.suppliermgr.boateditBean.selectedRowData.isagentdes}"></w:checkBox>
+
+							</layout:panelGrid>
+							</fieldset>
+						</layout:cell>
+						-->
+					</layout:panelGrid>
+					<w:textField selectOnFocus="true" id="pkVal" hidden="true" />
+				</w:form>
+			</layout:panel>
+
+			<layout:panel id="gridPanel" jsvar="gridPanelJsvar" height="100%" split="true" fit="true"
+				title="" hideBorders="true" region="center">
+				<ajax:submitAction id="showCustService" jsvar="showCustService" />
+			</layout:panel>
+
+		</layout:borderLayout>
+	</w:page>
+<layout:window id="tipsWindow" width="500" height="300" title="#{l.m['系统已存在此客户']}">
+		<layout:panel fit="true" id="tipsPanel" hideBorders="true">
+			<w:form>
+				<layout:panelGrid cellpadding="0" cellspacing="0" columns="4">
+					<h:outputLabel style="color: red" value="#{l.m['代码']}" />
+					<w:textField readOnly="true" value="#{pages.module.suppliermgr.boateditBean.repetitionTips.code}" />
+					<h:outputLabel style="color: red" value="#{l.m['简称']}" />
+					<w:textField readOnly="true" value="#{pages.module.suppliermgr.boateditBean.repetitionTips.abbr}" />
+					<h:outputLabel style="color: red" value="#{l.m['中文名']}" />
+					<w:textField readOnly="true" value="#{pages.module.suppliermgr.boateditBean.repetitionTips.namec}" />
+					<h:outputLabel style="color: red" value="#{l.m['英文名']}" />
+					<w:textField readOnly="true" value="#{pages.module.suppliermgr.boateditBean.repetitionTips.namee}" />
+					<h:outputLabel value="#{l.m['录入人']}" />
+					<w:textField readOnly="true" value="#{pages.module.suppliermgr.boateditBean.repetitionTips.inputer}" />
+					<h:outputLabel value="#{l.m['录入时间']}" />
+					<w:textField readOnly="true" value="#{pages.module.suppliermgr.boateditBean.repetitionTips.inputtime}">
+						<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" timeZone="GMT+8" />
+					</w:textField>
+					<h:outputLabel value="#{l.m['更新人']}" />
+					<w:textField readOnly="true" value="#{pages.module.suppliermgr.boateditBean.repetitionTips.updater}" />
+					<h:outputLabel value="#{l.m['更新时间']}" />
+					<w:textField readOnly="true" value="#{pages.module.suppliermgr.boateditBean.repetitionTips.updatetime}" >
+						<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" timeZone="GMT+8" />
+					</w:textField>
+					<h:outputLabel value="#{l.m['业务员']}" />
+					<w:combo readOnly="true" width="147" value="#{pages.module.suppliermgr.boateditBean.repetitionTips.salesid}">
+						<f:selectItems value="#{comboxBean.sales}" />
+					</w:combo>
+					<h:outputLabel value="#{l.m['正式/潜在']}" />
+					<w:checkBox readOnly="true" value="#{pages.module.suppliermgr.boateditBean.repetitionTips.isofficial}" />
+				</layout:panelGrid>
+			</w:form>
+		</layout:panel>
+	</layout:window>
+	<script>
+	 //<![CDATA[
+	 function check(){
+	 	var code=codejsvar.getValue();
+	 	var abbra=abbrjsvar.getValue();
+	 	var namecc=namecjsvar.getValue();
+	 	var nameee=nameejsvar.getValue();
+	 	
+	 	if(code==""||code==null){
+	 		alert("#{l.m['代码不能为空！']}");
+	 		return false;
+	 	}
+	 	if(abbra==""||abbra==null){
+	 		alert("#{l.m['简称不能为空！']}");
+	 		return false;
+	 	}
+	 	if((namecc==""||namecc==null)&&(nameee==""||nameee==null)){
+	 		alert("#{l.m['中文名和英文名不能同时为空！']}");
+	 		return false;
+	 	}
+	 	
+	 	return true;
+	 }
+	 
+		
+	function repeat(repeatType){
+		var name;
+		var value;
+		if(repeatType == "abbr"){
+			var abbra = abbrjsvar.getValue();
+			var abbr = abbra.trim();
+			name = "abbr";
+			value = abbr;
+			if(abbr == "")return;
+		}else if(repeatType == "namec"){
+			var namecc=namecjsvar.getValue();
+			var namec=namecc.trim();
+			name = "namec";
+			value = namec;
+			if(namec == "")return;
+		}else if(repeatType == "namee"){
+			var nameee=nameejsvar.getValue();
+			var namee=nameee.trim();
+			name = "namee";
+			value = namee;
+			if(namee == "")return;
+		}else if(repeatType == "code"){
+			var code=codejsvar.getValue();
+			var code=code.trim();
+			name = "code";
+			value = code;
+			if(namee == "")return;
+		}
+		checkRepeatAjaxSubmit.addParam('value', value);
+		checkRepeatAjaxSubmit.addParam('name', name);
+	    checkRepeatAjaxSubmit.submit();
+	}
+
+	function culAmount(){
+        	var pieceVal = piece.getValue();
+        	var priceVal = price.getValue();
+        	var amountVal = amount.getValue();
+        	
+        	if(pieceVal==null||pieceVal==''){
+        		pieceVal = 0;
+        	}
+        	if(priceVal==null||priceVal==''){
+        		priceVal = 0;
+        	}
+        	if(amountVal==null||amountVal==''){
+        		amountVal = 0;
+        	}
+        	var amountVal = pieceVal*priceVal;
+        	amount.setValue(amountVal);
+        }
+
+	function resize(){
+		
+	}
+
+	Ext.onReady(function(){
+		resize();
+		
+		document.getElementById(codejsvar.id).onkeyup = function copyCheck(e){
+		 	if(e.ctrlKey==1){
+		 		if(document.all){
+		 			k= e.keyCode;
+		 		}else{
+		 			k= e.which;
+		 		}
+		 		if(k==86){
+		 			codejsvar.setValue(codejsvar.getValue().toUpperCase())
+		 		}
+		 	}
+		 }
+		document.getElementById(abbrjsvar.id).onkeyup = function copyCheck(e){
+		 	if(e.ctrlKey==1){
+		 		if(document.all){
+		 			k= e.keyCode;
+		 		}else{
+		 			k= e.which;
+		 		}
+		 		if(k==86){
+		 			abbrjsvar.setValue(abbrjsvar.getValue().toUpperCase())
+		 		}
+		 	}
+		 }
+		 document.getElementById(namecjsvar.id).onkeyup = function copyCheck(e){
+		 	if(e.ctrlKey==1){
+		 		if(document.all){
+		 			k= e.keyCode;
+		 		}else{
+		 			k= e.which;
+		 		}
+		 		if(k==86){
+		 			namecjsvar.setValue(namecjsvar.getValue().toUpperCase())
+		 		}
+		 	}
+		 }
+		 document.getElementById(nameejsvar.id).onkeyup = function copyCheck(e){
+		 	if(e.ctrlKey==1){
+		 		if(document.all){
+		 			k= e.keyCode;
+		 		}else{
+		 			k= e.which;
+		 		}
+		 		if(k==86){
+		 			nameejsvar.setValue(nameejsvar.getValue().toUpperCase())
+		 		}
+		 	}
+		 }
+		 document.getElementById(addresscJs.id).onkeyup = function copyCheck(e){
+		 	if(e.ctrlKey==1){
+		 		if(document.all){
+		 			k= e.keyCode;
+		 		}else{
+		 			k= e.which;
+		 		}
+		 		if(k==86){
+		 			addresscJs.setValue(addresscJs.getValue().toUpperCase())
+		 		}
+		 	}
+		 }
+		 document.getElementById(addresseJs.id).onkeyup = function copyCheck(e){
+		 	if(e.ctrlKey==1){
+		 		if(document.all){
+		 			k= e.keyCode;
+		 		}else{
+		 			k= e.which;
+		 		}
+		 		if(k==86){
+		 			addresseJs.setValue(addresseJs.getValue().toUpperCase())
+		 		}
+		 	}
+		 }
+		 
+		 
+		Ext.EventManager.onWindowResize(function(){
+			resize();
+		});
+	 });
+
+	function exportExcel() {
+    	var config = qryGridJsvar.getSelectionModel().grid.events.columnmove.obj.plugins[0].grid.colModel.config;
+    	var key = "";
+    	var value = "";
+    	for(var i=1;i<config.length;i++) {
+    		if(!config[i].hidden) {
+    			key += config[i].dataIndex;
+        		value += config[i].header;
+        		if(i < config.length - 1) {
+        			key += ",";
+        			value += ",";
+        		}
+    		}
+    	}
+    	exportexl.addParam("key",key);
+    	exportexl.addParam("value",value);
+    	exportexl.submit();
+    }        
+	 //]]>	
+	</script>
+</f:view>

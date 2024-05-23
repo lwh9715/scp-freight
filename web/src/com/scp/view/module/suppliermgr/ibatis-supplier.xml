@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<select id="pages.module.suppliermgr.boatBean.grid.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			id
+			 ,isjoin
+			 ,joiniddesc
+			 ,joinid
+			 ,jointype
+			 ,iscarrier
+			 ,istruck
+			 ,iscustom
+			 ,issupplier
+			 ,ishipper
+			 ,isconsignee
+			 ,iswarehouse
+			 ,isagent
+			 ,isfcl
+			 ,isddp
+			 ,islcl
+			 ,isair
+			 ,code
+			 ,abbr
+			 ,namec
+			 ,namee
+			 ,level
+			 ,salesnamec
+			 ,portdesc
+			 ,isofficial
+			 ,iscustomer
+			 ,iscooperative
+			 ,iscarrier
+			 ,isconsignee
+			 ,isar
+			 ,isap
+			 ,inputer
+			 ,inputtime
+			 ,updater
+			 ,updatetime
+			 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = a.inputer and x.isdelete = false limit 1),a.inputer) AS inputername
+			 ,COALESCE((SELECT x.namec FROM sys_user x where x.code = a.updater and x.isdelete = false limit 1),a.updater) AS updatername
+			 ,(SELECT namec||'/'||namee||'/'||COALESCE((SELECT name FROM sys_department WHERE id = x.deptid),'') FROM sys_user x WHERE code = a.inputer) inputers
+			 ,(SELECT namec||'/'||namee||'/'||COALESCE((SELECT name FROM sys_department WHERE id = x.deptid),'') FROM sys_user x WHERE code = a.updater) updaters
+		FROM _sys_corporation a
+		WHERE  isdelete = false
+			AND iscarrier = true
+		LIMIT $limit$ OFFSET $start$
+	</select>
+	<select id="pages.module.suppliermgr.boatBean.grid.count" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select
+			count(*) AS counts
+		FROM _sys_corporation a
+		WHERE $qry$
+			$filter$
+			AND isdelete = false
+			AND iscarrier = true
+	</select>
+
+
+</sqlMap>
