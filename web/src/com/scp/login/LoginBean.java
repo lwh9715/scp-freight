@@ -319,14 +319,12 @@ public class LoginBean {
 		}
 		} catch (LoginException e) {
 				e.printStackTrace();
-				//MsgUtil.showMsg(e.getLocalizedMessage());
 				this.showTips(e.getLocalizedMessage());
 				password = "";
 				this.update.markUpdate(UpdateLevel.Data, "password");
 				return null;
 		} catch (Exception e) {
 			e.printStackTrace();
-			//MsgUtil.showMsg(e.getLocalizedMessage());
 			this.showTips(e.getLocalizedMessage());
 			return null;
 		}
@@ -359,19 +357,10 @@ public class LoginBean {
 		Map<String, Object> session = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		String randomCode = (String)session.get("LOGIN_VALIDATE_CODE");
 		if(!randomCode.equalsIgnoreCase(validateCode)) {
+			MessageUtils.alert("Wrong Validate Code");
 			throw new LoginException("Wrong Validate Code");
 		}
 	}
-
-	// private String openIndex(){
-	// UserSession userSession = new UserSession();
-	// userSession.setLogin(true);
-	// userSession.setUsername(username);
-	// userSession.setLogintime(Calendar.getInstance().getTime().toString());
-	// AppUtil.getHttpSession().setAttribute("UserSession", userSession);
-	//		
-	// return url;
-	// }
 
 	/**
 	 * 勾选下次记住我

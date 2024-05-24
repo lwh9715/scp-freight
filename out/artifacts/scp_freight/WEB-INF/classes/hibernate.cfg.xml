@@ -86,15 +86,12 @@
   	<mapping class="com.scp.model.data.DatCntype" />
   	<mapping class="com.scp.model.data.DatCountry" />
   	<mapping class="com.scp.model.data.DatCurrency" />
-  	<mapping class="com.scp.model.data.DatExchangerate" />
   	<mapping class="com.scp.model.data.DatPort" />
 
   	<mapping class="com.scp.model.data.DatFiledata" />
   	<mapping class="com.scp.model.data.DatPackage" />
   	<mapping class="com.scp.model.data.DatLine" />
-  	<mapping class="com.scp.model.data.Datdoor2doorday" />
   	<mapping class="com.scp.model.data.DatLinecode" />
-  	<mapping class="com.scp.model.data.Hscode" />
 
   	<mapping class="com.scp.model.finance.FinaActpayrecdtl" />
 

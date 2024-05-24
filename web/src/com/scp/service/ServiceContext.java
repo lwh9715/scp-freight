@@ -44,9 +44,6 @@ public class ServiceContext {
     public LineMgrService lineMgrService;
 
     @Resource
-    public Door2doordayMgrService door2doordayMgrService;
-
-    @Resource
     public CntypeMgrService cntypeMgrService;
 
     @Resource
@@ -56,9 +53,6 @@ public class ServiceContext {
     public CurrencyMgrService currencyMgrService;
 
     @Resource
-    public ExchangeRateMgrService exchangeRateMgrService;
-
-    @Resource
     public PortyMgrService portyMgrService;
 
     @Resource
@@ -66,7 +60,6 @@ public class ServiceContext {
 
     @Resource
     public FeeItemMgrService feeItemMgrService;
-
 
     @Resource
     public PackageMgrService packageMgrService;

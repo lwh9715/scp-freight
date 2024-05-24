@@ -23,7 +23,6 @@ import org.operamasks.faces.user.ajax.UpdateLevel;
 import org.operamasks.faces.user.util.Browser;
 
 import com.scp.base.CommonComBoxBean;
-import com.scp.model.data.DatWarehouse;
 import com.scp.model.price.PriceTrain;
 import com.scp.service.price.PriceTrainService;
 import com.scp.util.AppUtils;
