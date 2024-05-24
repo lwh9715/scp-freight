@@ -161,11 +161,6 @@ div.tabb span.x-tab-strip-text {
 								image="#{constantBean.contextPath}/images/query-small.png" jsvar="qryRefreshJs"/>
 							<w:button id="clearQryKey" label="#{l.m['清空条件']}" width="25"
 									image="#{constantBean.contextPath}/images/clear.png" />
-							<w:button id="createOrder" jsvar="createOrderJsVar" label="#{l.m['生成订单']}" width="25" onclick="return checkBefore()"
-									image="#{constantBean.contextPath}/images/new.png" />
-							<w:button id="showCreateJobs" label="#{l.m['生成工作单']}" width="25" onclick="return checkBefore1()"
-									image="#{constantBean.contextPath}/images/new.png" />
-
 							<w:button id="showCreatePriceJobs" label="#{l.m['生成报价单']}" width="25" onclick="return checkBefore2()"
 									image="#{constantBean.contextPath}/images/new.png" />
 							<w:button label="#{l.m['保存定制']}" onclick="saveColModelFun(gridJsvar,'pages.module.price.qryfclBean.grid');"
@@ -221,16 +216,16 @@ div.tabb span.x-tab-strip-text {
 					<w:outputColumn id="uuid" header="UUID" hidden="true" />
 					<w:outputColumn header="#{l.m['明细']}"  width="40" sortable="true"
 						clientFormatter="formatLinkEdit" />
-					<w:outputColumn header="#{l.m['主推']}" id="ispush" width="52" sortable="true" style="float:left;"  hidden="false"  wrap="true" clientFormatter="formatcolor"/>
+					<w:outputColumn header="#{l.m['主推']}" id="ispush" width="52" sortable="true" style="float:left;" hidden="false" wrap="true"
+									clientFormatter="formatcolor"/>
 					<w:outputColumn header="#{l.m['驳船港']}" id="bargepol" width="80" sortable="true"/>
-					<w:outputColumn header="#{l.m['起运港']}" id="pol" width="100" sortable="true"  hidden="false"  wrap="true"/>
-					<w:outputColumn header="#{l.m['目的港']}" id="pod" width="100" sortable="true"  hidden="false"  wrap="true"/>
-
-					<w:outputColumn header="#{l.m['船公司']}" id="shipping" width="50" sortable="true"  wrap="true"/>
-					<w:outputColumn header="#{l.m['运价类型']}" id="pricetype" width="40" sortable="true"></w:outputColumn>
-				<w:outputColumn header="#{l.m['币制']}" id="currency" width="50" sortable="true" />
-				<w:outputColumn header="20'GP" id="cost20" width="60" sortable="true" align="right" clientFormatter="setstyle" hidden="false"/>
-					<w:outputColumn header="40'GP" id="cost40gp" width="60" sortable="true" align="right"  clientFormatter="setstyle" hidden="false"/>
+					<w:outputColumn header="#{l.m['起运港']}" id="pol" width="100" sortable="true" hidden="false" wrap="true"/>
+					<w:outputColumn header="#{l.m['目的港']}" id="pod" width="100" sortable="true" hidden="false" wrap="true"/>
+					<w:outputColumn header="#{l.m['船公司']}" id="shipping" width="50" sortable="true" wrap="true"/>
+					<w:outputColumn header="#{l.m['运价类型']}" id="pricetype" width="80" sortable="true"></w:outputColumn>
+					<w:outputColumn header="#{l.m['币制']}" id="currency" width="50" sortable="true"/>
+					<w:outputColumn header="20'GP" id="cost20" width="60" sortable="true" align="right" clientFormatter="setstyle" hidden="false"/>
+					<w:outputColumn header="40'GP" id="cost40gp" width="60" sortable="true" align="right" clientFormatter="setstyle" hidden="false"/>
 					<w:outputColumn header="40'HQ" id="cost40hq" width="60" sortable="true" align="right"  clientFormatter="setstyle" hidden="false"/>
 					<w:outputColumn header="45'HQ" id="cost45hq" width="60" sortable="true" align="right"  clientFormatter="setstyle" hidden="false"/>
 					<w:outputColumn header="#{l.m['驳船费']}20'GP" id="barcost20" width="80" sortable="true"/>

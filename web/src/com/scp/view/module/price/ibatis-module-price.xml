@@ -10,8 +10,7 @@
 		 ,t.pieceother||'('||(SELECT dc.code FROM dat_cntype dc WHERE dc.id::TEXT = t.cntypeothercode)||')' AS pieceCntypeo
 			,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.inputer and x.isdelete = false limit 1),t.inputer) AS inputername
 		 	,COALESCE((SELECT x.namec FROM sys_user x where x.code = t.updater and x.isdelete = false limit 1),t.updater) AS updatername
-		 	,(select count(DISTINCT f.jobid) from fina_arap f where f.isdelete = false and f.fkid = t.id) AS totaljobs
-		FROM _price_fcl t 
+		FROM _price_fcl t
 		WHERE $qry$
 			$pol$
 			$pod$

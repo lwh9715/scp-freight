@@ -124,26 +124,15 @@ public class IndexBean {
 	@BeforeRender
 	public void beforeRender(boolean isPostback) {
 		if (!isPostback) {
-			
-			
-	        
-			
-			//String ver = AppUtils.getReqParam("version");
-			//if(ver.equals("false")){
-			//	WindowShowMessage.show();
-			//}
 			try {
 				if (!AppUtils.isLogin()) {
 					Browser.execClientScript("openNewFrame('../login/login.faces');");
 					return;
 				}
 			} catch (Exception e) {
-				// e.printStackTrace();
 				Browser.execClientScript("openNewFrame('../login/login.faces');");
 				return;
 			}
-			// SkinManager.getInstance(ctxt).setDefaultSkin("green");
-			 
 			isSaas = ConfigUtils.findSysCfgVal("sys_cfg_saas");
 			csno = ConfigUtils.findSysCfgVal("CSNO");
 			if(!StrUtils.isNull(isSaas) && isSaas.equals("Y")){//SAAS模式下不接收消息且影藏图片
@@ -191,26 +180,14 @@ public class IndexBean {
 	 */
 	@Action(id = "desktop")
 	public void desktop() {
-//		centerPanel.addTab(l.find("我的工作台"), AppUtils.getContextPath()
-//				+ "/pages/sysmgr/user/myworkbench.xhtml", "commontabico_tpcls",
-//				config2);
-		// centerPanel.addTab(l.find("导航"),
-		// "../../../pages/module/main/desktop.xhtml",
-		// "commontabico_tpcls", config2);
-		// centerPanel.setActiveTab(0);
-		//if(AppUtils.isDebug){
 			ExtConfig config2 = new ExtConfig();
 			config2.set("border", false);
 			config2.set("fit", true);
-			
 			try {
 				MLType mlType = AppUtils.getUserSession().getMlType();
 				String sysbpm = ConfigUtils.findSysCfgVal("sys_bpm");
 				if(StrUtils.isNull(sysbpm))sysbpm = "BPM";
-				
-				centerPanel.addTab("Tools", AppUtils.getContextPath() + "//common/logoChange.htm?userid="+AppUtils.getUserSession().getUserid()+"&usercode="+AppUtils.getUserSession().getUsercode()+"&language="+mlType+"&sysbpm="+sysbpm, "commontabico_tpcls", config2);
-				
-				centerPanel.addTab("Dash Board", AppUtils.getContextPath() + "/main/dashboard.jsp?userid="+AppUtils.getUserSession().getUserid()+"&usercode="+AppUtils.getUserSession().getUsercode()+"&language="+mlType+"&sysbpm="+sysbpm, "commontabico_tpcls", config2);
+				centerPanel.addTab("FCL报价查询", AppUtils.getContextPath() + "/pages/module/price/qryfcl.xhtml", "commontabico_tpcls", config2);
 			} catch (NoSessionException e) {
 				//e.printStackTrace();
 				System.out.println("HttpSession is null..........");
@@ -230,8 +207,6 @@ public class IndexBean {
 			String url = selectedNode.getUrl();
 			if (StrUtils.isNull(url))
 				return;
-			// centerPanel.addTab(selectedNode.getName(), url, TagPanelUtil
-			// .getTabPanelIconCls(selectedNode.getIcon()), config2);
 			String icon = selectedNode.getIcon();
 			String name = selectedNode.getName();
 			addTab(name, url, icon);
@@ -247,31 +222,17 @@ public class IndexBean {
 	}
 
 	public void addTab(String tabName, String url, String ico) {
-//		ico = AppUtils.getContextPath() + "/main/img/tools.png";
-		
-//		ExtConfig config = new ExtConfig();
 		ExtConfig config2 = new ExtConfig();
 		config2.set("border", false);
 		config2.set("fit", true);
-//		static {
-//			config.set("closable", false);
-//			config.set("border", false);
-//			config.set("fit", true);
-			config2.set("border", false);
-			config2.set("fit", true);
-//		}
-
+		config2.set("border", false);
+		config2.set("fit", true);
 		if ("委托单".equals(tabName) || "箱量统计新".equals(tabName) || "利润统计新".equals(tabName) || "应收应付统计新".equals(tabName)) {
 			url += "?userid=" + AppUtils.getUserSession().getUserid();
 		}
 		String iconClass = TagPanelUtil.getTabPanelIconCls(ico);
 		centerPanel.addTab(tabName, url, iconClass, config2);
 	}
-
-//	public static void main(String[] args) {
-//		String iconClass = TagPanelUtil.getTabPanelIconCls("./img/tools.png");
-//		//AppUtils.debug(iconClass);
-//	}
 
 	@Inject
 	private PartialUpdateManager update;
@@ -310,25 +271,6 @@ public class IndexBean {
 		return userInfo;
 	}
 
-//	private String tipInfo;
-//
-//	public String getTipInfo() {
-//		String usercode = "un login!";
-//		try {
-//			if (AppUtils.isLogin()) {
-//				if(l.m.getMlType()==MLType.en){
-//					usercode = AppUtils.getUserSession().getUsercode();
-//				}else if(l.m.getMlType()==MLType.ch){
-//					usercode = AppUtils.getUserSession().getUsername();
-//				}
-//			}
-//		} catch (Exception e) {
-//			// e.printStackTrace();
-//		}
-//		tipInfo = usercode + "";
-//		return tipInfo;
-//	}
-
 	public void openTab(String code) {
 
 	}
@@ -341,9 +283,6 @@ public class IndexBean {
 	@Action
 	public void help() {
 		String openUrl = "http://note.youdao.com/noteshare?id=07b4e59a76cc8b72eb617c3e03b0c3c3";
-//		Browser.execClientScript("window.open('" + openUrl + "','" + "_help"
-//				+ "','toolbar=no, menubar=no, "
-//				+ "scrollbars=yes, resizable=yes, location=no, status=no');");
 		AppUtils.openWindow(System.currentTimeMillis()+"", openUrl);
 	}
 	
@@ -352,10 +291,7 @@ public class IndexBean {
 		try {
 			String fromUrl = AppUtils.getUserSession().getFromUrl();
 			if(!StrUtils.isNull(fromUrl)){
-				//AppUtils.getHttpServletResponse().sendRedirect(fromUrl);
 				FacesContext.getCurrentInstance().getExternalContext().redirect(fromUrl);
-				//AppUtils.getHttpServletResponse().sendRedirect(fromUrl);
-				//FacesContext.getCurrentInstance().responseComplete();
 				return null;
 			}
 			return loginService.logout();
@@ -386,31 +322,6 @@ public class IndexBean {
 		showWindow.show();
 	}
 	
-
-//	@Action
-//	public void refreshTips() {
-//		AutoTips autoTips = sysMessageService.findAutoTips();
-//		if (autoTips == null)
-//			return;
-//		String titleVal = autoTips.getTitle();
-//		String contextVal = autoTips.getContex();
-//		Long id = autoTips.getId();
-//		Browser.execClientScript("showTimeoutTip('" + titleVal + "','"
-//				+ contextVal + "'," + id + ");");
-//	}
-	
-//	@Action
-//	public void refreshTips() {
-//		AutoTips autoTips = this.findAutoTips1();
-//		if (autoTips == null)
-//			return;
-//		String titleVal = autoTips.getTitle();
-//		String contextVal = autoTips.getContex();
-//		Long id = autoTips.getId();
-//		Browser.execClientScript("showTimeoutTip('" + titleVal + "','"
-//				+ contextVal + "'," + id + ");");
-//	}
-
 	/*
 	 * 设置不再提示（已读）
 	 */
@@ -448,43 +359,6 @@ public class IndexBean {
 		}
 	}
 
-//	public AutoTips findAutoTips1() {
-//		AutoTips autoTips = new AutoTips();
-//		String sql = "(SELECT m.* FROM sys_message m WHERE EXISTS(SELECT 1 FROM sys_message_ref WHERE userid = "
-//			+ AppUtils.getUserSession().getUserid()+" AND messageid = m.id AND isread = FALSE) AND m.isdelete = false AND m.msgtype='P' ORDER BY m.inputtime DESC)";
-//		sql += "\nUNION ALL\n(SELECT m.* FROM sys_message m WHERE NOT EXISTS(SELECT 1 FROM sys_message_ref WHERE userid = "
-//			+ AppUtils.getUserSession().getUserid()+" AND messageid = m.id AND isread = TRUE) AND m.isdelete = false AND m.msgtype='G' ORDER BY m.inputtime DESC)";
-//		List<Map> list = AppUtils.getServiceContext().daoIbatisTemplate.queryWithUserDefineSql(sql);
-//		
-//		if(list == null || list.size() < 1)return null;
-//		Map sysMessageMap = list.get(0);
-//		autoTips.setTitle(String.valueOf(sysMessageMap.get("title")));
-//		String text = dealHtml(String.valueOf(sysMessageMap.get("content")));
-//		autoTips.setContex(text);
-//		autoTips.setUser(String.valueOf(sysMessageMap.get("inputer")));
-//		autoTips.setUrl(String.valueOf(sysMessageMap.get("msgurl")));
-//		autoTips.setId(Long.valueOf(String.valueOf(sysMessageMap.get("id"))));
-//		return autoTips;
-//	}
-
-//	private String dealHtml(String html) {
-//		html = html.replaceAll("<br/>", "\n");
-//		Document doc = Jsoup.parse(html);
-//		String text = doc.body().text();
-//		text = text.trim();
-//		if (text.length() > 90) {
-//			text = text.substring(0, 90);
-//			text += "...";
-//		}
-//		return text;
-//	}
-
-	// public void message1(){
-	//		
-	// centerPanel.addTab(l.find("短信"),this.contentSrc,
-	// "commontabico_tpcls", config2);
-	//
-	// }
 	@Action(id = "message")
 	public void message() {
 		String openUrl = AppUtils.getContextPath()
@@ -563,13 +437,8 @@ public class IndexBean {
 	        }  
 		}
 		String url = openUrl +"?companyid="+companyid+"&uid=" +uid+"&pwd="+pwd;
-//		System.out.println(url);
 		Browser.execClientScript("window.open('" + url+ "');");
 	}
-	
-	
-	
-	//CommonDBCache l2 = (CommonDBCache) AppUtils.getBeanFromSpringIoc("commonDBCache");
 	
 	@Action
 	public void timerjudge(){
@@ -634,14 +503,7 @@ public class IndexBean {
 		}
 		return waitforrq;
 	}
-	
-//	public String time = "";
-//	
-//	public String gettime() {
-//		SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-//		time = dateformat.format(new Date());
-//		return time;
-//	}
+
 	@Action
 	public void waitfor(){
 		getwaitforgoods();

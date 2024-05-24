@@ -322,7 +322,7 @@ public class LoginService{
 				}
 			}
 
-			if(AppUtils.isDebug == true || ciphertext.equals(EncoderHandler.encodeByMD5(EncoderHandler.encodeByMD5(String.valueOf(password))+secretkey))){
+			if(ciphertext.equals(EncoderHandler.encodeByMD5(EncoderHandler.encodeByMD5(String.valueOf(password))+secretkey))){
 //				if(encodePassword.equals(password)) {//测试控制登录
 				userSession.setLogin(true);
 				userSession.setUserid(sysUser.getId());

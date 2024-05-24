@@ -26,54 +26,17 @@
 
 			<layout:cell style="padding-left:0px;padding-top: 0px;">
 				<div id="scrollDiv">
-				<ul>
-					<li><h:outputLabel value="#{l.m['欢迎使用']}:#{constantBean.headTitle}" /> </li>
-					</ul>
 				</div>
 			</layout:cell>
 
 			
 			
 			<layout:cell align="right" style="padding-right:10px;padding-top: 0px;" styleClass="cell">
-					<h:commandLink  style="width:90px;color: #15428b;font-size: 12px;margin-right:10px;"
-						action="#{main.indexBean.winUI}" value="#{main.indexBean.winuiurl}" id="winuiurl"/>
-			
-					<h:commandLink  style="width:90px;color: #15428b;font-size: 12px;margin-right:10px;"
-						action="#{main.indexBean.openUfms}" value="#{main.indexBean.ufmsurl}" id="ufmsurl"/>
-					<h:graphicImage id="tippictures" url="./img/laba.png" style="padding-top: 0px;height: 20px"></h:graphicImage>
-					<h:graphicImage id="tippictureshide" url="./img/laba.png" style="padding-top: 0px;height: 20px"></h:graphicImage>
-					<h:outputText value="#{main.indexBean.tobedealt}" style="font-family: Arial black; font-size: 12px; color: #15428b; font-weight: bold;"
-						id="tobedealt"/>
-					<h:commandLink style="width:90px;color: #15428b;font-size: 12px;margin-right:10px;"
-						action="#{main.indexBean.waitforrqa}"  id="waitforrq"/>
-					<h:commandLink  style="width:90px;color: #15428b;font-size: 12px;margin-right:20px;"
-						action="#{main.indexBean.waitforgoodsa}"  id="waitforgoods"/>
-					<h:graphicImage id="activemqImg" onclick="activemqActionJs.submit();" url="./image/chats.png" style="cursor:pointer;" ></h:graphicImage>
-					<span style="width: 10px" />
-					<span style="width: 90px; color: #15428b; font-size: 12px" />
-					<span style="width: 90px; color: #15428b; font-size: 12px" />
-					
-					<h:commandLink id="changeCorp"  class="button sea"
-						action="#{main.indexBean.changeCorp}" value="#{l.m['切换公司']}" />
-					<!--<span style="width: 90px; color: #15428b; font-size: 12px" />
-					--><h:commandLink id="logout" class="button sea"
-						action="#{main.indexBean.logout}" value="#{l.m['安全退出']}"/>
-					<!--<span style="width: 90px; color: #15428b; font-size: 12px" />
-					<h:outputLabel value=" | "></h:outputLabel>
-					--><h:commandLink id="help"  class="button sea"
-						action="#{main.indexBean.help}" value="#{l.m['操作手册']}" />
-					
-					<h:outputLabel value=" | "></h:outputLabel>
-					<h:commandLink id="user" style="width:90px;color: #15428b;font-size: 12px"
-						action="#{main.indexBean.showUserConfig}" value="#{main.indexBean.userInfo}" />
-					<h:outputLabel value=" | "></h:outputLabel>
-					<h:outputLabel value="#{l.m['皮肤']}" style="width:90px;color: #15428b;font-size: 12px"></h:outputLabel>
-					<w:chooseSkin cookie="skin" title="#{l.m['更换风格']}" style="width: 65px;">
-						<ajax:action event="onchange" />
-					</w:chooseSkin>
-					<!--<h:outputLabel value=" | "></h:outputLabel>
-					<h:outputText style="font-size: 8px; color: #15428b;" value="#{main.indexBean.version}" />
-			-->
+				<h:commandLink id="user" style="width:90px;color: #15428b;font-size: 12px"
+							   action="#{main.indexBean.showUserConfig}" value="#{main.indexBean.userInfo}"/>
+				<h:outputLabel value=" | "></h:outputLabel>
+				<h:commandLink id="logout" class="button sea"
+							   action="#{main.indexBean.logout}" value="#{l.m['安全退出']}"/>
 			</layout:cell>
 			<div style="display: none;height: 0px;width: 0px;">
 				<w:textField value="#{main.indexBean.waitforrq}" jsvar="waitforrqJsVar" hidden="true"></w:textField>

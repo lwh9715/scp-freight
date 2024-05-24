@@ -63,19 +63,6 @@ public class AppUtils extends ApplicationUtilBase {
 	}
 
 	public static String getContextPath() {
-		// HttpServletRequest request = getHttpServletRequest();
-		// ApplicationUtils.debug("getRequestURL: "+request.getRequestURL());
-		// ApplicationUtils.debug("getRequestURI: "+request.getRequestURI());
-		// ApplicationUtils.debug("getQueryString: "+request.getQueryString());
-		// ApplicationUtils.debug("getRemoteAddr: "+request.getRemoteAddr());
-		// ApplicationUtils.debug("getRemoteHost: "+request.getRemoteHost());
-		// ApplicationUtils.debug("getRemotePort: "+request.getRemotePort());
-		// ApplicationUtils.debug("getRemoteUser: "+request.getRemoteUser());
-		// ApplicationUtils.debug("getLocalAddr: "+request.getLocalAddr());
-		// ApplicationUtils.debug("getLocalName: "+request.getLocalName());
-		// ApplicationUtils.debug("getLocalPort: "+request.getLocalPort());
-		// ApplicationUtils.debug("getMethod: "+request.getMethod());
-		// ApplicationUtils.debug("-------request.getParamterMap()-------");
 		return getHttpServletRequest().getContextPath();
 	}
 
@@ -600,22 +587,12 @@ public class AppUtils extends ApplicationUtilBase {
 	
 	
 	 public static void main(String[] args) {
-		 
-//			url: "http://ufms.vip:8280/webchat/service?src=qq&action=send&sendid="+<%=userid%>+"&receiveid="+talkTo+"&msg="+textarea+"",
-//			
-//			.sendPost("http://localhost:8080/test/post", 
-//			           "title="+newString(java.net.URLEncoder.encode(title,"utf-8").getBytes(),"ISO-8859-1")+"); " +
-			
-			
+
 	}
 	 
 	public static void sendIMMsg(String sendid, String receiveid , String msg) {
-		//"title="+newString(java.net.URLEncoder.encode(title,"utf-8").getBytes(),"ISO-8859-1")+"); " 
 		String baseUrl = CfgUtil.findSysCfgVal("sys_public_url");
 		String url = "http://ufms.cn/webchat/service";
-		//if(isDebug){
-			//url = "http://ufms.vip:8280/webchat/service";
-		//}
 		try {
 			msg = URLEncoder.encode(URLEncoder.encode(msg, "UTF-8"));
 		} catch (UnsupportedEncodingException e) {

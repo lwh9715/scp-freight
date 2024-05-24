@@ -57,16 +57,6 @@ public class ApplicationConf {
 		AppUtils.isAutoFillLs = isAutoFillLs;
 	}
 
-//	public String getRptUrl() {
-//		return rptUrl;
-//	}
-
-//	public void setRptUrl(String rptUrl) {
-//		this.rptUrl = rptUrl;
-//		//AppUtils.getRptUrl() = AppUtils.isDebug?"http://192.168.0.188:8888/scp":"http://120.25.241.190:8888/scp";
-//		AppUtils.getRptUrl() = rptUrl;
-//	}
-
 	public boolean getIsUseDzz() {
 		return isUseDzz;
 	}

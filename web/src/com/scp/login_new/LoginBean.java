@@ -127,16 +127,15 @@ public class LoginBean extends BaseCfgBean{
 	
 	@BeforeRender
 	public void beforeRender(boolean isPostback) {
-		if(!isPostback) {
+		if (!isPostback) {
 			findSysLoginTips();
 			String src = AppUtils.getReqParam("src");
 			String action = AppUtils.getReqParam("action");
 			String mlType = AppUtils.getReqParam("lan");
-			if(!StrUtils.isNull(src) && src.equals("clilogin")){
-				processCliLogin(action , mlType);
+			if (!StrUtils.isNull(src) && src.equals("clilogin")) {
+				processCliLogin(action, mlType);
 				return;
 			}
-			
 			try {
 				initData();
 			} catch (Exception e) {
@@ -148,12 +147,10 @@ public class LoginBean extends BaseCfgBean{
 			isLoginByOpenidOnly = ConfigUtils.findSysCfgVal("login_by_openid_only");
 			isOpenLoginBg = ConfigUtils.findSysCfgVal("login_bg_img_open");
 			loginTmpCodeUrl = ConfigUtils.findSysCfgVal("login_tmp_code_url");
-			//ddCodeUrl = ConfigUtils.findSysCfgVal("dd_code_url")+"http://47.112.190.46:8080/ddScanLogin";
-			ddCodeUrl = ConfigUtils.findSysCfgVal("dd_code_url")+"http://8.129.68.2:8989/scp/dingTalkCode";
-			
+			ddCodeUrl = ConfigUtils.findSysCfgVal("dd_code_url") + "http://8.129.68.2:8989/scp/dingTalkCode";
 			this.update.markUpdate(UpdateLevel.Data, "isLoginByOpenidOnly");
-			
-			if(AppUtils.isDebug){
+
+			if (AppUtils.isDebug) {
 				username = "demo";
 			}
 		}
@@ -161,16 +158,13 @@ public class LoginBean extends BaseCfgBean{
 	
 	private void processCliLogin(String action , String mlTypeStr) {
 		try {
-//			if("login".equals(action)&& loginService.getNewVersion()== true){
 			if("login".equals(action)){
-		 	    String usr = AppUtils.getReqParam("usr");//客户端登录，获得用户名
-		 	    
-				//System.out.println("解密前："+usr);
+				//客户端登录，获得用户名
+		 	    String usr = AppUtils.getReqParam("usr");
 		        try {
 		        	String SKEY = "UFMSufms";
 		            Charset CHARSET = Charset.forName("UTF-8");
 		            usr = DesUtil.decrypt(usr, CHARSET, SKEY);
-		            //System.out.println("解密后："+usr);
 		        } catch (Exception e) {
 		            e.printStackTrace();
 		        }
@@ -180,7 +174,8 @@ public class LoginBean extends BaseCfgBean{
 				String cpuid = AppUtils.getReqParam("cpuid");
 				String diskid = AppUtils.getReqParam("diskid");
 				String pwd = AppUtils.getReqParam("pwd");
-				String pubip = AppUtils.getHttpServletRequest().getRemoteAddr();// + request.getRemoteHost() + request.getRemoteUser() + request.getRemotePort();
+				String pubip = AppUtils.getHttpServletRequest().getRemoteAddr();
+				// + request.getRemoteHost() + request.getRemoteUser() + request.getRemotePort();
 				String innerip = AppUtils.getReqParam("innerip");
 				String pcname = AppUtils.getReqParam("pcname");
 				String pcloginusr = AppUtils.getReqParam("loginusr");
@@ -201,16 +196,6 @@ public class LoginBean extends BaseCfgBean{
 				data.setUsername(usr);
 				data.setPassword(pwd);
 				
-				//AppUtils.debug("mac:"+mac);
-				//AppUtils.debug("cpuid:"+cpuid);
-				//AppUtils.debug("diskid:"+diskid);
-				//AppUtils.debug("usr:"+usr);
-				//AppUtils.debug("pwd:"+pwd);
-				//AppUtils.debug("pubip:"+pubip);
-				//AppUtils.debug("innerip:"+innerip);
-				//AppUtils.debug("pcname:"+pcname);
-				//AppUtils.debug("pcloginusr:"+pcloginusr);
-				//AppUtils.debug("logversion:"+logversion);
 				MLType mlType = MLType.ch;
 				if("EN".equals(mlTypeStr)) {
 					mlType = MLType.en;
@@ -230,8 +215,6 @@ public class LoginBean extends BaseCfgBean{
 				}
 				Browser.execClientScript("window.location.href='" + url + "'");
 				}
-//		 }else{
-//			 WindowShowMessage.show();
 		 }
 		} catch (LoginException e) {
 			e.printStackTrace();
@@ -455,7 +438,7 @@ public class LoginBean extends BaseCfgBean{
 			throw new LoginException("No Session or can't get validate code!");
 		}
 		String randomCode = (String)session.get("LOGIN_VALIDATE_CODE");
-		if(AppUtils.isDebug == false && !randomCode.equalsIgnoreCase(validateCode)) {
+		if(!randomCode.equalsIgnoreCase(validateCode)) {
 			throw new LoginException("Wrong Validate Code");
 		}
 	}

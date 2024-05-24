@@ -41,8 +41,6 @@ public class UserOnLineBean extends GridView {
 	}
 
 	public void getnlinenumber(){
-		//String sql = "SELECT count(DISTINCT sessionid) AS nlinenumber from  sys_useronline WHERE isdelete = false AND isvalid = TRUE  " ;
-		//Map m = this.serviceContext.daoIbatisTemplate.queryWithUserDefineSql4OnwRow(sql);
 		Map onlineSessionMap  = AppSessionLister.onlineSessionMap;
 		int count  = onlineSessionMap.size();
 		onlinenumber = ""+count;
@@ -81,8 +79,6 @@ public class UserOnLineBean extends GridView {
 				AppSessionLister.sessionMap.remove(sysUseronline.getSessionid());
 			}
 		}
-		//AppSessionLister.deleteSession(AppUtils.getHttpSession());
-		//AppUtils.getHttpSession().invalidate();
 		MessageUtils.alert("OK!");
 		this.refresh();
 	}
@@ -98,7 +94,6 @@ public class UserOnLineBean extends GridView {
 		}
 		
 		serviceContext.userMgrService.removeUserOnLineDate(StrUtils.array2List(ids));
-		MessageUtils.alert("OK!");
 		this.refresh();
 	}
 

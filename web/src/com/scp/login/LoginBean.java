@@ -358,7 +358,7 @@ public class LoginBean {
 	private void checkValidateCode() {
 		Map<String, Object> session = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		String randomCode = (String)session.get("LOGIN_VALIDATE_CODE");
-		if(AppUtils.isDebug == false && !randomCode.equalsIgnoreCase(validateCode)) {
+		if(!randomCode.equalsIgnoreCase(validateCode)) {
 			throw new LoginException("Wrong Validate Code");
 		}
 	}
