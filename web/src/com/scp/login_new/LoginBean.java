@@ -200,7 +200,6 @@ public class LoginBean extends BaseCfgBean{
 				if("EN".equals(mlTypeStr)) {
 					mlType = MLType.en;
 					multilanguage = "en";
-					changeLanguage();
 				}
 				sysLoginCtrlService.login(data , mlType);	
 				String url = "";
@@ -242,11 +241,7 @@ public class LoginBean extends BaseCfgBean{
 	
 	@Bind
 	public String tipsValue = "";
-	
-	@Bind
-	public UICombo multiLanguageCom;
-	
-	
+
 	/**
 	 * 初始化从cookie获取数据
 	 */
@@ -268,7 +263,6 @@ public class LoginBean extends BaseCfgBean{
 					if (cvalue != null
 							&& ((prefix + "multilanguage").equals(cname))) {
 						multilanguage = cvalue;
-						multiLanguageCom.setValue(cvalue);
 					}
 					if (cvalue != null && ((prefix + "isReme").equals(cname))) {
 						if ("Y".equals(cvalue)) {
@@ -393,7 +387,7 @@ public class LoginBean extends BaseCfgBean{
 			Long userid = AppUtils.getUserSession().getUserid();
 			
 			//1532 系统登录后，在个人设置表里面增加一条记录，标记当前账号用的语言
-			String sql = "SELECT f_inert_sys_configuser('userid="+AppUtils.getUserSession().getUserid()+";language="+multiLanguageCom.getValue()+"')";
+			String sql = "SELECT f_inert_sys_configuser('userid="+AppUtils.getUserSession().getUserid()+";language=ch')";
 			DaoIbatisTemplate daoIbatisTemplate = (DaoIbatisTemplate)ApplicationUtilBase.getBeanFromSpringIoc("daoIbatisTemplate");
 			daoIbatisTemplate.updateWithUserDefineSql(sql);
 			
@@ -847,8 +841,7 @@ public class LoginBean extends BaseCfgBean{
 				AppSessionLister.addSession(AppUtils.getHttpSession());
 				Long userid = AppUtils.getUserSession().getUserid();
 				//1532 系统登录后，在个人设置表里面增加一条记录，标记当前账号用的语言
-//				System.out.println("loginBtn.inert_sys_configuser5.....");
-				String sql = "SELECT f_inert_sys_configuser('userid="+AppUtils.getUserSession().getUserid()+";language="+multiLanguageCom.getValue()+"')";
+				String sql = "SELECT f_inert_sys_configuser('userid="+AppUtils.getUserSession().getUserid()+";language=ch')";
 				DaoIbatisTemplate daoIbatisTemplate = (DaoIbatisTemplate)ApplicationUtilBase.getBeanFromSpringIoc("daoIbatisTemplate");
 				daoIbatisTemplate.updateWithUserDefineSql(sql);
 				
@@ -945,7 +938,7 @@ public class LoginBean extends BaseCfgBean{
 			rememberAction();
 			AppSessionLister.addSession(AppUtils.getHttpSession());
 
-			String sql = "SELECT f_inert_sys_configuser('userid="+AppUtils.getUserSession().getUserid()+";language="+multiLanguageCom.getValue()+"')";
+			String sql = "SELECT f_inert_sys_configuser('userid="+AppUtils.getUserSession().getUserid()+";language=ch')";
 			DaoIbatisTemplate daoIbatisTemplate = (DaoIbatisTemplate)ApplicationUtilBase.getBeanFromSpringIoc("daoIbatisTemplate");
 			daoIbatisTemplate.updateWithUserDefineSql(sql);
 			
@@ -990,7 +983,7 @@ public class LoginBean extends BaseCfgBean{
 			rememberAction();
 			AppSessionLister.addSession(AppUtils.getHttpSession());
 
-			String sql = "SELECT f_inert_sys_configuser('userid="+AppUtils.getUserSession().getUserid()+";language="+multiLanguageCom.getValue()+"')";
+			String sql = "SELECT f_inert_sys_configuser('userid="+AppUtils.getUserSession().getUserid()+";language=ch')";
 			DaoIbatisTemplate daoIbatisTemplate = (DaoIbatisTemplate)ApplicationUtilBase.getBeanFromSpringIoc("daoIbatisTemplate");
 			daoIbatisTemplate.updateWithUserDefineSql(sql);
 

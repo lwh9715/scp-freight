@@ -42,26 +42,11 @@
                     <h:outputLabel value="#{l.m['报表服务器URL']}"/>
                     <w:textField selectOnFocus="true" id="oldPWD" width="300"
                                  value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['rpt_srv_url']}"></w:textField>
-
-                    <!--<h:outputLabel value="#{l.m['首页图片']}445*370" />
-                    <w:textField selectOnFocus="true" width="300" value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['login_leftimg']}"></w:textField>
-
-                    <h:outputLabel value="#{l.m['首页Logo']}120*230" />
-                    <w:textField selectOnFocus="true" width="300" value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['login_logo']}"></w:textField>
-                    -->
                 </layout:panelGrid>
 
                 <layout:panelGrid columns="2">
                     <layout:cell colspan="1">
                         <layout:panelGrid columns="2">
-                            <!--<h:outputLabel value="#{l.m['海运报价自动生成费用类型']}" />
-                            <w:combo emptyText="#{l.m['费用名称']}" width="146" listWidth="200" id="feeitemid"
-                                jsvar="feeitemid" cls="under_line" focusClass="surround" value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['shipquote_feeitemid']}">
-                                <f:selectItems value="#{comboxBean.feeItem}" />
-                            </w:combo>
-                            -->
-
-
                             <h:outputLabel value="#{l.m['控制检查5502 5503 5504必须录到借方']}"></h:outputLabel>
                             <w:combo width="100" focusClass="surround"
                                      value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fs_vch_checkact_55_dir']}">
@@ -158,11 +143,7 @@
                                 <h:outputLabel value="#{l.m['高度']}px"/>
                                 <w:textField selectOnFocus="true" width="300"
                                              value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_logo_height']}"></w:textField>
-
-                                <!--<h:outputLabel value="#{l.m['备案号']}" />
-                                <w:textArea selectOnFocus="true" width="300" value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_ICP_NO']}"></w:textArea>
-
-                            --></layout:panelGrid>
+                            </layout:panelGrid>
                         </fieldset>
                     </layout:cell>
                     <layout:cell colspan="1">
@@ -1307,16 +1288,6 @@
                     </layout:panelGrid>
                 </layout:cell>
 
-                <!--<layout:cell colspan="2">
-                    <layout:panelGrid columns="6" width="500" style="font-size:12px">
-                        <h:outputLabel value="#{l.m['首页Logo']}410*120" />
-                        <w:fileUpload id="fileUpload2" uploadListener="#{pages.sysmgr.cfg.syscfgBean.processUpload2}"
-                            rich="true" maxSize="3000k" required="true" requiredMessage="Home Logo Can't be empty!" />
-                        <w:button value="Upload" id="submit" />
-                    </layout:panelGrid>
-                </layout:cell>
-
-                -->
             </layout:panelGrid>
         </w:form>
     </layout:window>
@@ -1500,19 +1471,14 @@
             $("#bgimg").empty();
             var apandhtml = "";
             var row = 1;
-            for (var num = 1; num < 12; num++) {
+            for (var num = 1; num < 2; num++) {
                 apandhtml += '<tr>';
                 var td1 = '<td width="100"><img src="/scp/login_new/images/bg/bg' + num + '.jpg" onclick="chooseBgImg(' + num + ')" width="300px"/></td>';
                 num++;
                 var td2 = '<td width="100"><img src="/scp/login_new/images/bg/bg' + num + '.jpg" onclick="chooseBgImg(' + num + ')" width="300px"/></td>';
                 num++;
-                var td3 = '<td width="100"><img src="/scp/login_new/images/bg/bg' + num + '.jpg" onclick="chooseBgImg(' + num + ')" width="300px"/></td>';
-                num++;
-                var td4 = '<td width="100"><img src="/scp/login_new/images/bg/bg' + num + '.jpg" onclick="chooseBgImg(' + num + ')" width="300px"/></td>';
                 apandhtml += td1;
                 apandhtml += td2;
-                apandhtml += td3;
-                apandhtml += td4;
                 apandhtml += '</tr>';
             }
             $("#bgimg").append(apandhtml);

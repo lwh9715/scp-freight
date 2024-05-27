@@ -39,7 +39,6 @@
 			<div id="output">
 				<div class="containerT">
 					<w:form style="width: 100%; height: 100%;" id="loginForm" groupId="login">
-						<ajax:submitAction id="changeLanguage" jsvar="changeLanguage"></ajax:submitAction>
 						<ajax:submitAction id="timerAction" jsvar="timerActionJsVar" />
 						<ajax:submitAction id="wxLoginAction" jsvar="wxLoginAction" />
 						<ajax:submitAction id="ddLoginAction" jsvar="ddLoginAction" />
@@ -72,17 +71,6 @@
                                                         <w:textField id="password" inputType="password"></w:textField>
                                                         <div class="ui-form-explain"></div>
                                                     </div>
-                                                    <label id="languageLabel" for="multiLanguageCom"
-                                                           style="color: #FFF;;font-size: 18px;">语言</label>
-                                                    <w:combo id="multiLanguageCom" typeAhead="true"
-                                                             jsvar="multiLanguageCom"
-                                                             editable="false" forceSelection="true" width="200"
-                                                             value="#{login_new.loginBean.multilanguage}"
-                                                             style="z-index: 2147483647"
-                                                             onselect="changeLang();">
-                                                        <f:selectItem itemLabel="中文" itemValue="ch"/>
-                                                        <f:selectItem itemLabel="English" itemValue="en"/>
-                                                    </w:combo>
                                                     <div class="pos-r">
                                                         <label id="codeLabel" for="validateCode"
                                                                style="color: #FFF;;font-size: 18px;">验证码</label>
@@ -173,22 +161,6 @@
 						<w:textField selectOnFocus="true" width="100"
 							value="#{login_new.loginBean.cfgDataMap['CSNO']}"></w:textField>
 					</layout:panelGrid>
-
-<!--				<layout:panelGrid columns="4">-->
-<!--					<w:button id="upg" value="#{l.m['升级']}" />-->
-<!--					<layout:cell colspan="1"></layout:cell>-->
-<!--					<w:button id="getLic" value="Lic"  />-->
-<!--					<ajax:status startStyle="color: red"-->
-<!--							onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"-->
-<!--							onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">-->
-<!--							<f:facet name="start">-->
-<!--								<f:verbatim>-->
-<!--									<img src="#{constantBean.contextPath}/images/waiting.gif" />-->
-<!--								</f:verbatim>-->
-<!--							</f:facet>-->
-<!--						</ajax:status>-->
-<!--				</layout:panelGrid>-->
-
 				<w:textArea selectOnFocus="true" id="upglogs" jsvar="upglogsJsVar" width="570" height="450"></w:textArea>
 			</w:form>
 		</layout:window>
