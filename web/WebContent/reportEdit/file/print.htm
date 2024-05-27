@@ -1,0 +1,463 @@
+  
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Dropdown-打印预览</title>
+  <script language="javascript" src="jquery-1.4.4.min.js"></script>
+	<script language="JavaScript" src="editorjs/Canvas.1.0.1.js"></script>
+  <script language="javascript" src="editorjs/Print.js"></script>
+  	<script language="JavaScript" src="editorjs/elementNode.js"></script>
+  <script language="javascript" src="jquery.PrintArea.js"></script>
+          <style>
+            *{/* Basic CSS reset*/margin:0;padding:0;}
+            body{/* These styles have nothing to do with the sucaihuo*/background:url(images/dark_wood.png) 0 0 repeat;padding:0px 0 0;margin:auto;text-align:center;}
+            .sucaihuo{display:inline-block;}
+            .sucaihuo:after, .sucaihuo:before{margin-top:0.5em;content: "";float:left;border:1.5em solid #fff;}
+            .sucaihuo:after{border-right-color:transparent;}
+            .sucaihuo:before{border-left-color:transparent;}
+            .sucaihuo a:link, .sucaihuo a:visited{color:#000;text-decoration:none;float:left;height:3.5em;overflow:hidden;}
+            .sucaihuo span{background:#fff;display:inline-block;line-height:3em;padding:0 1em;margin-top:0.5em;position:relative;-webkit-transition: background-color 0.2s, margin-top 0.2s;/* Saf3.2+, Chrome*/-moz-transition: background-color 0.2s, margin-top 0.2s;/* FF4+*/-ms-transition: background-color 0.2s, margin-top 0.2s;/* IE10*/-o-transition: background-color 0.2s, margin-top 0.2s;/* Opera 10.5+*/transition: background-color 0.2s, margin-top 0.2s;}
+            .sucaihuo a:hover span{background:#FFD204;margin-top:0;}
+            .sucaihuo span:before{content: "";position:absolute;top:3em;left:0;border-right:0.5em solid #9B8651;border-bottom:0.5em solid #fff;}
+            .sucaihuo span:after{content: "";position:absolute;top:3em;right:0;border-left:0.5em solid #9B8651;border-bottom:0.5em solid #fff;}
+			.content{} 
+        </style>
+  <style media="print">
+ .noprint { display: none } 
+ .nextpage {page-break-after:always;}
+  </style>
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head> 
+<body style="align:center">    
+  <div class='sucaihuo'>
+            <a href="#"  onclick="a()"><span>打印</span></a>
+        </div>
+  <div id="con" class="content" style="text-align: left;float: left;"  >
+  </div>
+</BODY>
+<script language="JavaScript">
+function  a(){
+//$("#ddd").jqprint();
+$("div#con").printArea();
+//$("div#ddd").printArea({mode:"popup",popClose:true});
+//window.print()
+}
+ function addpage(){
+ var content=document.getElementById('con');
+ var p=document.createElement('div');
+ p.setAttribute("class","nextpage");
+ content.appendChild(p);
+ }
+ var print=new Print({
+ id:"con",
+ jdatasource:{"ok":true,"ORG":[
+                          		{
+                               	    "cnortitle":"123213 发货人<br>ASAFSDADADADADADAD<br>SDDSDSDSDSD<br>4534534534534534<br>34534534534534534534<br>345345345345345",
+                               	    "cneetitle":"123213 收货人",
+                               	    "notifytitle":"123213 通知人",
+                               	    "poa":"poa",
+                               	    "pol":"SHEKOU",
+                               	    "vessel":"YM MUTUALITY",
+                               	    "voyage":"044W",
+                               	    "pdd":"pdd",
+                               	    "pod":"JEBEL ALI",
+                               	    "destination":"DESTINATION",
+                               	    "plable":"plable",
+                               	    "hblno":"GSSZ16020133",
+                               	    "cntinfos":"2<br>CONTAINERS/SEAL NO.:<br>YMLU5701861/40'GP/YMLN576602/<br>4567891BUNDLE(S)/491.212KGS/56.431CBM<br>FSCU4930072/40'HQ/YMLN576726/<br>5361BUNDLE(S)/65.931KGS/40.123CBM<br>YMLU8640820/40'GP/YMLN576773/<br>42110BUNDLE(S)/41.000KGS/58.810CBM",
+                               	    "goodsinfo":"goodsinfo",
+                               	    "grswgt":"598.143KGS",
+                               	    "cbm":"155.364CBM",
+                               	    "atdTitle":"SHIPPED ON BOARD",
+                               	    "atd":"SEP,08,2016",
+                               	    "totledesc":"SAY THREE(1*40'HQ,2*40'GP) CONTAINERS ONLY",
+                               	    "freightitemdesc":"FREIGHT COLLECT",
+                               	    "billcount":"THREE(3)",
+                               	    "signplace":"Ningbo,China",
+                               	    "agentitle":"GNS LOGISTIC LLC</br>NOVOROSSIYSK, RUSSIA, LEDNEVA STR. 5, OFFICE 403<br>TEL:+7 (8617) 605930 FAX:+7 (8617) 605980",
+                               	    "carrierfullname":"YANG MING LINE (H.K) LTD"
+                               		}
+                               	 ]}	,
+ template:
+ {
+     "title": "ORG", 
+     "backgroundImage": "url('images/org_hd.jpg')", 
+     "printpc": 0, 
+     "container": {
+ 		"left": 340.09088134765625, 
+    	"top": 51.63636016845703, 
+     	"right": 3490.908935546875, 
+     	"bottom": 1937.613525390625, 
+    	"width": 3141.818115234375, 
+    	"height": 1878.9771728515625
+     }, 
+     "elements": [
+                  {
+                      "top": "165.636360168456px", 
+                      "left": "360.481506347656px", 
+                      "width": "588px", 
+                      "height": "112px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.cnortitle#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "299.636360168456px", 
+                      "left": "362.481506347656px", 
+                      "width": "584px", 
+                      "height": "121px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.cneetitle#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "444.636360168456px", 
+                      "left": "363.481506347656px", 
+                      "width": "584px", 
+                      "height": "116px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.notifytitle#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "581.636360168457px", 
+                      "left": "360.090881347656px", 
+                      "width": "287px", 
+                      "height": "29px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.poa#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "578.636360168457px", 
+                      "left": "653.481506347656px", 
+                      "width": "295px", 
+                      "height": "30px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.pol#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "630.636360168457px", 
+                      "left": "361.090881347656px", 
+                      "width": "290px", 
+                      "height": "27px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.vessel#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "787.636360168458px", 
+                      "left": "750.872131347656px", 
+                      "width": "518px", 
+                      "height": "430px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.goodsinfo#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "785.636360168458px", 
+                      "left": "1271.87213134766px", 
+                      "width": "116px", 
+                      "height": "70px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.grswgt#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "785.636360168458px", 
+                      "left": "1391.87213134766px", 
+                      "width": "132px", 
+                      "height": "66px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.cbm#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "1121.63636016848px", 
+                      "left": "1304.87213134766px", 
+                      "width": "186px", 
+                      "height": "42px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.atdTitle#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "1171.63636016848px", 
+                      "left": "1327.87213134766px", 
+                      "width": "110px", 
+                      "height": "28px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.atd#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "1235px", 
+                      "left": "589px", 
+                      "width": "904px", 
+                      "height": "42px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.totledesc#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "1313.63636016848px", 
+                      "left": "360.872131347657px", 
+                      "width": "698px", 
+                      "height": "128px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.freightitemdesc#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "679.636360168457px", 
+                      "left": "953.090881347656px", 
+                      "width": "277px", 
+                      "height": "30px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.destination#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "630.636360168457px", 
+                      "left": "656.090881347656px", 
+                      "width": "292px", 
+                      "height": "26px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.voyage#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "681.636360168457px", 
+                      "left": "361.090881347656px", 
+                      "width": "290px", 
+                      "height": "30px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.pdd#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "680.636360168457px", 
+                      "left": "656.090881347656px", 
+                      "width": "293px", 
+                      "height": "29px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.pod#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "679.636360168457px", 
+                      "left": "1238.09088134766px", 
+                      "width": "260px", 
+                      "height": "29px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.plable#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "176.636360168456px", 
+                      "left": "1209.48150634766px", 
+                      "width": "299px", 
+                      "height": "42px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.hblno#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "787.636360168458px", 
+                      "left": "364.872131347657px", 
+                      "width": "378px", 
+                      "height": "432px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.cntinfos#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "1467.63636016848px", 
+                      "left": "644.872131347656px", 
+                      "width": "208px", 
+                      "height": "28px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.billcount#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "1467.63636016848px", 
+                      "left": "856.872131347656px", 
+                      "width": "200px", 
+                      "height": "26px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.signplace#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "1525.63636016848px", 
+                      "left": "362.872131347657px", 
+                      "width": "692px", 
+                      "height": "180px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.agentitle#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "1681.63636016848px", 
+                      "left": "1220.87213134766px", 
+                      "width": "288px", 
+                      "height": "28px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.carrierfullname#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }, 
+                  {
+                      "top": "1529px", 
+                      "left": "1242px", 
+                      "width": "262px", 
+                      "height": "33px", 
+                      "color": "green", 
+                      "backgroundColor": "rgb(204, 255, 255)", 
+                      "text": "#ORG.atd#", 
+                      "id": "node1", 
+                      "textDecoration": "", 
+                      "fontStyle": "", 
+                      "fontWeight": "",
+                      "fontsize":"19px"
+                  }
+              ]
+ }
+ });
+
+ $(document).find("#node1").css("line-height","18px")
+
+</script>
+</body>
+</html>

@@ -1,7 +1,0 @@
-http://www.sucaijiayuan.com/Png/XiTongTuBiao/16.html
-http://www.lanrentuku.com/png/1265.html
-http://www.iconpng.com/series/1066
-
-
-rm -rf /var/www/html/gsit/dzz/images/image
-cp -R /www/t7/webapps/scp/main/image /var/www/html/gsit/dzz/images/

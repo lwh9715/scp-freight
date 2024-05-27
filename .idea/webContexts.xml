@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebContextManager">
+    <option name="state">
+      <map>
+        <entry key="file://$PROJECT_DIR$/web/WebContent/common/css" value="file://$PROJECT_DIR$/web/WebContent" />
+        <entry key="file://$PROJECT_DIR$/web/WebContent/pages/module/air/jobsedit.xhtml" value="file://$PROJECT_DIR$/web/WebContent/pages/module/air" />
+        <entry key="file://$PROJECT_DIR$/web/WebContent/pages/module/commerce/araplist.html" value="file://$PROJECT_DIR$/web/WebContent/pages/module/commerce" />
+        <entry key="file://$PROJECT_DIR$/web/WebContent/pages/module/commerce/jobs.html" value="file://$PROJECT_DIR$/web/WebContent/pages/module/commerce" />
+        <entry key="file://$PROJECT_DIR$/web/WebContent/pages/module/commerce/jobsedit.html" value="file://$PROJECT_DIR$/web/WebContent/pages/module/commerce" />
+        <entry key="file://$PROJECT_DIR$/web/WebContent/pages/module/commerce/merge.html" value="file://$PROJECT_DIR$/web/WebContent/pages/module/commerce" />
+        <entry key="file://$PROJECT_DIR$/web/WebContent/pages/module/customer/syscorpinv.xhtml" value="file://$PROJECT_DIR$/web/WebContent/pages/module/customer" />
+        <entry key="file://$PROJECT_DIR$/web/WebContent/pages/module/finance/iframarapedit.xhtml" value="file://$PROJECT_DIR$/web/WebContent/pages/module/finance" />
+        <entry key="file://$PROJECT_DIR$/web/WebContent/pages/module/ship/jobs.xhtml" value="file://$PROJECT_DIR$/web/WebContent/pages/module/ship" />
+      </map>
+    </option>
+  </component>
+</project>
