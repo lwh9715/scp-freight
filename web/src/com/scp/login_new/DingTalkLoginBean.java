@@ -97,6 +97,7 @@ public class DingTalkLoginBean extends HttpServlet {
             e.printStackTrace();
             result = "{\"success\":false,\"message\":\"ERROR Server error!\"}";
         }
+        System.out.println(result);
         writer.write(result);
     }
 }

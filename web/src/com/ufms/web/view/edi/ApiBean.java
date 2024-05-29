@@ -4,12 +4,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.faces.model.SelectItem;
 import javax.servlet.annotation.WebServlet;
@@ -753,6 +748,21 @@ public class ApiBean extends BaseServlet {
         String ret = gridDataProvider.getGridJsonData();
 
         return ret;
+    }
+
+
+    @Action(method="getfeeadd")
+    public String findPriceFclFeeAddByPriceid(HttpServletRequest request){
+        Enumeration enu=request.getParameterNames();
+        String priceid = request.getParameter("id");
+        DaoIbatisTemplate daoIbatisTemplate = (DaoIbatisTemplate) AppUtil.getBeanFromSpringIoc("daoIbatisTemplate");
+        String querySql = "WITH rc_fee AS("
+                +"\nSELECT feeitemname||'/'||feeitemcode AS feeitem,ppcc,currency,unit,amt20,amt40gp,amt40hq,amt"
+                +"\nFROM price_fcl_feeadd WHERE isdelete = FALSE AND fclid = "+priceid+")"
+                +"\n,tx_amts AS (SELECT string_agg(amts,'<br>') amts FROM (SELECT currency||':'||SUM(amt) AS amts FROM rc_fee GROUP BY currency) r)"
+                +"\nSELECT a.*,b.amts FROM rc_fee a,tx_amts b";
+        String result = "{\"code\":0,\"msg\":\"\",\"count\":"+100+",\"data\":"+DaoUtil.queryForJsonArray(querySql)+"}";
+        return result;
     }
 
 }

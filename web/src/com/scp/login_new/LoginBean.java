@@ -147,7 +147,7 @@ public class LoginBean extends BaseCfgBean{
 			isLoginByOpenidOnly = ConfigUtils.findSysCfgVal("login_by_openid_only");
 			isOpenLoginBg = ConfigUtils.findSysCfgVal("login_bg_img_open");
 			loginTmpCodeUrl = ConfigUtils.findSysCfgVal("login_tmp_code_url");
-			ddCodeUrl = ConfigUtils.findSysCfgVal("dd_code_url") + "http://8.129.68.2:8989/scp/dingTalkCode";
+			ddCodeUrl = ConfigUtils.findSysCfgVal("dd_code_url") + "http://39.108.229.3:8989/scp/dingTalkCode";
 			this.update.markUpdate(UpdateLevel.Data, "isLoginByOpenidOnly");
 
 			if (AppUtils.isDebug) {
