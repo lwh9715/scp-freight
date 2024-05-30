@@ -34,7 +34,8 @@ public class FlexBoxHandler {
 		String pageSize = request.getParameter("s");//每页条数 
 		String reqStr = "";//条件
 		try {
-			reqStr = URLDecoder.decode(request.getParameter("q"), "UTF-8");
+			// 再将这些字节用 UTF-8 解码
+			reqStr = new String(request.getParameter("q").getBytes("ISO-8859-1"), "UTF-8");
 			reqStr = reqStr.replaceAll("'", "''");
 		} catch (UnsupportedEncodingException e1) {
 			e1.printStackTrace();
@@ -2074,16 +2075,7 @@ private String queryLines(HttpServletRequest request,String pageIndex,String pag
 		sb.append("\n FROM");
 		sb.append("\n	dat_port p");
 		sb.append("\n WHERE");
-		sb.append("\n	isdelete = false AND isship IS TRUE AND p.namee " +
-				"= ANY(" +
-				"		WITH rc_pol AS(SELECT DISTINCT polnamee AS pol FROM price_fcl_bargefeedtl" +
-				"				UNION ALL" +
-				"				SELECT DISTINCT pol FROM price_fcl WHERE isdelete = false and pol <> '' and pol is not null" +
-				"				UNION ALL" +
-				"				SELECT DISTINCT x.namee FROM dat_port x WHERE isdelete = false and isship = TRUE AND x.ispol = TRUE and exists (SELECT 1 FROM dat_port child where child.link = x.namee))" +
-				"				SELECT DISTINCT pol FROM rc_pol ORDER BY pol" +
-				"		)");
-		sb.append("\n	AND (code ILIKE '%"+reqStr+"%'");
+		sb.append("\n	isdelete = false AND isship IS TRUE AND (code ILIKE '%"+reqStr+"%'");
 		sb.append("\n	OR namec ILIKE '%"+reqStr+"%'");
 		sb.append("\n	OR namee ILIKE '%"+reqStr+"%')");
 		sb.append("\n	ORDER BY code");
@@ -2098,16 +2090,7 @@ private String queryLines(HttpServletRequest request,String pageIndex,String pag
 		sbTotal.append("\n FROM");
 		sbTotal.append("\n 		dat_port p");
 		sbTotal.append("\n WHERE");
-		sbTotal.append("\n 		isdelete = FALSE AND isship IS TRUE AND p.namee " +
-				"= ANY(" +
-				"		WITH rc_pol AS(SELECT DISTINCT polnamee AS pol FROM price_fcl_bargefeedtl" +
-				"				UNION ALL" +
-				"				SELECT DISTINCT pol FROM price_fcl WHERE isdelete = false and pol <> '' and pol is not null" +
-				"				UNION ALL" +
-				"				SELECT DISTINCT x.namee FROM dat_port x WHERE isdelete = false and isship = TRUE AND x.ispol = TRUE and exists (SELECT 1 FROM dat_port child where child.link = x.namee))" +
-				"				SELECT DISTINCT pol FROM rc_pol ORDER BY pol" +
-				"		)");
-		sbTotal.append("\n 		AND (code ILIKE '%"+reqStr+"%'");
+		sbTotal.append("\n 		isdelete = FALSE AND isship IS TRUE AND (code ILIKE '%"+reqStr+"%'");
 		sbTotal.append("\n 		OR namec ILIKE '%"+reqStr+"%'");
 		sbTotal.append("\n 		OR namee ILIKE '%"+reqStr+"%')");
 		Map<String,String> total =	daoIbatisTemplate.queryWithUserDefineSql4OnwRow(sbTotal.toString());
@@ -2126,14 +2109,7 @@ private String queryLines(HttpServletRequest request,String pageIndex,String pag
 		sb.append("\n FROM");
 		sb.append("\n	dat_port p");
 		sb.append("\n WHERE");
-		sb.append("\n	isdelete = false AND isship IS TRUE AND p.namee " +
-				"= ANY(" +
-				"		WITH rc_pol AS(SELECT DISTINCT pod FROM price_fcl WHERE isdelete = false and pod <> '' and pod is not null " +
-				"		UNION ALL " +
-				"		SELECT DISTINCT x.namee FROM dat_port x WHERE isdelete = false and isship = TRUE AND x.ispod = TRUE and exists (SELECT 1 FROM dat_port child where child.link = x.namee)) " +
-				"		SELECT DISTINCT pod FROM rc_pol ORDER BY pod" +
-				"		)");
-		sb.append("\n	AND (code ILIKE '%"+reqStr+"%'");
+		sb.append("\n	isdelete = false AND isship IS TRUE AND (code ILIKE '%"+reqStr+"%'");
 		sb.append("\n	OR namec ILIKE '%"+reqStr+"%'");
 		sb.append("\n	OR namee ILIKE '%"+reqStr+"%')");
 		sb.append("\n	ORDER BY code");
@@ -2148,14 +2124,7 @@ private String queryLines(HttpServletRequest request,String pageIndex,String pag
 		sbTotal.append("\n FROM");
 		sbTotal.append("\n 		dat_port p");
 		sbTotal.append("\n WHERE");
-		sbTotal.append("\n 		isdelete = FALSE AND isship IS TRUE AND p.namee " +
-				"= ANY(" +
-				"		WITH rc_pol AS(SELECT DISTINCT pod FROM price_fcl WHERE isdelete = false and pod <> '' and pod is not null " +
-				"		UNION ALL " +
-				"		SELECT DISTINCT x.namee FROM dat_port x WHERE isdelete = false and isship = TRUE AND x.ispod = TRUE and exists (SELECT 1 FROM dat_port child where child.link = x.namee)) " +
-				"		SELECT DISTINCT pod FROM rc_pol ORDER BY pod" +
-				"		)");
-		sbTotal.append("\n 		AND (code ILIKE '%"+reqStr+"%'");
+		sbTotal.append("\n 		isdelete = FALSE AND isship IS TRUE AND (code ILIKE '%"+reqStr+"%'");
 		sbTotal.append("\n 		OR namec ILIKE '%"+reqStr+"%'");
 		sbTotal.append("\n 		OR namee ILIKE '%"+reqStr+"%')");
 		Map<String,String> total =	daoIbatisTemplate.queryWithUserDefineSql4OnwRow(sbTotal.toString());

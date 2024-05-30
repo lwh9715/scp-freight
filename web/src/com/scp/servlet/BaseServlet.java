@@ -29,9 +29,6 @@ public class BaseServlet extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
-		
-		//resp.setHeader("Access-Control-Allow-Origin", "*"); 
-		
 		String src = req.getParameter("src");
 		String action = req.getParameter("action");
 		String result = "";
@@ -58,17 +55,6 @@ public class BaseServlet extends HttpServlet {
 			out.println(result);
 			out.flush();
 			out.close();
-//			
-			//resp.setHeader("Content-Encoding", "gzip"); 
-			//resp.setHeader("Transfer-Encoding", "chunked"); 
-			//GZIPOutputStream gzipStream = new GZIPOutputStream(resp
-			//		.getOutputStream());
-			// DataOutputStream output=new
-			// DataOutputStream(resp.getOutputStream());
-			// output.writeUTF(result);
-			//gzipStream.write(result.getBytes());
-			//gzipStream.flush();
-			//gzipStream.close();
 		}else if (src.equals("erp")) {
 			result = new ErpServerHandler().handle(action, req);
 			resp.sendRedirect(result);
