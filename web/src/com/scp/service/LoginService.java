@@ -682,7 +682,7 @@ public class LoginService{
         username = username.replaceAll("'", "''").trim();
         String usernameUpper = username.toUpperCase();
         //调整钉钉登录，用户名后缀模糊查询+手机号码匹配 OR 工号且工号不为空
-		List<SysUser> userList = sysUserDao.findAllByClauseWhere("namec like '" + usernameUpper + "%' " +
+		List<SysUser> userList = sysUserDao.findAllByClauseWhere("namec like '" + username + "%' " +
                 "AND (mobilephone = '" + mobile + "' OR (idcode = '" + idcode + "' AND idcode != ''))  AND isinvalid = TRUE AND isdelete = FALSE");
         if (userList != null && userList.size() > 0) {
             SysUser sysUser = userList.get(0);
