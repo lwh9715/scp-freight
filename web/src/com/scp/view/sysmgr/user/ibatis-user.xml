@@ -449,9 +449,7 @@
 	<select id="pages.sysmgr.user.userinfomgrBean.gridUser.page" parameterClass="java.util.Map" resultClass="java.util.HashMap">
 		select 
 		 * 
-		 ,(SELECT (COALESCE(creditlimit,0)-COALESCE((SELECT SUM(f_amtto(a.arapdate, a.currency, 'USD', a.amount))-SUM(f_amtto(a.arapdate, a.currency, 'USD', COALESCE((SELECT SUM(d.amountwf) FROM fina_actpayrecdtl d WHERE d.isdelete = FALSE AND d.arapid = a.id AND EXISTS(SELECT 1 FROM fina_actpayrec WHERE id = d.actpayrecid AND isdelete = FALSE AND rpdate > '2021-01-01')  GROUP BY d.arapid),0))) FROM fina_arap a WHERE isdelete = FALSE AND id = ANY(SELECT arapid FROM sys_user_guarantee WHERE userid = u.id)),0))) :: int
-		 as creditlimit2
-		FROM _sys_user t 
+		FROM _sys_user t
 		WHERE $qry$ 
 			AND isdelete = FALSE
 			AND isinvalid = TRUE 

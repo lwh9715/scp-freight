@@ -66,20 +66,12 @@ public class UserInfoMgrBean extends FormView {
 	
 	@Bind
 	public Long corpidCurrent;
-	
-	//@Bind
-	//public UIButton changeCorpid;
-	
+
 	@Bind
     @SelectItems
     @SaveState
     private List<SelectItem> departments;
-	
-	@Bind
-    @SelectItems
-    @SaveState
-	private String warehouses;
-	
+
 	@SaveState
 	@Accessible
 	public SysUser selectedRowData = new SysUser();
@@ -90,8 +82,6 @@ public class UserInfoMgrBean extends FormView {
 	@Override
 	public void beforeRender(boolean isPostBack) {
 		if (!isPostBack) {
-			// 初始仓库下拉
-			this.warehouses = this.getWarehouse();
 			selectedRowData = serviceContext.userMgrService.sysUserDao.findById(AppUtils.getUserSession().getUserid());
 			if(selectedRowData.getSysCorporation() != null ) {
 				this.company = selectedRowData.getSysCorporation().getId();
@@ -151,36 +141,12 @@ public class UserInfoMgrBean extends FormView {
 		return null;
     }
 	
-	/**
-	 * 查询用户属于的仓库（下拉）
-	 * @return
-	 */
-	private String getWarehouse() {
-		try {
-			String warehouses ="";
-			Long userid = AppUtils.getUserSession().getUserid();
-			String SQL = "select f_lists(D.namec) " +
-					"from sys_user_assign S join dat_warehouse D on S.linkid = D.id " +
-					"where linktype='W' and userid ="+userid+"";
-			List<Object[]> lists = serviceContext.userMgrService.sysUserDao.executeQuery(SQL);
-			warehouses =lists.toString();    
-			return warehouses;
-		} catch (Exception e) {
-			MessageUtils.showException(e);
-			return null;
-		}
-    }
-	
-	
 	@Override
 	public void save() {
-//		SysCorporation sc = this.serviceContext.customerMgrService.sysCorporationDao.findById(this.company);
 		SysDepartment sd = this.sysDepartmentDao.findById(this.department);
-//		this.selectedRowData.setSysCorporation(sc);
 		this.selectedRowData.setSysDepartment(sd);
 		try {
 			this.serviceContext.userMgrService.saveUser(selectedRowData);
-			//MessageUtils.alert("OK");
 			Browser.execClientScript("showmsg()");
 			this.refresh();
 		} catch (Exception e) {
@@ -384,15 +350,7 @@ public class UserInfoMgrBean extends FormView {
 		map.put("qry", qry);
 		return map;
 	}
-	
-	@Bind
-	public UIWindow searchWindow;
-	
-	@Action
-	public void qureyguarantee() {
-		this.searchWindow.show();
-	}
-	
+
 	@Bind
 	public UIDataGrid guaranteegrid;
 	
@@ -421,9 +379,6 @@ public class UserInfoMgrBean extends FormView {
 				String sqlId = "pages.sysmgr.user.userBean.guaranteegrid.count";
 				List<Map> list = serviceContext.daoIbatisTemplate
 						.getSqlMapClientTemplate().queryForList(sqlId,getQryClauseWhere3(qryMapUser));
-//				UserBean u = new UserBean();
-//				newcreditlimit = String.valueOf(list.get(0).get("creditlimit"));
-//				u.setNewcreditlimit(String.valueOf(list.get(0).get("creditlimit")));
 				Long count = (Long) list.get(0).get("counts");
 				return count.intValue();
 			}

@@ -140,12 +140,7 @@
 								<w:button label="#{l.m['查看下属']}" onclick="userWindowJs.show()" width="25" image="#{constantBean.contextPath}/images/query-small.png" />
 							</layout:panelGrid>
 						</layout:cell>
-						
 
-						
-						<!-- <h:outputLabel value="#{l.m['所属仓库']}" />
-						<w:textArea readOnly="true"  selectOnFocus="true" id="warehouses"
-						width="120" height="36" /> -->
 					</layout:panelGrid>
 					<layout:panelGrid>
 						<layout:cell colspan="8">
@@ -200,36 +195,6 @@
 		</w:form>
 	</layout:window>
 	
-	<layout:window maximizable="false" id="searchWindow" jsvar="searchWindowJsVar" width="1000" height="550" header="false"
-		resizable="true" constrainHeader="true" >
-		<w:form>
-			<layout:panelGrid columns="4">
-				<w:toolBar>
-					<w:button id="exportBtn" value="#{l.m['导出']}" onclick="exportExcel();"
-							image="#{constantBean.contextPath}/pages/module/common/resources/images/excel.gif" />
-				</w:toolBar>
-			</layout:panelGrid>
-			<layout:panelGrid columns="1" style="font-size:12px" cellpadding="0" cellspacing="0">
-				<w:dataGrid height="475"  jsvar="guaranteegridVar" paged="true" rows="20" id="guaranteegrid"
-					selectionModel="#{constantBean.checkBox}" toolBarPosition="bottom" idColumn="id"
-					selectable="true">
-					<w:outputColumn id="id" header="ID" hidden="true" />
-					<w:outputColumn header="#{l.m['工作单号']}" id="nos" width="120" sortable="true" />
-					<w:outputColumn header="#{l.m['业务员']}" id="sales" width="70" sortable="true" />
-					<w:outputColumn header="#{l.m['担保人']}" id="guaranteeuser" width="70" sortable="true" />
-					<w:outputColumn header="#{l.m['金额']}" id="amount" width="70" sortable="true"/>
-					<w:outputColumn header="#{l.m['销账金额']}" id="amt2" width="70" sortable="true"/>
-					<w:outputColumn header="#{l.m['担保金额']}" id="guaranteeamount" width="70" sortable="true"/>
-					<w:outputColumn header="#{l.m['销账日期']}" id="rpdate" width="100" sortable="true" />
-					<w:outputColumn header="#{l.m['担保日期']}" id="guaranteedate" width="100" sortable="true" />
-					<w:outputColumn header="#{l.m['回款日期']}" id="paymentdate" width="100" sortable="true" />
-					<w:outputColumn header="#{l.m['担保流水号']}" id="prono" width="140" sortable="true" />
-				</w:dataGrid>
-				<w:textField selectOnFocus="true" id="guaranteeuserid" hidden="true"/>
-			</layout:panelGrid>
-		</w:form>
-	</layout:window>
-	
 	<layout:window maximizable="true" id="changeCorpidWindow" width="400" height="170" title="#{l.m['切换分公司']}" x="100" y="100" modal="true">
 		<w:form>
 			<layout:panelGrid columns="2" cellspacing="5px" style="font-size:12px">
@@ -274,26 +239,6 @@
            	changeDept.submit();
        	}
        	
-		function exportExcel() {
-		 	var config = guaranteegridVar.getSelectionModel().grid.events.columnmove.obj.plugins[0].grid.colModel.config;
-		 	var key = "";
-		 	var value = "";
-		 	for(var i=1;i<config.length;i++) {
-		 		if(!config[i].hidden) {
-		 			key += config[i].dataIndex;
-		     		value += config[i].header;
-		     		if(i < config.length - 1) {
-		     			key += ",";
-		     			value += ",";
-		     		}
-		 		}
-		 	}
-		 	exportexl.addParam("key",key);
-		 	exportexl.addParam("value",value);
-		 	exportexl.submit();
-		 }
-       	
-          	
        function checkChangePwd(){
 			var newPWD1 = newPWD1JsVar.getValue();
 			var newPWD2 = newPWD2JsVar.getValue();

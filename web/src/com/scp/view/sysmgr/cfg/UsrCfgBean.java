@@ -469,31 +469,22 @@ public class UsrCfgBean extends BaseCfgBean {
 	@SaveState
 	@Accessible
 	public Map<String, Object> qryMapUser = new HashMap<String, Object>();
-	
+
 	@Bind
 	public UIDataGrid gridUser;
-	
+
 	@Bind(id = "gridUser", attribute = "dataProvider")
 	protected GridDataProvider getGridScheduleDataProvider() {
 		return new GridDataProvider() {
 
 			@Override
 			public Object[] getElements() {
-				String sqlId = "pages.module.ship.jobseditBean.gridUser.page";
-				return serviceContext.daoIbatisTemplate
-						.getSqlMapClientTemplate().queryForList(sqlId,
-								getQryClauseWhere2(qryMapUser), start, limit)
-						.toArray();
+				return null;
 
 			}
 			@Override
 			public int getTotalCount() {
-				String sqlId = "pages.module.ship.jobseditBean.gridUser.count";
-				List<Map> list = serviceContext.daoIbatisTemplate
-						.getSqlMapClientTemplate().queryForList(sqlId,
-								getQryClauseWhere2(qryMapUser));
-				Long count = (Long) list.get(0).get("counts");
-				return count.intValue();
+				return 0;
 			}
 		};
 	}
@@ -562,8 +553,8 @@ public class UsrCfgBean extends BaseCfgBean {
 		map.put("qry", qry);
 		return map;
 	}
-	
-	
+
+
 	@Action
 	public void clearQryKeysc() {
 		if (qryMapUser != null) {
@@ -577,7 +568,7 @@ public class UsrCfgBean extends BaseCfgBean {
 	public void qryuser() {
 		this.gridUser.reload();
 	}
-	
+
 	@Bind
 	@SaveState
 	public String user = "";
