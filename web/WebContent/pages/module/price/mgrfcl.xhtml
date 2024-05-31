@@ -55,20 +55,6 @@
 		<layout:panel jsvar="gridPanelJsvar" id="gridPanel">
 			<w:form>
 				<layout:panelGrid columns="20" style="font-size: 12px;" cellpadding="0" cellspacing="0">
-					<!--<h:outputLabel value="#{l.m['起运港']}" />
-					<layout:cell>
-						<layout:panelGrid columns="2"  cellpadding="0" cellspacing="0">
-							<w:combo width="100" listWidth="300"
-								value="#{pages.module.price.mgrfclBean.pol}">
-								<f:selectItems value="#{pages.module.price.mgrfclBean.qryPol}" />
-							</w:combo>
-							<w:combo width="60" id="isqryPol">
-								<f:selectItem itemLabel="#{l.m['包含']}" itemValue="Y"/>
-								<f:selectItem itemLabel="#{l.m['不包含']}" itemValue="N"/>
-							</w:combo>
-						</layout:panelGrid>
-					</layout:cell>
-					-->
 					<h:outputLabel value="#{l.m['起运港']}" style="color: red"/>
 					<layout:cell>
 						<layout:panelGrid columns="2" cellpadding="0" cellspacing="0">
@@ -82,23 +68,14 @@
 							</w:combo>
 						</layout:panelGrid>
 					</layout:cell>
-					<!--<h:outputLabel value="#{l.m['目的港']}" />
-					<w:combo  width="100" listWidth="300"
-						value="#{pages.module.price.mgrfclBean.pod}">
-						<f:selectItems value="#{pages.module.price.mgrfclBean.qryPod}" />
-					</w:combo>
-					--><h:outputLabel value="#{l.m['目的港']}" style="color: red"/>
+					<h:outputLabel value="#{l.m['目的港']}" style="color: red"/>
 					<layout:cell>
 						<layout:panelGrid columns="2" cellpadding="0" cellspacing="0">
-						<div id="fclpod"></div>
-						<w:textField selectOnFocus="true" width="45" id="pod" jsvar="podJsvar"
-								value="#{pages.module.price.mgrfclBean.pod}" hidden="true">
-						</w:textField> 
-						<!--<w:combo width="120" listWidth="300"  forceSelection="true"
-							value="#{pages.module.price.qryfclBean.pod}" jsvar="podJsvar">
-							<f:selectItems value="#{pages.module.price.qryfclBean.qryPod}" />
-						</w:combo>
-						-->
+							<div id="fclpod"></div>
+							<w:textField selectOnFocus="true" width="45" id="pod" jsvar="podJsvar"
+										 value="#{pages.module.price.mgrfclBean.pod}" hidden="true">
+							</w:textField>
+
 						</layout:panelGrid>
 					</layout:cell>
 					
@@ -108,9 +85,7 @@
 						<f:selectItems value="#{pages.module.price.mgrfclBean.qryCar}" />
 					</w:combo>
 					<h:outputLabel value="#{l.m['航线']}" />
-					<w:combo width="120"
-						id="lineQry" forceSelection="true"
-						listWidth="160">
+					<w:combo width="120" id="lineQry" forceSelection="true" listWidth="150">
 						<f:selectItems value="#{pages.module.price.mgrfclBean.qryLine}" />
 					</w:combo>
 				
@@ -1342,7 +1317,7 @@
 	<script><!--
 		 //<![CDATA[
 
-	    $('#fclpol').flexbox('/scp/service?src=flexbox&action=fclpol', {
+	    $('#fclpol').flexbox('/scp/service?src=flexbox&action=pol', {
 			resultTemplate: '<div class="col1">{name}</div><div class="col2">{namee}</div><div class="col3">{namec}</div>',
 			watermark: '',
 			//initialValue: pol,
@@ -1356,7 +1331,7 @@
 			}
 		});
 
-		$('#fclpod').flexbox('/scp/service?src=flexbox&action=fclpod', {
+		$('#fclpod').flexbox('/scp/service?src=flexbox&action=pod', {
 			resultTemplate: '<div class="col1">{name}</div><div class="col2">{namee}</div><div class="col3">{namec}</div>',
 			watermark: '',
 			//initialValue: pod,
@@ -1378,7 +1353,6 @@
 				gridIds = gridIds+this.get("id")+",";
 			});
 			gridIds = gridIds.substr(0,gridIds.length-1);
-			//console.log(gridIds);
 			if(gridIds == null || gridIds == ""){
 				alert("#{l.m['请先勾选数据！']}");
 			}else{
@@ -1398,18 +1372,6 @@
 		 	return temp;
         }
 		 
-		//$(document).ready(function(){ 
-			//$('#pod').flexbox(#{pages.module.price.mgrfclBean.polJson}, {
-			//		resultTemplate: '<div class="col1">{name}</div>',
-			//		watermark: 'POD',
-			//		width: 100,
-			//		onSelect: function() {
-			//			podJsVar.setValue(this.value);
-			//			podInputJsvar.setValue(this.value);
-			//		}
-			//	});
-		//}) 
-	    
 	    function formateRelease(v,m,r){
 	    	var isrelease = r.get('isrelease');
 			if(isrelease =='false'){
@@ -1424,8 +1386,6 @@
 		
 		function formatLinkEdit(v,m,r) {
 	    	var pkid = r.get('id');
-	    	//linkEdit.addParam("id",id);
-	    	//linkEdit.submit();
 	    	var temp = '<a style="color:#00F;" onclick="showEdit('+pkid+')">#{l.m['编辑']}</a>';
             return temp;
         }
@@ -1512,7 +1472,6 @@
 				}else{
 					v = "#{l.m['大船']}ON BOARD";
 				}
-				
 			}else if(v =='TDETD'){
 				v = "#{l.m['提单']}ON BOARD";
 			}else if(v =='BCETD'){
@@ -1525,7 +1484,6 @@
 				}else{
 					v = "#{l.m['驳船']}ON BOARD";
 				}
-				
 			}else if(v =='SOETD'){
 				v = "SO ETD";
 			}else if(v =='GATE'){
@@ -1534,8 +1492,7 @@
 	        return v;
 		} 
 		
-		
-		
+
 		function formateTypeend(v,m,r){
 	    	var endon = r.get('typeend2');
 	    	var endbaron = r.get('bartypeend2');
@@ -1578,10 +1535,6 @@
 			}	
 	        return v;
 		} 
-    
-    
-   
-    
     
     function formatebargetypestart(v,m,r){
 	    	var type = r.get('bargetypestr2');

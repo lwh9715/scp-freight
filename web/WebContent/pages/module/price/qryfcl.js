@@ -244,7 +244,7 @@ function initFlexBox(pol , pod, userid){
 		}
 	});
     
-    $('#fclpol').flexbox('/scp/service?src=flexbox&action=fclpol', {
+    $('#fclpol').flexbox('/scp/service?src=flexbox&action=pol', {
 		resultTemplate: '<div class="col1">{name}</div><div class="col2">{namee}</div><div class="col3">{namec}</div>',
 		watermark: '',
 		initialValue: pol,
@@ -258,7 +258,7 @@ function initFlexBox(pol , pod, userid){
 		}
 	});
 	
-	$('#fclpod').flexbox('/scp/service?src=flexbox&action=fclpod', {
+	$('#fclpod').flexbox('/scp/service?src=flexbox&action=pod', {
 		resultTemplate: '<div class="col1">{name}</div><div class="col2">{namee}</div><div class="col3">{namec}</div>',
 		watermark: '',
 		initialValue: pod,

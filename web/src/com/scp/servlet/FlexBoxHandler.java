@@ -773,7 +773,6 @@ private String queryLines(HttpServletRequest request,String pageIndex,String pag
 		sb.append("\n	dat_line");
 		sb.append("\n WHERE");
 		sb.append("\n	isdelete = false");
-		//sb.append("\n	AND isbarge = true");
 		sb.append("\n	AND (code ILIKE '%"+reqStr+"%'");
 		sb.append("\n	OR namec ILIKE '%"+reqStr+"%'");
 		sb.append("\n	OR namee ILIKE '%"+reqStr+"%')");
