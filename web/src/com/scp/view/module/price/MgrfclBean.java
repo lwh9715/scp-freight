@@ -175,7 +175,7 @@ public class MgrfclBean extends EditGridFormView {
     public List<SelectItem> getQryLine() {
         try {
             return CommonComBoxBean.getComboxItems("line", "line", "price_fcl AS d"
-                    , "WHERE isdelete = false and line <> '' and line is not null group by line", "ORDER BY convert_to(line,'GBK')");
+                    , "WHERE line <> '' and line is not null group by line", "ORDER BY convert_to(line,'GBK')");
         } catch (Exception e) {
             MessageUtils.showException(e);
             return null;
@@ -197,7 +197,7 @@ public class MgrfclBean extends EditGridFormView {
     public List<SelectItem> getQryCar() {
         try {
             return CommonComBoxBean.getComboxItems("DISTINCT shipping", "shipping", "price_fcl AS d"
-                    , "WHERE isdelete = false and shipping <> '' and shipping is not null " +
+                    , "WHERE shipping <> '' and shipping is not null " +
                             " AND (d.corpid = ANY(SELECT DISTINCT x.corpid FROM sys_user_corplink x WHERE x.ischoose = TRUE AND userid =" + AppUtils.getUserSession().getUserid() + ")) ", "ORDER BY shipping");
         } catch (Exception e) {
             MessageUtils.showException(e);
