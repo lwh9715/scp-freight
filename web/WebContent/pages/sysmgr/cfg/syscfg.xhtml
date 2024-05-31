@@ -9,15 +9,11 @@
         <link rel="icon" type="image/gif" href="#{constantBean.contextPath}/favicon.ico"/>
         <w:stylesheet src="/common/css/common.css"></w:stylesheet>
         <link rel="stylesheet" id="cmsbg" type="text/css"/>
-
         <w:script src="/common/js/common.js?t=10"></w:script>
         <script type="text/javascript" src="/scp/common/js/jquery-2.0.0.min.js"></script>
-
         <w:script type="text/javascript" src="/common/ckeditor/ckeditor.js"></w:script>
         <w:script type="text/javascript" src="/common/ckeditor/extckeditor.js"></w:script>
-
-        <script type="text/javascript"
-                src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
+        <script type="text/javascript" src="/scp/_global/resource/ext/src/locale/ext-lang.js?#{commonBean.lang}"></script>
         <script type="text/javascript" src="/scp/_global/resource/om/locale/om-lang.js?#{commonBean.lang}"></script>
     </w:head>
     <w:page loadMask="true" loadMaskText="Loading..." title="" style="font-size: 12px;">
@@ -44,128 +40,6 @@
                                  value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['rpt_srv_url']}"></w:textField>
                 </layout:panelGrid>
 
-                <layout:panelGrid columns="2">
-                    <layout:cell colspan="1">
-                        <layout:panelGrid columns="2">
-                            <h:outputLabel value="#{l.m['控制检查5502 5503 5504必须录到借方']}"></h:outputLabel>
-                            <w:combo width="100" focusClass="surround"
-                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['fs_vch_checkact_55_dir']}">
-                                <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
-                                <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
-                            </w:combo>
-                            <h:outputLabel value="#{l.m['提单预览前检查业务数据']}"/>
-                            <w:combo width="100" focusClass="surround"
-                                     value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['bu_shipping_hblrpt_check']}">
-                                <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
-                                <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
-                            </w:combo>
-                        </layout:panelGrid>
-                    </layout:cell>
-                </layout:panelGrid>
-
-                <layout:panelGrid columns="2">
-                    <layout:cell colspan="1">
-                        <fieldset style="width: 550px;">
-                            <legend>#{l.m['提醒']}</legend>
-                            <layout:panelGrid columns="4">
-                                <h:outputLabel value="#{l.m['客户超时间未接单自动提醒业务员']}"></h:outputLabel>
-                                <w:combo width="50" focusClass="surround"
-                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_customer_alert_auto']}">
-                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
-                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
-                                </w:combo>
-                                <h:outputLabel value="#{l.m['天数']}"/>
-                                <w:textField selectOnFocus="true" width="50"
-                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_customer_alert_day']}"></w:textField>
-
-                                <h:outputLabel value="#{l.m['客户超时间未接单自动转为公共客户']}"></h:outputLabel>
-                                <w:combo width="50" focusClass="surround"
-                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_customer_transpublic_auto']}">
-                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
-                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
-                                </w:combo>
-                                <h:outputLabel value="#{l.m['天数']}"/>
-                                <w:textField selectOnFocus="true" width="50"
-                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_customer_transpublic_day']}"></w:textField>
-                                <h:outputLabel value="#{l.m['工作单跟踪提醒']}"></h:outputLabel>
-                                <w:combo width="50" focusClass="surround"
-                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['work_sheet_tracking_reminding']}">
-                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
-                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
-                                </w:combo>
-                            </layout:panelGrid>
-                        </fieldset>
-                    </layout:cell>
-                    <layout:cell colspan="1">
-                        <fieldset style="width: 550px;">
-                            <legend>DashBoard</legend>
-                            <layout:panelGrid columns="2">
-                                <h:outputLabel value="#{l.m['欠款超期提醒']}"></h:outputLabel>
-                                <w:combo width="50" focusClass="surround"
-                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['dash_show_fee_over']}">
-                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
-                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
-                                </w:combo>
-                                <h:outputLabel value="#{l.m['利润亏损提醒']}"></h:outputLabel>
-                                <w:combo width="50" focusClass="surround"
-                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['dash_show_profit_less']}">
-                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
-                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
-                                </w:combo>
-                                <h:outputLabel value="#{l.m['业务审核天数']}"></h:outputLabel>
-                                    <w:textField selectOnFocus="true" width="50"
-                                                 value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_saled_check_date']}"></w:textField>
-                            </layout:panelGrid>
-                        </fieldset>
-                    </layout:cell>
-                    <layout:cell colspan="1">
-                        <fieldset style="width: 550px;">
-                            <legend>Logo</legend>
-                            <layout:panelGrid columns="2">
-                                <h:outputLabel value="#{l.m['名称']}"/>
-                                <w:textField selectOnFocus="true" width="300"
-                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_header_title']}"></w:textField>
-
-                                <layout:cell colspan="1">
-                                    <layout:panelGrid columns="1">
-                                        <w:button label="#{l.m['上传']}LOGO" onclick="logoWindowJsVar.show()"></w:button>
-                                        <w:button label="#{l.m['刷新']}LOGO" id="refreshLogo" onclick=""></w:button>
-                                        <w:button label="#{l.m['清除']}LOGO" id="clearLogo" onclick=""></w:button>
-                                    </layout:panelGrid>
-                                </layout:cell>
-                                <layout:cell colspan="1">
-                                    <layout:panelGrid>
-                                        <h:graphicImage id="logoImg" value="#{pages.sysmgr.cfg.syscfgBean.logo}"
-                                                        height="100" alt="undefined"></h:graphicImage>
-                                    </layout:panelGrid>
-                                </layout:cell>
-
-                                <h:outputLabel value="#{l.m['高度']}px"/>
-                                <w:textField selectOnFocus="true" width="300"
-                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_logo_height']}"></w:textField>
-                            </layout:panelGrid>
-                        </fieldset>
-                    </layout:cell>
-                    <layout:cell colspan="1">
-                        <fieldset style="width: 550px;">
-                            <legend>#{l.m['在线补料']}</legend>
-                            <layout:panelGrid columns="2">
-                                <h:outputLabel value="#{l.m['在线补料']}URL"></h:outputLabel>
-                                <w:textField selectOnFocus="true" id="csurlbase" width="300"
-                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['cs_url_base']}"></w:textField>
-                                <h:outputLabel value="URL#{l.m['有效时间']}(h)"></h:outputLabel>
-                                <w:combo width="50" listWidth="50" id="" jsvar="" focusClass="surround"
-                                         forceSelection="true"
-                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['cs_url_base_time']}">
-                                    <f:selectItems value="#{comboxBean.csurlbasetime}"/>
-                                </w:combo>
-                                <h:outputLabel value="UFMS URL"></h:outputLabel>
-                                <w:textField selectOnFocus="true" id="ufmsurl" width="300"
-                                             value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['ufms_url']}"></w:textField>
-                            </layout:panelGrid>
-                        </fieldset>
-                    </layout:cell>
-                </layout:panelGrid>
                 <ajax:status startStyle="color: red"
                              onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
                              onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
@@ -200,13 +74,6 @@
                                     <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
                                     <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
                                 </w:combo>
-                                <h:outputLabel value="#{l.m['分布式文件']}:"/>
-                                <w:combo width="50" focusClass="surround"
-                                         value="#{pages.sysmgr.cfg.syscfgBean.cfgDataMap['sys_cfg_file_soa']}">
-                                    <f:selectItem itemValue="Y" itemLabel="#{l.m['是']}"/>
-                                    <f:selectItem itemValue="N" itemLabel="#{l.m['否']}"/>
-                                </w:combo>
-
                             </layout:panelGrid>
                         </layout:cell>
                         <layout:cell>
@@ -429,86 +296,9 @@
                 </w:form>
             </layout:panel>
 
-
         </layout:tabLayout>
 
     </w:page>
-
-    <layout:window maximizable="true" id="logoWindow" jsvar="logoWindowJsVar" width="400" height="150"
-                   title="#{l.m['上传']}LOGO">
-        <w:form>
-            <layout:panelGrid columns="2" cellspacing="5px" width="500" style="font-size:12px">
-                <layout:cell colspan="2">
-                    <layout:panelGrid columns="6" width="450" style="font-size:12px">
-                        <h:outputLabel value="LOGO"/>
-                        <w:fileUpload id="fileUpload1" uploadListener="#{pages.sysmgr.cfg.syscfgBean.processUpload1}"
-                                      rich="true" maxSize="3000k"/>
-                    </layout:panelGrid>
-                </layout:cell>
-
-                <layout:cell colspan="2">
-                    <layout:panelGrid columns="6" width="450" style="font-size:12px">
-                        <w:button label="#{l.m['上传']}"></w:button>
-                        <w:fileUploadProgress startMessage="#{l.m['开始上传']}" id=""
-                                              uploadingMessage="#{l.m['正在上传，已经上传']}{readBytes}k/{total}k({percentage}%)"
-                                              completeMessage="#{l.m['上传结束，总共']}{total}k"
-                                              errorMessage="#{l.m['上传错误：']}{error}"/>
-                    </layout:panelGrid>
-                </layout:cell>
-
-            </layout:panelGrid>
-        </w:form>
-    </layout:window>
-
-    <layout:window maximizable="true" id="weixinImgWindow" jsvar="weixinImgWindowJsVar" width="400" height="150"
-                   title="#{l.m['微信二维码上传']}">
-        <w:form>
-            <layout:panelGrid columns="2" cellspacing="5px" width="500" style="font-size:12px">
-                <layout:cell colspan="2">
-                    <layout:panelGrid columns="6" width="450" style="font-size:12px">
-                        <h:outputLabel value="#{l.m['二维码']}"/>
-                        <w:fileUpload id="weixinImgfileUpload1"
-                                      uploadListener="#{pages.sysmgr.cfg.syscfgBean.weixinImgUpload1}"
-                                      rich="true" maxSize="3000k"/>
-                    </layout:panelGrid>
-                </layout:cell>
-                <layout:cell colspan="2">
-                    <layout:panelGrid columns="6" width="450" style="font-size:12px">
-                        <w:button label="#{l.m['上传']}"></w:button>
-                        <w:fileUploadProgress startMessage="#{l.m['开始上传']}" id=""
-                                              uploadingMessage="#{l.m['正在上传，已经上传']}{readBytes}k/{total}k({percentage}%)"
-                                              completeMessage="#{l.m['上传结束，总共']}{total}k"
-                                              errorMessage="#{l.m['上传错误：']}{error}"/>
-                    </layout:panelGrid>
-                </layout:cell>
-            </layout:panelGrid>
-        </w:form>
-    </layout:window>
-
-    <layout:window maximizable="true" id="weixinXCXImgWindow" jsvar="weixinXCXImgWindowJsVar" width="400" height="150"
-                   title="#{l.m['微信小程序二维码上传']}">
-        <w:form>
-            <layout:panelGrid columns="2" cellspacing="5px" width="500" style="font-size:12px">
-                <layout:cell colspan="2">
-                    <layout:panelGrid columns="6" width="450" style="font-size:12px">
-                        <h:outputLabel value="#{l.m['二维码']}"/>
-                        <w:fileUpload id="weixinXCXImgfileUpload1"
-                                      uploadListener="#{pages.sysmgr.cfg.syscfgBean.weixinXCXImgUpload1}"
-                                      rich="true" maxSize="3000k"/>
-                    </layout:panelGrid>
-                </layout:cell>
-                <layout:cell colspan="2">
-                    <layout:panelGrid columns="6" width="450" style="font-size:12px">
-                        <w:button label="#{l.m['上传']}"></w:button>
-                        <w:fileUploadProgress startMessage="#{l.m['开始上传']}" id=""
-                                              uploadingMessage="#{l.m['正在上传，已经上传']}{readBytes}k/{total}k({percentage}%)"
-                                              completeMessage="#{l.m['上传结束，总共']}{total}k"
-                                              errorMessage="#{l.m['上传错误：']}{error}"/>
-                    </layout:panelGrid>
-                </layout:cell>
-            </layout:panelGrid>
-        </w:form>
-    </layout:window>
 
     <layout:window maximizable="true" id="uiWindow" width="400" height="150" title="#{l.m['修改密码']}">
         <w:form>
@@ -539,28 +329,6 @@
         </w:form>
     </layout:window>
 
-    <layout:window maximizable="true" id="upgWindow" jsvar="upgWindow" width="590" height="500" title="UPG">
-        <w:form>
-            <layout:panelGrid columns="2">
-                <w:toolBar style="width: 120px;">
-                    <w:button id="upg" value="#{l.m['升级']}"
-                              image="#{constantBean.contextPath}/images/save.png"/>
-                </w:toolBar>
-                <ajax:status startStyle="color: red"
-                             onstart="document.getElementsByTagName('body').item(0).style.cursor='progress'"
-                             onstop="document.getElementsByTagName('body').item(0).style.cursor='auto'">
-                    <f:facet name="start">
-                        <f:verbatim>
-                            <img src="#{constantBean.contextPath}/images/waiting.gif"/>
-                        </f:verbatim>
-                    </f:facet>
-                </ajax:status>
-            </layout:panelGrid>
-
-            <w:textArea selectOnFocus="true" id="upglogs" width="570" height="450"></w:textArea>
-        </w:form>
-    </layout:window>
-
     <layout:window maximizable="true" title="#{l.m['邮箱签名']}" id="showEmailSignWindow" jsvar="showEmailSignWindow"
                    width="600" height="530"
                    header="false" resizable="true" constrainHeader="true">
@@ -584,9 +352,7 @@
         </layout:panel>
     </layout:window>
 
-
-    <layout:window maximizable="true" id="showCacheWindow" jsvar="showCacheWindowJsVar" width="590" height="500"
-                   title="Cache">
+    <layout:window maximizable="true" id="showCacheWindow" jsvar="showCacheWindowJsVar" width="590" height="500" title="Cache">
         <w:form>
             <w:textArea selectOnFocus="true" id="cacheLogs" width="570" height="450"></w:textArea>
         </w:form>
@@ -595,29 +361,6 @@
     <script>
         //<![CDATA[
         var img = null;
-
-        function checkPic(picForm) {
-            var location = picForm.pic.value;
-            if (location == "") {
-                alert("#{l.m['请先选择图片文件']}");
-                return false;
-            }
-            var point = location.lastIndexOf(".");
-            var type = location.substr(point);
-            if (type == ".jpg" || type == ".gif" || type == ".JPG" || type == ".GIF" || type == ".PNG" || type == ".png") {
-                img = document.createElement("img");
-                img.src = location;
-                if (img.fileSize > 102400) {
-                    alert("#{l.m['图片尺寸请不要大于100KB']}");
-                    return false;
-                } else
-                    return true;
-            } else {
-                alert("#{l.m['只能输入jpg或者gif格式的图片']}");
-                return false;
-            }
-            return true;
-        }
 
         Ext.onReady(function () {
             editor1 = Ext.form.CKEditor.create("formedt:ckeditor");

@@ -49,20 +49,8 @@ public class ConstantBean {
 	}
 
 	public enum Module {
-		fina_arap("费用管理", 299000L), 
-		fina_jobs("工作单管理", 250000100200L),
-		fs_vch("凭证",500000200300L),
-		fina_actpayrec("收付款",513000L),
-		bus_ship_bill("提单管理",250000100550L),
-		bus_order("订单管理",250000100100L),
-		fina_rpreq_payapplycheck("收付款申请审核",517500L),
-		user_info_mgr("个人面板",690000L),
-		fina_air("空运工作单管理",250000100900L),
-		fina_jobs_land("陆运工作单", 250000300100L),
-		fina_jobs_kahang("卡航工作单",250000300130L),
-		wms_in("入仓单", 241000L);
-		
-		
+		user_info_mgr("个人面板",690000L);
+
 		private String _name;
 		private Long _value;
 

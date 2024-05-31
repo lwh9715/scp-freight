@@ -109,7 +109,6 @@ public class SysCfgBean extends BaseCfgBean {
     @Action
     public void rptMgr(){
     	AppUtils.openWindow("_rpt_Mgr", "../rpt/rptMgr.xhtml");
-//    	AppUtils.openWindow("_lsMgr", "lsmgr.xhtml");
     }
 
 

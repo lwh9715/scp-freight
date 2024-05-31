@@ -22,52 +22,37 @@
 				<w:form>
 					<w:toolBar>
 						<w:button id="qryRefresh" label="#{l.m['刷新']}"
-							image="#{constantBean.contextPath}/images/refresh.png" />
+								  image="#{constantBean.contextPath}/images/refresh.png"/>
 						<w:button id="qryAdd" jsvar="qryAddJsVar" label="#{l.m['新增']}"
-							image="#{constantBean.contextPath}/images/new.png" />
-
+								  image="#{constantBean.contextPath}/images/new.png"/>
 						<w:button id="markInvalid" jsvar="markInvalid" label="#{l.m['设为无效']}"
-							onclick="return confirm('#{l.m['确定要设为无效吗?']}');"
-							image="#{constantBean.contextPath}/images/delete.png" />
+								  onclick="return confirm('#{l.m['确定要设为无效吗?']}');"
+								  image="#{constantBean.contextPath}/images/delete.png"/>
 						<w:button id="markInvalidTrue" jsvar="markInvalidTrue" label="#{l.m['设为有效']}"
-							onclick="return confirm('#{l.m['确定要设为有效吗?']}');"
-							image="#{constantBean.contextPath}/images/save.png" />
+								  onclick="return confirm('#{l.m['确定要设为有效吗?']}');"
+								  image="#{constantBean.contextPath}/images/save.png"/>
 						<w:button id="del" jsvar="del" label="#{l.m['删除']}"
-							onclick="return confirm('#{l.m['确定要删除吗?']}');"
-							image="#{constantBean.contextPath}/pages/module/common/resources/images/delete.gif" />
-							
+								  onclick="return confirm('#{l.m['确定要删除吗?']}');"
+								  image="#{constantBean.contextPath}/pages/module/common/resources/images/delete.gif"/>
 						<w:button id="offline" jsvar="offline" label="#{l.m['离线']}"
-							onclick="return confirm('#{l.m['确定要离线吗?']}');"
-							image="#{constantBean.contextPath}/pages/module/common/resources/images/delete.gif" />	
-							
+								  onclick="return confirm('#{l.m['确定要离线吗?']}');"
+								  image="#{constantBean.contextPath}/pages/module/common/resources/images/delete.gif"/>
 						<w:button id="importData" jsvar="importDataJsVar" value="#{l.m['批量导入']}"
-									image="#{constantBean.contextPath}/pages/module/common/resources/images/execute.png" />
-									
+								  image="#{constantBean.contextPath}/pages/module/common/resources/images/execute.png"/>
 						<w:button id="showModuleCtrl" value="#{l.m['授权']}"
-									image="#{constantBean.contextPath}/pages/module/common/resources/images/configdetail.png" />
+								  image="#{constantBean.contextPath}/pages/module/common/resources/images/configdetail.png"/>
 						<w:button id="viewPermission" jsvar="viewPermissionJsVar" value="#{l.m['查看权限']}"
-									image="#{constantBean.contextPath}/images/query-small.png" />
-						
+								  image="#{constantBean.contextPath}/images/query-small.png"/>
 						<w:button id="linkSales" value="#{l.m['关联业务员']}"
-									image="#{constantBean.contextPath}/pages/module/common/resources/images/approle.png" />
-									
+								  image="#{constantBean.contextPath}/pages/module/common/resources/images/approle.png"/>
 						<w:button id="linkActSet" jsvar="linkActSetJsVar" value="#{l.m['关联账套']}"
-									image="#{constantBean.contextPath}/pages/module/common/resources/images/init.png" />			
-						
+								  image="#{constantBean.contextPath}/pages/module/common/resources/images/init.png"/>
 						<w:button id="linkCorp" jsvar="linkCorp" value="#{l.m['授权分公司']}"
-									image="#{constantBean.contextPath}/pages/module/common/resources/images/configdetail.png" />
-						
-						<w:button id="showReport" value="#{l.m['查看报表']}"
-									image="#{constantBean.contextPath}/pages/module/common/resources/images/viewdesigner.png" />
-						
-						<w:button id="linkReport" value="#{l.m['授权报表']}"
-									image="#{constantBean.contextPath}/pages/module/common/resources/images/log.png" />
+								  image="#{constantBean.contextPath}/pages/module/common/resources/images/configdetail.png"/>
 						<w:button id="setLogincount" value="#{l.m['重置登录失败次数']}"
-									image="#{constantBean.contextPath}/pages/module/common/resources/images/liucheng.png" />
+								  image="#{constantBean.contextPath}/pages/module/common/resources/images/liucheng.png"/>
 						<w:button value="#{l.m['设置上级']}" id="setParentidsshow" jsvar="setParentidsshowJsVar"
-									image="#{constantBean.contextPath}/pages/module/common/resources/images/configdetail.png" />
-						<w:button id="clearOpenid" value="#{l.m['解绑微信']}"
-									image="#{constantBean.contextPath}/pages/module/common/resources/images/log.png" />
+								  image="#{constantBean.contextPath}/pages/module/common/resources/images/configdetail.png"/>
 					</w:toolBar>
 
 					<layout:panelGrid columns="20" cellspacing="1" cellpadding="0">
@@ -121,18 +106,6 @@
 							<f:selectItem itemLabel="Y" itemValue="true" />
 							<f:selectItem itemLabel="N" itemValue="false" />
 						</w:combo>
-						<!-- <w:textField selectOnFocus="true" width="80"
-							value="#{pages.sysmgr.user.userBean.qryMap['inputer']}" />
-						<w:dateField selectOnFocus="true" width="90"
-							value="#{pages.sysmgr.user.userBean.qryMap['inputtime']}">
-							<f:convertDateTime pattern="yy/MM/dd" timeZone="GMT+8" />
-						</w:dateField>
-						<w:textField selectOnFocus="true" width="80"
-							value="#{pages.sysmgr.user.userBean.qryMap['updater']}" />
-						<w:dateField selectOnFocus="true" width="90"
-							value="#{pages.sysmgr.user.userBean.qryMap['updatetime']}">
-							<f:convertDateTime pattern="yy/MM/dd" timeZone="GMT+8" />
-						</w:dateField> -->
 					</layout:panelGrid>
 
 					<w:dataGrid height="700" paged="true" rows="#{pages.module.data.portBean.gridPageSize}" id="grid" jsvar="gridJsvar"
@@ -162,7 +135,6 @@
 							align="center" />
 						<w:outputColumn header="#{l.m['账号登录']}" id="isaccuser" width="60" sortable="true" type="check"
 							align="center" />
-						<w:outputColumn header="openid" id="opneid" width="60" sortable="true"  align="center" />
 						<w:outputColumn header="#{l.m['入职时间']}" id="entrydate" width="100" sortable="true" />
 						<w:outputColumn header="#{l.m['登录失败次数']}" id="logincount" width="90" sortable="true"
 							align="center" />
@@ -205,124 +177,97 @@
 								  image="#{constantBean.contextPath}/images/logs.png" />
 					</w:toolBar>
 					<layout:panelGrid columns="6" cellspacing="0" width="800" style="font-size:12px">
-						<h:outputLabel value="#{l.m['代码']}" />
+						<h:outputLabel value="#{l.m['代码']}"/>
 						<w:textField selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.code}" width="140"
-							maxLength="50"   style="background-color: #FFFFC7;background-image:none;" jsvar="code"/>
-						<h:outputLabel value="#{l.m['中文名']}" />
+									 maxLength="50" style="background-color: #FFFFC7;background-image:none;" jsvar="code"/>
+						<h:outputLabel value="#{l.m['中文名']}"/>
 						<w:textField selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.namec}" width="140"
-							maxLength="50"  style="background-color: #FFFFC7;background-image:none;" jsvar="namecjs"/>
-							
-						<h:outputLabel value="#{l.m['英文名']}" />
+									 maxLength="50" style="background-color: #FFFFC7;background-image:none;" jsvar="namecjs"/>
+						<h:outputLabel value="#{l.m['英文名']}"/>
 						<w:textField selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.namee}" width="140"
-							maxLength="50"  style="background-color: #FFFFC7;background-image:none;" jsvar="nameejs"/>
-						<h:outputLabel value="#{l.m['公司']}" />
+									 maxLength="50" style="background-color: #FFFFC7;background-image:none;" jsvar="nameejs"/>
+						<h:outputLabel value="#{l.m['公司']}"/>
 						<w:combo id="company" emptyText="公司" typeAhead="true" width="140" forceSelection="true"
-							 style="background-color: #FFFFC7;background-image:none;"
-							onselect="company_changed();" jsvar="company">
-							<f:selectItems  value="#{comboxBean.company}" />
+								 style="background-color: #FFFFC7;background-image:none;"
+								 onselect="company_changed();" jsvar="company">
+							<f:selectItems value="#{comboxBean.company}"/>
 						</w:combo>
-						
-						
-						<h:outputLabel value="Email1" />
+						<h:outputLabel value="Email1"/>
 						<w:textField selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.email1}" width="190"
-							style="background-color: #FFFFC7;background-image:none;" jsvar="email1js"/>
-						
-						<!--<w:combo id="department" typeAhead="true" width="140" forceSelection="true"
-							 >
-							<f:selectItems id="departments" />
-						</w:combo>
-	
-						-->
-						
-						<h:outputLabel value="#{l.m['电话1']}" />
+									 style="background-color: #FFFFC7;background-image:none;" jsvar="email1js"/>
+						<h:outputLabel value="#{l.m['电话1']}"/>
 						<w:textField selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.tel1}" width="140"
-							maxLength="50"  />
-							
-						<h:outputLabel value="#{l.m['部门']}" />
-						<w:combo value="#{pages.sysmgr.user.userBean.data.deptid}" width="140" typeAhead="true" forceSelection="true" id="department" 
-							 style="background-color: #FFFFC7;background-image:none;" jsvar="deptidjs">
-							<f:selectItems id="deptids" />
+									 maxLength="50"/>
+						<h:outputLabel value="#{l.m['部门']}"/>
+						<w:combo value="#{pages.sysmgr.user.userBean.data.deptid}" width="140" typeAhead="true" forceSelection="true" id="department"
+								 style="background-color: #FFFFC7;background-image:none;" jsvar="deptidjs">
+							<f:selectItems id="deptids"/>
 						</w:combo>
-						
-							
-						<h:outputLabel value="Email2" />
+						<h:outputLabel value="Email2"/>
 						<w:textField selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.email2}" width="190"
-							maxLength="50"  />
-							
-						<h:outputLabel value="#{l.m['电话2']}" />
+									 maxLength="50"/>
+						<h:outputLabel value="#{l.m['电话2']}"/>
 						<w:textField selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.tel2}" width="140"
-							maxLength="50"  />
-							
-						<h:outputLabel value="QQ" />
+									 maxLength="50"/>
+						<h:outputLabel value="QQ"/>
 						<w:textField selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.qq}" width="140"
-							maxLength="50"  />
-							
-						<!--<h:outputLabel value="MSN" />
-						<w:textField selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.msn}" width="140"
-							maxLength="50"  />
-						-->
-						
-						<layout:panelGrid columns="2" >
-							<h:outputLabel value="信用额度" />
+									 maxLength="50"/>
+						<layout:panelGrid columns="2">
+							<h:outputLabel value="信用额度"/>
 							<w:button id="qureyguarantee" label=""
-								image="#{constantBean.contextPath}/images/query-small.png" />
+									  image="#{constantBean.contextPath}/images/query-small.png"/>
 						</layout:panelGrid>
 						<w:numberField value="#{pages.sysmgr.user.userBean.data.creditlimit}" width="140"
-							maxLength="50" />
-						<h:outputLabel value="#{l.m['手机']}" />
+									   maxLength="50"/>
+						<h:outputLabel value="#{l.m['手机']}"/>
 						<w:textField selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.mobilephone}"
-							width="140" maxLength="50"  />
-							
-						<h:outputLabel value="FAX" />
+									 width="140" maxLength="50"/>
+						<h:outputLabel value="FAX"/>
 						<w:textField selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.fax}" width="140"
-							maxLength="50"  />
-						<h:outputLabel value="SKYPE" />
+									 maxLength="50"/>
+						<h:outputLabel value="SKYPE"/>
 						<w:textField selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.skype}" width="140"
-							maxLength="50"  />
-	
-						<h:outputLabel value="#{l.m['职务']}" />
-						<w:combo value="#{pages.sysmgr.user.userBean.data.jobdesc}" jsvar="jobdescJs" width="140" typeAhead="true" forceSelection="true" style="background-color: #FFFFC7;background-image:none;">
-							<f:selectItems  value="#{comboxBean.jobdesc}" />
-						</w:combo>	
-						
-						<h:outputLabel value="#{l.m['备注']}" />
-						<w:textArea selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.remarks}" width="140"
-							height="25"/>
-						
-						
-						<h:outputLabel value="#{l.m['工号']}" />
-						<w:textField selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.idcode}" width="140"/>
-							
-						<h:outputLabel value="#{l.m['上级']}" />
-						<w:combo value="#{pages.sysmgr.user.userBean.data.parentid}" jsvar="parentidJs" width="140" typeAhead="true" forceSelection="true" style="background-color: #FFFFC7;background-image:none;">
-							<f:selectItems id="parentid" />
+									 maxLength="50"/>
+						<h:outputLabel value="#{l.m['职务']}"/>
+						<w:combo value="#{pages.sysmgr.user.userBean.data.jobdesc}" jsvar="jobdescJs" width="140" typeAhead="true"
+								 forceSelection="true" style="background-color: #FFFFC7;background-image:none;">
+							<f:selectItems value="#{comboxBean.jobdesc}"/>
 						</w:combo>
-						
-						<h:outputLabel value="#{l.m['入职时间']}" />
-						<w:dateField style="background-color: #FFFFC7;background-image:none;" jsvar="entrydateJs" selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.entrydate}" width="140" />
-						
-						<layout:cell colspan="4"> 
+						<h:outputLabel value="#{l.m['备注']}"/>
+						<w:textArea selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.remarks}" width="140"
+									height="25"/>
+						<h:outputLabel value="#{l.m['工号']}"/>
+						<w:textField selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.idcode}" width="140"/>
+
+						<h:outputLabel value="#{l.m['上级']}"/>
+						<w:combo value="#{pages.sysmgr.user.userBean.data.parentid}" jsvar="parentidJs" width="140" typeAhead="true"
+								 forceSelection="true" style="background-color: #FFFFC7;background-image:none;">
+							<f:selectItems id="parentid"/>
+						</w:combo>
+						<h:outputLabel value="#{l.m['入职时间']}"/>
+						<w:dateField style="background-color: #FFFFC7;background-image:none;" jsvar="entrydateJs" selectOnFocus="true"
+									 value="#{pages.sysmgr.user.userBean.data.entrydate}" width="140"/>
+
+						<layout:cell colspan="4">
 							<layout:panelGrid columns="10" cellspacing="0">
 								<h:outputLabel value="#{l.m['同时在线数量']}" id="onlinelabe"/>
-								<w:numberField id="onlinecount" jsvar="onlinecountJs" selectOnFocus="true" value="#{pages.sysmgr.user.userBean.data.onlinecount}" width="40" style="text-align: right" minValue="1" allowBlank="false" allowDecimals="false" allowNegative="false"/>
-
+								<w:numberField id="onlinecount" jsvar="onlinecountJs" selectOnFocus="true"
+											   value="#{pages.sysmgr.user.userBean.data.onlinecount}" width="40" style="text-align: right"
+											   minValue="1" allowBlank="false" allowDecimals="false" allowNegative="false"/>
 								<w:checkBox value="#{pages.sysmgr.user.userBean.data.isaccuser}" cls="under_line"
-									focusClass="surround" boxLabel="#{l.m['账号登录']}"/>
+											focusClass="surround" boxLabel="#{l.m['账号登录']}"/>
 								<w:checkBox value="#{pages.sysmgr.user.userBean.data.iscs}" cls="under_line"
-									focusClass="surround" boxLabel="#{l.m['客服']}" />
+											focusClass="surround" boxLabel="#{l.m['客服']}"/>
 								<w:checkBox value="#{pages.sysmgr.user.userBean.data.isop}" cls="under_line"
-									focusClass="surround" boxLabel="#{l.m['操作']}" />
+											focusClass="surround" boxLabel="#{l.m['操作']}"/>
 								<w:checkBox value="#{pages.sysmgr.user.userBean.data.isdoc}" cls="under_line"
-									focusClass="surround" boxLabel="#{l.m['文件']}" />
+											focusClass="surround" boxLabel="#{l.m['文件']}"/>
 								<w:checkBox value="#{pages.sysmgr.user.userBean.data.issales}" cls="under_line"
-									focusClass="surround" boxLabel="#{l.m['业务员']}"/>
-								<!--<w:checkBox value="#{pages.sysmgr.user.userBean.data.isys}" cls="under_line"
-									focusClass="surround" boxLabel="#{l.m['系统用户']}" />
-								-->
+											focusClass="surround" boxLabel="#{l.m['业务员']}"/>
 								<w:button id="salesLinkUser" value="#{l.m['业务员关联用户']}" jsvar="salesLinkUserJsVar"
-									image="#{constantBean.contextPath}/main/img/customers.gif" />
+										  image="#{constantBean.contextPath}/main/img/customers.gif"/>
 								<w:button id="salesLinkGroup" value="#{l.m['业务员关联组']}"
-									image="#{constantBean.contextPath}/main/img/customers.gif" jsvar="salesLinkGroupJsVar" />	
+										  image="#{constantBean.contextPath}/main/img/customers.gif" jsvar="salesLinkGroupJsVar"/>
 							</layout:panelGrid>
 						</layout:cell>
 					</layout:panelGrid>
@@ -408,8 +353,9 @@
 				<layout:cell>
 
 					<layout:panelGrid columns="1">
-						<h:outputLabel style="width: 450" value="#{l.m['格式说明  ']}" />
-						<h:outputLabel style="width: 450" value="#{l.m['请粘贴时带表头数据(如有中文名2个表头，请只复制英文表头),注意:单元格中不能有回车换行符或特殊字符，如有日期单元格，请保证日期格式正确且为有效日期，导入数据请删掉中间空行或空列，只复制有数据部分!']}" />
+						<h:outputLabel style="width: 450" value="#{l.m['格式说明  ']}"/>
+						<h:outputLabel style="width: 450"
+									   value="#{l.m['请粘贴时带表头数据(如有中文名2个表头，请只复制英文表头),注意:单元格中不能有回车换行符或特殊字符，如有日期单元格，请保证日期格式正确且为有效日期，导入数据请删掉中间空行或空列，只复制有数据部分!']}"/>
 					</layout:panelGrid>
 				</layout:cell>
 				<div style="display: none"><w:textField selectOnFocus="true" id="refid" hidden="true"></w:textField>
@@ -421,48 +367,40 @@
 	<layout:window maximizable="true" id="setParentidswindow" width="300" height="100" title="#{l.m['设置上级']}">
 		<w:form>
 			<layout:panelGrid columns="3" cellspacing="5px" style="font-size:12px" id="setParentidswin">
-				<h:outputLabel value="#{l.m['上级']}" />
+				<h:outputLabel value="#{l.m['上级']}"/>
 				<w:combo width="140" typeAhead="true" forceSelection="true" id="parentidsgvalue">
-					<f:selectItems id="parentids" />
+					<f:selectItems id="parentids"/>
 				</w:combo>
 				<w:button id="setParentids" value="#{l.m['确定']}"
-							image="#{constantBean.contextPath}/images/save.png" />
+						  image="#{constantBean.contextPath}/images/save.png"/>
 			</layout:panelGrid>
 
 			<div style="height: 0px;">
-			<w:textField selectOnFocus="true" id="userid" hidden="true"></w:textField>
-			<w:textField selectOnFocus="true" id="logocode" jsvar="logocodeJs" hidden="true"></w:textField></div>
+				<w:textField selectOnFocus="true" id="userid" hidden="true"></w:textField>
+				<w:textField selectOnFocus="true" id="logocode" jsvar="logocodeJs" hidden="true"></w:textField></div>
 		</w:form>
 	</layout:window>
-	
+
 	<layout:window id="showModuleCtrlWindow" width="450" height="680" constrainHeader="true" resizable="true">
-			<w:iframe style="width: 100%; height: 100%;" frameborder="no" id="dtlIFrame" name="dtlIFrame" />
+		<w:iframe style="width: 100%; height: 100%;" frameborder="no" id="dtlIFrame" name="dtlIFrame"/>
 	</layout:window>
-	
+
 	<layout:window id="linkSalesWindow" width="780" height="680" constrainHeader="true" resizable="true" title="#{l.m['关联业务员']}">
-			<w:iframe style="width: 100%; height: 100%;" frameborder="no" id="linkSalesIFrame" name="linkSalesIFrame" />
+		<w:iframe style="width: 100%; height: 100%;" frameborder="no" id="linkSalesIFrame" name="linkSalesIFrame"/>
 	</layout:window>
-	
+
 	<layout:window id="usercountlackWindow" width="780" height="680" constrainHeader="true" resizable="true" title="新增用户失败">
-			<w:iframe style="width: 100%; height: 100%;" frameborder="no" id="usercountlackIFrame" name="usercountlackIFrame" />
+		<w:iframe style="width: 100%; height: 100%;" frameborder="no" id="usercountlackIFrame" name="usercountlackIFrame"/>
 	</layout:window>
-	
+
 	<layout:window id="linkUserWindow" width="820" height="720" modal="true" constrainHeader="true" resizable="true" title="业务员关联用户">
-			<w:iframe style="width: 100%; height: 100%;" frameborder="no" id="linkUserIFrame" name="linkUserIFrame" />
+		<w:iframe style="width: 100%; height: 100%;" frameborder="no" id="linkUserIFrame" name="linkUserIFrame"/>
 	</layout:window>
-	
+
 	<layout:window id="linkActSetWindow" width="880" height="680" constrainHeader="true" resizable="true" title="关联账套">
-			<w:iframe style="width: 100%; height: 100%;" frameborder="no" id="linkActSetIFrame" name="linkActSetIFrame" />
+		<w:iframe style="width: 100%; height: 100%;" frameborder="no" id="linkActSetIFrame" name="linkActSetIFrame"/>
 	</layout:window>
-	
-	<layout:window id="linkReportSetWindow" width="880" height="680" modal="true" constrainHeader="true" resizable="true" title="关联报表">
-			<w:iframe style="width: 100%; height: 100%;" frameborder="no" id="linkReportSetIFrame" name="linkReportSetIFrame" />
-	</layout:window>
-	
-	<layout:window id="showReportSetWindow" width="880" height="680" modal="true" constrainHeader="true" resizable="true" title="查看报表">
-			<w:iframe style="width: 100%; height: 100%;" frameborder="no" id="showReportSetIFrame" name="showReportSetIFrame" />
-	</layout:window>
-	
+
 	<script>
 	//<![CDATA[
 	function checkSave(){
